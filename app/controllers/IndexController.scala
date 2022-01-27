@@ -32,4 +32,14 @@ class IndexController @Inject()(
   def onPageLoad: Action[AnyContent] = identify { implicit request =>
     Ok(view())
   }
+
+  /**
+   * IndexView / Hello World, which importantly bypasses Auth
+   * stuff for the moment
+   *
+   * TODO: Delete me when project matures further.
+   */
+  def helloWorld : Action[AnyContent] = Action { implicit request =>
+    Ok(view())
+  }
 }
