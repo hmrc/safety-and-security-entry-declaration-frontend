@@ -1,4 +1,5 @@
 service.name = safety-and-security-entry-declaration-frontend
+hello.world = Hello World
 
 site.back = Back
 site.remove = Remove
