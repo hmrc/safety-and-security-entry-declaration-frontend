@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import org.scalacheck.Arbitrary
-import pages._
+import pages.behaviours.PageBehaviours
 
-trait PageGenerators {
 
-  implicit lazy val arbitraryLodgingPersonTypePage: Arbitrary[LodgingPersonTypePage.type] =
-    Arbitrary(LodgingPersonTypePage)
+class LocalReferenceNumberPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+  "LocalReferenceNumberPage" - {
+
+    beRetrievable[String](LocalReferenceNumberPage)
+
+    beSettable[String](LocalReferenceNumberPage)
+
+    beRemovable[String](LocalReferenceNumberPage)
+  }
 }
