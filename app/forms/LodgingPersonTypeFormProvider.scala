@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import org.scalacheck.Arbitrary
-import pages._
+import javax.inject.Inject
 
-trait PageGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.LodgingPersonType
 
-  implicit lazy val arbitraryLodgingPersonTypePage: Arbitrary[LodgingPersonTypePage.type] =
-    Arbitrary(LodgingPersonTypePage)
+class LodgingPersonTypeFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryLocalReferenceNumberPage: Arbitrary[LocalReferenceNumberPage.type] =
-    Arbitrary(LocalReferenceNumberPage)
+  def apply(): Form[LodgingPersonType] =
+    Form(
+      "value" -> enumerable[LodgingPersonType]("lodgingPersonType.error.required")
+    )
 }

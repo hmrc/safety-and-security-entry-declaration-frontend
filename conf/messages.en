@@ -55,3 +55,18 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+localReferenceNumber.title = localReferenceNumber
+localReferenceNumber.heading = localReferenceNumber
+localReferenceNumber.checkYourAnswersLabel = localReferenceNumber
+localReferenceNumber.error.required = Enter localReferenceNumber
+localReferenceNumber.error.length = LocalReferenceNumber must be 22 characters or less
+localReferenceNumber.change.hidden = LocalReferenceNumber
+
+lodgingPersonType.title = lodgingPersonType
+lodgingPersonType.heading = lodgingPersonType
+lodgingPersonType.carrier = Carrier
+lodgingPersonType.representative = Representative
+lodgingPersonType.checkYourAnswersLabel = lodgingPersonType
+lodgingPersonType.error.required = Select lodgingPersonType
+lodgingPersonType.change.hidden = LodgingPersonType
