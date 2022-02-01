@@ -60,6 +60,7 @@ localReferenceNumber.title = What is the Local Reference Number?
 localReferenceNumber.heading = What is the Local Reference Number?
 localReferenceNumber.checkYourAnswersLabel = Local Reference Number
 localReferenceNumber.error.required = Enter the Local Reference Number
+localReferenceNumber.error.invalid = Local Reference Number can only contain letters and numbers
 localReferenceNumber.error.length = Local Reference Number must be 22 characters or less
 localReferenceNumber.change.hidden = the Local Reference Number
 
