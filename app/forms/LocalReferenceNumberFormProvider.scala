@@ -23,9 +23,14 @@ import play.api.data.Form
 
 class LocalReferenceNumberFormProvider @Inject() extends Mappings {
 
+  private val validData = "[A-Za-z0-9]+"
+
   def apply(): Form[String] =
     Form(
       "value" -> text("localReferenceNumber.error.required")
-        .verifying(maxLength(22, "localReferenceNumber.error.length"))
+        .verifying(firstError(
+          maxLength(22, "localReferenceNumber.error.length"),
+          regexp(validData, "localReferenceNumber.error.invalid")
+        ))
     )
 }

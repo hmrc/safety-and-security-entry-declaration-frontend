@@ -17,12 +17,14 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "localReferenceNumber.error.required"
   val lengthKey = "localReferenceNumber.error.length"
+  val invalidKey = "localReferenceNumber.error.invalid"
   val maxLength = 22
 
   val form = new LocalReferenceNumberFormProvider()()
@@ -36,6 +38,21 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       stringsWithMaxLength(maxLength)
     )
+
+    "must not bind invalid data" in {
+
+      val invalidData = for {
+        noValidChars <- Gen.choose(0, 21)
+        validChars   <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
+        invalidChar  <- Gen.oneOf('?', '.', ',')
+      } yield (validChars :+ invalidChar).mkString
+
+      forAll(invalidData) {
+        invalidAnswer =>
+          val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+          result.errors must contain only FormError(fieldName, invalidKey, Seq("[A-Za-z0-9]+"))
+      }
+    }
 
     behave like fieldWithMaxLength(
       form,
