@@ -23,7 +23,7 @@ import models._
 
 class NavigatorSpec extends SpecBase {
 
-  val navigator = new Navigator
+  private val navigator = new Navigator
 
   "Navigator" - {
 
@@ -33,6 +33,12 @@ class NavigatorSpec extends SpecBase {
 
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad
+      }
+
+      "must go from Local Reference Number to Lodging Person Type" in {
+
+        navigator.nextPage(LocalReferenceNumberPage, NormalMode, emptyUserAnswers)
+          .mustBe(routes.LodgingPersonTypeController.onPageLoad(NormalMode))
       }
     }
 
