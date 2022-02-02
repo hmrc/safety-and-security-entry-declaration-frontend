@@ -71,3 +71,11 @@ lodgingPersonType.representative = Representative
 lodgingPersonType.checkYourAnswersLabel = Are you the carrier or a representative?
 lodgingPersonType.error.required = Select if you are the carrier or a representative
 lodgingPersonType.change.hidden = if you are the carrier or a representative
+
+grossWeight.title = How do you want to give the gross weight of the goods?
+grossWeight.heading = How do you want to give the gross weight of the goods?
+grossWeight.overall = Overall
+grossWeight.per item = Per item
+grossWeight.checkYourAnswersLabel = How do you want to give the gross weight of the goods?
+grossWeight.error.required = Select grossWeight
+grossWeight.change.hidden = GrossWeight

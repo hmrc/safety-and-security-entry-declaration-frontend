@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
+    Arbitrary {
+      Gen.oneOf(GrossWeight.values.toSeq)
+    }
+
   implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =
     Arbitrary {
       Gen.oneOf(LodgingPersonType.values.toSeq)
