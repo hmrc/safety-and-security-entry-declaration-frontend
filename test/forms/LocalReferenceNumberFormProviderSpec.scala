@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.LocalReferenceNumber
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -36,7 +38,7 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      arbitrary[LocalReferenceNumber].map(_.value)
     )
 
     "must not bind invalid data" in {

@@ -16,6 +16,8 @@
 
 package controllers.actions
 
+import models.LocalReferenceNumber
+
 import javax.inject.Inject
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
@@ -23,16 +25,19 @@ import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject()(
-                                         val sessionRepository: SessionRepository
-                                       )(implicit val executionContext: ExecutionContext) extends DataRetrievalAction {
+class DataRetrievalAction (lrn: LocalReferenceNumber, repository: SessionRepository)
+                          (implicit val executionContext: ExecutionContext)
+  extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-
-    sessionRepository.get(request.userId).map {
+  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+    repository.get(request.userId, lrn).map {
       OptionalDataRequest(request.request, request.userId, _)
     }
-  }
 }
 
-trait DataRetrievalAction extends ActionTransformer[IdentifierRequest, OptionalDataRequest]
+class DataRetrievalActionProvider @Inject()(repository: SessionRepository)
+                                           (implicit ec: ExecutionContext) {
+
+  def apply(lrn: LocalReferenceNumber): DataRetrievalAction =
+    new DataRetrievalAction(lrn, repository)
+}

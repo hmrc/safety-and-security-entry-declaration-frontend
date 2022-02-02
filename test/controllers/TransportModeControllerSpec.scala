@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.TransportModeFormProvider
-import models.{NormalMode, TransportMode, UserAnswers}
+import models.{NormalMode, TransportMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,7 +37,7 @@ class TransportModeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val transportModeRoute = routes.TransportModeController.onPageLoad(NormalMode).url
+  lazy val transportModeRoute = routes.TransportModeController.onPageLoad(NormalMode, lrn).url
 
   val formProvider = new TransportModeFormProvider()
   val form = formProvider()
@@ -56,13 +56,13 @@ class TransportModeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[TransportModeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(TransportModePage, TransportMode.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(TransportModePage, TransportMode.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +74,7 @@ class TransportModeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TransportMode.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(TransportMode.values.head), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -120,7 +120,7 @@ class TransportModeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 

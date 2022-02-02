@@ -17,7 +17,8 @@
 package base
 
 import controllers.actions._
-import models.UserAnswers
+import generators.Generators
+import models.{LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -28,25 +29,37 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 
+import java.time.{Clock, Instant, LocalDate, ZoneId}
+
 trait SpecBase
   extends AnyFreeSpec
     with Matchers
     with TryValues
     with OptionValues
     with ScalaFutures
-    with IntegrationPatience {
+    with IntegrationPatience
+      with Generators {
 
   val userAnswersId: String = "id"
+  val lrn: LocalReferenceNumber = LocalReferenceNumber("ABC123")
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId)
+  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId, lrn)
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+  val arbitraryDate: LocalDate        = datesBetween(LocalDate.of(2022, 7, 1), LocalDate.of(2050, 12, 31)).sample.value
+  val arbitraryInstant: Instant       = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
+  val stubClockAtArbitraryDate: Clock = Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
+
+  protected def applicationBuilder(
+                                    userAnswers: Option[UserAnswers] = None,
+                                    clock: Clock = stubClockAtArbitraryDate,
+                                  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[DataRetrievalActionProvider].toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
+        bind[Clock].toInstance(clock)
       )
 }

@@ -17,20 +17,21 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.LocalReferenceNumber
 import play.api.data.Form
 
 class LocalReferenceNumberFormProvider @Inject() extends Mappings {
 
   private val validData = "[A-Za-z0-9]+"
 
-  def apply(): Form[String] =
+  def apply(): Form[LocalReferenceNumber] =
     Form(
       "value" -> text("localReferenceNumber.error.required")
         .verifying(firstError(
           maxLength(22, "localReferenceNumber.error.length"),
           regexp(validData, "localReferenceNumber.error.invalid")
         ))
+        .transform[LocalReferenceNumber](LocalReferenceNumber(_), _.value)
     )
 }
