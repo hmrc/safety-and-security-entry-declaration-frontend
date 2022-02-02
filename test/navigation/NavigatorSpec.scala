@@ -40,6 +40,27 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(LocalReferenceNumberPage, NormalMode, emptyUserAnswers)
           .mustBe(routes.LodgingPersonTypeController.onPageLoad(NormalMode))
       }
+
+      "must go from Gross Weight" - {
+        "to Transport Mode when the user enters Per item" in {
+
+          val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
+          navigator.nextPage(GrossWeightPage, NormalMode, answers)
+            .mustBe(routes.TransportModeController.onPageLoad(NormalMode))
+        }
+
+        "to Total Gross weight when the user enters overall" in {
+
+          val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.Overall).success.value
+          navigator.nextPage(GrossWeightPage, NormalMode, answers)
+            .mustBe(routes.TotalGrossWeightController.onPageLoad(NormalMode))
+        }
+
+        "to Journey Recovery when nethier overall or per item is made" in {
+          navigator.nextPage(GrossWeightPage, NormalMode, emptyUserAnswers)
+            .mustBe(routes.JourneyRecoveryController.onPageLoad())
+        }
+      }
     }
 
     "in Check mode" - {

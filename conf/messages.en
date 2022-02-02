@@ -81,7 +81,7 @@ grossWeight.error.required = Select grossWeight
 grossWeight.change.hidden = GrossWeight
 
 totalGrossWeight.title = TotalGrossWeight
-totalGrossWeight.heading = TotalGrossWeight
+totalGrossWeight.heading = Total Gross Weight
 totalGrossWeight.checkYourAnswersLabel = TotalGrossWeight
 totalGrossWeight.error.nonNumeric = Enter your totalGrossWeight using numbers
 totalGrossWeight.error.required = Enter your totalGrossWeight
