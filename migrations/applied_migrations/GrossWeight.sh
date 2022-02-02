@@ -17,7 +17,7 @@ echo "" >> ../conf/messages.en
 echo "grossWeight.title = How do you want to give the gross weight of the goods?" >> ../conf/messages.en
 echo "grossWeight.heading = How do you want to give the gross weight of the goods?" >> ../conf/messages.en
 echo "grossWeight.overall = Overall" >> ../conf/messages.en
-echo "grossWeight.per item = Per item" >> ../conf/messages.en
+echo "grossWeight.perItem = Per item" >> ../conf/messages.en
 echo "grossWeight.checkYourAnswersLabel = How do you want to give the gross weight of the goods?" >> ../conf/messages.en
 echo "grossWeight.error.required = Select grossWeight" >> ../conf/messages.en
 echo "grossWeight.change.hidden = GrossWeight" >> ../conf/messages.en

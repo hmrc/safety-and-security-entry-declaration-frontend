@@ -35,3 +35,8 @@ GET        /grossWeight                        controllers.GrossWeightController
 POST       /grossWeight                        controllers.GrossWeightController.onSubmit(mode: Mode = NormalMode)
 GET        /changeGrossWeight                  controllers.GrossWeightController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeGrossWeight                  controllers.GrossWeightController.onSubmit(mode: Mode = CheckMode)
+
+GET        /totalGrossWeight                  controllers.TotalGrossWeightController.onPageLoad(mode: Mode = NormalMode)
+POST       /totalGrossWeight                  controllers.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode)
+GET        /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode)

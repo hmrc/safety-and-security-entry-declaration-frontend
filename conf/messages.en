@@ -75,7 +75,16 @@ lodgingPersonType.change.hidden = if you are the carrier or a representative
 grossWeight.title = How do you want to give the gross weight of the goods?
 grossWeight.heading = How do you want to give the gross weight of the goods?
 grossWeight.overall = Overall
-grossWeight.per item = Per item
+grossWeight.perItem = Per item
 grossWeight.checkYourAnswersLabel = How do you want to give the gross weight of the goods?
 grossWeight.error.required = Select grossWeight
 grossWeight.change.hidden = GrossWeight
+
+totalGrossWeight.title = TotalGrossWeight
+totalGrossWeight.heading = TotalGrossWeight
+totalGrossWeight.checkYourAnswersLabel = TotalGrossWeight
+totalGrossWeight.error.nonNumeric = Enter your totalGrossWeight using numbers
+totalGrossWeight.error.required = Enter your totalGrossWeight
+totalGrossWeight.error.wholeNumber = Enter your totalGrossWeight using whole numbers
+totalGrossWeight.error.outOfRange = TotalGrossWeight must be between {0} and {1}
+totalGrossWeight.change.hidden = TotalGrossWeight

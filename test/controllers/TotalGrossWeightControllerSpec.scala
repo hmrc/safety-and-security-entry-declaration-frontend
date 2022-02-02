@@ -1,59 +1,45 @@
-/*
- * Copyright 2022 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package controllers
 
 import base.SpecBase
-import forms.GrossWeightFormProvider
-import models.{NormalMode, GrossWeight, UserAnswers}
+import forms.TotalGrossWeightFormProvider
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.GrossWeightPage
+import pages.TotalGrossWeightPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.GrossWeightView
+import views.html.TotalGrossWeightView
 
 import scala.concurrent.Future
 
-class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
+class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
+
+  val formProvider = new TotalGrossWeightFormProvider()
+  val form = formProvider()
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val grossWeightRoute = routes.GrossWeightController.onPageLoad(NormalMode).url
+  val validAnswer = 0
 
-  val formProvider = new GrossWeightFormProvider()
-  val form = formProvider()
+  lazy val totalGrossWeightRoute = routes.TotalGrossWeightController.onPageLoad(NormalMode).url
 
-  "GrossWeight Controller" - {
+  "TotalGrossWeight Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, grossWeightRoute)
+        val request = FakeRequest(GET, totalGrossWeightRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[GrossWeightView]
+        val view = application.injector.instanceOf[TotalGrossWeightView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
@@ -62,19 +48,19 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(GrossWeightPage, GrossWeight.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(TotalGrossWeightPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, grossWeightRoute)
+        val request = FakeRequest(GET, totalGrossWeightRoute)
 
-        val view = application.injector.instanceOf[GrossWeightView]
+        val view = application.injector.instanceOf[TotalGrossWeightView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(GrossWeight.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -94,8 +80,8 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, grossWeightRoute)
-            .withFormUrlEncodedBody(("value", GrossWeight.values.head.toString))
+          FakeRequest(POST, totalGrossWeightRoute)
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
@@ -110,12 +96,12 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, grossWeightRoute)
+          FakeRequest(POST, totalGrossWeightRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[GrossWeightView]
+        val view = application.injector.instanceOf[TotalGrossWeightView]
 
         val result = route(application, request).value
 
@@ -129,7 +115,7 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, grossWeightRoute)
+        val request = FakeRequest(GET, totalGrossWeightRoute)
 
         val result = route(application, request).value
 
@@ -138,14 +124,14 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, grossWeightRoute)
-            .withFormUrlEncodedBody(("value", GrossWeight.values.head.toString))
+          FakeRequest(POST, totalGrossWeightRoute)
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
