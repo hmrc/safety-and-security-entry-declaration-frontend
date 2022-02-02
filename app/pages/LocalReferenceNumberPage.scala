@@ -16,9 +16,10 @@
 
 package pages
 
+import models.LocalReferenceNumber
 import play.api.libs.json.JsPath
 
-case object LocalReferenceNumberPage extends QuestionPage[String] {
+case object LocalReferenceNumberPage extends QuestionPage[LocalReferenceNumber] {
 
   override def path: JsPath = JsPath \ toString
 

@@ -16,6 +16,7 @@
 
 package pages
 
+import models.LocalReferenceNumber
 import pages.behaviours.PageBehaviours
 
 
@@ -23,10 +24,10 @@ class LocalReferenceNumberPageSpec extends PageBehaviours {
 
   "LocalReferenceNumberPage" - {
 
-    beRetrievable[String](LocalReferenceNumberPage)
+    beRetrievable[LocalReferenceNumber](LocalReferenceNumberPage)
 
-    beSettable[String](LocalReferenceNumberPage)
+    beSettable[LocalReferenceNumber](LocalReferenceNumberPage)
 
-    beRemovable[String](LocalReferenceNumberPage)
+    beRemovable[LocalReferenceNumber](LocalReferenceNumberPage)
   }
 }

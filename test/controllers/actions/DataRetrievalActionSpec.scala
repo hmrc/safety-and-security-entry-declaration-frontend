@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import models.UserAnswers
+import models.LocalReferenceNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
@@ -29,7 +29,8 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
+  class Harness(lrn: LocalReferenceNumber, sessionRepository: SessionRepository) extends DataRetrievalAction(lrn, sessionRepository) {
+
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -40,10 +41,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
       "must set userAnswers to 'None' in the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
-        val action = new Harness(sessionRepository)
+        when(sessionRepository.get(userAnswersId, lrn)) thenReturn Future(None)
+        val action = new Harness(lrn, sessionRepository)
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id")).futureValue
+        val result = action.callTransform(IdentifierRequest(FakeRequest(), userAnswersId)).futureValue
 
         result.userAnswers must not be defined
       }
@@ -54,12 +55,12 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
       "must build a userAnswers object and add it to the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
-        val action = new Harness(sessionRepository)
+        when(sessionRepository.get(userAnswersId, lrn)) thenReturn Future(Some(emptyUserAnswers))
+        val action = new Harness(lrn, sessionRepository)
 
-        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id")).futureValue
+        val result = action.callTransform(IdentifierRequest(FakeRequest(), userAnswersId)).futureValue
 
-        result.userAnswers mustBe defined
+        result.userAnswers.value mustEqual emptyUserAnswers
       }
     }
   }

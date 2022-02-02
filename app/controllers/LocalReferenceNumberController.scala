@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.LocalReferenceNumberFormProvider
-
-import javax.inject.Inject
 import models.{Mode, UserAnswers}
 import navigation.Navigator
 import pages.LocalReferenceNumberPage
@@ -29,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.LocalReferenceNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject()(
@@ -36,7 +35,6 @@ class LocalReferenceNumberController @Inject()(
                                         sessionRepository: SessionRepository,
                                         navigator: Navigator,
                                         identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
                                         formProvider: LocalReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: LocalReferenceNumberView
@@ -44,29 +42,26 @@ class LocalReferenceNumberController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = identify {
     implicit request =>
-
-      val preparedForm = request.userAnswers.getOrElse(UserAnswers(request.userId)).get(LocalReferenceNumberPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(form, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = identify.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.getOrElse(UserAnswers(request.userId)).set(LocalReferenceNumberPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LocalReferenceNumberPage, mode, updatedAnswers))
+        value => {
+          val updatedAnswers = UserAnswers(request.userId, value)
+
+          sessionRepository.set(updatedAnswers).map {
+            _ =>
+              Redirect(navigator.nextPage(LocalReferenceNumberPage, mode, updatedAnswers))
+          }
+        }
       )
   }
 }

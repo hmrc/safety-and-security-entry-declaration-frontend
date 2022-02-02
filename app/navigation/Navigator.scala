@@ -27,18 +27,18 @@ import models._
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case LocalReferenceNumberPage => _ => routes.LodgingPersonTypeController.onPageLoad(NormalMode)
-    case GrossWeightPage => x => x.get(GrossWeightPage) match {
-      case Some(GrossWeight.PerItem) => routes.TransportModeController.onPageLoad(NormalMode)
-      case Some(GrossWeight.Overall) => routes.TotalGrossWeightController.onPageLoad(NormalMode)
+    case LocalReferenceNumberPage => ua => routes.LodgingPersonTypeController.onPageLoad(NormalMode, ua.lrn)
+    case GrossWeightPage => ua => ua.get(GrossWeightPage) match {
+      case Some(GrossWeight.PerItem) => routes.TransportModeController.onPageLoad(NormalMode, ua.lrn)
+      case Some(GrossWeight.Overall) => routes.TotalGrossWeightController.onPageLoad(NormalMode, ua.lrn)
       case _ => routes.JourneyRecoveryController.onPageLoad()
     }
-    case TotalGrossWeightPage => _ => routes.TransportModeController.onPageLoad(NormalMode)
+    case TotalGrossWeightPage => ua => routes.TransportModeController.onPageLoad(NormalMode, ua.lrn)
     case _                        => _ => routes.IndexController.onPageLoad
   }
 
   private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad
+    case _ => ua => routes.CheckYourAnswersController.onPageLoad(ua.lrn)
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {

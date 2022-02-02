@@ -33,7 +33,7 @@ object LocalReferenceNumberSummary  {
 
         SummaryListRowViewModel(
           key     = "localReferenceNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.value).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.LocalReferenceNumberController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("localReferenceNumber.change.hidden"))

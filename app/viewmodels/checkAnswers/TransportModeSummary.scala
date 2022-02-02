@@ -42,7 +42,7 @@ object TransportModeSummary  {
           key     = "transportMode.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.TransportModeController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.TransportModeController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("transportMode.change.hidden"))
           )
         )

@@ -13,7 +13,7 @@ GET         /refresh-session                             controllers.KeepAliveCo
 
 GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
+GET         /:lrn/check-your-answers                          controllers.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 
 GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut
 GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey
@@ -26,22 +26,22 @@ POST       /localReferenceNumber                        controllers.LocalReferen
 GET        /changeLocalReferenceNumber                  controllers.LocalReferenceNumberController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeLocalReferenceNumber                  controllers.LocalReferenceNumberController.onSubmit(mode: Mode = CheckMode)
 
-GET        /lodgingPersonType                        controllers.LodgingPersonTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /lodgingPersonType                        controllers.LodgingPersonTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /changeLodgingPersonType                  controllers.LodgingPersonTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeLodgingPersonType                  controllers.LodgingPersonTypeController.onSubmit(mode: Mode = CheckMode)
+GET        /:lrn/lodgingPersonType                        controllers.LodgingPersonTypeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/lodgingPersonType                        controllers.LodgingPersonTypeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeLodgingPersonType                  controllers.LodgingPersonTypeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeLodgingPersonType                  controllers.LodgingPersonTypeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /grossWeight                        controllers.GrossWeightController.onPageLoad(mode: Mode = NormalMode)
-POST       /grossWeight                        controllers.GrossWeightController.onSubmit(mode: Mode = NormalMode)
-GET        /changeGrossWeight                  controllers.GrossWeightController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeGrossWeight                  controllers.GrossWeightController.onSubmit(mode: Mode = CheckMode)
+GET        /:lrn/grossWeight                        controllers.GrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/grossWeight                        controllers.GrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeGrossWeight                  controllers.GrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeGrossWeight                  controllers.GrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /totalGrossWeight                  controllers.TotalGrossWeightController.onPageLoad(mode: Mode = NormalMode)
-POST       /totalGrossWeight                  controllers.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode)
-GET        /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode)
+GET        /:lrn/totalGrossWeight                  controllers.TotalGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/totalGrossWeight                  controllers.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeTotalGrossWeight                        controllers.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeTotalGrossWeight                        controllers.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /transportMode                        controllers.TransportModeController.onPageLoad(mode: Mode = NormalMode)
-POST       /transportMode                        controllers.TransportModeController.onSubmit(mode: Mode = NormalMode)
-GET        /changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode)
+GET        /:lrn/transportMode                        controllers.TransportModeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/transportMode                        controllers.TransportModeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

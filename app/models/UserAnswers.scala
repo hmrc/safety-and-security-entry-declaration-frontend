@@ -25,6 +25,7 @@ import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
                               id: String,
+                              lrn: LocalReferenceNumber,
                               data: JsObject = Json.obj(),
                               lastUpdated: Instant = Instant.now
                             ) {
@@ -72,7 +73,8 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "_id").read[String] and
+      (__ \ "userId").read[String] and
+      (__ \ "lrn").read[LocalReferenceNumber] and
       (__ \ "data").read[JsObject] and
       (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
     ) (UserAnswers.apply _)
@@ -83,7 +85,8 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "_id").write[String] and
+      (__ \ "userId").write[String] and
+      (__ \ "lrn").write[LocalReferenceNumber] and
       (__ \ "data").write[JsObject] and
       (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
     ) (unlift(UserAnswers.unapply))

@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.TotalGrossWeightFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -42,7 +42,7 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = 0
 
-  lazy val totalGrossWeightRoute = routes.TotalGrossWeightController.onPageLoad(NormalMode).url
+  lazy val totalGrossWeightRoute = routes.TotalGrossWeightController.onPageLoad(NormalMode, lrn).url
 
   "TotalGrossWeight Controller" - {
 
@@ -58,13 +58,13 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[TotalGrossWeightView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(TotalGrossWeightPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(TotalGrossWeightPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -76,7 +76,7 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -122,7 +122,7 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 

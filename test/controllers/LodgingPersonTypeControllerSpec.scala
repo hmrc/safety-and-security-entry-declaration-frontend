@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.LodgingPersonTypeFormProvider
-import models.{NormalMode, LodgingPersonType, UserAnswers}
+import models.{LodgingPersonType, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,7 +37,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val lodgingPersonTypeRoute = routes.LodgingPersonTypeController.onPageLoad(NormalMode).url
+  lazy val lodgingPersonTypeRoute = routes.LodgingPersonTypeController.onPageLoad(NormalMode, lrn).url
 
   val formProvider = new LodgingPersonTypeFormProvider()
   val form = formProvider()
@@ -56,13 +56,13 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[LodgingPersonTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(LodgingPersonTypePage, LodgingPersonType.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +74,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(LodgingPersonType.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(LodgingPersonType.values.head), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -120,7 +120,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 

@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.GrossWeightFormProvider
+
 import javax.inject.Inject
-import models.Mode
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.GrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,7 +36,7 @@ class GrossWeightController @Inject()(
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
+                                       getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
                                        formProvider: GrossWeightFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
@@ -44,7 +45,7 @@ class GrossWeightController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(GrossWeightPage) match {
@@ -52,15 +53,15 @@ class GrossWeightController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, lrn))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
 
         value =>
           for {
