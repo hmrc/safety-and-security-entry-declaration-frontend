@@ -22,6 +22,14 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
+    Arbitrary {
+      for {
+        length <- Gen.choose(1, 22)
+        chars  <- Gen.listOfN(length, Gen.alphaNumChar)
+      } yield LocalReferenceNumber(chars.mkString)
+    }
+
   implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
     Arbitrary {
       Gen.oneOf(TransportMode.values.toSeq)
