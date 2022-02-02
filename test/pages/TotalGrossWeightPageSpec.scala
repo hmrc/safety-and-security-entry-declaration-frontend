@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import pages.behaviours.PageBehaviours
 
-trait ModelGenerators {
+class TotalGrossWeightPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
-    Arbitrary {
-      Gen.oneOf(TransportMode.values.toSeq)
-    }
+  "TotalGrossWeightPage" - {
 
-  implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
-    Arbitrary {
-      Gen.oneOf(GrossWeight.values.toSeq)
-    }
+    beRetrievable[Int](TotalGrossWeightPage)
 
-  implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =
-    Arbitrary {
-      Gen.oneOf(LodgingPersonType.values.toSeq)
-    }
+    beSettable[Int](TotalGrossWeightPage)
+
+    beRemovable[Int](TotalGrossWeightPage)
+  }
 }

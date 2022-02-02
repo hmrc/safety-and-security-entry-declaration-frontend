@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import models.TransportMode
+import pages.behaviours.PageBehaviours
 
-trait ModelGenerators {
+class TransportModeSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
-    Arbitrary {
-      Gen.oneOf(TransportMode.values.toSeq)
-    }
+  "TransportModePage" - {
 
-  implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
-    Arbitrary {
-      Gen.oneOf(GrossWeight.values.toSeq)
-    }
+    beRetrievable[TransportMode](TransportModePage)
 
-  implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =
-    Arbitrary {
-      Gen.oneOf(LodgingPersonType.values.toSeq)
-    }
+    beSettable[TransportMode](TransportModePage)
+
+    beRemovable[TransportMode](TransportModePage)
+  }
 }

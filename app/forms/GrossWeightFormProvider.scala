@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import javax.inject.Inject
 
-trait ModelGenerators {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.GrossWeight
 
-  implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
-    Arbitrary {
-      Gen.oneOf(TransportMode.values.toSeq)
-    }
+class GrossWeightFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
-    Arbitrary {
-      Gen.oneOf(GrossWeight.values.toSeq)
-    }
-
-  implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =
-    Arbitrary {
-      Gen.oneOf(LodgingPersonType.values.toSeq)
-    }
+  def apply(): Form[GrossWeight] =
+    Form(
+      "value" -> enumerable[GrossWeight]("grossWeight.error.required")
+    )
 }

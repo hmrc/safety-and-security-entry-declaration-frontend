@@ -30,3 +30,18 @@ GET        /lodgingPersonType                        controllers.LodgingPersonTy
 POST       /lodgingPersonType                        controllers.LodgingPersonTypeController.onSubmit(mode: Mode = NormalMode)
 GET        /changeLodgingPersonType                  controllers.LodgingPersonTypeController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeLodgingPersonType                  controllers.LodgingPersonTypeController.onSubmit(mode: Mode = CheckMode)
+
+GET        /grossWeight                        controllers.GrossWeightController.onPageLoad(mode: Mode = NormalMode)
+POST       /grossWeight                        controllers.GrossWeightController.onSubmit(mode: Mode = NormalMode)
+GET        /changeGrossWeight                  controllers.GrossWeightController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeGrossWeight                  controllers.GrossWeightController.onSubmit(mode: Mode = CheckMode)
+
+GET        /totalGrossWeight                  controllers.TotalGrossWeightController.onPageLoad(mode: Mode = NormalMode)
+POST       /totalGrossWeight                  controllers.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode)
+GET        /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transportMode                        controllers.TransportModeController.onPageLoad(mode: Mode = NormalMode)
+POST       /transportMode                        controllers.TransportModeController.onSubmit(mode: Mode = NormalMode)
+GET        /changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode)

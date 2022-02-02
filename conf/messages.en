@@ -71,3 +71,35 @@ lodgingPersonType.representative = Representative
 lodgingPersonType.checkYourAnswersLabel = Are you the carrier or a representative?
 lodgingPersonType.error.required = Select if you are the carrier or a representative
 lodgingPersonType.change.hidden = if you are the carrier or a representative
+
+grossWeight.title = How do you want to give the gross weight of the goods?
+grossWeight.heading = How do you want to give the gross weight of the goods?
+grossWeight.overall = Overall
+grossWeight.perItem = Per item
+grossWeight.checkYourAnswersLabel = How do you want to give the gross weight of the goods?
+grossWeight.error.required = Select grossWeight
+grossWeight.change.hidden = GrossWeight
+
+totalGrossWeight.title = TotalGrossWeight
+totalGrossWeight.heading = Total Gross Weight
+totalGrossWeight.checkYourAnswersLabel = TotalGrossWeight
+totalGrossWeight.error.nonNumeric = Enter your totalGrossWeight using numbers
+totalGrossWeight.error.required = Enter your totalGrossWeight
+totalGrossWeight.error.wholeNumber = Enter your totalGrossWeight using whole numbers
+totalGrossWeight.error.outOfRange = TotalGrossWeight must be between {0} and {1}
+totalGrossWeight.change.hidden = TotalGrossWeight
+
+transportMode.title = What is the mode of transport?
+transportMode.heading = What is the mode of transport?
+
+transportMode.maritime = Maritime
+transportMode.rail = Rail
+transportMode.road = Road
+transportMode.air = Air
+transportMode.inlandWaterTransport = Inland Water Transport
+transportMode.roro.accompanied = RoRo Accompanied
+transportMode.roro.unaccompanied = RoRo Unaccompanied
+
+transportMode.checkYourAnswersLabel = What is the mode of transport?
+transportMode.error.required = Select transportMode
+transportMode.change.hidden = TransportMode

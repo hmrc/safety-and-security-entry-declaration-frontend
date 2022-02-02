@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package generators
+package forms
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-trait ModelGenerators {
+class TotalGrossWeightFormProvider @Inject() extends Mappings {
 
-  implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
-    Arbitrary {
-      Gen.oneOf(TransportMode.values.toSeq)
-    }
-
-  implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
-    Arbitrary {
-      Gen.oneOf(GrossWeight.values.toSeq)
-    }
-
-  implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =
-    Arbitrary {
-      Gen.oneOf(LodgingPersonType.values.toSeq)
-    }
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "totalGrossWeight.error.required",
+        "totalGrossWeight.error.wholeNumber",
+        "totalGrossWeight.error.nonNumeric")
+          .verifying(inRange(0, 99999999, "totalGrossWeight.error.outOfRange"))
+    )
 }

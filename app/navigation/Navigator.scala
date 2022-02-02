@@ -28,6 +28,12 @@ class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
     case LocalReferenceNumberPage => _ => routes.LodgingPersonTypeController.onPageLoad(NormalMode)
+    case GrossWeightPage => x => x.get(GrossWeightPage) match {
+      case Some(GrossWeight.PerItem) => routes.TransportModeController.onPageLoad(NormalMode)
+      case Some(GrossWeight.Overall) => routes.TotalGrossWeightController.onPageLoad(NormalMode)
+      case _ => routes.JourneyRecoveryController.onPageLoad()
+    }
+    case TotalGrossWeightPage => _ => routes.TransportModeController.onPageLoad(NormalMode)
     case _                        => _ => routes.IndexController.onPageLoad
   }
 
