@@ -14,33 +14,30 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
+    govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("totalGrossWeight.title"))) {
+@layout(pageTitle = title(form, messages("transportMode.title"))) {
 
-    @formHelper(action = routes.TotalGrossWeightController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = routes.TransportModeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("totalGrossWeight.heading")).asPageHeading()
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages("transportMode.heading")).asPageHeading(),
+                items  = TransportMode.options
             )
-            .asNumeric()
-            .withWidth(Fixed10)
         )
 
         @govukButton(

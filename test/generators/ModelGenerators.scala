@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
+    Arbitrary {
+      Gen.oneOf(TransportMode.values.toSeq)
+    }
+
   implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
     Arbitrary {
       Gen.oneOf(GrossWeight.values.toSeq)

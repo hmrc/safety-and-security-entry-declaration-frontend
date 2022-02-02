@@ -40,3 +40,8 @@ GET        /totalGrossWeight                  controllers.TotalGrossWeightContro
 POST       /totalGrossWeight                  controllers.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode)
 GET        /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeTotalGrossWeight                        controllers.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transportMode                        controllers.TransportModeController.onPageLoad(mode: Mode = NormalMode)
+POST       /transportMode                        controllers.TransportModeController.onSubmit(mode: Mode = NormalMode)
+GET        /changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode)
