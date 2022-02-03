@@ -34,7 +34,7 @@ object TotalGrossWeightSummary  {
           key     = "totalGrossWeight.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.TotalGrossWeightController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.TotalGrossWeightController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("totalGrossWeight.change.hidden"))
           )
         )

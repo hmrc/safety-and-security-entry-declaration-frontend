@@ -2,8 +2,9 @@ package controllers
 
 import controllers.actions._
 import forms.$className$FormProvider
+
 import javax.inject.Inject
-import models.Mode
+import models.{LocalReferenceNumber, Mode}
 import navigation.Navigator
 import pages.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -19,7 +20,7 @@ class $className$Controller @Inject()(
                                        sessionRepository: SessionRepository,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
+                                       getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
                                        formProvider: $className$FormProvider,
                                        val controllerComponents: MessagesControllerComponents,
@@ -28,7 +29,7 @@ class $className$Controller @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
@@ -36,15 +37,15 @@ class $className$Controller @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, lrn))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
 
         value =>
           for {

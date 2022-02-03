@@ -18,12 +18,11 @@ package controllers
 
 import base.SpecBase
 import forms.LocalReferenceNumberFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.LocalReferenceNumberPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -60,23 +59,6 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(LocalReferenceNumberPage, "answer").success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, localReferenceNumberRoute)
-
-        val view = application.injector.instanceOf[LocalReferenceNumberView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
-      }
-    }
 
     "must redirect to the next page when valid data is submitted" in {
 
@@ -95,7 +77,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, localReferenceNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", lrn.value))
 
         val result = route(application, request).value
 
@@ -154,7 +136,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, localReferenceNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", lrn.value))
 
         val result = route(application, request).value
 

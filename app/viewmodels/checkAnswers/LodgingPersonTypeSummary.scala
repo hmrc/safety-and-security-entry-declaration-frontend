@@ -42,7 +42,7 @@ object LodgingPersonTypeSummary  {
           key     = "lodgingPersonType.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.LodgingPersonTypeController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.LodgingPersonTypeController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("lodgingPersonType.change.hidden"))
           )
         )

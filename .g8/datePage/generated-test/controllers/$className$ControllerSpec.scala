@@ -4,7 +4,7 @@ import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
 import forms.$className$FormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +28,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
+  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode, lrn).url
 
   override val emptyUserAnswers = UserAnswers(userAnswersId)
 
@@ -55,13 +55,13 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[$className$View]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(getRequest, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(getRequest, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set($className$Page, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set($className$Page, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, getRequest).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(getRequest, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, lrn)(getRequest, messages(application)).toString
       }
     }
 
@@ -113,7 +113,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 

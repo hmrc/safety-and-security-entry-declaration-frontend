@@ -32,19 +32,19 @@ class NavigatorSpec extends SpecBase {
       "must go from a page that doesn't exist in the route map to Index" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad
+        navigator.nextPage(UnknownPage, NormalMode, emptyUserAnswers) mustBe routes.IndexController.onPageLoad
       }
 
       "must go from Local Reference Number to Lodging Person Type" in {
 
         navigator.nextPage(LocalReferenceNumberPage, NormalMode, emptyUserAnswers)
-          .mustBe(routes.LodgingPersonTypeController.onPageLoad(NormalMode))
+          .mustBe(routes.LodgingPersonTypeController.onPageLoad(NormalMode, lrn))
       }
 
       "must go from Lodging Person Type to Gross Weight" in {
 
         navigator.nextPage(LodgingPersonTypePage, NormalMode, emptyUserAnswers)
-          .mustBe(routes.GrossWeightController.onPageLoad(NormalMode))
+          .mustBe(routes.GrossWeightController.onPageLoad(NormalMode, lrn))
       }
 
       "must go from Gross Weight" - {
@@ -52,17 +52,17 @@ class NavigatorSpec extends SpecBase {
 
           val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
           navigator.nextPage(GrossWeightPage, NormalMode, answers)
-            .mustBe(routes.TransportModeController.onPageLoad(NormalMode))
+            .mustBe(routes.TransportModeController.onPageLoad(NormalMode, lrn))
         }
 
         "to Total Gross weight when the user enters overall" in {
 
           val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.Overall).success.value
           navigator.nextPage(GrossWeightPage, NormalMode, answers)
-            .mustBe(routes.TotalGrossWeightController.onPageLoad(NormalMode))
+            .mustBe(routes.TotalGrossWeightController.onPageLoad(NormalMode, lrn))
         }
 
-        "to Journey Recovery when nethier overall or per item is made" in {
+        "to Journey Recovery when neither overall or per item is made" in {
           navigator.nextPage(GrossWeightPage, NormalMode, emptyUserAnswers)
             .mustBe(routes.JourneyRecoveryController.onPageLoad())
         }
@@ -74,7 +74,7 @@ class NavigatorSpec extends SpecBase {
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad
+        navigator.nextPage(UnknownPage, CheckMode, emptyUserAnswers) mustBe routes.CheckYourAnswersController.onPageLoad(lrn)
       }
     }
   }
