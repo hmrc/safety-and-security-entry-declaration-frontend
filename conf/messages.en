@@ -114,7 +114,8 @@ identifyCarrier.change.hidden = IdentifyCarrier
 
 carriersEORI.title = Enter the carriers GB EORI
 carriersEORI.heading = Enter the carriers GB EORI
-carriersEORI.checkYourAnswersLabel = carriersEORI
-carriersEORI.error.required = Enter carriersEORI
-carriersEORI.error.length = CarriersEORI must be 100 characters or less
+carriersEORI.checkYourAnswersLabel = The Carriers EORI
+carriersEORI.error.required = Enter The Carriers EORI
+carriersEORI.error.length = The Carrier EORI must be 100 characters or less
+carriersEORI.error.gb = The Carrier EORI must start with GB
 carriersEORI.change.hidden = CarriersEORI

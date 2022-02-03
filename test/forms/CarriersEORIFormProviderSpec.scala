@@ -34,7 +34,7 @@ class CarriersEORIFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      "GB" + stringsWithMaxLength(maxLength-2)
     )
 
     behave like fieldWithMaxLength(

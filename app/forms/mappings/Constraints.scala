@@ -86,6 +86,14 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
+  protected def gbOnly(country: String, errorKey: String): Constraint[String]  =
+    Constraint {
+      case str if str.substring(0,2) == "GB" =>
+        Valid
+      case _ =>
+        Invalid(errorKey, country)
+    }
+
   protected def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
     Constraint {
       case date if date.isAfter(maximum) =>

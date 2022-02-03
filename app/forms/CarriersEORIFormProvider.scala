@@ -17,9 +17,9 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.data.validation.{Constraint, Invalid, Valid}
 
 class CarriersEORIFormProvider @Inject() extends Mappings {
 
@@ -27,5 +27,6 @@ class CarriersEORIFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("carriersEORI.error.required")
         .verifying(maxLength(100, "carriersEORI.error.length"))
+        .verifying(gbOnly("GB", "carriersEORI.error.gb"))
     )
 }

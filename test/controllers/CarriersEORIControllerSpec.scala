@@ -153,5 +153,41 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
+
+    /*
+        "must show error validation when" - {
+          "more than 100 characters" in {
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, carriersEORIRoute)
+                  .withFormUrlEncodedBody(("GB", "GB"))
+
+              val boundForm = form.bind(Map("value" -> ""))
+              val view = application.injector.instanceOf[CarriersEORIView]
+              val result = route(application, request).value
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+            }
+          }
+
+          "does not start with GB" in {
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+            running(application) {
+              val request =
+                FakeRequest(POST, carriersEORIRoute)
+                  .withFormUrlEncodedBody(("value", "Not Gb"))
+
+              val boundForm = form.bind(Map("value" -> ""))
+              val view = application.injector.instanceOf[CarriersEORIView]
+              val result = route(application, request).value
+
+              status(result) mustEqual BAD_REQUEST
+              contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+            }
+      }*/
   }
 }
