@@ -73,6 +73,11 @@ class NavigatorSpec extends SpecBase {
         navigator.nextPage(TransportModePage, NormalMode, emptyUserAnswers)
           .mustBe(routes.IdentifyCarrierController.onPageLoad(NormalMode, lrn))
       }
+
+      "must go from Identify Carrier to Carriers EORI" in {
+        navigator.nextPage(IdentifyCarrierPage, NormalMode, emptyUserAnswers)
+          .mustBe(routes.CarriersEORIController.onPageLoad(NormalMode, lrn))
+      }
     }
 
     "in Check mode" - {
