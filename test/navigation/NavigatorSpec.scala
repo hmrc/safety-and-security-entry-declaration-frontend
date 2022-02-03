@@ -41,6 +41,12 @@ class NavigatorSpec extends SpecBase {
           .mustBe(routes.LodgingPersonTypeController.onPageLoad(NormalMode))
       }
 
+      "must go from Lodging Person Type to Gross Weight" in {
+
+        navigator.nextPage(LodgingPersonTypePage, NormalMode, emptyUserAnswers)
+          .mustBe(routes.GrossWeightController.onPageLoad(NormalMode))
+      }
+
       "must go from Gross Weight" - {
         "to Transport Mode when the user enters Per item" in {
 
