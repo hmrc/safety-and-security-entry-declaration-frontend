@@ -36,6 +36,7 @@ class Navigator @Inject()() {
     }
     case TotalGrossWeightPage => ua => routes.TransportModeController.onPageLoad(NormalMode, ua.lrn)
     case TransportModePage => ua => routes.IdentifyCarrierController.onPageLoad(NormalMode, ua.lrn)
+    case IdentifyCarrierPage => ua => routes.CarriersEORIController.onPageLoad(NormalMode, ua.lrn)
     case _                        => _ => routes.IndexController.onPageLoad
   }
 

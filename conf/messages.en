@@ -111,3 +111,10 @@ identifyCarrier.nameAddress = Name/address
 identifyCarrier.checkYourAnswersLabel = How do you want to identify the carrier?
 identifyCarrier.error.required = Select identifyCarrier
 identifyCarrier.change.hidden = IdentifyCarrier
+
+carriersEORI.title = Enter the carriers GB EORI
+carriersEORI.heading = Enter the carriers GB EORI
+carriersEORI.checkYourAnswersLabel = carriersEORI
+carriersEORI.error.required = Enter carriersEORI
+carriersEORI.error.length = CarriersEORI must be 100 characters or less
+carriersEORI.change.hidden = CarriersEORI

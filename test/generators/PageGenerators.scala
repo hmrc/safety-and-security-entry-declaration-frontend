@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryCarriersEORIPage: Arbitrary[CarriersEORIPage.type] =
+    Arbitrary(CarriersEORIPage)
+
   implicit lazy val arbitraryIdentifyCarrierPage: Arbitrary[IdentifyCarrierPage.type] =
     Arbitrary(IdentifyCarrierPage)
 
