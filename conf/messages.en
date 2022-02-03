@@ -103,3 +103,11 @@ transportMode.roro.unaccompanied = RoRo Unaccompanied
 transportMode.checkYourAnswersLabel = What is the mode of transport?
 transportMode.error.required = Select transportMode
 transportMode.change.hidden = TransportMode
+
+identifyCarrier.title = How do you want to identify the carrier?
+identifyCarrier.heading = How do you want to identify the carrier?
+identifyCarrier.gb.eori = GB EORI
+identifyCarrier.nameAddress = Name/address
+identifyCarrier.checkYourAnswersLabel = How do you want to identify the carrier?
+identifyCarrier.error.required = Select identifyCarrier
+identifyCarrier.change.hidden = IdentifyCarrier

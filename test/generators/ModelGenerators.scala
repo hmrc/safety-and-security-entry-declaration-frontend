@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryIdentifyCarrier: Arbitrary[IdentifyCarrier] =
+    Arbitrary {
+      Gen.oneOf(IdentifyCarrier.values.toSeq)
+    }
+
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {

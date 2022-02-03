@@ -21,6 +21,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryIdentifyCarrierPage: Arbitrary[IdentifyCarrierPage.type] =
+    Arbitrary(IdentifyCarrierPage)
+
   implicit lazy val arbitraryTransportModePage: Arbitrary[TransportModePage.type] =
     Arbitrary(TransportModePage)
 

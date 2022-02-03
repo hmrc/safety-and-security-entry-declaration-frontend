@@ -67,6 +67,12 @@ class NavigatorSpec extends SpecBase {
             .mustBe(routes.JourneyRecoveryController.onPageLoad())
         }
       }
+
+      "must go from Transport Mode to Identify Carrier" in {
+        //TODO: this will need refactoring once we introduce Task Lists
+        navigator.nextPage(TransportModePage, NormalMode, emptyUserAnswers)
+          .mustBe(routes.IdentifyCarrierController.onPageLoad(NormalMode, lrn))
+      }
     }
 
     "in Check mode" - {

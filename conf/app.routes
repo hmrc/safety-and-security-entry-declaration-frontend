@@ -45,3 +45,8 @@ GET        /:lrn/transportMode                        controllers.TransportModeC
 POST       /:lrn/transportMode                        controllers.TransportModeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/identifyCarrier                        controllers.IdentifyCarrierController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/identifyCarrier                        controllers.IdentifyCarrierController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeIdentifyCarrier                  controllers.IdentifyCarrierController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeIdentifyCarrier                  controllers.IdentifyCarrierController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
