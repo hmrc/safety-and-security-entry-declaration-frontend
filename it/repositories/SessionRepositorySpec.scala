@@ -1,7 +1,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import models.{LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalatest.OptionValues
@@ -27,10 +27,17 @@ class SessionRepositorySpec
   private val instant = Instant.now
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
-  private val userAnswers = UserAnswers("id", Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val userId = "id"
+  private val lrn = LocalReferenceNumber("ABC123")
+  private val userAnswers = UserAnswers(userId, lrn, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1
+
+  private def getFilter(userId: String, lrn: LocalReferenceNumber) = Filters.and(
+    Filters.equal("userId", userId),
+    Filters.equal("lrn", lrn.value)
+  )
 
   protected override val repository = new SessionRepository(
     mongoComponent = mongoComponent,
@@ -45,7 +52,7 @@ class SessionRepositorySpec
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
       val setResult     = repository.set(userAnswers).futureValue
-      val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
+      val updatedRecord = find(getFilter(userId, lrn)).futureValue.headOption.value
 
       setResult mustEqual true
       updatedRecord mustEqual expectedResult
@@ -54,24 +61,33 @@ class SessionRepositorySpec
 
   ".get" - {
 
-    "when there is a record for this id" - {
+    "when there is a record for this id and lrn" - {
 
       "must update the lastUpdated time and get the record" in {
 
         insert(userAnswers).futureValue
 
-        val result         = repository.get(userAnswers.id).futureValue
+        val result         = repository.get(userId, lrn).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
       }
     }
 
-    "when there is no record for this id" - {
+    "when there is no record for this user" - {
 
       "must return None" in {
 
-        repository.get("id that does not exist").futureValue must not be defined
+        repository.get("id that does not exist", lrn).futureValue must not be defined
+      }
+    }
+
+    "when there is a record for this user but not for this LRN" - {
+
+      "must return None" in {
+
+        insert(userAnswers).futureValue
+        repository.get("id", LocalReferenceNumber("LRN that does not exist")).futureValue must not be defined
       }
     }
   }
@@ -85,7 +101,7 @@ class SessionRepositorySpec
       val result = repository.clear(userAnswers.id).futureValue
 
       result mustEqual true
-      repository.get(userAnswers.id).futureValue must not be defined
+      repository.get(userId, lrn).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
@@ -108,12 +124,12 @@ class SessionRepositorySpec
         val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instant)
 
         result mustEqual true
-        val updatedAnswers = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
+        val updatedAnswers = find(getFilter(userId, lrn)).futureValue.headOption.value
         updatedAnswers mustEqual expectedUpdatedAnswers
       }
     }
 
-    "when there is no record for this id" - {
+    "when there is no record for this user" - {
 
       "must return true" in {
 

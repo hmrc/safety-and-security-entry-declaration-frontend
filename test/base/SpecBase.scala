@@ -43,13 +43,13 @@ trait SpecBase
   val userAnswersId: String = "id"
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABC123")
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId, lrn)
-
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
   val arbitraryDate: LocalDate        = datesBetween(LocalDate.of(2022, 7, 1), LocalDate.of(2050, 12, 31)).sample.value
   val arbitraryInstant: Instant       = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
   val stubClockAtArbitraryDate: Clock = Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
+
+  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)
+
+  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected def applicationBuilder(
                                     userAnswers: Option[UserAnswers] = None,
