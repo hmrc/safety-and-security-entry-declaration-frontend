@@ -35,6 +35,7 @@ class Navigator @Inject()() {
       case _ => routes.JourneyRecoveryController.onPageLoad()
     }
     case TotalGrossWeightPage => ua => routes.TransportModeController.onPageLoad(NormalMode, ua.lrn)
+    case TransportModePage => ua => routes.IdentifyCarrierController.onPageLoad(NormalMode, ua.lrn)
     case _                        => _ => routes.IndexController.onPageLoad
   }
 
