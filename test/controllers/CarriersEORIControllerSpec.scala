@@ -95,7 +95,7 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, carriersEORIRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", "GB123"))
 
         val result = route(application, request).value
 

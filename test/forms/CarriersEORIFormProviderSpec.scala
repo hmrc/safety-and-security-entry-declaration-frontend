@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class CarriersEORIFormProviderSpec extends StringFieldBehaviours {
@@ -24,6 +25,11 @@ class CarriersEORIFormProviderSpec extends StringFieldBehaviours {
   val requiredKey = "carriersEORI.error.required"
   val lengthKey = "carriersEORI.error.length"
   val maxLength = 100
+  val validData = for {
+    prefix <- Gen.oneOf("GB", "")
+    length <- Gen.choose(1, 12)
+    chars <- Gen.listOfN(length, Gen.numChar)
+  } yield prefix + chars.mkString
 
   val form = new CarriersEORIFormProvider()()
 
@@ -34,7 +40,7 @@ class CarriersEORIFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      "GB" + stringsWithMaxLength(maxLength-2)
+      validData
     )
 
     behave like fieldWithMaxLength(

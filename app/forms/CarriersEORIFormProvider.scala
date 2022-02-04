@@ -26,7 +26,8 @@ class CarriersEORIFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("carriersEORI.error.required")
-        .verifying(maxLength(100, "carriersEORI.error.length"))
-        .verifying(gbOnly("GB", "carriersEORI.error.gb"))
+        .verifying(firstError(maxLength(100, "carriersEORI.error.length"),
+          regexp("^(GB)?\\d+$", "carriersEORI.error.gb")))
+
     )
 }
