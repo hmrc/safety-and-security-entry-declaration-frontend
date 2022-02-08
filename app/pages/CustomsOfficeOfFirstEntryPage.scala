@@ -26,4 +26,7 @@ case object CustomsOfficeOfFirstEntryPage extends QuestionPage[String] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "customsOfficeOfFirstEntry"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, answers.lrn)
 }

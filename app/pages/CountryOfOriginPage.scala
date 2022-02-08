@@ -26,4 +26,7 @@ case object CountryOfOriginPage extends QuestionPage[String] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "countryOfOrigin"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
 }

@@ -34,10 +34,10 @@ class CustomsOfficeOfFirstEntryPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Arrival Date and Time" in {
 
         CustomsOfficeOfFirstEntryPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
