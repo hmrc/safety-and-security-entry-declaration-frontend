@@ -19,13 +19,11 @@ package controllers
 import base.SpecBase
 import forms.IdentifyCarrierFormProvider
 import models.{NormalMode, IdentifyCarrier}
-import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.IdentifyCarrierPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -34,8 +32,6 @@ import views.html.IdentifyCarrierView
 import scala.concurrent.Future
 
 class IdentifyCarrierControllerSpec extends SpecBase with MockitoSugar {
-
-  def onwardRoute = Call("GET", "/foo")
 
   lazy val identifyCarrierRoute = routes.IdentifyCarrierController.onPageLoad(NormalMode, lrn).url
 
@@ -78,7 +74,7 @@ class IdentifyCarrierControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -86,10 +82,7 @@ class IdentifyCarrierControllerSpec extends SpecBase with MockitoSugar {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -98,9 +91,11 @@ class IdentifyCarrierControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", IdentifyCarrier.values.head.toString))
 
         val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(IdentifyCarrierPage, IdentifyCarrier.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual IdentifyCarrierPage.navigate(NormalMode, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 

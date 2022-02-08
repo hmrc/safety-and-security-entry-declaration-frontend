@@ -18,10 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.CarriersEORIFormProvider
-
-import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.CarriersEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,12 +26,12 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CarriersEORIView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CarriersEORIController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
-                                        navigator: Navigator,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalActionProvider,
                                         requireData: DataRequiredAction,
@@ -67,7 +64,7 @@ class CarriersEORIController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CarriersEORIPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(CarriersEORIPage, mode, updatedAnswers))
+          } yield Redirect(CarriersEORIPage.navigate(mode, updatedAnswers))
       )
   }
 }

@@ -16,12 +16,17 @@
 
 package pages
 
-import models.IdentifyCarrier
+import controllers.routes
+import models.{IdentifyCarrier, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case object IdentifyCarrierPage extends QuestionPage[IdentifyCarrier] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "identifyCarrier"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.CarriersEORIController.onPageLoad(NormalMode, answers.lrn)
 }

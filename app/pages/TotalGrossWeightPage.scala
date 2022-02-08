@@ -16,11 +16,17 @@
 
 package pages
 
+import controllers.routes
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case object TotalGrossWeightPage extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "totalGrossWeight"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.TransportModeController.onPageLoad(NormalMode, answers.lrn)
 }

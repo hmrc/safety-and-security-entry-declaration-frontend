@@ -16,10 +16,13 @@
 
 package pages
 
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
-class CarriersEORIPageSpec extends PageBehaviours {
+class CarriersEORIPageSpec extends SpecBase with PageBehaviours {
 
   "CarriersEORIPage" - {
 
@@ -28,5 +31,23 @@ class CarriersEORIPageSpec extends PageBehaviours {
     beSettable[String](CarriersEORIPage)
 
     beRemovable[String](CarriersEORIPage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Index" in {
+
+        CarriersEORIPage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.IndexController.onPageLoad)
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        CarriersEORIPage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

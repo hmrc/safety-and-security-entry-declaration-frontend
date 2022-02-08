@@ -1,11 +1,14 @@
 package pages
 
-import java.time.LocalDate
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, NormalMode}
 
+import java.time.LocalDate
 import org.scalacheck.Arbitrary
 import pages.behaviours.PageBehaviours
 
-class $className$PageSpec extends PageBehaviours {
+class $className$PageSpec extends SpecBase with PageBehaviours {
 
   "$className$Page" - {
 
@@ -18,5 +21,23 @@ class $className$PageSpec extends PageBehaviours {
     beSettable[LocalDate]($className$Page)
 
     beRemovable[LocalDate]($className$Page)
+
+    "must navigate in Normal Mode" - {
+
+      "to Index" in {
+
+        $className$Page.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.IndexController.onPageLoad)
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        $className$Page.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

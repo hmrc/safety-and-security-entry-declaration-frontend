@@ -18,10 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.IdentifyCarrierFormProvider
-
-import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import navigation.Navigator
 import pages.IdentifyCarrierPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,12 +26,12 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IdentifyCarrierView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdentifyCarrierController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalActionProvider,
                                        requireData: DataRequiredAction,
@@ -67,7 +64,7 @@ class IdentifyCarrierController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdentifyCarrierPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdentifyCarrierPage, mode, updatedAnswers))
+          } yield Redirect(IdentifyCarrierPage.navigate(mode, updatedAnswers))
       )
   }
 }

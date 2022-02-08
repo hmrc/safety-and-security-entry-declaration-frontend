@@ -19,12 +19,11 @@ package controllers
 import base.SpecBase
 import forms.LocalReferenceNumberFormProvider
 import models.NormalMode
-import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.LocalReferenceNumberPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -33,8 +32,6 @@ import views.html.LocalReferenceNumberView
 import scala.concurrent.Future
 
 class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
-
-  def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new LocalReferenceNumberFormProvider()
   val form = formProvider()
@@ -59,7 +56,6 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-
     "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
@@ -68,10 +64,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -80,9 +73,10 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", lrn.value))
 
         val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(LocalReferenceNumberPage, lrn).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual LocalReferenceNumberPage.navigate(NormalMode, expectedAnswers).url
       }
     }
 
@@ -103,45 +97,6 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must return OK for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, localReferenceNumberRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-      }
-    }
-
-    "must redirect to the next page for a POST if no existing data is found" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = None)
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, localReferenceNumberRoute)
-            .withFormUrlEncodedBody(("value", lrn.value))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
   }

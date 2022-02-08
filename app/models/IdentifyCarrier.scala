@@ -24,11 +24,11 @@ sealed trait IdentifyCarrier
 
 object IdentifyCarrier extends Enumerable.Implicits {
 
-  case object Gbeori extends WithName("gb.eori") with IdentifyCarrier
-  case object Nameaddress extends WithName("nameAddress") with IdentifyCarrier
+  case object GbEori extends WithName("gb.eori") with IdentifyCarrier
+  case object NameAndAddress extends WithName("nameAddress") with IdentifyCarrier
 
   val values: Seq[IdentifyCarrier] = Seq(
-    Gbeori, Nameaddress
+    GbEori, NameAndAddress
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {

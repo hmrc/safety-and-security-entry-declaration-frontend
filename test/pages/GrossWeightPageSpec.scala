@@ -16,10 +16,12 @@
 
 package pages
 
-import models.GrossWeight
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, GrossWeight, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class GrossWeightSpec extends PageBehaviours {
+class GrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GrossWeightPage" - {
 
@@ -28,5 +30,33 @@ class GrossWeightSpec extends PageBehaviours {
     beSettable[GrossWeight](GrossWeightPage)
 
     beRemovable[GrossWeight](GrossWeightPage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Transport Mode when the answer is Per Item" in {
+
+        val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
+
+        GrossWeightPage.navigate(NormalMode, answers)
+          .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Total Gross Weight when the answer is Overall" in {
+
+        val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.Overall).success.value
+
+        GrossWeightPage.navigate(NormalMode, answers)
+          .mustEqual(routes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn))
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        GrossWeightPage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

@@ -1,9 +1,11 @@
 package pages
 
-import models.$className$
+import base.SpecBase
+import controllers.routes
+import models.{$className$, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class $className$PageSpec extends PageBehaviours {
+class $className$PageSpec extends SpecBase with PageBehaviours {
 
   "$className$Page" - {
 
@@ -12,5 +14,23 @@ class $className$PageSpec extends PageBehaviours {
     beSettable[$className$]($className$Page)
 
     beRemovable[$className$]($className$Page)
+
+    "must navigate in Normal Mode" - {
+
+      "to Index" in {
+
+        $className$Page.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.IndexController.onPageLoad)
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        $className$Page.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }
