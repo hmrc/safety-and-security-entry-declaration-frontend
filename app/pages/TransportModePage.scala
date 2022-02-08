@@ -16,12 +16,17 @@
 
 package pages
 
-import models.TransportMode
+import controllers.routes
+import models.{NormalMode, TransportMode, UserAnswers}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case object TransportModePage extends QuestionPage[TransportMode] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "transportMode"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn)
 }

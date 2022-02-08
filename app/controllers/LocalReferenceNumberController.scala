@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.LocalReferenceNumberFormProvider
 import models.{Mode, UserAnswers}
-import navigation.Navigator
 import pages.LocalReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class LocalReferenceNumberController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
-                                        navigator: Navigator,
                                         identify: IdentifierAction,
                                         formProvider: LocalReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
@@ -59,7 +57,7 @@ class LocalReferenceNumberController @Inject()(
 
           sessionRepository.set(updatedAnswers).map {
             _ =>
-              Redirect(navigator.nextPage(LocalReferenceNumberPage, mode, updatedAnswers))
+              Redirect(LocalReferenceNumberPage.navigate(mode, updatedAnswers))
           }
         }
       )

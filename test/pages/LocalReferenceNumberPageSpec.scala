@@ -16,11 +16,13 @@
 
 package pages
 
-import models.LocalReferenceNumber
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, LocalReferenceNumber, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
-class LocalReferenceNumberPageSpec extends PageBehaviours {
+class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
   "LocalReferenceNumberPage" - {
 
@@ -29,5 +31,23 @@ class LocalReferenceNumberPageSpec extends PageBehaviours {
     beSettable[LocalReferenceNumber](LocalReferenceNumberPage)
 
     beRemovable[LocalReferenceNumber](LocalReferenceNumberPage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Lodging Person" in {
+
+        LocalReferenceNumberPage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        LocalReferenceNumberPage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

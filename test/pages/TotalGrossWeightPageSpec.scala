@@ -16,9 +16,12 @@
 
 package pages
 
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class TotalGrossWeightPageSpec extends PageBehaviours {
+class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "TotalGrossWeightPage" - {
 
@@ -27,5 +30,23 @@ class TotalGrossWeightPageSpec extends PageBehaviours {
     beSettable[Int](TotalGrossWeightPage)
 
     beRemovable[Int](TotalGrossWeightPage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Transport Mode" in {
+
+        TotalGrossWeightPage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        TotalGrossWeightPage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

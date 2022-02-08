@@ -16,12 +16,21 @@
 
 package pages
 
-import models.GrossWeight
+import controllers.routes
+import models.{GrossWeight, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case object GrossWeightPage extends QuestionPage[GrossWeight] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "grossWeight"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(GrossWeightPage) match {
+      case Some(GrossWeight.PerItem) => routes.TransportModeController.onPageLoad(NormalMode, answers.lrn)
+      case Some(GrossWeight.Overall) => routes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case _ => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

@@ -16,10 +16,12 @@
 
 package pages
 
-import models.LodgingPersonType
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, LodgingPersonType, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class LodgingPersonTypeSpec extends PageBehaviours {
+class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
   "LodgingPersonTypePage" - {
 
@@ -28,5 +30,23 @@ class LodgingPersonTypeSpec extends PageBehaviours {
     beSettable[LodgingPersonType](LodgingPersonTypePage)
 
     beRemovable[LodgingPersonType](LodgingPersonTypePage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Gross Weight" in {
+
+        LodgingPersonTypePage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.GrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        LodgingPersonTypePage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

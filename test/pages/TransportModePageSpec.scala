@@ -16,10 +16,12 @@
 
 package pages
 
-import models.TransportMode
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, NormalMode, TransportMode}
 import pages.behaviours.PageBehaviours
 
-class TransportModeSpec extends PageBehaviours {
+class TransportModePageSpec extends SpecBase with PageBehaviours {
 
   "TransportModePage" - {
 
@@ -28,5 +30,23 @@ class TransportModeSpec extends PageBehaviours {
     beSettable[TransportMode](TransportModePage)
 
     beRemovable[TransportMode](TransportModePage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Identify Carrier" in {
+
+        TransportModePage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.IdentifyCarrierController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        TransportModePage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

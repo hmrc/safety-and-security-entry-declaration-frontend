@@ -16,10 +16,12 @@
 
 package pages
 
-import models.IdentifyCarrier
+import base.SpecBase
+import controllers.routes
+import models.{CheckMode, IdentifyCarrier, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class IdentifyCarrierSpec extends PageBehaviours {
+class IdentifyCarrierPageSpec extends SpecBase with PageBehaviours {
 
   "IdentifyCarrierPage" - {
 
@@ -28,5 +30,23 @@ class IdentifyCarrierSpec extends PageBehaviours {
     beSettable[IdentifyCarrier](IdentifyCarrierPage)
 
     beRemovable[IdentifyCarrier](IdentifyCarrierPage)
+
+    "must navigate in Normal Mode" - {
+
+      "to Carriers EORI" in {
+
+        IdentifyCarrierPage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.CarriersEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate in Check Mode" - {
+
+      "to Check Your Answers" in {
+
+        IdentifyCarrierPage.navigate(CheckMode, emptyUserAnswers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }
