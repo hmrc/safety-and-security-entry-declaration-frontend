@@ -22,6 +22,14 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =
+    Arbitrary {
+      for {
+        date <- arbitrary[String]
+        time <- arbitrary[String]
+      } yield ArrivalDateAndTime(date, time)
+    }
+
   implicit lazy val arbitraryIdentifyCarrier: Arbitrary[IdentifyCarrier] =
     Arbitrary {
       Gen.oneOf(IdentifyCarrier.values.toSeq)

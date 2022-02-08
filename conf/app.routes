@@ -55,3 +55,18 @@ GET        /:lrn/carriersEORI                        controllers.CarriersEORICon
 POST       /:lrn/carriersEORI                        controllers.CarriersEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeCarriersEORI                  controllers.CarriersEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeCarriersEORI                  controllers.CarriersEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/arrivalDateAndTime                        controllers.ArrivalDateAndTimeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/arrivalDateAndTime                        controllers.ArrivalDateAndTimeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeArrivalDateAndTime                  controllers.ArrivalDateAndTimeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeArrivalDateAndTime                  controllers.ArrivalDateAndTimeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/countryOfOrigin                        controllers.CountryOfOriginController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/countryOfOrigin                        controllers.CountryOfOriginController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeCountryOfOrigin                  controllers.CountryOfOriginController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeCountryOfOrigin                  controllers.CountryOfOriginController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/customsOfficeOfFirstEntry                        controllers.CustomsOfficeOfFirstEntryController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/customsOfficeOfFirstEntry                        controllers.CustomsOfficeOfFirstEntryController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeCustomsOfficeOfFirstEntry                  controllers.CustomsOfficeOfFirstEntryController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeCustomsOfficeOfFirstEntry                  controllers.CustomsOfficeOfFirstEntryController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

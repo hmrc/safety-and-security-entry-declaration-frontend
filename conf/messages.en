@@ -118,3 +118,29 @@ carriersEORI.checkYourAnswersLabel = carriersEORI
 carriersEORI.error.required = Enter carriersEORI
 carriersEORI.error.length = CarriersEORI must be 100 characters or less
 carriersEORI.change.hidden = CarriersEORI
+
+arrivalDateAndTime.title = arrivalDateAndTime
+arrivalDateAndTime.heading = arrivalDateAndTime
+arrivalDateAndTime.date = date
+arrivalDateAndTime.time = time
+arrivalDateAndTime.checkYourAnswersLabel = ArrivalDateAndTime
+arrivalDateAndTime.error.date.required = Enter date
+arrivalDateAndTime.error.time.required = Enter time
+arrivalDateAndTime.error.date.length = date must be 100 characters or less
+arrivalDateAndTime.error.time.length = time must be 100 characters or less
+arrivalDateAndTime.date.change.hidden = date
+arrivalDateAndTime.time.change.hidden = time
+
+countryOfOrigin.title = countryOfOrigin
+countryOfOrigin.heading = countryOfOrigin
+countryOfOrigin.checkYourAnswersLabel = countryOfOrigin
+countryOfOrigin.error.required = Enter countryOfOrigin
+countryOfOrigin.error.length = CountryOfOrigin must be 2 characters or less
+countryOfOrigin.change.hidden = CountryOfOrigin
+
+customsOfficeOfFirstEntry.title = customsOfficeOfFirstEntry
+customsOfficeOfFirstEntry.heading = customsOfficeOfFirstEntry
+customsOfficeOfFirstEntry.checkYourAnswersLabel = customsOfficeOfFirstEntry
+customsOfficeOfFirstEntry.error.required = Enter customsOfficeOfFirstEntry
+customsOfficeOfFirstEntry.error.length = CustomsOfficeOfFirstEntry must be 2 characters or less
+customsOfficeOfFirstEntry.change.hidden = CustomsOfficeOfFirstEntry
