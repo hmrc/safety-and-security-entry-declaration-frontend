@@ -20,6 +20,7 @@
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
+    govukDateInput: GovukDateInput,
     govukInput: GovukInput,
     govukButton: GovukButton
 )
@@ -31,26 +32,67 @@
     @formHelper(action = routes.ArrivalDateAndTimeController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(
+                form,
+                errorLinkOverrides = Map("date" -> "date.day", "time" -> "time.hour")))
         }
 
         <h1 class="govuk-heading-xl">@messages("arrivalDateAndTime.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
-                field = form("date"),
-                label = LabelViewModel(messages("arrivalDateAndTime.date"))
+        @govukDateInput(
+            DateViewModel(
+                field  = form("date"),
+                legend = LegendViewModel(messages("arrivalDateAndTime.date")).withCssClass("govuk-fieldset__legend-m")
             )
-            .withWidth(Full)
+            .withHint(HintViewModel(messages("arrivalDateAndTime.date.hint")))
         )
 
-        @govukInput(
-            InputViewModel(
-                field = form("time"),
-                label = LabelViewModel(messages("arrivalDateAndTime.time"))
-            )
-            .withWidth(Full)
-        )
+        <div class="govuk-form-group @if(form("time").hasErrors) {govuk-form-group--error}">
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="time-hint">
+                <legend class="govuk-fieldset__legend">
+                    @messages("arrivalDateAndTime.time")
+                </legend>
+
+                <div id="time-hint" class="govuk-hint">
+                    @messages("arrivalDateAndTime.time.hint")
+                </div>
+
+                @form("time").error.map { error =>
+                    <span id="time-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@messages("error.prefix")</span>
+                        @messages(error.message, error.args: _*)
+                    </span>
+                }
+
+                <div id="time">
+                    <div class="govuk-date-input__item">
+                        @govukInput(
+                            InputViewModel(
+                                field = form("time.hour"),
+                                label = LabelViewModel(messages("time.hour"))
+                            )
+                            .asNumeric()
+                            .withWidth(Fixed2)
+                            .withId("time.hour")
+                            .withCssClass(if(form("time").hasErrors) "govuk-input--error" else "")
+                        )
+                    </div>
+
+                    <div class="govuk-date-input__item">
+                        @govukInput(
+                            InputViewModel(
+                                field = form("time.minutes"),
+                                label = LabelViewModel(messages("time.minutes"))
+                            )
+                            .asNumeric()
+                            .withWidth(Fixed2)
+                            .withCssClass(if(form("time").hasErrors) "govuk-input--error" else "")
+                        )
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))

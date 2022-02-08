@@ -16,64 +16,112 @@
 
 package forms
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.{DateBehaviours}
+import models.ArrivalDateAndTime
+import org.scalacheck.Gen
 import play.api.data.FormError
 
-class ArrivalDateAndTimeFormProviderSpec extends StringFieldBehaviours {
+import java.time.{LocalDate, LocalTime}
+
+class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
   val form = new ArrivalDateAndTimeFormProvider()()
 
-  ".date" - {
+  val validDates = datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1,1 ))
 
-    val fieldName = "date"
-    val requiredKey = "arrivalDateAndTime.error.date.required"
-    val lengthKey = "arrivalDateAndTime.error.date.length"
-    val maxLength = 100
+  val validTimes = for {
+    hour <- Gen.choose(0, 23)
+    minute <- Gen.choose(0, 59)
+  } yield LocalTime.of(hour, minute)
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
+  "must bind when valid dates and times are provided" in {
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    forAll(validDates, validTimes) {
+      case (date, time) =>
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+        val data = Map(
+          "date.day"    -> date.getDayOfMonth.toString,
+          "date.month"  -> date.getMonthValue.toString,
+          "date.year"   -> date.getYear.toString,
+          "time.hour"   -> time.getHour.toString,
+          "time.minutes" -> time.getMinute.toString
+        )
+
+        val result = form.bind(data)
+
+        result.value.value mustEqual ArrivalDateAndTime(date, time)
+        result.errors mustBe empty
+    }
   }
 
-  ".time" - {
+  "must not bind when date is missing" in {
 
-    val fieldName = "time"
-    val requiredKey = "arrivalDateAndTime.error.time.required"
-    val lengthKey = "arrivalDateAndTime.error.time.length"
-    val maxLength = 100
+    forAll(validTimes) {
+      time =>
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
+        val data = Map(
+          "time.hour"   -> time.getHour.toString,
+          "time.minutes" -> time.getMinute.toString
+        )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+        val result = form.bind(data)
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+        result.errors must contain only FormError("date", "arrivalDateAndTime.date.error.required.all")
+    }
+  }
+
+  "must not bind when date is invalid" in {
+
+    forAll(validDates, validTimes) {
+      case (date, time) =>
+
+        val data = Map(
+          "date.day"    -> "invalid",
+          "date.month"  -> date.getMonthValue.toString,
+          "date.year"   -> date.getYear.toString,
+          "time.hour"   -> time.getHour.toString,
+          "time.minutes" -> time.getMinute.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("date", "arrivalDateAndTime.date.error.invalid")
+    }
+  }
+
+  "must not bind when time is missing" in {
+
+    forAll(validDates) {
+      date =>
+
+        val data = Map(
+          "date.day"    -> date.getDayOfMonth.toString,
+          "date.month"  -> date.getMonthValue.toString,
+          "date.year"   -> date.getYear.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("time", "arrivalDateAndTime.time.error.required.all")
+    }
+  }
+
+  "must not bind when time is invalid" in {
+
+    forAll(validDates, validTimes) {
+      case (date, time) =>
+
+        val data = Map(
+          "date.day"    -> date.getDayOfMonth.toString,
+          "date.month"  -> date.getMonthValue.toString,
+          "date.year"   -> date.getYear.toString,
+          "time.hour"   -> "invalid",
+          "time.minutes" -> time.getMinute.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("time", "arrivalDateAndTime.time.error.invalid")
+    }
   }
 }

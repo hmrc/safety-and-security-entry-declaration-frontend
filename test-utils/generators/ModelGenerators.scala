@@ -20,14 +20,19 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
+import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
+
 trait ModelGenerators {
 
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =
     Arbitrary {
       for {
-        date <- arbitrary[String]
-        time <- arbitrary[String]
-      } yield ArrivalDateAndTime(date, time)
+        hour      <- Gen.choose(0, 23)
+        minute    <- Gen.choose(0, 59)
+        earlyDate = LocalDate.now.atStartOfDay().atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+        lateDate  = LocalDate.now.plusYears(100).atStartOfDay().atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+        date      <- Gen.choose(earlyDate, lateDate).map(m => Instant.ofEpochMilli(m).atOffset(ZoneOffset.UTC).toLocalDate)
+      } yield ArrivalDateAndTime(date, LocalTime.of(hour, minute))
     }
 
   implicit lazy val arbitraryIdentifyCarrier: Arbitrary[IdentifyCarrier] =

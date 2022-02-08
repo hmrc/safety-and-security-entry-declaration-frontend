@@ -18,8 +18,10 @@ package models
 
 import play.api.libs.json._
 
-case class ArrivalDateAndTime (date: String, time: String)
+import java.time.{LocalDate, LocalTime}
+
+case class ArrivalDateAndTime(date: LocalDate, time: LocalTime)
 
 object ArrivalDateAndTime {
-  implicit val format = Json.format[ArrivalDateAndTime]
+  implicit val format:OFormat[ArrivalDateAndTime] = Json.format[ArrivalDateAndTime]
 }
