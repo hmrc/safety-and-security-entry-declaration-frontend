@@ -37,7 +37,7 @@ class DateBehaviours extends FieldBehaviours {
             s"$key.year"  -> date.getYear.toString
           )
 
-          val result = form.bind(data)
+          val result = form.bind(data).apply(key)
 
           result.value.value mustEqual date
           result.errors mustBe empty
@@ -60,7 +60,7 @@ class DateBehaviours extends FieldBehaviours {
             s"$key.year"  -> date.getYear.toString
           )
 
-          val result = form.bind(data)
+          val result = form.bind(data).apply(key)
 
           result.errors must contain only formError
       }
@@ -82,7 +82,7 @@ class DateBehaviours extends FieldBehaviours {
             s"$key.year"  -> date.getYear.toString
           )
 
-          val result = form.bind(data)
+          val result = form.bind(data).apply(key)
 
           result.errors must contain only formError
       }
@@ -93,7 +93,7 @@ class DateBehaviours extends FieldBehaviours {
 
     "fail to bind an empty date" in {
 
-      val result = form.bind(Map.empty[String, String])
+      val result = form.bind(Map.empty[String, String]).apply(key)
 
       result.errors must contain only FormError(key, requiredAllKey, errorArgs)
     }

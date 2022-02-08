@@ -1,0 +1,101 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import viewmodels.InputWidth._
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukDateInput: GovukDateInput,
+    govukInput: GovukInput,
+    govukButton: GovukButton
+)
+
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("arrivalDateAndTime.title"))) {
+
+    @formHelper(action = routes.ArrivalDateAndTimeController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(
+                form,
+                errorLinkOverrides = Map("date" -> "date.day", "time" -> "time.hour")))
+        }
+
+        <h1 class="govuk-heading-xl">@messages("arrivalDateAndTime.heading")</h1>
+
+        @govukDateInput(
+            DateViewModel(
+                field  = form("date"),
+                legend = LegendViewModel(messages("arrivalDateAndTime.date")).withCssClass("govuk-fieldset__legend-m")
+            )
+            .withHint(HintViewModel(messages("arrivalDateAndTime.date.hint")))
+        )
+
+        <div class="govuk-form-group @if(form("time").hasErrors) {govuk-form-group--error}">
+            <fieldset class="govuk-fieldset" role="group" aria-describedby="time-hint">
+                <legend class="govuk-fieldset__legend">
+                    @messages("arrivalDateAndTime.time")
+                </legend>
+
+                <div id="time-hint" class="govuk-hint">
+                    @messages("arrivalDateAndTime.time.hint")
+                </div>
+
+                @form("time").error.map { error =>
+                    <span id="time-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@messages("error.prefix")</span>
+                        @messages(error.message, error.args: _*)
+                    </span>
+                }
+
+                <div id="time">
+                    <div class="govuk-date-input__item">
+                        @govukInput(
+                            InputViewModel(
+                                field = form("time.hour"),
+                                label = LabelViewModel(messages("time.hour"))
+                            )
+                            .asNumeric()
+                            .withWidth(Fixed2)
+                            .withId("time.hour")
+                            .withCssClass(if(form("time").hasErrors) "govuk-input--error" else "")
+                        )
+                    </div>
+
+                    <div class="govuk-date-input__item">
+                        @govukInput(
+                            InputViewModel(
+                                field = form("time.minutes"),
+                                label = LabelViewModel(messages("time.minutes"))
+                            )
+                            .asNumeric()
+                            .withWidth(Fixed2)
+                            .withCssClass(if(form("time").hasErrors) "govuk-input--error" else "")
+                        )
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
+}
