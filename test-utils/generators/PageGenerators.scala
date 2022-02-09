@@ -21,6 +21,18 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage.type] =
+    Arbitrary(RemoveCountryEnRoutePage)
+
+  implicit lazy val arbitraryGoodsPassThroughOtherCountriesPage: Arbitrary[GoodsPassThroughOtherCountriesPage.type] =
+    Arbitrary(GoodsPassThroughOtherCountriesPage)
+
+  implicit lazy val arbitraryCountryEnRoutePage: Arbitrary[CountryEnRoutePage.type] =
+    Arbitrary(CountryEnRoutePage)
+
+  implicit lazy val arbitraryAddCountryEnRoutePage: Arbitrary[AddCountryEnRoutePage.type] =
+    Arbitrary(AddCountryEnRoutePage)
+
   implicit lazy val arbitraryCustomsOfficeOfFirstEntryPage: Arbitrary[CustomsOfficeOfFirstEntryPage.type] =
     Arbitrary(CustomsOfficeOfFirstEntryPage)
 

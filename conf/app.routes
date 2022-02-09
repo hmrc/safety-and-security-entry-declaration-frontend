@@ -70,3 +70,23 @@ GET        /:lrn/customsOfficeOfFirstEntry                        controllers.Cu
 POST       /:lrn/customsOfficeOfFirstEntry                        controllers.CustomsOfficeOfFirstEntryController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeCustomsOfficeOfFirstEntry                  controllers.CustomsOfficeOfFirstEntryController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeCustomsOfficeOfFirstEntry                  controllers.CustomsOfficeOfFirstEntryController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/addCountryEnRoute                        controllers.AddCountryEnRouteController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addCountryEnRoute                        controllers.AddCountryEnRouteController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddCountryEnRoute                  controllers.AddCountryEnRouteController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddCountryEnRoute                  controllers.AddCountryEnRouteController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/countryEnRoute                        controllers.CountryEnRouteController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/countryEnRoute                        controllers.CountryEnRouteController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeCountryEnRoute                  controllers.CountryEnRouteController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeCountryEnRoute                  controllers.CountryEnRouteController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/goodsPassThroughOtherCountries                        controllers.GoodsPassThroughOtherCountriesController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/goodsPassThroughOtherCountries                        controllers.GoodsPassThroughOtherCountriesController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeGoodsPassThroughOtherCountries                  controllers.GoodsPassThroughOtherCountriesController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeGoodsPassThroughOtherCountries                  controllers.GoodsPassThroughOtherCountriesController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/removeCountryEnRoute                        controllers.RemoveCountryEnRouteController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/removeCountryEnRoute                        controllers.RemoveCountryEnRouteController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRemoveCountryEnRoute                  controllers.RemoveCountryEnRouteController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRemoveCountryEnRoute                  controllers.RemoveCountryEnRouteController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

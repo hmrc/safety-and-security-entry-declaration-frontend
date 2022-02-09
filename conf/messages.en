@@ -156,3 +156,28 @@ customsOfficeOfFirstEntry.checkYourAnswersLabel = Customs office of arrival
 customsOfficeOfFirstEntry.error.required = Enter the customs office the goods will arrive in
 customsOfficeOfFirstEntry.error.length = Customs office must be 8 characters or less
 customsOfficeOfFirstEntry.change.hidden = the customs office the goods will arrive in
+
+addCountryEnRoute.title = addCountryEnRoute
+addCountryEnRoute.heading = addCountryEnRoute
+addCountryEnRoute.checkYourAnswersLabel = addCountryEnRoute
+addCountryEnRoute.error.required = Select yes if addCountryEnRoute
+addCountryEnRoute.change.hidden = AddCountryEnRoute
+
+countryEnRoute.title = countryEnRoute
+countryEnRoute.heading = countryEnRoute
+countryEnRoute.checkYourAnswersLabel = countryEnRoute
+countryEnRoute.error.required = Enter countryEnRoute
+countryEnRoute.error.length = CountryEnRoute must be 2 characters or less
+countryEnRoute.change.hidden = CountryEnRoute
+
+goodsPassThroughOtherCountries.title = goodsPassThroughOtherCountries
+goodsPassThroughOtherCountries.heading = goodsPassThroughOtherCountries
+goodsPassThroughOtherCountries.checkYourAnswersLabel = goodsPassThroughOtherCountries
+goodsPassThroughOtherCountries.error.required = Select yes if goodsPassThroughOtherCountries
+goodsPassThroughOtherCountries.change.hidden = GoodsPassThroughOtherCountries
+
+removeCountryEnRoute.title = removeCountryEnRoute
+removeCountryEnRoute.heading = removeCountryEnRoute
+removeCountryEnRoute.checkYourAnswersLabel = removeCountryEnRoute
+removeCountryEnRoute.error.required = Select yes if removeCountryEnRoute
+removeCountryEnRoute.change.hidden = RemoveCountryEnRoute
