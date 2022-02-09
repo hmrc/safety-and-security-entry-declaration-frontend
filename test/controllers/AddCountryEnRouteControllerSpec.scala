@@ -21,8 +21,10 @@ import forms.AddCountryEnRouteFormProvider
 import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddCountryEnRoutePage
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.checkAnswers.CountryEnRouteSummary
 import views.html.AddCountryEnRouteView
 
 class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
@@ -45,8 +47,11 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[AddCountryEnRouteView]
 
+        implicit val msgs: Messages = messages(application)
+        val list = CountryEnRouteSummary.rows(emptyUserAnswers)
+
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(request, implicitly).toString
       }
     }
 
@@ -83,8 +88,11 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
+        implicit val msgs: Messages = messages(application)
+        val list = CountryEnRouteSummary.rows(emptyUserAnswers)
+
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(request, implicitly).toString
       }
     }
 

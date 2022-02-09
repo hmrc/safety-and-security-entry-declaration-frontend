@@ -14,15 +14,19 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
+@import viewmodels.LegendSize
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, countries: Seq[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addCountryEnRoute.title"))) {
 
@@ -32,10 +36,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("addCountryEnRoute.heading")</h1>
+
+        @addToList(countries, Long, "addCountryEnRoute.change.hidden", "addCountryEnRoute.remove.hidden")
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("addCountryEnRoute.heading")).asPageHeading()
+                legend = LegendViewModel(messages("addCountryEnRoute.addAnother")).withSize(LegendSize.Medium)
             )
         )
 

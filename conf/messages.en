@@ -159,6 +159,7 @@ customsOfficeOfFirstEntry.change.hidden = the customs office the goods will arri
 
 addCountryEnRoute.title = Countries the goods pass through
 addCountryEnRoute.heading = Countries the goods pass through
+addCountryEnRoute.addAnother = Do you need to add another country?
 addCountryEnRoute.error.required = Select yes if you need to add another country
 
 countryEnRoute.title = Which country will the goods pass through?
