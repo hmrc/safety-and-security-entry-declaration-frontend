@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
   "CountryOfOriginPage" - {
 
-    beRetrievable[String](CountryOfOriginPage)
+    beRetrievable[Country](CountryOfOriginPage)
 
-    beSettable[String](CountryOfOriginPage)
+    beSettable[Country](CountryOfOriginPage)
 
-    beRemovable[String](CountryOfOriginPage)
+    beRemovable[Country](CountryOfOriginPage)
 
     "must navigate in Normal Mode" - {
 

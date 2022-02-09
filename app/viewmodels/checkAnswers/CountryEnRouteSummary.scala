@@ -17,15 +17,11 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, Index, NormalMode, UserAnswers}
-import pages.CountryEnRoutePage
+import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.AllCountriesEnRouteQuery
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object CountryEnRouteSummary  {
 
@@ -34,7 +30,7 @@ object CountryEnRouteSummary  {
       case (country, index) =>
 
         ListItem(
-          name = HtmlFormat.escape(country).toString,
+          name = HtmlFormat.escape(country.name).toString,
           changeUrl = routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
           removeUrl = routes.RemoveCountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
         )

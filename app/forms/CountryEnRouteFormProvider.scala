@@ -19,13 +19,16 @@ package forms
 import javax.inject.Inject
 
 import forms.mappings.Mappings
+import models.Country
+import models.Country.internationalCountries
 import play.api.data.Form
 
 class CountryEnRouteFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[Country] =
     Form(
       "value" -> text("countryEnRoute.error.required")
-        .verifying(maxLength(2, "countryEnRoute.error.length"))
+        .verifying("countryEnRoute.error.required", value => internationalCountries.exists(_.code == value))
+        .transform[Country](value => internationalCountries.find(_.code == value).get, _.code)
     )
 }

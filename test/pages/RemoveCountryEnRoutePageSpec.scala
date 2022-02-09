@@ -18,7 +18,8 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Country, Index, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
@@ -29,7 +30,7 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Add Country En Route when there is at least one country in user answers" in {
 
-        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), "XX").success.value
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), arbitrary[Country].sample.value).success.value
 
         RemoveCountryEnRoutePage(index).navigate(NormalMode, answers)
           .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
