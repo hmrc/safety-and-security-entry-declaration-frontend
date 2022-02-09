@@ -132,6 +132,7 @@ arrivalDateAndTime.date = Planned date of arrival
 arrivalDateAndTime.time = Planned time of arrival
 arrivalDateAndTime.date.hint = For example, 31 3 2022
 arrivalDateAndTime.time.hint = 24 hour clock, for example, 21 30
+arrivalDateAndTime.checkYourAnswersLabel = Date and time of arrival
 arrivalDateAndTime.checkYourAnswersLabel.date = Date of arrival
 arrivalDateAndTime.checkYourAnswersLabel.time = Time of arrival
 arrivalDateAndTime.date.error.required.all = Enter the planned date of arrival
@@ -167,6 +168,7 @@ countryEnRoute.heading = Which country will the goods pass through?
 countryEnRoute.error.required = Enter the country the goods will pass through
 countryEnRoute.error.length = Country must be 2 characters
 countryEnRoute.change.hidden = the country the goods will pass through
+countryEnRoute.checkYourAnswersLabel = Countries the goods will pass through
 
 goodsPassThroughOtherCountries.title = Will the goods pass through any other countries on the way to Great Britain?
 goodsPassThroughOtherCountries.heading = Will the goods pass through any other countries on the way to Great Britain?
@@ -177,3 +179,6 @@ goodsPassThroughOtherCountries.change.hidden = if the goods will pass through an
 removeCountryEnRoute.title = Are you sure you want to remove this country?
 removeCountryEnRoute.heading = Are you sure you want to remove this country?
 removeCountryEnRoute.error.required = Select yes if you need to remove this country
+
+checkRouteDetails.title = Check route details
+checkRouteDetails.heading = Check route details

@@ -22,6 +22,7 @@ import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.{ArrivalDateAndTimeSummary, CountryEnRouteSummary, CountryOfOriginSummary, CustomsOfficeOfFirstEntrySummary, GoodsPassThroughOtherCountriesSummary}
 import viewmodels.govuk.summarylist._
 import views.html.CheckRouteDetailsView
 
@@ -38,7 +39,13 @@ class CheckRouteDetailsController @Inject()(
     implicit request =>
 
       val list = SummaryListViewModel(
-        rows = Seq.empty
+        rows = Seq(
+          CountryOfOriginSummary.row(request.userAnswers),
+          GoodsPassThroughOtherCountriesSummary.row(request.userAnswers),
+          CountryEnRouteSummary.checkAnswersRow(request.userAnswers),
+          CustomsOfficeOfFirstEntrySummary.row(request.userAnswers),
+          ArrivalDateAndTimeSummary.row(request.userAnswers)
+        ).flatten
       )
 
       Ok(view(list, lrn))
