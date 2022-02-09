@@ -13,6 +13,7 @@ GET         /refresh-session                             controllers.KeepAliveCo
 
 GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
+GET         /:lrn/task-list                              controllers.TaskListController.onPageLoad(lrn: LocalReferenceNumber)
 GET         /:lrn/check-your-answers                          controllers.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 GET         /:lrn/check-route-details                    controllers.CheckRouteDetailsController.onPageLoad(lrn: LocalReferenceNumber)
 

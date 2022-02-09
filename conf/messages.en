@@ -182,3 +182,6 @@ removeCountryEnRoute.error.required = Select yes if you need to remove this coun
 
 checkRouteDetails.title = Check route details
 checkRouteDetails.heading = Check route details
+
+taskList.title = ENS declaration: {0}
+taskList.heading = ENS declaration: {0}
