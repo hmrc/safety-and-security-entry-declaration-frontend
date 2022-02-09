@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
@@ -27,10 +27,18 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Country En Route when there is at least one country in user answers" in {
+
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), "XX").success.value
+
+        RemoveCountryEnRoutePage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Goods Pass Through Other Countries when there are no countries in user answers" in {
 
         RemoveCountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

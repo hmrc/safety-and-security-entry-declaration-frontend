@@ -30,7 +30,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(RemoveCountryEnRoutePage, JsValue)] ::
     arbitrary[(GoodsPassThroughOtherCountriesPage.type, JsValue)] ::
     arbitrary[(CountryEnRoutePage, JsValue)] ::
-    arbitrary[(AddCountryEnRoutePage.type, JsValue)] ::
     arbitrary[(CustomsOfficeOfFirstEntryPage.type, JsValue)] ::
     arbitrary[(CountryOfOriginPage.type, JsValue)] ::
     arbitrary[(ArrivalDateAndTimePage.type, JsValue)] ::

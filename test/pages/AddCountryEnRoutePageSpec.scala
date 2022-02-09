@@ -18,25 +18,28 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class AddCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
+class AddCountryEnRoutePageSpec extends SpecBase {
 
   "AddCountryEnRoutePage" - {
 
-    beRetrievable[Boolean](AddCountryEnRoutePage)
-
-    beSettable[Boolean](AddCountryEnRoutePage)
-
-    beRemovable[Boolean](AddCountryEnRoutePage)
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Country En Route with an index equal to the number of countries we have details for when the answer is yes" in {
 
-        AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(index), "XX").success.value
+
+        AddCountryEnRoutePage.navigate(NormalMode, answers, addAnother = true)
+          .mustEqual(routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+      }
+
+      "to Customs Office of First Entry when the answer is no" in {
+
+        AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
+          .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

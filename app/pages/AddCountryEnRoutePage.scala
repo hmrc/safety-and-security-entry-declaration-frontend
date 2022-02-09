@@ -17,13 +17,22 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
+import queries.DeriveNumberOfCountriesEnRoute
 
-case object AddCountryEnRoutePage extends QuestionPage[Boolean] {
+case object AddCountryEnRoutePage extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addCountryEnRoute"
+ def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+   if (addAnother) {
+     answers.get(DeriveNumberOfCountriesEnRoute) match {
+       case Some(size) => routes.CountryEnRouteController.onPageLoad(mode, answers.lrn, Index(size))
+       case None => routes.JourneyRecoveryController.onPageLoad()
+     }
+   } else {
+     mode match {
+       case NormalMode => routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+       case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+     }
+   }
 }

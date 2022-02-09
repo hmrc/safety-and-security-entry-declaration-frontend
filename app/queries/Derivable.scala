@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-
-case class CountryEnRoutePage(index: Index) extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ toString \ index.position
-
-  override def toString: String = "countriesEnRoute"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
+trait Derivable[A, B] extends Gettable[A] {
+  val derive: A => B
 }

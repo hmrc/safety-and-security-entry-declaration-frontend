@@ -34,10 +34,10 @@ class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Country En Route" in {
 
         CountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

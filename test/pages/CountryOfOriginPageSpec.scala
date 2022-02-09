@@ -34,10 +34,10 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Customs Office of Entry" in {
+      "to Goods Pass Through Other Countries" in {
 
         CountryOfOriginPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

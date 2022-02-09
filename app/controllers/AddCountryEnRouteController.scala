@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.AddCountryEnRouteFormProvider
-
-import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.AddCountryEnRoutePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,7 +26,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddCountryEnRouteView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
 
 class AddCountryEnRouteController @Inject()(
                                          override val messagesApi: MessagesApi,
@@ -39,33 +37,25 @@ class AddCountryEnRouteController @Inject()(
                                          formProvider: AddCountryEnRouteFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: AddCountryEnRouteView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                 ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddCountryEnRoutePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(form, mode, lrn))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          BadRequest(view(formWithErrors, mode, lrn)),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddCountryEnRoutePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddCountryEnRoutePage.navigate(mode, updatedAnswers))
+          Redirect(AddCountryEnRoutePage.navigate(mode, request.userAnswers, value))
       )
   }
 }

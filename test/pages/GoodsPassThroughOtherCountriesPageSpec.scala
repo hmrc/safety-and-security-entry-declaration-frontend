@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviours {
@@ -33,10 +33,20 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Country En Route when the answer is yes" in {
 
-        GoodsPassThroughOtherCountriesPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(GoodsPassThroughOtherCountriesPage, true).success.value
+
+        GoodsPassThroughOtherCountriesPage.navigate(NormalMode, answers)
+          .mustEqual(routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0)))
+      }
+
+      "to Customs Office of First Entry when the answer is no" in {
+
+        val answers = emptyUserAnswers.set(GoodsPassThroughOtherCountriesPage, false).success.value
+
+        GoodsPassThroughOtherCountriesPage.navigate(NormalMode, answers)
+          .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn))
       }
     }
 

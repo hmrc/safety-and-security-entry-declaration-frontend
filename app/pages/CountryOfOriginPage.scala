@@ -28,5 +28,5 @@ case object CountryOfOriginPage extends QuestionPage[String] {
   override def toString: String = "countryOfOrigin"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
 }
