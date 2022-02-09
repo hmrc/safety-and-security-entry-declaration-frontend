@@ -33,10 +33,10 @@ class ArrivalDateAndTimePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Check Route Details" in {
 
         ArrivalDateAndTimePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.CheckRouteDetailsController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
 

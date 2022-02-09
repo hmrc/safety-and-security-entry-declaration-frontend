@@ -26,4 +26,7 @@ case object ArrivalDateAndTimePage extends QuestionPage[ArrivalDateAndTime] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "arrivalDateAndTime"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.CheckRouteDetailsController.onPageLoad(answers.lrn)
 }
