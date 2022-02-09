@@ -26,17 +26,17 @@ class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
   "CountryEnRoutePage" - {
 
-    beRetrievable[String](CountryEnRoutePage)
+    beRetrievable[String](CountryEnRoutePage(index))
 
-    beSettable[String](CountryEnRoutePage)
+    beSettable[String](CountryEnRoutePage(index))
 
-    beRemovable[String](CountryEnRoutePage)
+    beRemovable[String](CountryEnRoutePage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        CountryEnRoutePage.navigate(NormalMode, emptyUserAnswers)
+        CountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryEnRoutePage.navigate(CheckMode, emptyUserAnswers)
+        CountryEnRoutePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

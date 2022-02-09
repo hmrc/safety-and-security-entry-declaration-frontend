@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package pages
-
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+package queries
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class RemoveCountryEnRoutePage(index: Index) extends QuestionPage[Boolean] {
+case object AllCountriesEnRouteQuery extends Gettable[List[String]] {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "removeCountryEnRoute"
+  override def path: JsPath = JsPath \ "countriesEnRoute"
 }

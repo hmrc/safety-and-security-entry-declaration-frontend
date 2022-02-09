@@ -36,7 +36,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new CountryEnRouteFormProvider()
   val form = formProvider()
 
-  lazy val countryEnRouteRoute = routes.CountryEnRouteController.onPageLoad(NormalMode, lrn).url
+  lazy val countryEnRouteRoute = routes.CountryEnRouteController.onPageLoad(NormalMode, lrn, index).url
 
   "CountryEnRoute Controller" - {
 
@@ -52,13 +52,13 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CountryEnRouteView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(CountryEnRoutePage, "DE").success.value
+      val userAnswers = emptyUserAnswers.set(CountryEnRoutePage(index), "DE").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +70,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("DE"), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("DE"), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -91,10 +91,10 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "DE"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(CountryEnRoutePage, "DE").success.value
+        val expectedAnswers = emptyUserAnswers.set(CountryEnRoutePage(index), "DE").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CountryEnRoutePage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual CountryEnRoutePage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +115,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 

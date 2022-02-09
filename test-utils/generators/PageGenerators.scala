@@ -16,19 +16,20 @@
 
 package generators
 
+import models.Index
 import org.scalacheck.Arbitrary
 import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage.type] =
-    Arbitrary(RemoveCountryEnRoutePage)
+  implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage] =
+    Arbitrary(RemoveCountryEnRoutePage(Index(0)))
 
   implicit lazy val arbitraryGoodsPassThroughOtherCountriesPage: Arbitrary[GoodsPassThroughOtherCountriesPage.type] =
     Arbitrary(GoodsPassThroughOtherCountriesPage)
 
-  implicit lazy val arbitraryCountryEnRoutePage: Arbitrary[CountryEnRoutePage.type] =
-    Arbitrary(CountryEnRoutePage)
+  implicit lazy val arbitraryCountryEnRoutePage: Arbitrary[CountryEnRoutePage] =
+    Arbitrary(CountryEnRoutePage(Index(0)))
 
   implicit lazy val arbitraryAddCountryEnRoutePage: Arbitrary[AddCountryEnRoutePage.type] =
     Arbitrary(AddCountryEnRoutePage)

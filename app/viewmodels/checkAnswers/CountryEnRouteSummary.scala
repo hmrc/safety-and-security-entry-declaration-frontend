@@ -17,27 +17,26 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import pages.CountryEnRoutePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import queries.AllCountriesEnRouteQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object CountryEnRouteSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CountryEnRoutePage).map {
-      answer =>
+  def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
+    answers.get(AllCountriesEnRouteQuery).getOrElse(List.empty).zipWithIndex.map {
+      case (country, index) =>
 
-        SummaryListRowViewModel(
-          key     = "countryEnRoute.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.CountryEnRouteController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("countryEnRoute.change.hidden"))
-          )
+        ListItem(
+          name = HtmlFormat.escape(country).toString,
+          changeUrl = routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
+          removeUrl = routes.RemoveCountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
         )
     }
 }

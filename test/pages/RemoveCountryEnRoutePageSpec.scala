@@ -25,17 +25,11 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
   "RemoveCountryEnRoutePage" - {
 
-    beRetrievable[Boolean](RemoveCountryEnRoutePage)
-
-    beSettable[Boolean](RemoveCountryEnRoutePage)
-
-    beRemovable[Boolean](RemoveCountryEnRoutePage)
-
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        RemoveCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers)
+        RemoveCountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +38,7 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemoveCountryEnRoutePage.navigate(CheckMode, emptyUserAnswers)
+        RemoveCountryEnRoutePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
