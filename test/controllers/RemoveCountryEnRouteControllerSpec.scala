@@ -18,9 +18,10 @@ package controllers
 
 import base.SpecBase
 import forms.RemoveCountryEnRouteFormProvider
-import models.NormalMode
+import models.{Country, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{CountryEnRoutePage, RemoveCountryEnRoutePage}
 import play.api.inject.bind
@@ -35,10 +36,11 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveCountryEnRouteFormProvider()
   val form = formProvider()
+  val country = arbitrary[Country].sample.value
 
   lazy val removeCountryEnRouteRoute = routes.RemoveCountryEnRouteController.onPageLoad(NormalMode, lrn, index).url
 
-  private val baseAnswers = emptyUserAnswers.set(CountryEnRoutePage(index), "XX").success.value
+  private val baseAnswers = emptyUserAnswers.set(CountryEnRoutePage(index), country).success.value
 
   "RemoveCountryEnRoute Controller" - {
 

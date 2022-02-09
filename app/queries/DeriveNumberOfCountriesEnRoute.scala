@@ -16,11 +16,12 @@
 
 package queries
 
+import models.Country
 import play.api.libs.json.{JsObject, JsPath}
 
-case object DeriveNumberOfCountriesEnRoute extends Derivable[List[String], Int] {
+case object DeriveNumberOfCountriesEnRoute extends Derivable[List[Country], Int] {
 
-  override val derive: List[String] => Int = _.size
+  override val derive: List[Country] => Int = _.size
 
   override def path: JsPath = JsPath \ "countriesEnRoute"
 }

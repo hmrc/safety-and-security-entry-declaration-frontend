@@ -18,19 +18,18 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
-
 
 class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
   "CountryEnRoutePage" - {
 
-    beRetrievable[String](CountryEnRoutePage(index))
+    beRetrievable[Country](CountryEnRoutePage(index))
 
-    beSettable[String](CountryEnRoutePage(index))
+    beSettable[Country](CountryEnRoutePage(index))
 
-    beRemovable[String](CountryEnRoutePage(index))
+    beRemovable[Country](CountryEnRoutePage(index))
 
     "must navigate in Normal Mode" - {
 

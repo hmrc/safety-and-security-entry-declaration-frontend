@@ -18,19 +18,18 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, Index, NormalMode}
-import pages.behaviours.PageBehaviours
+import models.{CheckMode, Country, Index, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 
 class AddCountryEnRoutePageSpec extends SpecBase {
 
   "AddCountryEnRoutePage" - {
 
-
     "must navigate in Normal Mode" - {
 
       "to Country En Route with an index equal to the number of countries we have details for when the answer is yes" in {
 
-        val answers = emptyUserAnswers.set(CountryEnRoutePage(index), "XX").success.value
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(index), arbitrary[Country].sample.value).success.value
 
         AddCountryEnRoutePage.navigate(NormalMode, answers, addAnother = true)
           .mustEqual(routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))

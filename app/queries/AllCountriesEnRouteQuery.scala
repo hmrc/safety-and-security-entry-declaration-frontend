@@ -15,9 +15,10 @@
  */
 
 package queries
+import models.Country
 import play.api.libs.json.JsPath
 
-case object AllCountriesEnRouteQuery extends Gettable[List[String]] {
+case object AllCountriesEnRouteQuery extends Gettable[List[Country]] {
 
   override def path: JsPath = JsPath \ "countriesEnRoute"
 }
