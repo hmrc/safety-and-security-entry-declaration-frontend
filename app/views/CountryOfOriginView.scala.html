@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
+@import models.Country._
+@import viewmodels.InputWidth
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
+    govukSelect: GovukSelect,
     govukButton: GovukButton
 )
 
@@ -28,18 +29,20 @@
 
 @layout(pageTitle = title(form, messages("countryOfOrigin.title"))) {
 
-    @formHelper(action = routes.CountryOfOriginController.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.CountryOfOriginController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
+        @govukSelect(
+            SelectViewModel(
                 field = form("value"),
+                items = selectItems(internationalCountries),
                 label = LabelViewModel(messages("countryOfOrigin.heading")).asPageHeading()
             )
-            .withWidth(Full)
+            .withCssClass(InputWidth.Fixed20.toString)
+            .withCssClass("autocomplete")
         )
 
         @govukButton(
