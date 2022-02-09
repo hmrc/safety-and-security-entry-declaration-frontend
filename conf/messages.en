@@ -157,27 +157,22 @@ customsOfficeOfFirstEntry.error.required = Enter the customs office the goods wi
 customsOfficeOfFirstEntry.error.length = Customs office must be 8 characters or less
 customsOfficeOfFirstEntry.change.hidden = the customs office the goods will arrive in
 
-addCountryEnRoute.title = addCountryEnRoute
-addCountryEnRoute.heading = addCountryEnRoute
-addCountryEnRoute.checkYourAnswersLabel = addCountryEnRoute
-addCountryEnRoute.error.required = Select yes if addCountryEnRoute
-addCountryEnRoute.change.hidden = AddCountryEnRoute
+addCountryEnRoute.title = Countries the goods pass through
+addCountryEnRoute.heading = Countries the goods pass through
+addCountryEnRoute.error.required = Select yes if you need to add another country
 
-countryEnRoute.title = countryEnRoute
-countryEnRoute.heading = countryEnRoute
-countryEnRoute.checkYourAnswersLabel = countryEnRoute
-countryEnRoute.error.required = Enter countryEnRoute
-countryEnRoute.error.length = CountryEnRoute must be 2 characters or less
-countryEnRoute.change.hidden = CountryEnRoute
+countryEnRoute.title = Which country will the goods pass through?
+countryEnRoute.heading = Which country will the goods pass through?
+countryEnRoute.error.required = Enter the country the goods will pass through
+countryEnRoute.error.length = Country must be 2 characters
+countryEnRoute.change.hidden = the country the goods will pass through
 
-goodsPassThroughOtherCountries.title = goodsPassThroughOtherCountries
-goodsPassThroughOtherCountries.heading = goodsPassThroughOtherCountries
-goodsPassThroughOtherCountries.checkYourAnswersLabel = goodsPassThroughOtherCountries
-goodsPassThroughOtherCountries.error.required = Select yes if goodsPassThroughOtherCountries
-goodsPassThroughOtherCountries.change.hidden = GoodsPassThroughOtherCountries
+goodsPassThroughOtherCountries.title = Will the goods pass through any other countries on the way to Great Britain?
+goodsPassThroughOtherCountries.heading = Will the goods pass through any other countries on the way to Great Britain?
+goodsPassThroughOtherCountries.checkYourAnswersLabel = Goods pass through other countries
+goodsPassThroughOtherCountries.error.required = Select yes if the goods will pass through any other countries
+goodsPassThroughOtherCountries.change.hidden = if the goods will pass through any other countries on the way to Great Britain
 
-removeCountryEnRoute.title = removeCountryEnRoute
-removeCountryEnRoute.heading = removeCountryEnRoute
-removeCountryEnRoute.checkYourAnswersLabel = removeCountryEnRoute
-removeCountryEnRoute.error.required = Select yes if removeCountryEnRoute
-removeCountryEnRoute.change.hidden = RemoveCountryEnRoute
+removeCountryEnRoute.title = Are you sure you want to remove this country?
+removeCountryEnRoute.heading = Are you sure you want to remove this country?
+removeCountryEnRoute.error.required = Select yes if you need to remove this country
