@@ -17,16 +17,21 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.DeriveNumberOfCountriesEnRoute
 
-case object CountryOfOriginPage extends QuestionPage[String] {
+case class RemoveCountryEnRoutePage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "countryOfOrigin"
+  override def toString: String = "removeCountryEnRoute"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(DeriveNumberOfCountriesEnRoute) match {
+      case Some(n) if n > 0 => routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
+      case _                => routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+    }
+  }
 }

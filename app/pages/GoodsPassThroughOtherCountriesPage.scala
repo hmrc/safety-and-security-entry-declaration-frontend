@@ -17,16 +17,21 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CountryOfOriginPage extends QuestionPage[String] {
+case object GoodsPassThroughOtherCountriesPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "countryOfOrigin"
+  override def toString: String = "goodsPassThroughOtherCountries"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(GoodsPassThroughOtherCountriesPage) match {
+      case Some(true)  => routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case Some(false) => routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+      case None        => routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

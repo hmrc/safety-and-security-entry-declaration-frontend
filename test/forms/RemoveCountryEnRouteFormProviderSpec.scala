@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case object CountryOfOriginPage extends QuestionPage[String] {
+class RemoveCountryEnRouteFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  val requiredKey = "removeCountryEnRoute.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "countryOfOrigin"
+  val form = new RemoveCountryEnRouteFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

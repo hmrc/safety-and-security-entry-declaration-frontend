@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package pages
-
-import controllers.routes
-import models.{NormalMode, UserAnswers}
+package queries
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case object CountryOfOriginPage extends QuestionPage[String] {
+case object AllCountriesEnRouteQuery extends Gettable[List[String]] {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "countryOfOrigin"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+  override def path: JsPath = JsPath \ "countriesEnRoute"
 }

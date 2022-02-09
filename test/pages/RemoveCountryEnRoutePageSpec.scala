@@ -18,25 +18,26 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
+class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
-class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
-
-  "CountryOfOriginPage" - {
-
-    beRetrievable[String](CountryOfOriginPage)
-
-    beSettable[String](CountryOfOriginPage)
-
-    beRemovable[String](CountryOfOriginPage)
+  "RemoveCountryEnRoutePage" - {
 
     "must navigate in Normal Mode" - {
 
-      "to Goods Pass Through Other Countries" in {
+      "to Add Country En Route when there is at least one country in user answers" in {
 
-        CountryOfOriginPage.navigate(NormalMode, emptyUserAnswers)
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), "XX").success.value
+
+        RemoveCountryEnRoutePage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Goods Pass Through Other Countries when there are no countries in user answers" in {
+
+        RemoveCountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -45,7 +46,7 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryOfOriginPage.navigate(CheckMode, emptyUserAnswers)
+        RemoveCountryEnRoutePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

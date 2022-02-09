@@ -156,3 +156,24 @@ customsOfficeOfFirstEntry.checkYourAnswersLabel = Customs office of arrival
 customsOfficeOfFirstEntry.error.required = Enter the customs office the goods will arrive in
 customsOfficeOfFirstEntry.error.length = Customs office must be 8 characters or less
 customsOfficeOfFirstEntry.change.hidden = the customs office the goods will arrive in
+
+addCountryEnRoute.title = Countries the goods pass through
+addCountryEnRoute.heading = Countries the goods pass through
+addCountryEnRoute.addAnother = Do you need to add another country?
+addCountryEnRoute.error.required = Select yes if you need to add another country
+
+countryEnRoute.title = Which country will the goods pass through?
+countryEnRoute.heading = Which country will the goods pass through?
+countryEnRoute.error.required = Enter the country the goods will pass through
+countryEnRoute.error.length = Country must be 2 characters
+countryEnRoute.change.hidden = the country the goods will pass through
+
+goodsPassThroughOtherCountries.title = Will the goods pass through any other countries on the way to Great Britain?
+goodsPassThroughOtherCountries.heading = Will the goods pass through any other countries on the way to Great Britain?
+goodsPassThroughOtherCountries.checkYourAnswersLabel = Goods pass through other countries
+goodsPassThroughOtherCountries.error.required = Select yes if the goods will pass through any other countries
+goodsPassThroughOtherCountries.change.hidden = if the goods will pass through any other countries on the way to Great Britain
+
+removeCountryEnRoute.title = Are you sure you want to remove this country?
+removeCountryEnRoute.heading = Are you sure you want to remove this country?
+removeCountryEnRoute.error.required = Select yes if you need to remove this country

@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case object CountryOfOriginPage extends QuestionPage[String] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class RemoveCountryEnRouteFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "countryOfOrigin"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("removeCountryEnRoute.error.required")
+    )
 }

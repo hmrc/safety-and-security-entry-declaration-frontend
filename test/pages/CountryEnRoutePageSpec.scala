@@ -22,22 +22,22 @@ import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
-class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
+class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
-  "CountryOfOriginPage" - {
+  "CountryEnRoutePage" - {
 
-    beRetrievable[String](CountryOfOriginPage)
+    beRetrievable[String](CountryEnRoutePage(index))
 
-    beSettable[String](CountryOfOriginPage)
+    beSettable[String](CountryEnRoutePage(index))
 
-    beRemovable[String](CountryOfOriginPage)
+    beRemovable[String](CountryEnRoutePage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to Goods Pass Through Other Countries" in {
+      "to Add Country En Route" in {
 
-        CountryOfOriginPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        CountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
@@ -45,7 +45,7 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryOfOriginPage.navigate(CheckMode, emptyUserAnswers)
+        CountryEnRoutePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

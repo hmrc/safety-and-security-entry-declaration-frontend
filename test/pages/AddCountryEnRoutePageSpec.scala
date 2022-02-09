@@ -18,26 +18,28 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
+class AddCountryEnRoutePageSpec extends SpecBase {
 
-class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
+  "AddCountryEnRoutePage" - {
 
-  "CountryOfOriginPage" - {
-
-    beRetrievable[String](CountryOfOriginPage)
-
-    beSettable[String](CountryOfOriginPage)
-
-    beRemovable[String](CountryOfOriginPage)
 
     "must navigate in Normal Mode" - {
 
-      "to Goods Pass Through Other Countries" in {
+      "to Country En Route with an index equal to the number of countries we have details for when the answer is yes" in {
 
-        CountryOfOriginPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(index), "XX").success.value
+
+        AddCountryEnRoutePage.navigate(NormalMode, answers, addAnother = true)
+          .mustEqual(routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+      }
+
+      "to Customs Office of First Entry when the answer is no" in {
+
+        AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
+          .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
@@ -45,7 +47,7 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryOfOriginPage.navigate(CheckMode, emptyUserAnswers)
+        AddCountryEnRoutePage.navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
