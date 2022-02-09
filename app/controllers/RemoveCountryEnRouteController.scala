@@ -21,7 +21,7 @@ import forms.RemoveCountryEnRouteFormProvider
 
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.RemoveCountryEnRoutePage
+import pages.{CountryEnRoutePage, RemoveCountryEnRoutePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,13 +45,7 @@ class RemoveCountryEnRouteController @Inject()(
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(RemoveCountryEnRoutePage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(form, mode, lrn, index))
   }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
@@ -62,10 +56,14 @@ class RemoveCountryEnRouteController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveCountryEnRoutePage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
+          if (value) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
+          } else {
+            Future.successful(Redirect(RemoveCountryEnRoutePage(index).navigate(mode, request.userAnswers)))
+          }
       )
   }
 }

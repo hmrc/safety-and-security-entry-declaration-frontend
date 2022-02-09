@@ -20,9 +20,9 @@ import base.SpecBase
 import forms.RemoveCountryEnRouteFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.RemoveCountryEnRoutePage
+import pages.{CountryEnRoutePage, RemoveCountryEnRoutePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,11 +38,13 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val removeCountryEnRouteRoute = routes.RemoveCountryEnRouteController.onPageLoad(NormalMode, lrn, index).url
 
+  private val baseAnswers = emptyUserAnswers.set(CountryEnRoutePage(index), "XX").success.value
+
   "RemoveCountryEnRoute Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, removeCountryEnRouteRoute)
@@ -56,32 +58,14 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemoveCountryEnRoutePage(index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeCountryEnRouteRoute)
-
-        val view = application.injector.instanceOf[RemoveCountryEnRouteView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must delete a country and redirect to the next page when the user answers yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -91,11 +75,36 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemoveCountryEnRoutePage(index), true).success.value
+        val expectedAnswers = baseAnswers.remove(CountryEnRoutePage(index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveCountryEnRoutePage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must not delete a country and redirect to the next page when the user answers no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeCountryEnRouteRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result          = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveCountryEnRoutePage(index).navigate(NormalMode, expectedAnswers).url
+        verify(mockSessionRepository, never).set(any())
       }
     }
 
