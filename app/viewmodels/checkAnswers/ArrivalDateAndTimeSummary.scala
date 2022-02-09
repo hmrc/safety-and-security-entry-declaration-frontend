@@ -30,13 +30,14 @@ import java.time.format.DateTimeFormatter
 
 object ArrivalDateAndTimeSummary  {
 
-  private def dateFormatter = DateTimeFormatter.ofPattern("d MMMM ccyy")
+  private def dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
   private def timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ArrivalDateAndTimePage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.date.format(dateFormatter)).toString + "<br/>" + HtmlFormat.escape(answer.time.format(timeFormatter)).toString
+        val value = HtmlFormat.escape(answer.date.format(dateFormatter)).toString + "<br/>" + HtmlFormat.escape(answer.time.format(timeFormatter)).toString
 
         SummaryListRowViewModel(
           key     = "arrivalDateAndTime.checkYourAnswersLabel",

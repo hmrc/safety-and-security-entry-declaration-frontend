@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@this(
+        layout: templates.Layout,
+        govukSummaryList: GovukSummaryList
+)
 
-import controllers.routes
-import models.{ArrivalDateAndTime, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+@(list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-case object ArrivalDateAndTimePage extends QuestionPage[ArrivalDateAndTime] {
+@layout(pageTitle = titleNoForm(messages("checkRouteDetails.title"))) {
 
-  override def path: JsPath = JsPath \ toString
+    <h1 class="govuk-heading-xl">@messages("checkRouteDetails.heading")</h1>
 
-  override def toString: String = "arrivalDateAndTime"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.CheckRouteDetailsController.onPageLoad(answers.lrn)
+    @govukSummaryList(list)
 }
