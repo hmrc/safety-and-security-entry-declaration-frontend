@@ -33,10 +33,10 @@ class TransportModePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Identify Carrier" in {
+      "to the Task List" in {
 
         TransportModePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IdentifyCarrierController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
 

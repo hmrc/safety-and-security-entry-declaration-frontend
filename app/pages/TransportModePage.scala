@@ -28,5 +28,5 @@ case object TransportModePage extends QuestionPage[TransportMode] {
   override def toString: String = "transportMode"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn)
+    routes.TaskListController.onPageLoad(answers.lrn)
 }
