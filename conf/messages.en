@@ -182,3 +182,12 @@ removeCountryEnRoute.error.required = Select yes if you need to remove this coun
 
 checkRouteDetails.title = Check route details
 checkRouteDetails.heading = Check route details
+
+taskList.title = ENS declaration: {0}
+taskList.heading = ENS declaration: {0}
+taskList.routeDetails = Complete route details
+taskList.carrier = Complete carrier details
+taskList.completed = Completed
+taskList.notStarted = Not started
+taskList.inProgress = In progress
+taskList.invalid = Invalid
