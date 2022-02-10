@@ -191,3 +191,22 @@ taskList.completed = Completed
 taskList.notStarted = Not started
 taskList.inProgress = In progress
 taskList.invalid = Invalid
+commodityCode.title = commodityCode
+commodityCode.heading = commodityCode
+commodityCode.checkYourAnswersLabel = commodityCode
+commodityCode.error.required = Enter commodityCode
+commodityCode.error.length = CommodityCode must be 8 characters or less
+commodityCode.change.hidden = CommodityCode
+
+commodityCodeKnown.title = commodityCodeKnown
+commodityCodeKnown.heading = commodityCodeKnown
+commodityCodeKnown.checkYourAnswersLabel = commodityCodeKnown
+commodityCodeKnown.error.required = Select yes if commodityCodeKnown
+commodityCodeKnown.change.hidden = CommodityCodeKnown
+
+goodsDescription.title = goodsDescription
+goodsDescription.heading = goodsDescription
+goodsDescription.checkYourAnswersLabel = goodsDescription
+goodsDescription.error.required = Enter goodsDescription
+goodsDescription.error.length = GoodsDescription must be 280 characters or less
+goodsDescription.change.hidden = GoodsDescription
