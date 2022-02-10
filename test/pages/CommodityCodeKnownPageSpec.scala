@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
@@ -33,10 +33,22 @@ class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to CommodityCodePage when answer is yes" in {
 
-        CommodityCodeKnownPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
+
+
+        CommodityCodeKnownPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.CommodityCodeController.onPageLoad(NormalMode,answers.lrn,index))
+      }
+
+      "to GoodsDescriptionPage when answer is no" in {
+
+        val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), false).success.value
+
+
+        CommodityCodeKnownPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.GoodsDescriptionController.onPageLoad(NormalMode,answers.lrn,index))
       }
     }
 

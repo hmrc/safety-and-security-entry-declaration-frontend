@@ -26,4 +26,12 @@ case class CommodityCodeKnownPage(index: Index) extends QuestionPage[Boolean] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "commodityCodeKnown"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(CommodityCodeKnownPage(index)) match {
+      case Some(true) => routes.CommodityCodeController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(false) => routes.GoodsDescriptionController.onPageLoad(NormalMode,answers.lrn,index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }
