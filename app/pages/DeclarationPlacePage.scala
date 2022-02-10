@@ -26,4 +26,7 @@ case object DeclarationPlacePage extends QuestionPage[String] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "declarationPlace"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.LodgingPersonTypeController.onPageLoad(NormalMode, answers.lrn)
 }

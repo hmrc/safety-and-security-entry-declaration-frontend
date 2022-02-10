@@ -28,5 +28,5 @@ case object LocalReferenceNumberPage extends QuestionPage[LocalReferenceNumber] 
   override def toString: String = "localReferenceNumber"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.LodgingPersonTypeController.onPageLoad(NormalMode, answers.lrn)
+    routes.DeclarationPlaceController.onPageLoad(NormalMode, answers.lrn)
 }

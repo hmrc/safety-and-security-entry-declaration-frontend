@@ -34,10 +34,10 @@ class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Lodging Person" in {
 
         DeclarationPlacePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
