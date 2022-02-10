@@ -18,25 +18,26 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode, TransportMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class TransportModePageSpec extends SpecBase with PageBehaviours {
 
-  "TransportModePage" - {
+class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
-    beRetrievable[TransportMode](TransportModePage)
+  "DeclarationPlacePage" - {
 
-    beSettable[TransportMode](TransportModePage)
+    beRetrievable[String](DeclarationPlacePage)
 
-    beRemovable[TransportMode](TransportModePage)
+    beSettable[String](DeclarationPlacePage)
+
+    beRemovable[String](DeclarationPlacePage)
 
     "must navigate in Normal Mode" - {
 
-      "to the Task List" in {
+      "to Lodging Person" in {
 
-        TransportModePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
+        DeclarationPlacePage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
@@ -44,7 +45,7 @@ class TransportModePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        TransportModePage.navigate(CheckMode, emptyUserAnswers)
+        DeclarationPlacePage.navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

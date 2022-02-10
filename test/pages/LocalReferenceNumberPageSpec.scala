@@ -34,10 +34,10 @@ class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Lodging Person" in {
+      "to Declaration Place" in {
 
         LocalReferenceNumberPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(routes.DeclarationPlaceController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

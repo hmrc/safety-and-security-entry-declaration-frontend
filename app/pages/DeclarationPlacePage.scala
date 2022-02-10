@@ -17,16 +17,16 @@
 package pages
 
 import controllers.routes
-import models.{LocalReferenceNumber, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object LocalReferenceNumberPage extends QuestionPage[LocalReferenceNumber] {
+case object DeclarationPlacePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "localReferenceNumber"
+  override def toString: String = "declarationPlace"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.DeclarationPlaceController.onPageLoad(NormalMode, answers.lrn)
+    routes.LodgingPersonTypeController.onPageLoad(NormalMode, answers.lrn)
 }

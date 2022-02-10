@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{LocalReferenceNumber, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case object LocalReferenceNumberPage extends QuestionPage[LocalReferenceNumber] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class DeclarationPlaceFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "localReferenceNumber"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.DeclarationPlaceController.onPageLoad(NormalMode, answers.lrn)
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("declarationPlace.error.required")
+        .verifying(maxLength(35, "declarationPlace.error.length"))
+    )
 }

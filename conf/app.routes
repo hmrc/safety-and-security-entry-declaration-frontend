@@ -107,3 +107,8 @@ GET        /:lrn/goodsDescription/:index                        controllers.Good
 POST       /:lrn/goodsDescription/:index                        controllers.GoodsDescriptionController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeGoodsDescription/:index                  controllers.GoodsDescriptionController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeGoodsDescription/:index                  controllers.GoodsDescriptionController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/declarationPlace                        controllers.DeclarationPlaceController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/declarationPlace                        controllers.DeclarationPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeDeclarationPlace                  controllers.DeclarationPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeDeclarationPlace                  controllers.DeclarationPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
