@@ -211,3 +211,10 @@ goodsDescription.checkYourAnswersLabel = Description of the goods
 goodsDescription.error.required = Enter the description of the goods
 goodsDescription.error.length = The description of the goods must be 280 characters or less
 goodsDescription.change.hidden = the description of the goods
+
+declarationPlace.title = declarationPlace
+declarationPlace.heading = declarationPlace
+declarationPlace.checkYourAnswersLabel = declarationPlace
+declarationPlace.error.required = Enter declarationPlace
+declarationPlace.error.length = DeclarationPlace must be 35 characters or less
+declarationPlace.change.hidden = DeclarationPlace
