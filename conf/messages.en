@@ -101,11 +101,11 @@ transportMode.heading = What is the mode of transport?
 
 transportMode.maritime = Maritime
 transportMode.rail = Rail
-transportMode.road = Road
+transportMode.road = Road (including Channel Tunnel shuttle service)
 transportMode.air = Air
 transportMode.inlandWaterTransport = Inland Water Transport
-transportMode.roro.accompanied = RoRo Accompanied
-transportMode.roro.unaccompanied = RoRo Unaccompanied
+transportMode.roro.accompanied = RoRo - accompanied (self-drive)
+transportMode.roro.unaccompanied = RoRo - unaccompanied
 
 transportMode.checkYourAnswersLabel = What is the mode of transport?
 transportMode.error.required = Select transportMode

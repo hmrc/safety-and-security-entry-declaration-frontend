@@ -28,12 +28,11 @@ object TransportMode extends Enumerable.Implicits {
   case object Rail extends WithName("rail") with TransportMode
   case object Road extends WithName("road") with TransportMode
   case object Air extends WithName("air") with TransportMode
-  case object InlandWaterTransport extends WithName("inlandWaterTransport") with TransportMode
   case object RoroAccompanied extends WithName("roro.accompanied") with TransportMode
   case object RoroUnaccompanied extends WithName("roro.unaccompanied") with TransportMode
 
   val values: Seq[TransportMode] = Seq(
-    Maritime, Rail, Road, Air, InlandWaterTransport, RoroAccompanied, RoroUnaccompanied
+    RoroAccompanied, RoroUnaccompanied, Maritime, Rail, Road, Air
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
