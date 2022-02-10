@@ -191,3 +191,23 @@ taskList.completed = Completed
 taskList.notStarted = Not started
 taskList.inProgress = In progress
 taskList.invalid = Invalid
+
+commodityCode.title = What is the commodity code?
+commodityCode.heading = What is the commodity code?
+commodityCode.checkYourAnswersLabel = Commodity code
+commodityCode.error.required = Enter the commodity code
+commodityCode.error.length = Commodity code must be 8 characters or less
+commodityCode.change.hidden = the commodity code
+
+commodityCodeKnown.title = Do you know the commodity code?
+commodityCodeKnown.heading = Do you know the commodity code?
+commodityCodeKnown.checkYourAnswersLabel = Commodity code known
+commodityCodeKnown.error.required = Select yes if you know the commodity code
+commodityCodeKnown.change.hidden = if you know the commodity code
+
+goodsDescription.title = What is the description of the goods?
+goodsDescription.heading = What is the description of the goods?
+goodsDescription.checkYourAnswersLabel = Description of the goods
+goodsDescription.error.required = Enter the description of the goods
+goodsDescription.error.length = The description of the goods must be 280 characters or less
+goodsDescription.change.hidden = the description of the goods

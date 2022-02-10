@@ -92,3 +92,18 @@ GET        /:lrn/removeCountryEnRoute/:index                        controllers.
 POST       /:lrn/removeCountryEnRoute/:index                        controllers.RemoveCountryEnRouteController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeRemoveCountryEnRoute/:index                  controllers.RemoveCountryEnRouteController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeRemoveCountryEnRoute/:index                  controllers.RemoveCountryEnRouteController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/commodityCode/:index                        controllers.CommodityCodeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/commodityCode/:index                        controllers.CommodityCodeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeCommodityCode/:index                  controllers.CommodityCodeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeCommodityCode/:index                  controllers.CommodityCodeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/commodityCodeKnown/:index                        controllers.CommodityCodeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/commodityCodeKnown/:index                        controllers.CommodityCodeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeCommodityCodeKnown/:index                  controllers.CommodityCodeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeCommodityCodeKnown/:index                  controllers.CommodityCodeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/goodsDescription/:index                        controllers.GoodsDescriptionController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/goodsDescription/:index                        controllers.GoodsDescriptionController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeGoodsDescription/:index                  controllers.GoodsDescriptionController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeGoodsDescription/:index                  controllers.GoodsDescriptionController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
