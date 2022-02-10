@@ -26,17 +26,17 @@ class GoodsDescriptionPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsDescriptionPage" - {
 
-    beRetrievable[String](GoodsDescriptionPage)
+    beRetrievable[String](GoodsDescriptionPage(index))
 
-    beSettable[String](GoodsDescriptionPage)
+    beSettable[String](GoodsDescriptionPage(index))
 
-    beRemovable[String](GoodsDescriptionPage)
+    beRemovable[String](GoodsDescriptionPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        GoodsDescriptionPage.navigate(NormalMode, emptyUserAnswers)
+        GoodsDescriptionPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class GoodsDescriptionPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsDescriptionPage.navigate(CheckMode, emptyUserAnswers)
+        GoodsDescriptionPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

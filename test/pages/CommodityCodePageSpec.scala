@@ -26,17 +26,17 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
   "CommodityCodePage" - {
 
-    beRetrievable[String](CommodityCodePage)
+    beRetrievable[String](CommodityCodePage(index))
 
-    beSettable[String](CommodityCodePage)
+    beSettable[String](CommodityCodePage(index))
 
-    beRemovable[String](CommodityCodePage)
+    beRemovable[String](CommodityCodePage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        CommodityCodePage.navigate(NormalMode, emptyUserAnswers)
+        CommodityCodePage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CommodityCodePage.navigate(CheckMode, emptyUserAnswers)
+        CommodityCodePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

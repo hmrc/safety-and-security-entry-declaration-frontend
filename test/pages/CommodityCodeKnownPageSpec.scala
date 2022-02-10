@@ -25,17 +25,17 @@ class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
   "CommodityCodeKnownPage" - {
 
-    beRetrievable[Boolean](CommodityCodeKnownPage)
+    beRetrievable[Boolean](CommodityCodeKnownPage(index))
 
-    beSettable[Boolean](CommodityCodeKnownPage)
+    beSettable[Boolean](CommodityCodeKnownPage(index))
 
-    beRemovable[Boolean](CommodityCodeKnownPage)
+    beRemovable[Boolean](CommodityCodeKnownPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        CommodityCodeKnownPage.navigate(NormalMode, emptyUserAnswers)
+        CommodityCodeKnownPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CommodityCodeKnownPage.navigate(CheckMode, emptyUserAnswers)
+        CommodityCodeKnownPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

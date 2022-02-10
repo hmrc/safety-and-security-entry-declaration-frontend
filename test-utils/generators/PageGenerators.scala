@@ -22,14 +22,14 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryGoodsDescriptionPage: Arbitrary[GoodsDescriptionPage.type] =
-    Arbitrary(GoodsDescriptionPage)
+  implicit lazy val arbitraryGoodsDescriptionPage: Arbitrary[GoodsDescriptionPage] =
+    Arbitrary(GoodsDescriptionPage(Index(0)))
 
-  implicit lazy val arbitraryCommodityCodeKnownPage: Arbitrary[CommodityCodeKnownPage.type] =
-    Arbitrary(CommodityCodeKnownPage)
+  implicit lazy val arbitraryCommodityCodeKnownPage: Arbitrary[CommodityCodeKnownPage] =
+    Arbitrary(CommodityCodeKnownPage(Index(0)))
 
-  implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage.type] =
-    Arbitrary(CommodityCodePage)
+  implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
+    Arbitrary(CommodityCodePage(Index(0)))
 
   implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage] =
     Arbitrary(RemoveCountryEnRoutePage(Index(0)))
