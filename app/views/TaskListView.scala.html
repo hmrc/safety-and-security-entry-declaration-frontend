@@ -14,11 +14,14 @@
  * limitations under the License.
  *@
 
+@import viewmodels.TaskListViewModel
+
 @this(
-        layout: templates.Layout
+        layout: templates.Layout,
+        govukTag: GovukTag
 )
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(lrn: LocalReferenceNumber, viewModel: TaskListViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("taskList.title", lrn.value)),
@@ -26,4 +29,17 @@
 ) {
 
     <h1 class="govuk-heading-xl">@messages("taskList.heading", lrn.value)</h1>
+
+    <ul class="app-task-list__items">
+        @viewModel.rows.map { row =>
+          <li class="app-task-list__item">
+              <span class="app-task-list__task-name">
+                  <a href="@row.link" class="govuk-link">@messages(row.messageKey)</a>
+              </span>
+           <span class="hmrc-status-tag">
+               @govukTag(row.completionStatusTag)
+           </span>
+          </li>
+        }
+    </ul>
 }

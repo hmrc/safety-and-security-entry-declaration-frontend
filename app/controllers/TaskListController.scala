@@ -23,6 +23,7 @@ import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.TaskListViewModel
 import views.html.TaskListView
 
 class TaskListController @Inject()(
@@ -35,7 +36,9 @@ class TaskListController @Inject()(
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
-      Ok(view(lrn))
-  }
 
+      val viewModel = TaskListViewModel.fromAnswers(request.userAnswers)
+
+      Ok(view(lrn, viewModel))
+  }
 }

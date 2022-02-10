@@ -17,18 +17,23 @@
 package controllers
 
 import base.SpecBase
+import models.LodgingPersonType
+import pages.LodgingPersonTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.TaskListViewModel
 import viewmodels.govuk.SummaryListFluency
 import views.html.TaskListView
 
 class TaskListControllerSpec extends SpecBase with SummaryListFluency {
 
+  private val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.TaskListController.onPageLoad(lrn).url)
@@ -36,9 +41,10 @@ class TaskListControllerSpec extends SpecBase with SummaryListFluency {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[TaskListView]
+        val taskList = TaskListViewModel.fromAnswers(answers)(messages(application))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(lrn, taskList)(request, messages(application)).toString
       }
     }
 
