@@ -10,6 +10,7 @@ site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
+site.startDeclaration = New ENS declaration
 
 date.day = Day
 date.month = Month
@@ -84,17 +85,17 @@ grossWeight.heading = How do you want to give the gross weight of the goods?
 grossWeight.overall = Overall
 grossWeight.perItem = Per item
 grossWeight.checkYourAnswersLabel = How do you want to give the gross weight of the goods?
-grossWeight.error.required = Select grossWeight
-grossWeight.change.hidden = GrossWeight
+grossWeight.error.required = Select how you want to give the gross weight of the goods
+grossWeight.change.hidden = how you want to give the gross weight of the goods
 
-totalGrossWeight.title = TotalGrossWeight
-totalGrossWeight.heading = Total Gross Weight
-totalGrossWeight.checkYourAnswersLabel = TotalGrossWeight
-totalGrossWeight.error.nonNumeric = Enter your totalGrossWeight using numbers
-totalGrossWeight.error.required = Enter your totalGrossWeight
-totalGrossWeight.error.wholeNumber = Enter your totalGrossWeight using whole numbers
-totalGrossWeight.error.outOfRange = TotalGrossWeight must be between {0} and {1}
-totalGrossWeight.change.hidden = TotalGrossWeight
+totalGrossWeight.title = What is the total gross weight of the goods?
+totalGrossWeight.heading = What is the total gross weight of the goods?
+totalGrossWeight.checkYourAnswersLabel = Total gross weight
+totalGrossWeight.error.nonNumeric = Enter the total gross weight using numbers
+totalGrossWeight.error.required = Enter the total gross weight of the goods
+totalGrossWeight.error.wholeNumber = Enter the total gross weight using whole numbers
+totalGrossWeight.error.outOfRange = Total gross weight must be between {0} and {1}
+totalGrossWeight.change.hidden = the total gross weight of the goods
 
 transportMode.title = What is the mode of transport?
 transportMode.heading = What is the mode of transport?
@@ -103,28 +104,27 @@ transportMode.maritime = Maritime
 transportMode.rail = Rail
 transportMode.road = Road (including Channel Tunnel shuttle service)
 transportMode.air = Air
-transportMode.inlandWaterTransport = Inland Water Transport
 transportMode.roro.accompanied = RoRo - accompanied (self-drive)
 transportMode.roro.unaccompanied = RoRo - unaccompanied
 
 transportMode.checkYourAnswersLabel = What is the mode of transport?
-transportMode.error.required = Select transportMode
-transportMode.change.hidden = TransportMode
+transportMode.error.required = Select the mode of transport
+transportMode.change.hidden = the mode of transport
 
 identifyCarrier.title = How do you want to identify the carrier?
 identifyCarrier.heading = How do you want to identify the carrier?
 identifyCarrier.gb.eori = GB EORI
-identifyCarrier.nameAddress = Name/address
+identifyCarrier.nameAddress = Name and address
 identifyCarrier.checkYourAnswersLabel = How do you want to identify the carrier?
-identifyCarrier.error.required = Select identifyCarrier
-identifyCarrier.change.hidden = IdentifyCarrier
+identifyCarrier.error.required = Select how you want to identify the carrier
+identifyCarrier.change.hidden = how you want to identify the carrier
 
-carriersEORI.title = Enter the carriers GB EORI
-carriersEORI.heading = Enter the carriers GB EORI
-carriersEORI.checkYourAnswersLabel = carriersEORI
-carriersEORI.error.required = Enter carriersEORI
-carriersEORI.error.length = CarriersEORI must be 100 characters or less
-carriersEORI.change.hidden = CarriersEORI
+carriersEORI.title = What is the GB EORI number of the carrier?
+carriersEORI.heading = What is the GB EORI number of the carrier?
+carriersEORI.checkYourAnswersLabel = GB EORI number
+carriersEORI.error.required = Enter the GB EORI number of the carrier
+carriersEORI.error.length = EORI number must be 100 characters or less
+carriersEORI.change.hidden = the GB EORI number of the carrier
 
 arrivalDateAndTime.title = When is the consignment due to arrive in Great Britain?
 arrivalDateAndTime.heading = When is the consignment due to arrive in Great Britain?
