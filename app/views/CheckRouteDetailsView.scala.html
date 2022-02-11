@@ -26,4 +26,6 @@
     <h1 class="govuk-heading-xl">@messages("checkRouteDetails.heading")</h1>
 
     @govukSummaryList(list)
+
+    <a href="@routes.TaskListController.onPageLoad(lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
 }

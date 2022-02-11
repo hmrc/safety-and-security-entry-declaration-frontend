@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("localReferenceNumber.title"))) {
 
-    @formHelper(action = routes.LocalReferenceNumberController.onSubmit(mode)) {
+    @formHelper(action = routes.LocalReferenceNumberController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

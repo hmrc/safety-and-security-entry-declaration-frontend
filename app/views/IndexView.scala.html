@@ -27,5 +27,7 @@
 
     <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
 
-    <p class="govuk-body">@messages("index.guidance")</p>
+    <a href="@routes.LocalReferenceNumberController.onPageLoad(NormalMode)" class="govuk-button">
+        @messages("site.startDeclaration")
+    </a>
 }

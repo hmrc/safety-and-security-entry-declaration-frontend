@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("carriersEORI.title"))) {
 
-    @formHelper(action = routes.CarriersEORIController.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.CarriersEORIController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("declarationPlace.title"))) {
 
-    @formHelper(action = routes.DeclarationPlaceController.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.DeclarationPlaceController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
