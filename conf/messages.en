@@ -64,13 +64,12 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-localReferenceNumber.title = What is the Local Reference Number?
-localReferenceNumber.heading = What is the Local Reference Number?
-localReferenceNumber.checkYourAnswersLabel = Local Reference Number
-localReferenceNumber.error.required = Enter the Local Reference Number
-localReferenceNumber.error.invalid = Local Reference Number can only contain letters and numbers
-localReferenceNumber.error.length = Local Reference Number must be 22 characters or less
-localReferenceNumber.change.hidden = the Local Reference Number
+localReferenceNumber.title = Name your ENS
+localReferenceNumber.heading = Name your ENS
+localReferenceNumber.error.required = Enter the name of your ENS
+localReferenceNumber.error.invalid = Name can only contain letters and numbers
+localReferenceNumber.error.length = Name must be 22 characters or less
+localReferenceNumber.change.hidden = the name of your ENS
 
 lodgingPersonType.title = Are you the carrier or a representative?
 lodgingPersonType.heading = Are you the carrier or a representative?
