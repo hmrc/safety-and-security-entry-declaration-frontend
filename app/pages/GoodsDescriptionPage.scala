@@ -26,4 +26,7 @@ case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "goodsDescription"
+
+  override def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
 }

@@ -226,7 +226,7 @@ addMarkOrNumber.change.hidden = if you need to add a mark or number
 
 addPackage.title = Packaging of the item
 addPackage.heading = Packaging of the item
-addPackageaddAnother = Do you need to add another type?
+addPackage.addAnother = Do you need to add another type?
 addPackage.error.required = Select yes if you need to add another type
 
 kindOfPackage.title = How are the goods packaged?
@@ -263,3 +263,6 @@ numberOfPieces.change.hidden = how many pieces there are
 removePackage.title = Are you sure you want to remove this package?
 removePackage.heading = Are you sure you want to remove this package?
 removePackage.error.required = Select yes if you want to remove this package
+
+checkPackageItem.heading = Check package details
+checkPackageItem.title = Check package details

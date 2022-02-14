@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels
+package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
@@ -31,7 +31,7 @@ object PackageSummary {
       case (packageItem, index) =>
 
         ListItem(
-          name = HtmlFormat.escape(packageItem.toString).toString, // TODO: Get kind of package
+          name = HtmlFormat.escape(packageItem.kind.code + " - " + packageItem.kind.name).toString,
           changeUrl = routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url,
           removeUrl = routes.RemovePackageController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url
         )

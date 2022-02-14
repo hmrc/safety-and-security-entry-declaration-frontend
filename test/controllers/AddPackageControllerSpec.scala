@@ -24,7 +24,7 @@ import pages.{AddPackagePage, KindOfPackagePage, MarkOrNumberPage, NumberOfPacka
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.PackageSummary
+import viewmodels.checkAnswers.PackageSummary
 import views.html.AddPackageView
 
 class AddPackageControllerSpec extends SpecBase with MockitoSugar {
