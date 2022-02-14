@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+class RemovePackageFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "goodsDescription"
-
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("removePackage.error.required")
+    )
 }

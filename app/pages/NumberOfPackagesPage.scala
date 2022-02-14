@@ -21,12 +21,12 @@ import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+case class NumberOfPackagesPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Int] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
-  override def toString: String = "goodsDescription"
+  override def toString: String = "numberOfPackages"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
 }

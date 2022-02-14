@@ -217,3 +217,52 @@ declarationPlace.checkYourAnswersLabel = Declaration place
 declarationPlace.error.required = Enter where you are completing this declaration
 declarationPlace.error.length = Where you are completing this declaration must be 35 characters or less
 declarationPlace.change.hidden = where you are completing this declaration
+
+addMarkOrNumber.title = Do you need to add a mark or number?
+addMarkOrNumber.heading = Do you need to add a mark or number?
+addMarkOrNumber.checkYourAnswersLabel = Needs a mark or number
+addMarkOrNumber.error.required = Select yes if you need to add a mark or number
+addMarkOrNumber.change.hidden = if you need to add a mark or number
+
+addPackage.title = Packaging of the item
+addPackage.heading = Packaging of the item
+addPackage.addAnother = Do you need to add another type?
+addPackage.error.required = Select yes if you need to add another type
+
+kindOfPackage.title = How are the goods packaged?
+kindOfPackage.heading = How are the goods packaged?
+kindOfPackage.checkYourAnswersLabel = Packaging
+kindOfPackage.error.required = Enter how the goods are packaged
+kindOfPackage.change.hidden = how the goods are packaged
+
+markOrNumber.title = What is the mark or number?
+markOrNumber.heading = What is the mark or number?
+markOrNumber.checkYourAnswersLabel = Mark or number
+markOrNumber.error.required = Enter the mark or number
+markOrNumber.error.length = Mark or number must be 140 characters or less
+markOrNumber.change.hidden = the mark or number
+
+numberOfPackages.title = How many packages have been used?
+numberOfPackages.heading = How many packages have been used?
+numberOfPackages.checkYourAnswersLabel = Number of packages
+numberOfPackages.error.nonNumeric = Enter how many packages have been used using numbers
+numberOfPackages.error.required = Enter how many packages have been used
+numberOfPackages.error.wholeNumber = Enter how many packages have been used using whole numbers
+numberOfPackages.error.outOfRange = Number of packages must be between {0} and {1}
+numberOfPackages.change.hidden = how many packages have been used
+
+numberOfPieces.title = How many pieces are there?
+numberOfPieces.heading = How many pieces are there?
+numberOfPieces.checkYourAnswersLabel = Number of pieces
+numberOfPieces.error.nonNumeric = Enter how many pieces there are using numbers
+numberOfPieces.error.required = Enter how many pieces there are
+numberOfPieces.error.wholeNumber = Enter the number of pieces using whole numbers
+numberOfPieces.error.outOfRange = Number of pieces must be between {0} and {1}
+numberOfPieces.change.hidden = how many pieces there are
+
+removePackage.title = Are you sure you want to remove this package?
+removePackage.heading = Are you sure you want to remove this package?
+removePackage.error.required = Select yes if you want to remove this package
+
+checkPackageItem.heading = Check package details
+checkPackageItem.title = Check package details

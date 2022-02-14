@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+class NumberOfPiecesFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
-
-  override def toString: String = "goodsDescription"
-
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "numberOfPieces.error.required",
+        "numberOfPieces.error.wholeNumber",
+        "numberOfPieces.error.nonNumeric")
+          .verifying(inRange(1, 99999, "numberOfPieces.error.outOfRange"))
+    )
 }

@@ -34,10 +34,10 @@ class GoodsDescriptionPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Kind of Package for the first index" in {
 
         GoodsDescriptionPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
       }
     }
 

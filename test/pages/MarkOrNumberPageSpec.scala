@@ -22,22 +22,22 @@ import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
-class CommodityCodePageSpec extends SpecBase with PageBehaviours {
+class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
-  "CommodityCodePage" - {
+  "MarkOrNumberPage" - {
 
-    beRetrievable[String](CommodityCodePage(index))
+    beRetrievable[String](MarkOrNumberPage(index, index))
 
-    beSettable[String](CommodityCodePage(index))
+    beSettable[String](MarkOrNumberPage(index, index))
 
-    beRemovable[String](CommodityCodePage(index))
+    beRemovable[String](MarkOrNumberPage(index, index))
 
     "must navigate in Normal Mode" - {
 
-      "to Kind of Package for the first index" in {
+      "to Check Package Item" in {
 
-        CommodityCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
+        MarkOrNumberPage(index, index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.CheckPackageItemController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
       }
     }
 
@@ -45,7 +45,7 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CommodityCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        MarkOrNumberPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

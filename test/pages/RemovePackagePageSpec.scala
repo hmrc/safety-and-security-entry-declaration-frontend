@@ -18,25 +18,30 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, KindOfPackage, NormalMode}
 import pages.behaviours.PageBehaviours
 
+class RemovePackagePageSpec extends SpecBase with PageBehaviours {
 
-class CommodityCodePageSpec extends SpecBase with PageBehaviours {
-
-  "CommodityCodePage" - {
-
-    beRetrievable[String](CommodityCodePage(index))
-
-    beSettable[String](CommodityCodePage(index))
-
-    beRemovable[String](CommodityCodePage(index))
+  "RemovePackagePage" - {
 
     "must navigate in Normal Mode" - {
 
-      "to Kind of Package for the first index" in {
+      "to Add Package when there is at least one package in user answers" in {
 
-        CommodityCodePage(index).navigate(NormalMode, emptyUserAnswers)
+        val answers =
+          emptyUserAnswers
+            .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head).success.value
+            .set(NumberOfPackagesPage(index, index), 1).success.value
+            .set(MarkOrNumberPage(index, index), "Mark or number").success.value
+
+        RemovePackagePage(index, index).navigate(NormalMode, answers)
+          .mustEqual(routes.AddPackageController.onPageLoad(NormalMode, answers.lrn, index))
+      }
+
+      "to Kind of Package for index 0 when there are no packages in user answers" in {
+
+        RemovePackagePage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
       }
     }
@@ -45,7 +50,7 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CommodityCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        RemovePackagePage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

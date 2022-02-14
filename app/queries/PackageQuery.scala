@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+final case class PackageQuery(itemIndex: Index, packageIndex: Index) extends Settable[JsObject] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
-
-  override def toString: String = "goodsDescription"
-
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position
 }

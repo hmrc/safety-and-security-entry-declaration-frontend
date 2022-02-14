@@ -17,59 +17,63 @@
 package controllers
 
 import base.SpecBase
-import forms.AddCountryEnRouteFormProvider
-import models.NormalMode
+import forms.AddPackageFormProvider
+import models.{KindOfPackage, NormalMode}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddCountryEnRoutePage
+import pages.{AddPackagePage, KindOfPackagePage, MarkOrNumberPage, NumberOfPackagesPage}
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.checkAnswers.CountryEnRouteSummary
-import views.html.AddCountryEnRouteView
+import viewmodels.checkAnswers.PackageSummary
+import views.html.AddPackageView
 
-class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
+class AddPackageControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new AddCountryEnRouteFormProvider()
+  val formProvider = new AddPackageFormProvider()
   val form = formProvider()
 
-  lazy val addCountryEnRouteRoute = routes.AddCountryEnRouteController.onPageLoad(NormalMode, lrn).url
+  lazy val addPackageRoute = routes.AddPackageController.onPageLoad(NormalMode, lrn, index).url
 
-  "AddCountryEnRoute Controller" - {
+  val baseAnswers =
+    emptyUserAnswers
+      .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head).success.value
+      .set(NumberOfPackagesPage(index, index), 1).success.value
+      .set(MarkOrNumberPage(index, index), "Mark or number").success.value
+
+  "AddPackage Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, addCountryEnRouteRoute)
+        val request = FakeRequest(GET, addPackageRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AddCountryEnRouteView]
+        val view = application.injector.instanceOf[AddPackageView]
 
         implicit val msgs: Messages = messages(application)
-        val list = CountryEnRouteSummary.rows(emptyUserAnswers)
+        val list = PackageSummary.rows(baseAnswers, index)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, list)(request, implicitly).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, addCountryEnRouteRoute)
+          FakeRequest(POST, addPackageRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers, addAnother = true).url
+        redirectLocation(result).value mustEqual AddPackagePage(index).navigate(NormalMode, baseAnswers, index, addAnother = true).url
       }
     }
 
@@ -79,20 +83,20 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, addCountryEnRouteRoute)
+          FakeRequest(POST, addPackageRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[AddCountryEnRouteView]
+        val view = application.injector.instanceOf[AddPackageView]
 
         val result = route(application, request).value
 
         implicit val msgs: Messages = messages(application)
-        val list = CountryEnRouteSummary.rows(emptyUserAnswers)
+        val list = PackageSummary.rows(emptyUserAnswers, index)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, list)(request, messages(application)).toString
       }
     }
 
@@ -101,7 +105,7 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, addCountryEnRouteRoute)
+        val request = FakeRequest(GET, addPackageRoute)
 
         val result = route(application, request).value
 
@@ -116,7 +120,7 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, addCountryEnRouteRoute)
+          FakeRequest(POST, addPackageRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

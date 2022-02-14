@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
+import forms.mappings.Mappings
+import models.KindOfPackage
+import models.KindOfPackage.allKindsOfPackage
+import play.api.data.Form
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+class KindOfPackageFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
-
-  override def toString: String = "goodsDescription"
-
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  def apply(): Form[KindOfPackage] =
+    Form(
+      "value" -> text("kindOfPackage.error.required")
+        .verifying("kindOfPackage.error.required", value => allKindsOfPackage.exists(_.code == value))
+        .transform[KindOfPackage](value => allKindsOfPackage.find(_.code == value).get, _.code)
+    )
 }

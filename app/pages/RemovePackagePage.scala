@@ -20,13 +20,17 @@ import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.DeriveNumberOfPackages
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
-  override def toString: String = "goodsDescription"
+  override def toString: String = "removePackage"
 
   override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+    answers.get(DeriveNumberOfPackages(itemIndex)) match {
+      case Some(n) if n > 0 => routes.AddPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+      case _                => routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(0))
+    }
 }

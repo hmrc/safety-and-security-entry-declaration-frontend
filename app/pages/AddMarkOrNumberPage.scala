@@ -21,12 +21,16 @@ import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
-  override def toString: String = "goodsDescription"
+  override def toString: String = "addMarkOrNumber"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(AddMarkOrNumberPage(itemIndex, packageIndex)) match {
+      case Some(true)  => routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+      case Some(false) => routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

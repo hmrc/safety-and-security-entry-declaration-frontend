@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class GoodsDescriptionPage(index: Index) extends QuestionPage[String] {
+class AddPackageFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  val requiredKey = "addPackage.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "goodsDescription"
+  val form = new AddPackageFormProvider()()
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
