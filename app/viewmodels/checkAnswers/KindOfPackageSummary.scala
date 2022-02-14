@@ -33,7 +33,7 @@ object KindOfPackageSummary  {
 
         SummaryListRowViewModel(
           key     = "kindOfPackage.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.name).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.KindOfPackageController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("kindOfPackage.change.hidden"))

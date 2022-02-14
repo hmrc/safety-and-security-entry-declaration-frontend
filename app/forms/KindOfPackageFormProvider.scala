@@ -17,15 +17,17 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.KindOfPackage
+import models.KindOfPackage.allKindsOfPackage
 import play.api.data.Form
 
 class KindOfPackageFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[KindOfPackage] =
     Form(
       "value" -> text("kindOfPackage.error.required")
-        .verifying(maxLength(2, "kindOfPackage.error.length"))
+        .verifying("kindOfPackage.error.required", value => allKindsOfPackage.exists(_.code == value))
+        .transform[KindOfPackage](value => allKindsOfPackage.find(_.code == value).get, _.code)
     )
 }

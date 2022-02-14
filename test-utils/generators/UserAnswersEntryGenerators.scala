@@ -60,7 +60,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[KindOfPackagePage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+        value <- arbitrary[KindOfPackage].map(Json.toJson(_))
       } yield (page, value)
     }
 

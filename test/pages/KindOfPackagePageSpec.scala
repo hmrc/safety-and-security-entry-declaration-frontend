@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, KindOfPackage, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
 
   "KindOfPackagePage" - {
 
-    beRetrievable[String](KindOfPackagePage)
+    beRetrievable[KindOfPackage](KindOfPackagePage)
 
-    beSettable[String](KindOfPackagePage)
+    beSettable[KindOfPackage](KindOfPackagePage)
 
-    beRemovable[String](KindOfPackagePage)
+    beRemovable[KindOfPackage](KindOfPackagePage)
 
     "must navigate in Normal Mode" - {
 
