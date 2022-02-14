@@ -34,7 +34,7 @@
         @viewModel.rows.map { row =>
           <li class="app-task-list__item">
               <span class="app-task-list__task-name">
-                  <a href="@row.link" class="govuk-link">@messages(row.messageKey)</a>
+                  <a href="@row.link" id="@row.id" class="govuk-link">@messages(row.messageKey)</a>
               </span>
            <span class="hmrc-status-tag">
                @govukTag(row.completionStatusTag)
