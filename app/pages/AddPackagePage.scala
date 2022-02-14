@@ -17,13 +17,24 @@
 package pages
 
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.DeriveNumberOfPackages
 
-case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AddPackagePage(itemIndex: Index) extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addPackage"
+  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfPackages(itemIndex)) match {
+        case Some(size) => routes.KindOfPackageController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
+        case None       => routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      mode match {
+        // TODO: Update navigation
+        case NormalMode => routes.IndexController.onPageLoad
+        case CheckMode  => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      }
+    }
 }

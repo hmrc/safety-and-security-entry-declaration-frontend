@@ -60,7 +60,7 @@ class AddPackageController @Inject()(
           },
 
           value =>
-            Redirect(AddPackagePage(itemIndex).navigate(mode, request.userAnswers)) // TODO: Update method
+            Redirect(AddPackagePage(itemIndex).navigate(mode, request.userAnswers, itemIndex, value))
         )
     }
 }

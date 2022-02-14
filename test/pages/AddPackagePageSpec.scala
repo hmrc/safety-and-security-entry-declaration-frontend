@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, KindOfPackage, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
@@ -27,10 +27,16 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Kind of Package for the next index when the answer is yes" in {
 
-        AddPackagePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers =
+          emptyUserAnswers
+            .set(KindOfPackagePage(Index(0), Index(0)), KindOfPackage.standardKindsOfPackages.head).success.value
+            .set(NumberOfPackagesPage(Index(0), Index(0)), 1).success.value
+            .set(MarkOrNumberPage(Index(0), Index(0)), "mark or number").success.value
+
+        AddPackagePage(Index(0)).navigate(NormalMode, answers, Index(0), addAnother = true)
+          .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, Index(0), Index(1)))
       }
     }
 

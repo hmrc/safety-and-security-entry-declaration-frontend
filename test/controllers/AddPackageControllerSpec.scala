@@ -18,9 +18,9 @@ package controllers
 
 import base.SpecBase
 import forms.AddPackageFormProvider
-import models.NormalMode
+import models.{KindOfPackage, NormalMode}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.AddPackagePage
+import pages.{AddPackagePage, KindOfPackagePage, MarkOrNumberPage, NumberOfPackagesPage}
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,11 +34,17 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val addPackageRoute = routes.AddPackageController.onPageLoad(NormalMode, lrn, index).url
 
+  val baseAnswers =
+    emptyUserAnswers
+      .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head).success.value
+      .set(NumberOfPackagesPage(index, index), 1).success.value
+      .set(MarkOrNumberPage(index, index), "Mark or number").success.value
+
   "AddPackage Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, addPackageRoute)
@@ -48,27 +54,26 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddPackageView]
 
         implicit val msgs: Messages = messages(application)
-        val list = PackageSummary.rows(emptyUserAnswers, index)
+        val list = PackageSummary.rows(baseAnswers, index)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index, list)(request, implicitly).toString
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, addPackageRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddPackagePage(index).navigate(NormalMode, emptyUserAnswers).url
-
+        redirectLocation(result).value mustEqual AddPackagePage(index).navigate(NormalMode, baseAnswers, index, addAnother = true).url
       }
     }
 

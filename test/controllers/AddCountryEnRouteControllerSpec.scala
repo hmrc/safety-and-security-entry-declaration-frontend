@@ -66,7 +66,7 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, addCountryEnRouteRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers, addAnother = true).url
