@@ -21,8 +21,10 @@ import forms.AddPackageFormProvider
 import models.NormalMode
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddPackagePage
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.PackageSummary
 import views.html.AddPackageView
 
 class AddPackageControllerSpec extends SpecBase with MockitoSugar {
@@ -45,8 +47,11 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[AddPackageView]
 
+        implicit val msgs: Messages = messages(application)
+        val list = PackageSummary.rows(emptyUserAnswers, index)
+
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, list)(request, implicitly).toString
       }
     }
 
@@ -82,8 +87,11 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
+        implicit val msgs: Messages = messages(application)
+        val list = PackageSummary.rows(emptyUserAnswers, index)
+
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, list)(request, messages(application)).toString
       }
     }
 

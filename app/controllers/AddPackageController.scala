@@ -23,6 +23,7 @@ import pages.AddPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.PackageSummary
 import views.html.AddPackageView
 
 import javax.inject.Inject
@@ -43,15 +44,20 @@ class AddPackageController @Inject()(
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        Ok(view(form, mode, lrn, itemIndex))
+        val rows = PackageSummary.rows(request.userAnswers, itemIndex)
+
+        Ok(view(form, mode, lrn, itemIndex, rows))
     }
 
     def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
         form.bindFromRequest().fold(
-          formWithErrors =>
-            BadRequest(view(formWithErrors, mode, lrn, itemIndex)),
+          formWithErrors => {
+            val rows = PackageSummary.rows(request.userAnswers, itemIndex)
+
+            BadRequest(view(formWithErrors, mode, lrn, itemIndex, rows))
+          },
 
           value =>
             Redirect(AddPackagePage(itemIndex).navigate(mode, request.userAnswers)) // TODO: Update method

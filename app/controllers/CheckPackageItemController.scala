@@ -40,7 +40,13 @@ class CheckPackageItemController @Inject()(
       implicit request =>
 
         val list = SummaryListViewModel(
-          rows = Seq.empty
+          rows = Seq(
+            KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex),
+            NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex),
+            NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex),
+            AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex),
+            MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex)
+          ).flatten
         )
 
         Ok(view(mode, list, lrn, itemIndex, packageIndex))
