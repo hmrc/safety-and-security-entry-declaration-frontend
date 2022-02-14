@@ -18,14 +18,15 @@ package controllers
 
 import base.SpecBase
 import forms.RemovePackageFormProvider
-import models.NormalMode
+import models.{KindOfPackage, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.RemovePackagePage
+import pages.{KindOfPackagePage, NumberOfPackagesPage, RemovePackagePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.PackageQuery
 import repositories.SessionRepository
 import views.html.RemovePackageView
 
@@ -37,6 +38,11 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider()
 
   lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(NormalMode, lrn, index, index).url
+
+  private val baseAnswers =
+    emptyUserAnswers
+      .set(KindOfPackagePage(index, index), KindOfPackage.allKindsOfPackage.head).success.value
+      .set(NumberOfPackagesPage(index, index), 1).success.value
 
   "RemovePackage Controller" - {
 
@@ -56,32 +62,14 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemovePackagePage(index, index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removePackageRoute)
-
-        val view = application.injector.instanceOf[RemovePackageView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index, index)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must remove the package and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -91,11 +79,36 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemovePackagePage(index, index), true).success.value
+        val expectedAnswers = baseAnswers.remove(PackageQuery(index, index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemovePackagePage(index, index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must redirect to the next page without removing the package when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removePackageRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result          = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemovePackagePage(index, index).navigate(NormalMode, expectedAnswers).url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 

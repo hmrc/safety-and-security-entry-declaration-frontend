@@ -18,54 +18,43 @@ package controllers
 
 import controllers.actions._
 import forms.AddPackageFormProvider
-
-import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.AddPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddPackageView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
 
 class AddPackageController @Inject()(
                                          override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalActionProvider,
                                          requireData: DataRequiredAction,
                                          formProvider: AddPackageFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: AddPackageView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                 ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddPackagePage(itemIndex)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        Ok(view(form, mode, lrn, itemIndex))
+    }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex))
-  }
+    def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            BadRequest(view(formWithErrors, mode, lrn, itemIndex)),
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPackagePage(itemIndex), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddPackagePage(itemIndex).navigate(mode, updatedAnswers))
-      )
-  }
+          value =>
+            Redirect(AddPackagePage(itemIndex).navigate(mode, request.userAnswers)) // TODO: Update method
+        )
+    }
 }

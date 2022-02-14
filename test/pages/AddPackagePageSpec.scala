@@ -25,12 +25,6 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
   "AddPackagePage" - {
 
-    beRetrievable[Boolean](AddPackagePage(index))
-
-    beSettable[Boolean](AddPackagePage(index))
-
-    beRemovable[Boolean](AddPackagePage(index))
-
     "must navigate in Normal Mode" - {
 
       "to Index" in {

@@ -18,36 +18,31 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
-import models.LocalReferenceNumber
+import models.{Index, LocalReferenceNumber, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers._
 import viewmodels.govuk.summarylist._
-import views.html.CheckRouteDetailsView
+import views.html.CheckPackageItemView
 
-class CheckRouteDetailsController @Inject()(
+class CheckPackageItemController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             identify: IdentifierAction,
                                             getData: DataRetrievalActionProvider,
                                             requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: CheckRouteDetailsView
+                                            view: CheckPackageItemView
                                           ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val list = SummaryListViewModel(
-        rows = Seq(
-          CountryOfOriginSummary.row(request.userAnswers),
-          GoodsPassThroughOtherCountriesSummary.row(request.userAnswers),
-          CountryEnRouteSummary.checkAnswersRow(request.userAnswers),
-          CustomsOfficeOfFirstEntrySummary.row(request.userAnswers),
-          ArrivalDateAndTimeSummary.row(request.userAnswers)
-        ).flatten
-      )
+        val list = SummaryListViewModel(
+          rows = Seq.empty
+        )
 
-      Ok(view(list, lrn))
-  }
+        Ok(view(mode, list, lrn, itemIndex, packageIndex))
+    }
 }

@@ -25,12 +25,6 @@ class RemovePackagePageSpec extends SpecBase with PageBehaviours {
 
   "RemovePackagePage" - {
 
-    beRetrievable[Boolean](RemovePackagePage(index, index))
-
-    beSettable[Boolean](RemovePackagePage(index, index))
-
-    beRemovable[Boolean](RemovePackagePage(index, index))
-
     "must navigate in Normal Mode" - {
 
       "to Index" in {
