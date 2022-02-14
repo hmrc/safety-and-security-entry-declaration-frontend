@@ -37,7 +37,7 @@ class KindOfPackageControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new KindOfPackageFormProvider()
   val form = formProvider()
 
-  lazy val kindOfPackageRoute = routes.KindOfPackageController.onPageLoad(NormalMode, lrn).url
+  lazy val kindOfPackageRoute = routes.KindOfPackageController.onPageLoad(NormalMode, lrn, index, index).url
   val kindOfPackage = arbitrary[KindOfPackage].sample.value
 
   "KindOfPackage Controller" - {
@@ -54,13 +54,13 @@ class KindOfPackageControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[KindOfPackageView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(KindOfPackagePage, kindOfPackage).success.value
+      val userAnswers = emptyUserAnswers.set(KindOfPackagePage(index, index), kindOfPackage).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +72,7 @@ class KindOfPackageControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(kindOfPackage), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(kindOfPackage), NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -93,10 +93,10 @@ class KindOfPackageControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", kindOfPackage.code))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(KindOfPackagePage, kindOfPackage).success.value
+        val expectedAnswers = emptyUserAnswers.set(KindOfPackagePage(index, index), kindOfPackage).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual KindOfPackagePage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual KindOfPackagePage(index, index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -117,7 +117,7 @@ class KindOfPackageControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 

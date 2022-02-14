@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.KindOfPackageFormProvider
 
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.KindOfPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,29 +43,31 @@ class KindOfPackageController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(KindOfPackagePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        val preparedForm = request.userAnswers.get(KindOfPackagePage(itemIndex, packageIndex)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, mode, lrn))
-  }
+        Ok(view(preparedForm, mode, lrn, itemIndex, packageIndex))
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(KindOfPackagePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(KindOfPackagePage.navigate(mode, updatedAnswers))
-      )
-  }
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(KindOfPackagePage(itemIndex, packageIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(KindOfPackagePage(itemIndex, packageIndex).navigate(mode, updatedAnswers))
+        )
+    }
 }

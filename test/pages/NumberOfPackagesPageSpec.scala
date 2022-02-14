@@ -25,17 +25,17 @@ class NumberOfPackagesPageSpec extends SpecBase with PageBehaviours {
 
   "NumberOfPackagesPage" - {
 
-    beRetrievable[Int](NumberOfPackagesPage)
+    beRetrievable[Int](NumberOfPackagesPage(index, index))
 
-    beSettable[Int](NumberOfPackagesPage)
+    beSettable[Int](NumberOfPackagesPage(index, index))
 
-    beRemovable[Int](NumberOfPackagesPage)
+    beRemovable[Int](NumberOfPackagesPage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        NumberOfPackagesPage.navigate(NormalMode, emptyUserAnswers)
+        NumberOfPackagesPage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class NumberOfPackagesPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NumberOfPackagesPage.navigate(CheckMode, emptyUserAnswers)
+        NumberOfPackagesPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

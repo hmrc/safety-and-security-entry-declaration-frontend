@@ -36,7 +36,7 @@ class MarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new MarkOrNumberFormProvider()
   val form = formProvider()
 
-  lazy val markOrNumberRoute = routes.MarkOrNumberController.onPageLoad(NormalMode, lrn).url
+  lazy val markOrNumberRoute = routes.MarkOrNumberController.onPageLoad(NormalMode, lrn, index, index).url
 
   "MarkOrNumber Controller" - {
 
@@ -52,13 +52,13 @@ class MarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[MarkOrNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(MarkOrNumberPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(MarkOrNumberPage(index, index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +70,7 @@ class MarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -91,10 +91,10 @@ class MarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(MarkOrNumberPage, "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(MarkOrNumberPage(index, index), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MarkOrNumberPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual MarkOrNumberPage(index, index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +115,7 @@ class MarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 

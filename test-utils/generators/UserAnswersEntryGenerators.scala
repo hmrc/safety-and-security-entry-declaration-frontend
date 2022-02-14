@@ -24,58 +24,58 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryRemovePackageUserAnswersEntry: Arbitrary[(RemovePackagePage.type, JsValue)] =
+  implicit lazy val arbitraryRemovePackageUserAnswersEntry: Arbitrary[(RemovePackagePage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[RemovePackagePage.type]
+        page  <- arbitrary[RemovePackagePage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryNumberOfPiecesUserAnswersEntry: Arbitrary[(NumberOfPiecesPage.type, JsValue)] =
+  implicit lazy val arbitraryNumberOfPiecesUserAnswersEntry: Arbitrary[(NumberOfPiecesPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[NumberOfPiecesPage.type]
+        page  <- arbitrary[NumberOfPiecesPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryNumberOfPackagesUserAnswersEntry: Arbitrary[(NumberOfPackagesPage.type, JsValue)] =
+  implicit lazy val arbitraryNumberOfPackagesUserAnswersEntry: Arbitrary[(NumberOfPackagesPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[NumberOfPackagesPage.type]
+        page  <- arbitrary[NumberOfPackagesPage]
         value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryMarkOrNumberUserAnswersEntry: Arbitrary[(MarkOrNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryMarkOrNumberUserAnswersEntry: Arbitrary[(MarkOrNumberPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[MarkOrNumberPage.type]
+        page  <- arbitrary[MarkOrNumberPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryKindOfPackageUserAnswersEntry: Arbitrary[(KindOfPackagePage.type, JsValue)] =
+  implicit lazy val arbitraryKindOfPackageUserAnswersEntry: Arbitrary[(KindOfPackagePage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[KindOfPackagePage.type]
+        page  <- arbitrary[KindOfPackagePage]
         value <- arbitrary[KindOfPackage].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddPackageUserAnswersEntry: Arbitrary[(AddPackagePage.type, JsValue)] =
+  implicit lazy val arbitraryAddPackageUserAnswersEntry: Arbitrary[(AddPackagePage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[AddPackagePage.type]
+        page  <- arbitrary[AddPackagePage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddMarkOrNumberUserAnswersEntry: Arbitrary[(AddMarkOrNumberPage.type, JsValue)] =
+  implicit lazy val arbitraryAddMarkOrNumberUserAnswersEntry: Arbitrary[(AddMarkOrNumberPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[AddMarkOrNumberPage.type]
+        page  <- arbitrary[AddMarkOrNumberPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }

@@ -25,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("kindOfPackage.title"))) {
 
-    @formHelper(action = routes.KindOfPackageController.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.KindOfPackageController.onSubmit(mode, lrn, itemIndex, packageIndex)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

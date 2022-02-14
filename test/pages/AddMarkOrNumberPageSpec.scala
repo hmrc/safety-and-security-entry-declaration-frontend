@@ -25,17 +25,17 @@ class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
   "AddMarkOrNumberPage" - {
 
-    beRetrievable[Boolean](AddMarkOrNumberPage)
+    beRetrievable[Boolean](AddMarkOrNumberPage(index, index))
 
-    beSettable[Boolean](AddMarkOrNumberPage)
+    beSettable[Boolean](AddMarkOrNumberPage(index, index))
 
-    beRemovable[Boolean](AddMarkOrNumberPage)
+    beRemovable[Boolean](AddMarkOrNumberPage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        AddMarkOrNumberPage.navigate(NormalMode, emptyUserAnswers)
+        AddMarkOrNumberPage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddMarkOrNumberPage.navigate(CheckMode, emptyUserAnswers)
+        AddMarkOrNumberPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

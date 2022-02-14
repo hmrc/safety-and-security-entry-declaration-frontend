@@ -26,17 +26,17 @@ class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
   "MarkOrNumberPage" - {
 
-    beRetrievable[String](MarkOrNumberPage)
+    beRetrievable[String](MarkOrNumberPage(index, index))
 
-    beSettable[String](MarkOrNumberPage)
+    beSettable[String](MarkOrNumberPage(index, index))
 
-    beRemovable[String](MarkOrNumberPage)
+    beRemovable[String](MarkOrNumberPage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        MarkOrNumberPage.navigate(NormalMode, emptyUserAnswers)
+        MarkOrNumberPage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        MarkOrNumberPage.navigate(CheckMode, emptyUserAnswers)
+        MarkOrNumberPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

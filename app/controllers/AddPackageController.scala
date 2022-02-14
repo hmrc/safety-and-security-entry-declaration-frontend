@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.AddPackageFormProvider
+
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.AddPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,29 +43,29 @@ class AddPackageController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddPackagePage) match {
+      val preparedForm = request.userAnswers.get(AddPackagePage(itemIndex)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, mode, lrn, itemIndex))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPackagePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPackagePage(itemIndex), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddPackagePage.navigate(mode, updatedAnswers))
+          } yield Redirect(AddPackagePage(itemIndex).navigate(mode, updatedAnswers))
       )
   }
 }

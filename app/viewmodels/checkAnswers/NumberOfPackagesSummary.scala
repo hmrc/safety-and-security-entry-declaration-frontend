@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.NumberOfPackagesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,15 +26,15 @@ import viewmodels.implicits._
 
 object NumberOfPackagesSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NumberOfPackagesPage).map {
+  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(NumberOfPackagesPage(itemIndex, packageIndex)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "numberOfPackages.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.NumberOfPackagesController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.NumberOfPackagesController.onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex).url)
               .withVisuallyHiddenText(messages("numberOfPackages.change.hidden"))
           )
         )

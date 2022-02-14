@@ -17,13 +17,13 @@
 package pages
 
 import controllers.routes
-import models.{KindOfPackage, NormalMode, UserAnswers}
+import models.{Index, KindOfPackage, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object KindOfPackagePage extends QuestionPage[KindOfPackage] {
+case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[KindOfPackage] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "kindOfPackage"
 }

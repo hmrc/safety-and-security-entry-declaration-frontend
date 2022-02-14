@@ -26,17 +26,17 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
 
   "KindOfPackagePage" - {
 
-    beRetrievable[KindOfPackage](KindOfPackagePage)
+    beRetrievable[KindOfPackage](KindOfPackagePage(index, index))
 
-    beSettable[KindOfPackage](KindOfPackagePage)
+    beSettable[KindOfPackage](KindOfPackagePage(index, index))
 
-    beRemovable[KindOfPackage](KindOfPackagePage)
+    beRemovable[KindOfPackage](KindOfPackagePage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        KindOfPackagePage.navigate(NormalMode, emptyUserAnswers)
+        KindOfPackagePage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        KindOfPackagePage.navigate(CheckMode, emptyUserAnswers)
+        KindOfPackagePage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

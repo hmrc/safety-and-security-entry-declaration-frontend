@@ -25,17 +25,17 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
   "AddPackagePage" - {
 
-    beRetrievable[Boolean](AddPackagePage)
+    beRetrievable[Boolean](AddPackagePage(index))
 
-    beSettable[Boolean](AddPackagePage)
+    beSettable[Boolean](AddPackagePage(index))
 
-    beRemovable[Boolean](AddPackagePage)
+    beRemovable[Boolean](AddPackagePage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        AddPackagePage.navigate(NormalMode, emptyUserAnswers)
+        AddPackagePage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddPackagePage.navigate(CheckMode, emptyUserAnswers)
+        AddPackagePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -25,17 +25,17 @@ class RemovePackagePageSpec extends SpecBase with PageBehaviours {
 
   "RemovePackagePage" - {
 
-    beRetrievable[Boolean](RemovePackagePage)
+    beRetrievable[Boolean](RemovePackagePage(index, index))
 
-    beSettable[Boolean](RemovePackagePage)
+    beSettable[Boolean](RemovePackagePage(index, index))
 
-    beRemovable[Boolean](RemovePackagePage)
+    beRemovable[Boolean](RemovePackagePage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        RemovePackagePage.navigate(NormalMode, emptyUserAnswers)
+        RemovePackagePage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class RemovePackagePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemovePackagePage.navigate(CheckMode, emptyUserAnswers)
+        RemovePackagePage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

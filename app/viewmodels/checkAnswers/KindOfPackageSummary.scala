@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.KindOfPackagePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,15 +27,15 @@ import viewmodels.implicits._
 
 object KindOfPackageSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(KindOfPackagePage).map {
+  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(KindOfPackagePage(itemIndex, packageIndex)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "kindOfPackage.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer.name).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.KindOfPackageController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.KindOfPackageController.onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex).url)
               .withVisuallyHiddenText(messages("kindOfPackage.change.hidden"))
           )
         )

@@ -25,17 +25,17 @@ class NumberOfPiecesPageSpec extends SpecBase with PageBehaviours {
 
   "NumberOfPiecesPage" - {
 
-    beRetrievable[Int](NumberOfPiecesPage)
+    beRetrievable[Int](NumberOfPiecesPage(index, index))
 
-    beSettable[Int](NumberOfPiecesPage)
+    beSettable[Int](NumberOfPiecesPage(index, index))
 
-    beRemovable[Int](NumberOfPiecesPage)
+    beRemovable[Int](NumberOfPiecesPage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        NumberOfPiecesPage.navigate(NormalMode, emptyUserAnswers)
+        NumberOfPiecesPage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class NumberOfPiecesPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NumberOfPiecesPage.navigate(CheckMode, emptyUserAnswers)
+        NumberOfPiecesPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
