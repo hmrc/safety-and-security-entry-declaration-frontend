@@ -26,4 +26,11 @@ case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends Qu
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "addMarkOrNumber"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(AddMarkOrNumberPage(itemIndex, packageIndex)) match {
+      case Some(true)  => routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+      case Some(false) => routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

@@ -33,10 +33,10 @@ class NumberOfPiecesPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Mark or Number" in {
 
         NumberOfPiecesPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.AddMarkOrNumberController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
       }
     }
 

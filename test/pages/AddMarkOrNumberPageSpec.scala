@@ -33,10 +33,20 @@ class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Mark or Number if the answer is yes" in {
 
-        AddMarkOrNumberPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), true).success.value
+
+        AddMarkOrNumberPage(index, index).navigate(NormalMode, answers)
+          .mustEqual(routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, index, index))
+      }
+
+      "to Check Package Item if the answer is no" in {
+
+        val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), false).success.value
+
+        AddMarkOrNumberPage(index, index).navigate(NormalMode, answers)
+          .mustEqual(routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, index, index))
       }
     }
 

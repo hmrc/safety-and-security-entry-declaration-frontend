@@ -34,10 +34,10 @@ class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Check Package Item" in {
 
         MarkOrNumberPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.CheckPackageItemController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
       }
     }
 

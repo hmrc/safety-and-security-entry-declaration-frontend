@@ -26,4 +26,7 @@ case class NumberOfPiecesPage(itemIndex: Index, packageIndex: Index) extends Que
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "numberOfPieces"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.AddMarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
 }

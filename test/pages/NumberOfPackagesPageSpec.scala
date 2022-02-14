@@ -33,10 +33,10 @@ class NumberOfPackagesPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Mark or Number" in {
 
         NumberOfPackagesPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.MarkOrNumberController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
       }
     }
 

@@ -19,6 +19,7 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.{CheckMode, KindOfPackage, NormalMode}
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 
 
@@ -34,10 +35,32 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Mark or Number when the answer is a bulk kind of package" in {
 
-        KindOfPackagePage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val packaging = Gen.oneOf(KindOfPackage.bulkKindsOfPackage).sample.value
+        val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), packaging).success.value
+
+        KindOfPackagePage(index, index).navigate(NormalMode, answers)
+          .mustEqual(routes.AddMarkOrNumberController.onPageLoad(NormalMode, answers.lrn, index, index))
+      }
+
+      "to Number of Packages when the answer is a standard kind of package" in {
+
+        val packaging = Gen.oneOf(KindOfPackage.standardKindsOfPackages).sample.value
+        val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), packaging).success.value
+
+        KindOfPackagePage(index, index).navigate(NormalMode, answers)
+          .mustEqual(routes.NumberOfPackagesController.onPageLoad(NormalMode, answers.lrn, index, index))
+      }
+
+
+      "to Number of Pieces when the answer is an unpacked kind of package" in {
+
+        val packaging = Gen.oneOf(KindOfPackage.unpackedKindsOfPackage).sample.value
+        val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), packaging).success.value
+
+        KindOfPackagePage(index, index).navigate(NormalMode, answers)
+          .mustEqual(routes.NumberOfPiecesController.onPageLoad(NormalMode, answers.lrn, index, index))
       }
     }
 

@@ -26,4 +26,7 @@ case class MarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends Quest
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "markOrNumber"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
 }

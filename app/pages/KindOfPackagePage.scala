@@ -18,6 +18,7 @@ package pages
 
 import controllers.routes
 import models.{Index, KindOfPackage, NormalMode, UserAnswers}
+import models.KindOfPackage._
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -26,4 +27,14 @@ case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends Ques
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "kindOfPackage"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(KindOfPackagePage(itemIndex, packageIndex)) match {
+      case Some(b) if bulkKindsOfPackage.contains(b) =>
+        routes.AddMarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+      case Some(s) if standardKindsOfPackages.contains(s) =>
+        routes.NumberOfPackagesController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+      case Some(u) if unpackedKindsOfPackage.contains(u) =>
+        routes.NumberOfPiecesController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+    }
 }

@@ -26,4 +26,7 @@ case class NumberOfPackagesPage(itemIndex: Index, packageIndex: Index) extends Q
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "numberOfPackages"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
 }
