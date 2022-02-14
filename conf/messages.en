@@ -217,3 +217,53 @@ declarationPlace.checkYourAnswersLabel = Declaration place
 declarationPlace.error.required = Enter where you are completing this declaration
 declarationPlace.error.length = Where you are completing this declaration must be 35 characters or less
 declarationPlace.change.hidden = where you are completing this declaration
+
+addMarkOrNumber.title = addMarkOrNumber
+addMarkOrNumber.heading = addMarkOrNumber
+addMarkOrNumber.checkYourAnswersLabel = addMarkOrNumber
+addMarkOrNumber.error.required = Select yes if addMarkOrNumber
+addMarkOrNumber.change.hidden = AddMarkOrNumber
+
+addPackage.title = addPackage
+addPackage.heading = addPackage
+addPackage.checkYourAnswersLabel = addPackage
+addPackage.error.required = Select yes if addPackage
+addPackage.change.hidden = AddPackage
+
+kindOfPackage.title = kindOfPackage
+kindOfPackage.heading = kindOfPackage
+kindOfPackage.checkYourAnswersLabel = kindOfPackage
+kindOfPackage.error.required = Enter kindOfPackage
+kindOfPackage.error.length = KindOfPackage must be 2 characters or less
+kindOfPackage.change.hidden = KindOfPackage
+
+markOrNumber.title = markOrNumber
+markOrNumber.heading = markOrNumber
+markOrNumber.checkYourAnswersLabel = markOrNumber
+markOrNumber.error.required = Enter markOrNumber
+markOrNumber.error.length = MarkOrNumber must be 140 characters or less
+markOrNumber.change.hidden = MarkOrNumber
+
+numberOfPackages.title = NumberOfPackages
+numberOfPackages.heading = NumberOfPackages
+numberOfPackages.checkYourAnswersLabel = NumberOfPackages
+numberOfPackages.error.nonNumeric = Enter your numberOfPackages using numbers
+numberOfPackages.error.required = Enter your numberOfPackages
+numberOfPackages.error.wholeNumber = Enter your numberOfPackages using whole numbers
+numberOfPackages.error.outOfRange = NumberOfPackages must be between {0} and {1}
+numberOfPackages.change.hidden = NumberOfPackages
+
+numberOfPieces.title = NumberOfPieces
+numberOfPieces.heading = NumberOfPieces
+numberOfPieces.checkYourAnswersLabel = NumberOfPieces
+numberOfPieces.error.nonNumeric = Enter your numberOfPieces using numbers
+numberOfPieces.error.required = Enter your numberOfPieces
+numberOfPieces.error.wholeNumber = Enter your numberOfPieces using whole numbers
+numberOfPieces.error.outOfRange = NumberOfPieces must be between {0} and {1}
+numberOfPieces.change.hidden = NumberOfPieces
+
+removePackage.title = removePackage
+removePackage.heading = removePackage
+removePackage.checkYourAnswersLabel = removePackage
+removePackage.error.required = Select yes if removePackage
+removePackage.change.hidden = RemovePackage

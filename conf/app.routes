@@ -112,3 +112,38 @@ GET        /:lrn/declarationPlace                        controllers.Declaration
 POST       /:lrn/declarationPlace                        controllers.DeclarationPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeDeclarationPlace                  controllers.DeclarationPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeDeclarationPlace                  controllers.DeclarationPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/addMarkOrNumber                        controllers.AddMarkOrNumberController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addMarkOrNumber                        controllers.AddMarkOrNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddMarkOrNumber                  controllers.AddMarkOrNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddMarkOrNumber                  controllers.AddMarkOrNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/addPackage                        controllers.AddPackageController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addPackage                        controllers.AddPackageController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddPackage                  controllers.AddPackageController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddPackage                  controllers.AddPackageController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/kindOfPackage                        controllers.KindOfPackageController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/kindOfPackage                        controllers.KindOfPackageController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeKindOfPackage                  controllers.KindOfPackageController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeKindOfPackage                  controllers.KindOfPackageController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/markOrNumber                        controllers.MarkOrNumberController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/markOrNumber                        controllers.MarkOrNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeMarkOrNumber                  controllers.MarkOrNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeMarkOrNumber                  controllers.MarkOrNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/numberOfPackages                  controllers.NumberOfPackagesController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/numberOfPackages                  controllers.NumberOfPackagesController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNumberOfPackages                        controllers.NumberOfPackagesController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNumberOfPackages                        controllers.NumberOfPackagesController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/numberOfPieces                  controllers.NumberOfPiecesController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/numberOfPieces                  controllers.NumberOfPiecesController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNumberOfPieces                        controllers.NumberOfPiecesController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNumberOfPieces                        controllers.NumberOfPiecesController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/removePackage                        controllers.RemovePackageController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/removePackage                        controllers.RemovePackageController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRemovePackage                  controllers.RemovePackageController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRemovePackage                  controllers.RemovePackageController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

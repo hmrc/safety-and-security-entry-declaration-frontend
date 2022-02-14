@@ -22,6 +22,27 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryRemovePackagePage: Arbitrary[RemovePackagePage.type] =
+    Arbitrary(RemovePackagePage)
+
+  implicit lazy val arbitraryNumberOfPiecesPage: Arbitrary[NumberOfPiecesPage.type] =
+    Arbitrary(NumberOfPiecesPage)
+
+  implicit lazy val arbitraryNumberOfPackagesPage: Arbitrary[NumberOfPackagesPage.type] =
+    Arbitrary(NumberOfPackagesPage)
+
+  implicit lazy val arbitraryMarkOrNumberPage: Arbitrary[MarkOrNumberPage.type] =
+    Arbitrary(MarkOrNumberPage)
+
+  implicit lazy val arbitraryKindOfPackagePage: Arbitrary[KindOfPackagePage.type] =
+    Arbitrary(KindOfPackagePage)
+
+  implicit lazy val arbitraryAddPackagePage: Arbitrary[AddPackagePage.type] =
+    Arbitrary(AddPackagePage)
+
+  implicit lazy val arbitraryAddMarkOrNumberPage: Arbitrary[AddMarkOrNumberPage.type] =
+    Arbitrary(AddMarkOrNumberPage)
+
   implicit lazy val arbitraryDeclarationPlacePage: Arbitrary[DeclarationPlacePage.type] =
     Arbitrary(DeclarationPlacePage)
 
