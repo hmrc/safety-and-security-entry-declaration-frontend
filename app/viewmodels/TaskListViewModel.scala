@@ -39,6 +39,7 @@ object TaskListViewModel {
     TaskListRow(
       messageKey          = messages("taskList.routeDetails"),
       link                = routes.CountryOfOriginController.onPageLoad(NormalMode, answers.lrn),
+      id                  = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
 
@@ -48,6 +49,7 @@ object TaskListViewModel {
         Some(TaskListRow(
           messageKey          = messages("taskList.carrier"),
           link                = routes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn),
+          id                  = "carrier-details",
           completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
         ))
 
@@ -58,4 +60,4 @@ object TaskListViewModel {
     }
 }
 
-final case class TaskListRow(messageKey: String, link: Call, completionStatusTag: Tag)(implicit messages: Messages)
+final case class TaskListRow(messageKey: String, link: Call, id:String, completionStatusTag: Tag)(implicit messages: Messages)
