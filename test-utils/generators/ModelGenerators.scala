@@ -31,7 +31,14 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryConsignorsIdentity: Arbitrary[ConsignorsIdentity] =
     Arbitrary {
-      Gen.oneOf(ConsignorsIdentity.values.toSeq)
+      Gen.oneOf(ConsignorsIdentity.values)
+
+  implicit lazy val arbitraryDocument: Arbitrary[Document] =
+    Arbitrary {
+      for {
+        documentType <- arbitrary[String]
+        reference <- arbitrary[String]
+      } yield Document(documentType, reference)
     }
 
   implicit lazy val arbitraryKindOfPackage: Arbitrary[KindOfPackage] =

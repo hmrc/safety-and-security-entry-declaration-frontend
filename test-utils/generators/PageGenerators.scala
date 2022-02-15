@@ -31,6 +31,30 @@ trait PageGenerators {
   implicit lazy val arbitraryDangerousGoodPage: Arbitrary[DangerousGoodPage] =
     Arbitrary(DangerousGoodPage(Index(0)))
 
+  implicit lazy val arbitraryRemoveDocumentPage: Arbitrary[RemoveDocumentPage.type] =
+    Arbitrary(RemoveDocumentPage)
+
+  implicit lazy val arbitraryOverallCrnKnownPage: Arbitrary[OverallCrnKnownPage.type] =
+    Arbitrary(OverallCrnKnownPage)
+
+  implicit lazy val arbitraryOverallCrnPage: Arbitrary[OverallCrnPage.type] =
+    Arbitrary(OverallCrnPage)
+
+  implicit lazy val arbitraryGoodsItemCrnKnownPage: Arbitrary[GoodsItemCrnKnownPage.type] =
+    Arbitrary(GoodsItemCrnKnownPage)
+
+  implicit lazy val arbitraryGoodsItemCrnPage: Arbitrary[GoodsItemCrnPage.type] =
+    Arbitrary(GoodsItemCrnPage)
+
+  implicit lazy val arbitraryDocumentPage: Arbitrary[DocumentPage.type] =
+    Arbitrary(DocumentPage)
+
+  implicit lazy val arbitraryAddDocumentPage: Arbitrary[AddDocumentPage.type] =
+    Arbitrary(AddDocumentPage)
+
+  implicit lazy val arbitraryAddAnyDocumentsPage: Arbitrary[AddAnyDocumentsPage.type] =
+    Arbitrary(AddAnyDocumentsPage)
+
   implicit lazy val arbitraryRemovePackagePage: Arbitrary[RemovePackagePage] =
     Arbitrary(RemovePackagePage(Index(0), Index(0)))
 

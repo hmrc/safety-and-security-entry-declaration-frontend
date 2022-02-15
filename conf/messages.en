@@ -287,3 +287,59 @@ consignorsIdentity.name-address = I'll provide the consignor's name and address
 consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
 consignorsIdentity.error.required = Select consignorsIdentity
 consignorsIdentity.change.hidden = ConsignorsIdentity
+
+addAnyDocuments.title = addAnyDocuments
+addAnyDocuments.heading = addAnyDocuments
+addAnyDocuments.checkYourAnswersLabel = addAnyDocuments
+addAnyDocuments.error.required = Select yes if addAnyDocuments
+addAnyDocuments.change.hidden = AddAnyDocuments
+
+addDocument.title = addDocument
+addDocument.heading = addDocument
+addDocument.checkYourAnswersLabel = addDocument
+addDocument.error.required = Select yes if addDocument
+addDocument.change.hidden = AddDocument
+
+document.title = document
+document.heading = document
+document.documentType = documentType
+document.reference = reference
+document.checkYourAnswersLabel = Document
+document.error.documentType.required = Enter documentType
+document.error.reference.required = Enter reference
+document.error.documentType.length = documentType must be 2 characters or less
+document.error.reference.length = reference must be 35 characters or less
+document.documentType.change.hidden = documentType
+document.reference.change.hidden = reference
+
+goodsItemCrn.title = goodsItemCrn
+goodsItemCrn.heading = goodsItemCrn
+goodsItemCrn.checkYourAnswersLabel = goodsItemCrn
+goodsItemCrn.error.required = Enter goodsItemCrn
+goodsItemCrn.error.length = GoodsItemCrn must be 70 characters or less
+goodsItemCrn.change.hidden = GoodsItemCrn
+
+goodsItemCrnKnown.title = goodsItemCrnKnown
+goodsItemCrnKnown.heading = goodsItemCrnKnown
+goodsItemCrnKnown.checkYourAnswersLabel = goodsItemCrnKnown
+goodsItemCrnKnown.error.required = Select yes if goodsItemCrnKnown
+goodsItemCrnKnown.change.hidden = GoodsItemCrnKnown
+
+overallCrn.title = overallCrn
+overallCrn.heading = overallCrn
+overallCrn.checkYourAnswersLabel = overallCrn
+overallCrn.error.required = Enter overallCrn
+overallCrn.error.length = OverallCrn must be 70 characters or less
+overallCrn.change.hidden = OverallCrn
+
+overallCrnKnown.title = overallCrnKnown
+overallCrnKnown.heading = overallCrnKnown
+overallCrnKnown.checkYourAnswersLabel = overallCrnKnown
+overallCrnKnown.error.required = Select yes if overallCrnKnown
+overallCrnKnown.change.hidden = OverallCrnKnown
+
+removeDocument.title = removeDocument
+removeDocument.heading = removeDocument
+removeDocument.checkYourAnswersLabel = removeDocument
+removeDocument.error.required = Select yes if removeDocument
+removeDocument.change.hidden = RemoveDocument
