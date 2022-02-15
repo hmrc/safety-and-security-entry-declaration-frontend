@@ -279,3 +279,11 @@ dangerousGoodCode.checkYourAnswersLabel = dangerousGoodCode
 dangerousGoodCode.error.required = Enter dangerousGoodCode
 dangerousGoodCode.error.length = DangerousGoodCode must be 200 characters or less
 dangerousGoodCode.change.hidden = DangerousGoodCode
+
+consignorsIdentity.title = How do you want to identify the consignor?
+consignorsIdentity.heading = How do you want to identify the consignor?
+consignorsIdentity.gb-eori = I'll provide the consignor's GB EORI number
+consignorsIdentity.name-address = I'll provide the consignor's name and address
+consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
+consignorsIdentity.error.required = Select consignorsIdentity
+consignorsIdentity.change.hidden = ConsignorsIdentity
