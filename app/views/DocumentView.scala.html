@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import models.DocumentType._
 @import viewmodels.InputWidth._
 
 @this(
@@ -21,6 +22,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
+    govukSelect: GovukSelect,
     govukButton: GovukButton
 )
 
@@ -36,12 +38,14 @@
 
         <h1 class="govuk-heading-xl">@messages("document.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
+        @govukSelect(
+            SelectViewModel(
                 field = form("documentType"),
+                items = selectItems(allDocumentTypes),
                 label = LabelViewModel(messages("document.documentType"))
             )
-            .withWidth(Full)
+            .withCssClass(Fixed20.toString)
+            .withCssClass("autocomplete")
         )
 
         @govukInput(

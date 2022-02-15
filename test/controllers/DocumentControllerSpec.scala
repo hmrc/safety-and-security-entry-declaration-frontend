@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.DocumentFormProvider
-import models.{NormalMode, UserAnswers, Document}
+import models.{Document, DocumentType, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -38,17 +38,10 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider()
 
   lazy val documentRoute = routes.DocumentController.onPageLoad(NormalMode, lrn).url
+  val documentType = DocumentType.allDocumentTypes.head
+  val document = Document(documentType, "reference")
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    lrn,
-    Json.obj(
-      DocumentPage.toString -> Json.obj(
-        "documentType" -> "XX",
-        "reference" -> "value 2"
-      )
-    )
-  )
+  val userAnswers = emptyUserAnswers.set(DocumentPage, document).success.value
 
   "Document Controller" - {
 
@@ -80,7 +73,7 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Document("XX", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(document), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -98,10 +91,10 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, documentRoute)
-            .withFormUrlEncodedBody(("documentType", "XX"), ("reference", "value 2"))
+            .withFormUrlEncodedBody(("documentType", documentType.code), ("reference", "reference"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(DocumentPage, Document("XX", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(DocumentPage, document).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual DocumentPage.navigate(NormalMode, expectedAnswers).url
@@ -150,7 +143,7 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, documentRoute)
-            .withFormUrlEncodedBody(("documentType", "value 1"), ("reference", "value 2"))
+            .withFormUrlEncodedBody(("documentType", documentType.code), ("reference", "reference"))
 
         val result = route(application, request).value
 

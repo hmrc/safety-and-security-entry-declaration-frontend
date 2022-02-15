@@ -32,7 +32,7 @@ object DocumentSummary  {
     answers.get(DocumentPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.documentType).toString + "<br/>" + HtmlFormat.escape(answer.reference).toString
+      val value = HtmlFormat.escape(answer.documentType.name).toString + "<br/>" + HtmlFormat.escape(answer.reference).toString
 
         SummaryListRowViewModel(
           key     = "document.checkYourAnswersLabel",

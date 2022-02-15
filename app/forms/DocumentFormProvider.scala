@@ -17,20 +17,20 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms._
-import models.Document
+import models.{Document, DocumentType}
 
 class DocumentFormProvider @Inject() extends Mappings {
 
    def apply(): Form[Document] = Form(
      mapping(
       "documentType" -> text("document.error.documentType.required")
-        .verifying(maxLength(2, "document.error.documentType.length")),
+        .verifying("document.error.documentType.required", value => DocumentType.allDocumentTypes.exists(_.code == value))
+        .transform[DocumentType](value => DocumentType.allDocumentTypes.find(_.code == value).get, _.code),
       "reference" -> text("document.error.reference.required")
         .verifying(maxLength(35, "document.error.reference.length"))
     )(Document.apply)(Document.unapply)
-   )
- }
+  )
+}

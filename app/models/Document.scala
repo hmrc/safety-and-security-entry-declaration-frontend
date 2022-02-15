@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json._
 
-case class Document (documentType: String, reference: String)
+case class Document (documentType: DocumentType, reference: String)
 
 object Document {
-  implicit val format = Json.format[Document]
+  implicit val format: OFormat[Document] = Json.format[Document]
 }

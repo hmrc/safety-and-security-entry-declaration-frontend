@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.DocumentType
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
 class DocumentFormProviderSpec extends StringFieldBehaviours {
@@ -27,20 +29,11 @@ class DocumentFormProviderSpec extends StringFieldBehaviours {
 
     val fieldName = "documentType"
     val requiredKey = "document.error.documentType.required"
-    val lengthKey = "document.error.documentType.length"
-    val maxLength = 2
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      arbitrary[DocumentType].map(_.code)
     )
 
     behave like mandatoryField(
