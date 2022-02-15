@@ -150,3 +150,8 @@ POST       /:lrn/changeRemovePackage/:itemIndex/:packageIndex                  c
 
 GET        /:lrn/check-package/:itemIndex/:packageIndex                         controllers.CheckPackageItemController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
 GET        /:lrn/change-check-package/:itemIndex/:packageIndex                  controllers.CheckPackageItemController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
+
+GET        /:lrn/dangerousGood/:itemIndex                        controllers.DangerousGoodController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/dangerousGood/:itemIndex                        controllers.DangerousGoodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeDangerousGood/:itemIndex                  controllers.DangerousGoodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeDangerousGood/:itemIndex                  controllers.DangerousGoodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
