@@ -272,3 +272,10 @@ dangerousGood.heading = dangerousGood
 dangerousGood.checkYourAnswersLabel = dangerousGood
 dangerousGood.error.required = Select yes if dangerousGood
 dangerousGood.change.hidden = DangerousGood
+
+dangerousGoodCode.title = dangerousGoodCode
+dangerousGoodCode.heading = dangerousGoodCode
+dangerousGoodCode.checkYourAnswersLabel = dangerousGoodCode
+dangerousGoodCode.error.required = Enter dangerousGoodCode
+dangerousGoodCode.error.length = DangerousGoodCode must be 200 characters or less
+dangerousGoodCode.change.hidden = DangerousGoodCode

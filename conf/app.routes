@@ -155,3 +155,8 @@ GET        /:lrn/dangerousGood/:itemIndex                        controllers.Dan
 POST       /:lrn/dangerousGood/:itemIndex                        controllers.DangerousGoodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/changeDangerousGood/:itemIndex                  controllers.DangerousGoodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeDangerousGood/:itemIndex                  controllers.DangerousGoodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/dangerousGoodCode/:itemIndex                        controllers.DangerousGoodCodeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/dangerousGoodCode/:itemIndex                        controllers.DangerousGoodCodeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeDangerousGoodCode/:itemIndex                  controllers.DangerousGoodCodeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeDangerousGoodCode/:itemIndex                  controllers.DangerousGoodCodeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)

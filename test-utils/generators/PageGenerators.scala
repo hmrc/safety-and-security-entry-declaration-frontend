@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryDangerousGoodCodePage: Arbitrary[DangerousGoodCodePage] =
+    Arbitrary(DangerousGoodCodePage(Index(0)))
+
   implicit lazy val arbitraryDangerousGoodPage: Arbitrary[DangerousGoodPage] =
     Arbitrary(DangerousGoodPage(Index(0)))
 
