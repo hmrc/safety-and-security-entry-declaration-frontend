@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, DangerousGood, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
   "DangerousGoodCodePage" - {
 
-    beRetrievable[String](DangerousGoodCodePage(index))
+    beRetrievable[DangerousGood](DangerousGoodCodePage(index))
 
-    beSettable[String](DangerousGoodCodePage(index))
+    beSettable[DangerousGood](DangerousGoodCodePage(index))
 
-    beRemovable[String](DangerousGoodCodePage(index))
+    beRemovable[DangerousGood](DangerousGoodCodePage(index))
 
     "must navigate in Normal Mode" - {
 

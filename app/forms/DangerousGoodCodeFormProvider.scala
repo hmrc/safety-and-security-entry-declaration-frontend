@@ -17,15 +17,17 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.DangerousGood
 import play.api.data.Form
+import models.DangerousGood.allDangerousGoods
 
 class DangerousGoodCodeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[DangerousGood] =
     Form(
       "value" -> text("dangerousGoodCode.error.required")
-        .verifying(maxLength(200, "dangerousGoodCode.error.length"))
+        .verifying("dangerousGoodCode.error.required",value => allDangerousGoods.exists(_.code == value))
+        .transform[DangerousGood](value=> allDangerousGoods.find(_.code == value).get,_.code)
     )
 }

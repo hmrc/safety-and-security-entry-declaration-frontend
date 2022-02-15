@@ -39,6 +39,11 @@ trait ModelGenerators {
       Gen.oneOf(Country.internationalCountries)
     }
 
+  implicit lazy val arbitraryDangerousGood: Arbitrary[DangerousGood] =
+    Arbitrary {
+      Gen.oneOf(DangerousGood.allDangerousGoods)
+    }
+
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =
     Arbitrary {
       for {
