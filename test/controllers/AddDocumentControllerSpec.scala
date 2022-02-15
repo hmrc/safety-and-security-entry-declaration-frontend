@@ -19,24 +19,18 @@ package controllers
 import base.SpecBase
 import forms.AddDocumentFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddDocumentPage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.AddDocumentView
-
-import scala.concurrent.Future
 
 class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddDocumentFormProvider()
   val form = formProvider()
 
-  lazy val addDocumentRoute = routes.AddDocumentController.onPageLoad(NormalMode, lrn).url
+  lazy val addDocumentRoute = routes.AddDocumentController.onPageLoad(NormalMode, lrn, index).url
 
   "AddDocument Controller" - {
 
@@ -52,38 +46,13 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddDocumentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.set(AddDocumentPage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, addDocumentRoute)
-
-        val view = application.injector.instanceOf[AddDocumentView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request =
@@ -91,11 +60,9 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AddDocumentPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddDocumentPage.navigate(NormalMode, expectedAnswers).url
-        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+        redirectLocation(result).value mustEqual AddDocumentPage(index).navigate(NormalMode, emptyUserAnswers, index, true).url
       }
     }
 
@@ -115,7 +82,7 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 

@@ -36,7 +36,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new RemoveDocumentFormProvider()
   val form = formProvider()
 
-  lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(NormalMode, lrn).url
+  lazy val removeDocumentRoute = routes.RemoveDocumentController.onPageLoad(NormalMode, lrn, index, index).url
 
   "RemoveDocument Controller" - {
 
@@ -52,13 +52,13 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveDocumentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(RemoveDocumentPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(RemoveDocumentPage(index, index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +70,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -91,10 +91,10 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemoveDocumentPage, true).success.value
+        val expectedAnswers = emptyUserAnswers.set(RemoveDocumentPage(index, index), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveDocumentPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemoveDocumentPage(index, index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +115,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 

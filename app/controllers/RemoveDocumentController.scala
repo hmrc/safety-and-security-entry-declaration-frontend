@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.RemoveDocumentFormProvider
+
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.RemoveDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,29 +43,31 @@ class RemoveDocumentController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(RemoveDocumentPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        val preparedForm = request.userAnswers.get(RemoveDocumentPage(itemIndex, documentIndex)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, mode, lrn))
-  }
+        Ok(view(preparedForm, mode, lrn, itemIndex, documentIndex))
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, documentIndex))),
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveDocumentPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveDocumentPage.navigate(mode, updatedAnswers))
-      )
-  }
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveDocumentPage(itemIndex, documentIndex), value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(mode, updatedAnswers))
+        )
+    }
 }

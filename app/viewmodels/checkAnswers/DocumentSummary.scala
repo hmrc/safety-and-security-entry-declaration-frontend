@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.DocumentPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,8 +28,8 @@ import viewmodels.implicits._
 
 object DocumentSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DocumentPage).map {
+  def row(answers: UserAnswers, itemIndex: Index, documentIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(DocumentPage(itemIndex, documentIndex)).map {
       answer =>
 
       val value = HtmlFormat.escape(answer.documentType.name).toString + "<br/>" + HtmlFormat.escape(answer.reference).toString
@@ -38,7 +38,7 @@ object DocumentSummary  {
           key     = "document.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DocumentController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.DocumentController.onPageLoad(CheckMode, answers.lrn, itemIndex, documentIndex).url)
               .withVisuallyHiddenText(messages("document.change.hidden"))
           )
         )

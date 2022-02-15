@@ -30,14 +30,12 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(ConsignorsIdentityPage, JsValue)] ::
     arbitrary[(DangerousGoodCodePage, JsValue)] ::
     arbitrary[(DangerousGoodPage, JsValue)] ::
-    arbitrary[(RemoveDocumentPage.type, JsValue)] ::
     arbitrary[(OverallCrnKnownPage.type, JsValue)] ::
     arbitrary[(OverallCrnPage.type, JsValue)] ::
-    arbitrary[(GoodsItemCrnKnownPage.type, JsValue)] ::
-    arbitrary[(GoodsItemCrnPage.type, JsValue)] ::
-    arbitrary[(DocumentPage.type, JsValue)] ::
-    arbitrary[(AddDocumentPage.type, JsValue)] ::
-    arbitrary[(AddAnyDocumentsPage.type, JsValue)] ::
+    arbitrary[(GoodsItemCrnKnownPage, JsValue)] ::
+    arbitrary[(GoodsItemCrnPage, JsValue)] ::
+    arbitrary[(DocumentPage, JsValue)] ::
+    arbitrary[(AddAnyDocumentsPage, JsValue)] ::
     arbitrary[(NumberOfPiecesPage, JsValue)] ::
     arbitrary[(NumberOfPackagesPage, JsValue)] ::
     arbitrary[(MarkOrNumberPage, JsValue)] ::

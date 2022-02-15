@@ -25,17 +25,11 @@ class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveDocumentPage" - {
 
-    beRetrievable[Boolean](RemoveDocumentPage)
-
-    beSettable[Boolean](RemoveDocumentPage)
-
-    beRemovable[Boolean](RemoveDocumentPage)
-
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        RemoveDocumentPage.navigate(NormalMode, emptyUserAnswers)
+        RemoveDocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +38,7 @@ class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemoveDocumentPage.navigate(CheckMode, emptyUserAnswers)
+        RemoveDocumentPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

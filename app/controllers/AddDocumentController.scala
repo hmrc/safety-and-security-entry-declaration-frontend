@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.AddDocumentFormProvider
+
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.AddDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,29 +43,21 @@ class AddDocumentController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddDocumentPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(form, mode, lrn, index))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          BadRequest(view(formWithErrors, mode, lrn, index)),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddDocumentPage.navigate(mode, updatedAnswers))
+          Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
       )
   }
 }

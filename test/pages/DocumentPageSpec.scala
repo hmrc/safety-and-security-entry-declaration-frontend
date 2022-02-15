@@ -25,17 +25,17 @@ class DocumentPageSpec extends SpecBase with PageBehaviours {
 
   "DocumentPage" - {
 
-    beRetrievable[Document](DocumentPage)
+    beRetrievable[Document](DocumentPage(index, index))
 
-    beSettable[Document](DocumentPage)
+    beSettable[Document](DocumentPage(index, index))
 
-    beRemovable[Document](DocumentPage)
+    beRemovable[Document](DocumentPage(index, index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        DocumentPage.navigate(NormalMode, emptyUserAnswers)
+        DocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class DocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DocumentPage.navigate(CheckMode, emptyUserAnswers)
+        DocumentPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

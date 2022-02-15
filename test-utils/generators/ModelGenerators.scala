@@ -33,7 +33,7 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(ConsignorsIdentity.values)
     }
-    
+
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
     Arbitrary {
       for {

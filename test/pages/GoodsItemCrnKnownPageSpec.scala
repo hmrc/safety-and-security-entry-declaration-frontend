@@ -25,17 +25,17 @@ class GoodsItemCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsItemCrnKnownPage" - {
 
-    beRetrievable[Boolean](GoodsItemCrnKnownPage)
+    beRetrievable[Boolean](GoodsItemCrnKnownPage(index))
 
-    beSettable[Boolean](GoodsItemCrnKnownPage)
+    beSettable[Boolean](GoodsItemCrnKnownPage(index))
 
-    beRemovable[Boolean](GoodsItemCrnKnownPage)
+    beRemovable[Boolean](GoodsItemCrnKnownPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        GoodsItemCrnKnownPage.navigate(NormalMode, emptyUserAnswers)
+        GoodsItemCrnKnownPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class GoodsItemCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemCrnKnownPage.navigate(CheckMode, emptyUserAnswers)
+        GoodsItemCrnKnownPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

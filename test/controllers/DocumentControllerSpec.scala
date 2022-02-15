@@ -37,11 +37,11 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DocumentFormProvider()
   val form = formProvider()
 
-  lazy val documentRoute = routes.DocumentController.onPageLoad(NormalMode, lrn).url
+  lazy val documentRoute = routes.DocumentController.onPageLoad(NormalMode, lrn, index, index).url
   val documentType = DocumentType.allDocumentTypes.head
   val document = Document(documentType, "reference")
 
-  val userAnswers = emptyUserAnswers.set(DocumentPage, document).success.value
+  val userAnswers = emptyUserAnswers.set(DocumentPage(index, index), document).success.value
 
   "Document Controller" - {
 
@@ -57,7 +57,7 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -73,7 +73,7 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(document), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(document), NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -94,10 +94,10 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("documentType", documentType.code), ("reference", "reference"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(DocumentPage, document).success.value
+        val expectedAnswers = emptyUserAnswers.set(DocumentPage(index, index), document).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DocumentPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual DocumentPage(index, index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -118,7 +118,7 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 

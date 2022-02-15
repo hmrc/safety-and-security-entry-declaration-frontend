@@ -26,17 +26,17 @@ class GoodsItemCrnPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsItemCrnPage" - {
 
-    beRetrievable[String](GoodsItemCrnPage)
+    beRetrievable[String](GoodsItemCrnPage(index))
 
-    beSettable[String](GoodsItemCrnPage)
+    beSettable[String](GoodsItemCrnPage(index))
 
-    beRemovable[String](GoodsItemCrnPage)
+    beRemovable[String](GoodsItemCrnPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        GoodsItemCrnPage.navigate(NormalMode, emptyUserAnswers)
+        GoodsItemCrnPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class GoodsItemCrnPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemCrnPage.navigate(CheckMode, emptyUserAnswers)
+        GoodsItemCrnPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

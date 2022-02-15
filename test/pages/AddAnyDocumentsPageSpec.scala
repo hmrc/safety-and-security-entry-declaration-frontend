@@ -25,17 +25,17 @@ class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnyDocumentsPage" - {
 
-    beRetrievable[Boolean](AddAnyDocumentsPage)
+    beRetrievable[Boolean](AddAnyDocumentsPage(index))
 
-    beSettable[Boolean](AddAnyDocumentsPage)
+    beSettable[Boolean](AddAnyDocumentsPage(index))
 
-    beRemovable[Boolean](AddAnyDocumentsPage)
+    beRemovable[Boolean](AddAnyDocumentsPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        AddAnyDocumentsPage.navigate(NormalMode, emptyUserAnswers)
+        AddAnyDocumentsPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddAnyDocumentsPage.navigate(CheckMode, emptyUserAnswers)
+        AddAnyDocumentsPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
