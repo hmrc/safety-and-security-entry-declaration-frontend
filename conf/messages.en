@@ -266,3 +266,24 @@ removePackage.error.required = Select yes if you want to remove this package
 
 checkPackageItem.heading = Check package details
 checkPackageItem.title = Check package details
+
+dangerousGood.title = Is it classed as dangerous goods?
+dangerousGood.heading = Is it classed as dangerous goods?
+dangerousGood.checkYourAnswersLabel = Is it a dangerous good?
+dangerousGood.error.required = Select yes if it is classed as a dangerous good
+dangerousGood.change.hidden = if it is classed as a dangerous good
+
+dangerousGoodCode.title = What is the dangerous goods code?
+dangerousGoodCode.heading = What is the dangerous goods code?
+dangerousGoodCode.checkYourAnswersLabel = Dangerous goods code
+dangerousGoodCode.error.required = Enter the UN dangerous good code
+dangerousGoodCode.error.length = DangerousGoodCode must be 200 characters or less
+dangerousGoodCode.change.hidden = the dangerous good code
+
+consignorsIdentity.title = How do you want to identify the consignor?
+consignorsIdentity.heading = How do you want to identify the consignor?
+consignorsIdentity.gb-eori = I'll provide the consignor's GB EORI number
+consignorsIdentity.name-address = I'll provide the consignor's name and address
+consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
+consignorsIdentity.error.required = Select consignorsIdentity
+consignorsIdentity.change.hidden = ConsignorsIdentity

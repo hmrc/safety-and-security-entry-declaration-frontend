@@ -24,6 +24,11 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryConsignorsIdentity: Arbitrary[ConsignorsIdentity] =
+    Arbitrary {
+      Gen.oneOf(ConsignorsIdentity.values.toSeq)
+    }
+
   implicit lazy val arbitraryKindOfPackage: Arbitrary[KindOfPackage] =
     Arbitrary {
       Gen.oneOf(KindOfPackage.allKindsOfPackage)
