@@ -33,10 +33,20 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to dangerous good code page when answer is yes" in {
 
-        DangerousGoodPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(DangerousGoodPage(index),true).success.value
+
+        DangerousGoodPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.DangerousGoodCodeController.onPageLoad(NormalMode,answers.lrn,index))
+      }
+
+      "to consignor identity page when answer is no" in {
+
+        val answers = emptyUserAnswers.set(DangerousGoodPage(index),false).success.value
+
+        DangerousGoodPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.ConsignorsIdentityController.onPageLoad(NormalMode,answers.lrn,index))
       }
     }
 
