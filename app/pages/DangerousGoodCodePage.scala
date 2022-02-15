@@ -26,4 +26,8 @@ case class DangerousGoodCodePage(index: Index) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "dangerousGoodCode"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.ConsignorsIdentityController.onPageLoad(NormalMode,answers.lrn,index)
+  }
 }

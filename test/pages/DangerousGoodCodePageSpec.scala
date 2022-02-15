@@ -34,10 +34,10 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Consignor Identiry page" in {
 
         DangerousGoodCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.ConsignorsIdentityController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 
