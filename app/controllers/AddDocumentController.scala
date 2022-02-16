@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.DocumentSummary
 import views.html.AddDocumentView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,15 +47,20 @@ class AddDocumentController @Inject()(
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      Ok(view(form, mode, lrn, index))
+      val documents = DocumentSummary.rows(request.userAnswers, index)
+
+      Ok(view(form, mode, lrn, index, documents))
   }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          BadRequest(view(formWithErrors, mode, lrn, index)),
+        formWithErrors => {
+          val documents = DocumentSummary.rows(request.userAnswers, index)
+
+          BadRequest(view(formWithErrors, mode, lrn, index, documents))
+        },
 
         value =>
           Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))

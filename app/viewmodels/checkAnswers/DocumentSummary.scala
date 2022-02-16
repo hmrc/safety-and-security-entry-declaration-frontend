@@ -17,30 +17,22 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, Index, UserAnswers}
-import pages.DocumentPage
+import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import queries.AllDocumentsQuery
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object DocumentSummary  {
 
-  def row(answers: UserAnswers, itemIndex: Index, documentIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DocumentPage(itemIndex, documentIndex)).map {
-      answer =>
+  def rows(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): List[ListItem] =
+    answers.get(AllDocumentsQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
+      case (document, index) =>
 
-      val value = HtmlFormat.escape(answer.documentType.name).toString + "<br/>" + HtmlFormat.escape(answer.reference).toString
-
-        SummaryListRowViewModel(
-          key     = "document.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.DocumentController.onPageLoad(CheckMode, answers.lrn, itemIndex, documentIndex).url)
-              .withVisuallyHiddenText(messages("document.change.hidden"))
-          )
+        ListItem(
+          name      = HtmlFormat.escape(document.documentType.name).toString,
+          changeUrl = routes.DocumentController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url,
+          removeUrl = routes.RemoveDocumentController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url
         )
     }
 }
