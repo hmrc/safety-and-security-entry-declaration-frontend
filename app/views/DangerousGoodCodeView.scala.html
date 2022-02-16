@@ -16,13 +16,15 @@
 
 @import models.DangerousGood._
 @import viewmodels.InputWidth
+@import services.DangerousGoodsService
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukSelect: GovukSelect,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    dangerousGoodsService: DangerousGoodsService
 )
 
 @(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
@@ -38,7 +40,7 @@
         @govukSelect(
             SelectViewModel(
                 field = form("value"),
-                items = selectItems(allDangerousGoods),
+                items = selectItems(dangerousGoodsService.allDangerousGoods),
                 label = LabelViewModel(messages("dangerousGoodCode.heading")).asPageHeading()
             )
             .withCssClass(InputWidth.Fixed20.toString)
