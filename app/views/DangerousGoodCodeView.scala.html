@@ -14,32 +14,37 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
+@import models.DangerousGood._
+@import viewmodels.InputWidth
+@import services.DangerousGoodsService
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+    govukSelect: GovukSelect,
+    govukButton: GovukButton,
+    dangerousGoodsService: DangerousGoodsService
 )
 
 @(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("dangerousGoodCode.title"))) {
 
-    @formHelper(action = routes.DangerousGoodCodeController.onSubmit(mode, lrn, index)) {
+    @formHelper(action = routes.DangerousGoodCodeController.onSubmit(mode, lrn, index), 'autocomplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
+        @govukSelect(
+            SelectViewModel(
                 field = form("value"),
+                items = selectItems(dangerousGoodsService.allDangerousGoods),
                 label = LabelViewModel(messages("dangerousGoodCode.heading")).asPageHeading()
             )
-            .withWidth(Full)
+            .withCssClass(InputWidth.Fixed20.toString)
+            .withCssClass("autocomplete")
         )
 
         @govukButton(

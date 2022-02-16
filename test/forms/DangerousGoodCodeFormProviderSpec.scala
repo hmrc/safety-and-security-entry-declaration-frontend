@@ -16,16 +16,26 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
+import generators.ModelGenerators
 import play.api.data.FormError
+import models.DangerousGood
+import org.scalacheck.Arbitrary.arbitrary
+import services.DangerousGoodsService
 
-class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours {
+
+class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours with SpecBase with ModelGenerators {
 
   val requiredKey = "dangerousGoodCode.error.required"
   val lengthKey = "dangerousGoodCode.error.length"
   val maxLength = 200
+  val application = applicationBuilder(None).build()
 
-  val form = new DangerousGoodCodeFormProvider()()
+  def service: DangerousGoodsService = application.injector.instanceOf[DangerousGoodsService]
+
+
+  val form = new DangerousGoodCodeFormProvider(service)()
 
   ".value" - {
 
@@ -34,14 +44,7 @@ class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      arbitrary[DangerousGood].map(_.code)
     )
 
     behave like mandatoryField(
@@ -49,5 +52,15 @@ class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind any values other than valid dangerous goods" in {
+      val invalidAnswers = arbitrary[String].suchThat(x => !allDangerousGoods.map(_.code).contains(x))
+
+      forAll(invalidAnswers) {
+        answer =>
+          val result = form.bind(Map("value" -> answer)).apply(fieldName)
+          result.errors must contain only FormError(fieldName, requiredKey)
+      }
+    }
   }
 }

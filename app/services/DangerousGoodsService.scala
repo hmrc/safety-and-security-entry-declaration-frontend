@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package services
 
-import javax.inject.Inject
-import forms.mappings.Mappings
+import com.google.inject.{Inject, Singleton}
 import models.DangerousGood
-import play.api.data.Form
-import services.DangerousGoodsService
+import play.api.{Configuration, Environment}
+import scala.io.Source
+import play.api.libs.json.Json
 
-class DangerousGoodCodeFormProvider @Inject()(dangerousGoodsService: DangerousGoodsService) extends Mappings {
+@Singleton
+class DangerousGoodsService @Inject()(env:Environment, configuration: Configuration) {
 
-  def apply(): Form[DangerousGood] =
-    Form(
-      "value" -> text("dangerousGoodCode.error.required")
-        .verifying("dangerousGoodCode.error.required",value => dangerousGoodsService.allDangerousGoods.exists(_.code == value))
-        .transform[DangerousGood](value=> dangerousGoodsService.allDangerousGoods.find(_.code == value).get,_.code)
-    )
+  private val dangerousGoodsFile : String = configuration.get[String]("dangerous-goods-file")
+
+  val allDangerousGoods : Seq[DangerousGood] = {
+    val json = env.resourceAsStream(dangerousGoodsFile).fold(throw new Exception("no dangerous good file found"))(Source.fromInputStream).mkString
+
+    Json.parse(json).as[Seq[DangerousGood]]
+  }
 }

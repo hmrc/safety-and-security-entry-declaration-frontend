@@ -17,11 +17,11 @@
 package pages
 
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{DangerousGood, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DangerousGoodCodePage(index: Index) extends QuestionPage[String] {
+case class DangerousGoodCodePage(index: Index) extends QuestionPage[DangerousGood] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 

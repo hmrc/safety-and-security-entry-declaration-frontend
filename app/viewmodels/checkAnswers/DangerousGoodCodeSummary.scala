@@ -29,11 +29,11 @@ object DangerousGoodCodeSummary  {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DangerousGoodCodePage(index)).map {
-      answer =>
+      dangerousGoods =>
 
         SummaryListRowViewModel(
           key     = "dangerousGoodCode.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(dangerousGoods.name).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.DangerousGoodCodeController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("dangerousGoodCode.change.hidden"))

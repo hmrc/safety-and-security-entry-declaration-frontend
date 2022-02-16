@@ -57,6 +57,9 @@ trait SpecBase
                                     clock: Clock = stubClockAtArbitraryDate,
                                   ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
+      .configure(
+        "dangerous-goods-file" -> "test-dangerousGoods.json"
+      )
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
