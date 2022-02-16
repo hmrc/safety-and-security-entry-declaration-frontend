@@ -27,7 +27,7 @@ object DangerousGood {
 
   implicit val format: OFormat[DangerousGood] = Json.format[DangerousGood]
 
-  private val dangerousGoods1 : Seq[DangerousGood] = Seq(
+  val allDangerousGoods: Seq[DangerousGood] = Seq(
     DangerousGood("4", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"),
     DangerousGood("5", "CARTRIDGES FOR WEAPONS with bursting charge"),
     DangerousGood("6", "CARTRIDGES FOR WEAPONS with bursting charge"),
@@ -503,8 +503,8 @@ object DangerousGood {
     DangerousGood("1133", "ADHESIVES containing flammable liquid"),
     DangerousGood("1134", "CHLOROBENZENE"),
     DangerousGood("1135", "ETHYLENE CHLOROHYDRIN"),
-    DangerousGood("1136", "COAL TAR DISTILLATES, FLAMMABLE"))
-  private val dangerousGoods2 : Seq[DangerousGood] = Seq(DangerousGood("1139", "COATING SOLUTION (includes surface treatments or coatings used for industrial or other purposes such as vehicle undercoating, drum or b"),
+    DangerousGood("1136", "COAL TAR DISTILLATES, FLAMMABLE"),
+    DangerousGood("1139", "COATING SOLUTION (includes surface treatments or coatings used for industrial or other purposes such as vehicle undercoating, drum or b"),
     DangerousGood("1143", "CROTONALDEHYDE or CROTONALDEHYDE, STABILIZED"),
     DangerousGood("1144", "CROTONYLENE"),
     DangerousGood("1145", "CYCLOHEXANE"),
@@ -1547,8 +1547,8 @@ object DangerousGood {
     DangerousGood("2526", "FURFURYLAMINE"),
     DangerousGood("2527", "ISOBUTYL ACRYLATE, STABILIZED"),
     DangerousGood("2528", "ISOBUTYL ISOBUTYRATE"),
-    DangerousGood("2529", "ISOBUTYRIC ACID"))
-  private val dangerousGoods3 : Seq[DangerousGood] = Seq(DangerousGood("2531", "METHACRYLIC ACID, STABILIZED"),
+    DangerousGood("2529", "ISOBUTYRIC ACID"),
+    DangerousGood("2531", "METHACRYLIC ACID, STABILIZED"),
     DangerousGood("2533", "METHYL TRICHLOROACETATE"),
     DangerousGood("2534", "METHYLCHLOROSILANE"),
     DangerousGood("2535", "4-METHYLMORPHOLINE (N-METHYLMORPHOLINE)"),
@@ -2294,8 +2294,6 @@ object DangerousGood {
     DangerousGood("3480", "LITHIUM ION BATTERIES (including lithium ion polymer batteries)"),
     DangerousGood("3481", "LITHIUM ION BATTERIES CONTAINED IN EQUIPMENT or LITHIUM ION BATTERIES PACKED WITH EQUIPMENT (including lithium ion polymer batteries)")
   )
-
-  val allDangerousGoods : Seq[DangerousGood] = Seq.concat(dangerousGoods1,dangerousGoods2,dangerousGoods3)
 
   def selectItems(dangerousGoods: Seq[DangerousGood]): Seq[SelectItem] =
     SelectItem(value = None, text = "Select a dangerous good") +:
