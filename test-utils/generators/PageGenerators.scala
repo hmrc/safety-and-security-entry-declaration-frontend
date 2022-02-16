@@ -22,8 +22,8 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage.type] =
-    Arbitrary(GoodsItemGrossWeightPage)
+  implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
+    Arbitrary(GoodsItemGrossWeightPage(Index(0)))
 
   implicit lazy val arbitraryConsignorsIdentityPage: Arbitrary[ConsignorsIdentityPage] =
     Arbitrary(ConsignorsIdentityPage(Index(0)))

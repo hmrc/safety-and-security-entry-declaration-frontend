@@ -25,5 +25,5 @@ final case class GoodsItemCrnPage(index: Index) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "goodsItemCrn"
+  override def toString: String = "crn"
 }

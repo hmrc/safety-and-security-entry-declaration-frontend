@@ -206,7 +206,7 @@ POST       /:lrn/removeDocument/:itemIndex/:documentIndex                       
 GET        /:lrn/changeRemoveDocument/:itemIndex/:documentIndex                  controllers.RemoveDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
 POST       /:lrn/changeRemoveDocument/:itemIndex/:documentIndex                  controllers.RemoveDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
 
-GET        /:lrn/goodsItemGrossWeight                  controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/goodsItemGrossWeight                  controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeGoodsItemGrossWeight                        controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeGoodsItemGrossWeight                        controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)

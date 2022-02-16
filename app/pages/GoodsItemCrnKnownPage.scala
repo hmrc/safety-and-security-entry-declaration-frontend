@@ -25,5 +25,5 @@ final case class GoodsItemCrnKnownPage(index: Index) extends QuestionPage[Boolea
 
   override def path: JsPath = JsPath\ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "goodsItemCrnKnown"
+  override def toString: String = "crnKnown"
 }

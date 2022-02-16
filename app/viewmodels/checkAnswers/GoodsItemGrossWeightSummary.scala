@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.GoodsItemGrossWeightPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,15 +26,15 @@ import viewmodels.implicits._
 
 object GoodsItemGrossWeightSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(GoodsItemGrossWeightPage).map {
+  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(GoodsItemGrossWeightPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "goodsItemGrossWeight.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.GoodsItemGrossWeightController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.GoodsItemGrossWeightController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("goodsItemGrossWeight.change.hidden"))
           )
         )

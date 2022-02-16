@@ -25,17 +25,17 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsItemGrossWeightPage" - {
 
-    beRetrievable[Int](GoodsItemGrossWeightPage)
+    beRetrievable[Int](GoodsItemGrossWeightPage(index))
 
-    beSettable[Int](GoodsItemGrossWeightPage)
+    beSettable[Int](GoodsItemGrossWeightPage(index))
 
-    beRemovable[Int](GoodsItemGrossWeightPage)
+    beRemovable[Int](GoodsItemGrossWeightPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        GoodsItemGrossWeightPage.navigate(NormalMode, emptyUserAnswers)
+        GoodsItemGrossWeightPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +44,7 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemGrossWeightPage.navigate(CheckMode, emptyUserAnswers)
+        GoodsItemGrossWeightPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
