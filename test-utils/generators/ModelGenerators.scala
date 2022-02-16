@@ -23,6 +23,11 @@ import org.scalacheck.{Arbitrary, Gen}
 import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
+  val allDangerousGoods = Seq(
+    DangerousGood("4", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"),
+    DangerousGood("5", "CARTRIDGES FOR WEAPONS with bursting charge"),
+    DangerousGood("6", "CARTRIDGES FOR WEAPONS with bursting charge"),
+    DangerousGood("7", "CARTRIDGES FOR WEAPONS with bursting charge"))
 
   implicit lazy val arbitraryConsignorsIdentity: Arbitrary[ConsignorsIdentity] =
     Arbitrary {
@@ -41,7 +46,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryDangerousGood: Arbitrary[DangerousGood] =
     Arbitrary {
-      Gen.oneOf(DangerousGood.allDangerousGoods)
+      Gen.oneOf(allDangerousGoods)
     }
 
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =

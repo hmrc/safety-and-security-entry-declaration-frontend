@@ -30,12 +30,16 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.DangerousGoodCodeView
 import org.scalacheck.Arbitrary.arbitrary
+import services.DangerousGoodsService
 
 import scala.concurrent.Future
 
 class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DangerousGoodCodeFormProvider()
+  val application = applicationBuilder(None).build()
+
+  def service: DangerousGoodsService = application.injector.instanceOf[DangerousGoodsService]
+  val formProvider = new DangerousGoodCodeFormProvider(service)
   val form = formProvider()
   val dangerousGood = arbitraryDangerousGood.arbitrary.sample.value
 
