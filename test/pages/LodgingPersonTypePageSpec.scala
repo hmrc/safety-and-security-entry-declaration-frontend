@@ -33,10 +33,10 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Gross Weight" in {
+      "to Overall CRN Known" in {
 
         LodgingPersonTypePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.GrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(routes.OverallCrnKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

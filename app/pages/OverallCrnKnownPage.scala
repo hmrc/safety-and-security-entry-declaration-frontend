@@ -26,4 +26,10 @@ case object OverallCrnKnownPage extends QuestionPage[Boolean] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "overallCrnKnown"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(OverallCrnKnownPage) match {
+      case Some(true)  => routes.OverallCrnController.onPageLoad(NormalMode, answers.lrn)
+      case Some(false) => routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
+    }
 }

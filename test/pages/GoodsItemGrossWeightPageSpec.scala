@@ -33,10 +33,26 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "when the user gave a CRN for the whole consignment" - {
 
-        GoodsItemGrossWeightPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        "to Add Any Documents" in {
+
+          val answers = emptyUserAnswers.set(OverallCrnKnownPage, true).success.value
+
+          GoodsItemGrossWeightPage(index).navigate(NormalMode, answers)
+            .mustEqual(routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index))
+        }
+      }
+
+      "when the user did not give a CRN for the whole consignment" - {
+
+        "to Goods Item Crn Known" in {
+
+          val answers = emptyUserAnswers.set(OverallCrnKnownPage, false).success.value
+
+          GoodsItemGrossWeightPage(index).navigate(NormalMode, answers)
+            .mustEqual(routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index))
+        }
       }
     }
 

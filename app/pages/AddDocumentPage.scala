@@ -17,13 +17,22 @@
 package pages
 
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
+import queries.DeriveNumberOfDocuments
 
-final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] {
+final case class AddDocumentPage(index: Index) extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addDocument"
+  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfDocuments(itemIndex)) match {
+        case Some(size) => routes.DocumentController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
+        case None       => routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      mode match {
+        case NormalMode => routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+        case CheckMode  => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      }
+    }
 }

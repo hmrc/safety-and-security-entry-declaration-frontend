@@ -34,10 +34,10 @@ class OverallCrnPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Gross Weight" in {
 
         OverallCrnPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.GrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

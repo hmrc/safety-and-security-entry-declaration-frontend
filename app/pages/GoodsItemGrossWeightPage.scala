@@ -26,4 +26,11 @@ final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[Int
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "grossWeight"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(OverallCrnKnownPage) match {
+      case Some(true)  => routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(false) => routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

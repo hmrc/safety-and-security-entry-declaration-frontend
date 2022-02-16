@@ -33,10 +33,20 @@ class OverallCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Overall CRN if the answer is yes" in {
 
-        OverallCrnKnownPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(OverallCrnKnownPage, true).success.value
+
+        OverallCrnKnownPage.navigate(NormalMode, answers)
+          .mustEqual(routes.OverallCrnController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Gross Weight if the answer is no" in {
+
+        val answers = emptyUserAnswers.set(OverallCrnKnownPage, false).success.value
+
+        OverallCrnKnownPage.navigate(NormalMode, answers)
+          .mustEqual(routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn))
       }
     }
 

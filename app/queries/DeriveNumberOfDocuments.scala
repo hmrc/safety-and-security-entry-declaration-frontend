@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import controllers.routes
-import models.{Document, Index, NormalMode, UserAnswers}
+import models.{Document, Index}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-final case class DocumentPage(itemIndex: Index, documentIndex: Index) extends QuestionPage[Document] {
+case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[Document], Int] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "documents" \ documentIndex.position
+  override val derive: List[Document] => Int = _.size
 
-  override def toString: String = "document"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.AddDocumentController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "documents"
 }

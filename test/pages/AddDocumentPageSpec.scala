@@ -18,7 +18,8 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Document, Index, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddDocumentPageSpec extends SpecBase with PageBehaviours {
@@ -27,10 +28,24 @@ class AddDocumentPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Document for the next index if the answer is yes" in {
 
-        AddDocumentPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val document = arbitrary[Document].sample.value
+
+        val answers = emptyUserAnswers.set(DocumentPage(index, Index(0)), document).success.value
+
+        AddDocumentPage(index).navigate(NormalMode, answers, index, addAnother = true)
+          .mustEqual(routes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, Index(1)))
+      }
+
+      "to Dangerous Goods when the answer is no" in {
+
+        val document = arbitrary[Document].sample.value
+
+        val answers = emptyUserAnswers.set(DocumentPage(index, Index(0)), document).success.value
+
+        AddDocumentPage(index).navigate(NormalMode, answers, index, addAnother = false)
+          .mustEqual(routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 

@@ -26,4 +26,11 @@ final case class AddAnyDocumentsPage(index: Index) extends QuestionPage[Boolean]
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "addAnyDocuments"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(AddAnyDocumentsPage(index)) match {
+      case Some(true)  => routes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+      case Some(false) => routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index)
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

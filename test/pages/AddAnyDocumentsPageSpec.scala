@@ -33,10 +33,20 @@ class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Document for the first index when the answer is yes" in {
 
-        AddAnyDocumentsPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(AddAnyDocumentsPage(index), true).success.value
+
+        AddAnyDocumentsPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, index))
+      }
+
+      "to Dangerous Goods when the answer is no" in {
+
+        val answers = emptyUserAnswers.set(AddAnyDocumentsPage(index), false).success.value
+
+        AddAnyDocumentsPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 

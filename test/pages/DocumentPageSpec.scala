@@ -33,10 +33,10 @@ class DocumentPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Document" in {
 
         DocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.AddDocumentController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
       }
     }
 

@@ -33,10 +33,20 @@ class GoodsItemCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Goods Item Crn when the answer is yes" in {
 
-        GoodsItemCrnKnownPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(GoodsItemCrnKnownPage(index), true).success.value
+
+        GoodsItemCrnKnownPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.GoodsItemCrnController.onPageLoad(NormalMode, answers.lrn, index))
+      }
+
+      "to Document with index 0 when the answer is no" in {
+
+        val answers = emptyUserAnswers.set(GoodsItemCrnKnownPage(index), false).success.value
+
+        GoodsItemCrnKnownPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, index))
       }
     }
 

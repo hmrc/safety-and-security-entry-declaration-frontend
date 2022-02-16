@@ -28,5 +28,5 @@ case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
   override def toString: String = "lodgingPersonType"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
+    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
 }

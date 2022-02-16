@@ -34,10 +34,10 @@ class GoodsItemCrnPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Any Documents" in {
 
         GoodsItemCrnPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
       }
     }
 

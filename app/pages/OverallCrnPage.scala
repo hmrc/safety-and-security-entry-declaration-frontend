@@ -26,4 +26,7 @@ case object OverallCrnPage extends QuestionPage[String] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "overallCrn"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
 }
