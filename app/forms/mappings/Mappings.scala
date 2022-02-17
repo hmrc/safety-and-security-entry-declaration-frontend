@@ -32,6 +32,15 @@ trait Mappings extends Formatters with Constraints {
                     args: Seq[String] = Seq.empty): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
+  protected def decimal(
+                         requiredKey: String = "error.required",
+                         nonNumericKey: String = "error.nonNumeric",
+                         invalidPrecisionKey: String = "error.precision",
+                         precision: Int,
+                         args: Seq[String] = Seq.empty
+                       ): FieldMapping[BigDecimal] =
+    of(decimalFormatter(requiredKey, nonNumericKey, invalidPrecisionKey, precision, args))
+
   protected def boolean(requiredKey: String = "error.required",
                         invalidKey: String = "error.boolean",
                         args: Seq[String] = Seq.empty): FieldMapping[Boolean] =

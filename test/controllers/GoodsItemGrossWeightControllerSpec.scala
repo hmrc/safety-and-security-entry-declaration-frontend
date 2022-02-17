@@ -36,7 +36,7 @@ class GoodsItemGrossWeightControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new GoodsItemGrossWeightFormProvider()
   val form = formProvider()
 
-  val validAnswer = 1
+  val validAnswer = BigDecimal(1)
 
   lazy val goodsItemGrossWeightRoute = routes.GoodsItemGrossWeightController.onPageLoad(NormalMode, lrn, index).url
 

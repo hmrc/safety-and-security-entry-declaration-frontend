@@ -16,10 +16,13 @@
 
 package forms
 
-import forms.behaviours.IntFieldBehaviours
+import forms.behaviours.DecimalFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
-class TotalGrossWeightFormProviderSpec extends IntFieldBehaviours {
+import scala.math.BigDecimal.RoundingMode
+
+class TotalGrossWeightFormProviderSpec extends DecimalFieldBehaviours {
 
   val form = new TotalGrossWeightFormProvider()()
 
@@ -27,10 +30,11 @@ class TotalGrossWeightFormProviderSpec extends IntFieldBehaviours {
 
     val fieldName = "value"
 
-    val minimum = 0
-    val maximum = 99999999
+    val minimum = BigDecimal(0.001)
+    val maximum = BigDecimal(99999999.999)
+    val precision = 3
 
-    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
+    val validDataGenerator = Gen.choose(minimum, maximum).map(_.setScale(precision, RoundingMode.HALF_DOWN)).map(_.toString)
 
     behave like fieldThatBindsValidData(
       form,
@@ -38,19 +42,21 @@ class TotalGrossWeightFormProviderSpec extends IntFieldBehaviours {
       validDataGenerator
     )
 
-    behave like intField(
+    behave like decimalField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "totalGrossWeight.error.nonNumeric"),
-      wholeNumberError = FormError(fieldName, "totalGrossWeight.error.wholeNumber")
+      nonNumericError       = FormError(fieldName, "totalGrossWeight.error.nonNumeric"),
+      invalidPrecisionError = FormError(fieldName, "totalGrossWeight.error.precision"),
+      precision             = precision
     )
 
-    behave like intFieldWithRange(
+    behave like decimalWithRange(
       form,
       fieldName,
       minimum       = minimum,
       maximum       = maximum,
-      expectedError = FormError(fieldName, "totalGrossWeight.error.outOfRange", Seq(minimum, maximum))
+      expectedError = FormError(fieldName, "totalGrossWeight.error.outOfRange", Seq(minimum, maximum)),
+      precision     = precision
     )
 
     behave like mandatoryField(
