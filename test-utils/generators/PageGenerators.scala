@@ -22,17 +22,17 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryConsignorNamePage: Arbitrary[ConsignorNamePage.type] =
-    Arbitrary(ConsignorNamePage)
+  implicit lazy val arbitraryConsignorNamePage: Arbitrary[ConsignorNamePage] =
+    Arbitrary(ConsignorNamePage(Index(0)))
 
-  implicit lazy val arbitraryConsignorEORIPage: Arbitrary[ConsignorEORIPage.type] =
-    Arbitrary(ConsignorEORIPage)
+  implicit lazy val arbitraryConsignorEORIPage: Arbitrary[ConsignorEORIPage] =
+    Arbitrary(ConsignorEORIPage(Index(0)))
 
-  implicit lazy val arbitraryConsignorAddressPage: Arbitrary[ConsignorAddressPage.type] =
-    Arbitrary(ConsignorAddressPage)
+  implicit lazy val arbitraryConsignorAddressPage: Arbitrary[ConsignorAddressPage] =
+    Arbitrary(ConsignorAddressPage(Index(0)))
 
-  implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage.type] =
-    Arbitrary(ConsigneeKnownPage)
+  implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage] =
+    Arbitrary(ConsigneeKnownPage(Index(0)))
 
   implicit lazy val arbitraryConsignorsIdentityPage: Arbitrary[ConsignorsIdentityPage] =
     Arbitrary(ConsignorsIdentityPage(Index(0)))

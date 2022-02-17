@@ -24,34 +24,34 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
-  implicit lazy val arbitraryConsignorNameUserAnswersEntry: Arbitrary[(ConsignorNamePage.type, JsValue)] =
+  implicit lazy val arbitraryConsignorNameUserAnswersEntry: Arbitrary[(ConsignorNamePage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ConsignorNamePage.type]
+        page  <- arbitrary[ConsignorNamePage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryConsignorEORIUserAnswersEntry: Arbitrary[(ConsignorEORIPage.type, JsValue)] =
+  implicit lazy val arbitraryConsignorEORIUserAnswersEntry: Arbitrary[(ConsignorEORIPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ConsignorEORIPage.type]
+        page  <- arbitrary[ConsignorEORIPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryConsignorAddressUserAnswersEntry: Arbitrary[(ConsignorAddressPage.type, JsValue)] =
+  implicit lazy val arbitraryConsignorAddressUserAnswersEntry: Arbitrary[(ConsignorAddressPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ConsignorAddressPage.type]
+        page  <- arbitrary[ConsignorAddressPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryConsigneeKnownUserAnswersEntry: Arbitrary[(ConsigneeKnownPage.type, JsValue)] =
+  implicit lazy val arbitraryConsigneeKnownUserAnswersEntry: Arbitrary[(ConsigneeKnownPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[ConsigneeKnownPage.type]
+        page  <- arbitrary[ConsigneeKnownPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
       } yield (page, value)
     }
