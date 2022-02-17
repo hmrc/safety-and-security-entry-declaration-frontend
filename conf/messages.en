@@ -291,32 +291,30 @@ consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consi
 consignorsIdentity.error.required = Select consignorsIdentity
 consignorsIdentity.change.hidden = ConsignorsIdentity
 
-consigneeKnown.title = consigneeKnown
-consigneeKnown.heading = consigneeKnown
-consigneeKnown.checkYourAnswersLabel = consigneeKnown
-consigneeKnown.error.required = Select yes if consigneeKnown
-consigneeKnown.change.hidden = ConsigneeKnown
+consigneeKnown.title = Do you know the consignee?
+consigneeKnown.heading = Do you know the consignee?
+consigneeKnown.checkYourAnswersLabel = Consignee known
+consigneeKnown.error.required = Select yes if you know the consignee
+consigneeKnown.change.hidden = the consignee is known
 
-consignorAddress.title = consignorAddress
-consignorAddress.heading = consignorAddress
-consignorAddress.checkYourAnswersLabel = consignorAddress
-consignorAddress.error.required = Enter consignorAddress
-consignorAddress.error.length = ConsignorAddress must be 35 characters or less
-consignorAddress.change.hidden = ConsignorAddress
+consignorAddress.title = What is the consignor's address?
+consignorAddress.heading = What is the consignor's address?
+consignorAddress.checkYourAnswersLabel = Consignor's address
+consignorAddress.change.hidden = the consignor's address
 
-consignorEORI.title = consignorEORI
-consignorEORI.heading = consignorEORI
-consignorEORI.checkYourAnswersLabel = consignorEORI
-consignorEORI.error.required = Enter consignorEORI
-consignorEORI.error.length = ConsignorEORI must be 50 characters or less
-consignorEORI.change.hidden = ConsignorEORI
+consignorEORI.title = What is the consignor's GB EORI number?
+consignorEORI.heading = What is the consignor's GB EORI number?
+consignorEORI.checkYourAnswersLabel = Consignor's GB EORI
+consignorEORI.error.required = nter the consignor's GB EORI number
+consignorEORI.error.length = The GB EORI number must be 35 characters or less
+consignorEORI.change.hidden = the consignor's GB EORI number
 
-consignorName.title = consignorName
-consignorName.heading = consignorName
-consignorName.checkYourAnswersLabel = consignorName
-consignorName.error.required = Enter consignorName
-consignorName.error.length = ConsignorName must be 35 characters or less
-consignorName.change.hidden = ConsignorName
+consignorName.title = What is the consignor's name?
+consignorName.heading = What is the consignor's name?
+consignorName.checkYourAnswersLabel = Consignor's name
+consignorName.error.required = Enter the consignor's name
+consignorName.error.length = The name must be 35 characters or less
+consignorName.change.hidden = the consignor's name
 
 consignorsIdentity.error.required = Select how you want to identify the consignor
 consignorsIdentity.change.hidden = how you want to identify the consignor
