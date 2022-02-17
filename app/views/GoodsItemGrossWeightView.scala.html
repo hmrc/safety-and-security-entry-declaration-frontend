@@ -34,13 +34,18 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("goodsItemGrossWeight.heading")</h1>
+
+        <p class="govuk-body">@messages("goodsItemGrossWeight.guidance")</p>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("goodsItemGrossWeight.heading")).asPageHeading()
+                label = LabelViewModel(messages("goodsItemGrossWeight.label"))
             )
             .asNumeric()
-            .withWidth(Fixed10)
+            .withWidth(Fixed5)
+            .withSuffix(PrefixOrSuffix(content = Text(messages("goodsItemGrossWeight.suffix"))))
         )
 
         @govukButton(

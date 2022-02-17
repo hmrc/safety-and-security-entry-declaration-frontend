@@ -89,10 +89,13 @@ grossWeight.change.hidden = how you want to give the gross weight of the goods
 
 totalGrossWeight.title = What is the total gross weight of the goods?
 totalGrossWeight.heading = What is the total gross weight of the goods?
+totalGrossWeight.guidance = Tell us the weight of the goods including its packaging but excluding the carrier’s handling equipment
+totalGrossWeight.label = Enter weight in kilograms
+totalGrossWeight.suffix = kg
 totalGrossWeight.checkYourAnswersLabel = Total gross weight
 totalGrossWeight.error.nonNumeric = Enter the total gross weight using numbers
 totalGrossWeight.error.required = Enter the total gross weight of the goods
-totalGrossWeight.error.wholeNumber = Enter the total gross weight using whole numbers
+totalGrossWeight.error.precision = Enter the total gross weight using up to 3 decimal places
 totalGrossWeight.error.outOfRange = Total gross weight must be between {0} and {1}
 totalGrossWeight.change.hidden = the total gross weight of the goods
 
@@ -371,10 +374,13 @@ removeDocument.error.required = Select yes if you need to remove this document
 
 goodsItemGrossWeight.title = What is the gross weight of the goods?
 goodsItemGrossWeight.heading = What is the gross weight of the goods?
+goodsItemGrossWeight.guidance = Tell us the weight of the goods including its packaging but excluding the carrier’s handling equipment
+goodsItemGrossWeight.label = Enter weight in kilograms
+goodsItemGrossWeight.suffix = kg
 goodsItemGrossWeight.checkYourAnswersLabel = Gross weight
 goodsItemGrossWeight.error.nonNumeric = Enter the gross weight of the goods using numbers
 goodsItemGrossWeight.error.required = Enter the gross weight of the goods
-goodsItemGrossWeight.error.wholeNumber = Enter the gross weight of the goods using whole numbers
+goodsItemGrossWeight.error.precision = Enter the gross weight of the goods using up to 3 decimal places
 goodsItemGrossWeight.error.outOfRange = Gross weight must be between {0} and {1}
 goodsItemGrossWeight.change.hidden = the gross weight of the goods
 

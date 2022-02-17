@@ -22,12 +22,13 @@ import play.api.data.Form
 
 class GoodsItemGrossWeightFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> int(
-        "goodsItemGrossWeight.error.required",
-        "goodsItemGrossWeight.error.wholeNumber",
-        "goodsItemGrossWeight.error.nonNumeric")
-          .verifying(inRange(1, 99999999, "goodsItemGrossWeight.error.outOfRange"))
+      "value" -> decimal(
+        requiredKey         = "goodsItemGrossWeight.error.required",
+        nonNumericKey       = "goodsItemGrossWeight.error.nonNumeric",
+        invalidPrecisionKey = "goodsItemGrossWeight.error.precision",
+        precision           = 3
+      ).verifying(inRange(BigDecimal(0.001), BigDecimal(99999999.999), "goodsItemGrossWeight.error.outOfRange"))
     )
 }

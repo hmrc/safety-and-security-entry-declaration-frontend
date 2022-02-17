@@ -21,7 +21,7 @@ import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TotalGrossWeightPage extends QuestionPage[Int] {
+case object TotalGrossWeightPage extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ toString
 
