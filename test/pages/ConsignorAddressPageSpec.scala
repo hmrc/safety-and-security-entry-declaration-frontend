@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
 
   "ConsignorAddressPage" - {
 
-    beRetrievable[String](ConsignorAddressPage(index))
+    beRetrievable[Address](ConsignorAddressPage(index))
 
-    beSettable[String](ConsignorAddressPage(index))
+    beSettable[Address](ConsignorAddressPage(index))
 
-    beRemovable[String](ConsignorAddressPage(index))
+    beRemovable[Address](ConsignorAddressPage(index))
 
     "must navigate in Normal Mode" - {
 

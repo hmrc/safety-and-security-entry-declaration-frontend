@@ -62,6 +62,16 @@ trait ModelGenerators {
       Gen.oneOf(allDangerousGoods)
     }
 
+  implicit lazy val arbitraryAddress: Arbitrary[Address] =
+    Arbitrary {
+      for {
+        streetAndNumber <- arbitrary[String]
+        city <- arbitrary[String]
+        postCode <- arbitrary[String]
+        country <- arbitrary[String]
+      } yield Address(streetAndNumber,city, postCode, country)
+    }
+
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =
     Arbitrary {
       for {

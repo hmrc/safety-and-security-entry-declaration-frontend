@@ -17,10 +17,10 @@
 package controllers
 
 import controllers.actions._
-import forms.ConsignorAddressFormProvider
+import forms.{AddressFormProvider, ConsignorAddressFormProvider}
 
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Address, Index, LocalReferenceNumber, Mode}
 import pages.ConsignorAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ class ConsignorAddressController @Inject()(
                                         identify: IdentifierAction,
                                         getData: DataRetrievalActionProvider,
                                         requireData: DataRequiredAction,
-                                        formProvider: ConsignorAddressFormProvider,
+                                        formProvider: AddressFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: ConsignorAddressView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -48,7 +48,7 @@ class ConsignorAddressController @Inject()(
 
       val preparedForm = request.userAnswers.get(ConsignorAddressPage(index)) match {
         case None => form
-        case Some(value) => form.fill(value)
+        case Some(value) => form.fill(Address(value.streetAndNumber,value.city,value.postCode,value.country))
       }
 
       Ok(view(preparedForm, mode, lrn, index))

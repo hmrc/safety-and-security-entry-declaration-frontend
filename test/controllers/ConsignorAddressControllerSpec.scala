@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.ConsignorAddressFormProvider
-import models.NormalMode
+import models.{Address, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -58,7 +58,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ConsignorAddressPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(ConsignorAddressPage(index), Address("test","test","test","GB")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -91,7 +91,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ConsignorAddressPage(index), "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(ConsignorAddressPage(index), Address("test","test","test","GB")).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ConsignorAddressPage(index).navigate(NormalMode, expectedAnswers).url
