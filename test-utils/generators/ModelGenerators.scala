@@ -29,6 +29,11 @@ trait ModelGenerators {
     DangerousGood("6", "CARTRIDGES FOR WEAPONS with bursting charge"),
     DangerousGood("7", "CARTRIDGES FOR WEAPONS with bursting charge"))
 
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice]=
+    Arbitrary {
+      Gen.oneOf(CustomsOffice.allCustomsOffices)
+    }
+
   implicit lazy val arbitraryConsignorsIdentity: Arbitrary[ConsignorsIdentity] =
     Arbitrary {
       Gen.oneOf(ConsignorsIdentity.values)

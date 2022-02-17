@@ -18,9 +18,10 @@ package controllers
 
 import base.SpecBase
 import forms.CustomsOfficeOfFirstEntryFormProvider
-import models.NormalMode
+import models.{CustomsOffice, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.CustomsOfficeOfFirstEntryPage
 import play.api.inject.bind
@@ -35,6 +36,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
 
   val formProvider = new CustomsOfficeOfFirstEntryFormProvider()
   val form = formProvider()
+  val customsOffice = arbitrary[CustomsOffice].sample.value
 
   lazy val customsOfficeOfFirstEntryRoute = routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, lrn).url
 
@@ -58,7 +60,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(CustomsOfficeOfFirstEntryPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(CustomsOfficeOfFirstEntryPage, customsOffice).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +72,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(customsOffice), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -88,10 +90,10 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
       running(application) {
         val request =
           FakeRequest(POST, customsOfficeOfFirstEntryRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", customsOffice.code))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(CustomsOfficeOfFirstEntryPage, "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(CustomsOfficeOfFirstEntryPage, customsOffice).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CustomsOfficeOfFirstEntryPage.navigate(NormalMode, expectedAnswers).url
@@ -140,7 +142,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
       running(application) {
         val request =
           FakeRequest(POST, customsOfficeOfFirstEntryRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", customsOffice.code))
 
         val result = route(application, request).value
 

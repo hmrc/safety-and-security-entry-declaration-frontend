@@ -212,7 +212,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[CustomsOfficeOfFirstEntryPage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+        value <- arbitrary[CustomsOffice].map(Json.toJson(_))
       } yield (page, value)
     }
 
