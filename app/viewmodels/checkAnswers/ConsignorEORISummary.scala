@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.ConsignorEORIPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,15 +27,15 @@ import viewmodels.implicits._
 
 object ConsignorEORISummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsignorEORIPage).map {
+  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(ConsignorEORIPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "consignorEORI.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("consignorEORI.change.hidden"))
           )
         )
