@@ -25,11 +25,11 @@ class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "TotalGrossWeightPage" - {
 
-    beRetrievable[Int](TotalGrossWeightPage)
+    beRetrievable[BigDecimal](TotalGrossWeightPage)
 
-    beSettable[Int](TotalGrossWeightPage)
+    beSettable[BigDecimal](TotalGrossWeightPage)
 
-    beRemovable[Int](TotalGrossWeightPage)
+    beRemovable[BigDecimal](TotalGrossWeightPage)
 
     "must navigate in Normal Mode" - {
 

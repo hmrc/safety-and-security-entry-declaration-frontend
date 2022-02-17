@@ -21,7 +21,7 @@ import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[Int] {
+final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 

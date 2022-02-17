@@ -25,11 +25,11 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsItemGrossWeightPage" - {
 
-    beRetrievable[Int](GoodsItemGrossWeightPage(index))
+    beRetrievable[BigDecimal](GoodsItemGrossWeightPage(index))
 
-    beSettable[Int](GoodsItemGrossWeightPage(index))
+    beSettable[BigDecimal](GoodsItemGrossWeightPage(index))
 
-    beRemovable[Int](GoodsItemGrossWeightPage(index))
+    beRemovable[BigDecimal](GoodsItemGrossWeightPage(index))
 
     "must navigate in Normal Mode" - {
 

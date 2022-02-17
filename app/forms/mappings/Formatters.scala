@@ -86,8 +86,8 @@ trait Formatters {
                         args: Seq[String] = Seq.empty
                       ): Formatter[BigDecimal] = new Formatter[BigDecimal] {
 
-    private val validNumeric       = """(^-?\d*$)|(^-?\d*.\d*$)"""
-    private val validDecimalPlaces = """(^-?\d*$)|(^-?\d*.\d{1,""" + precision + """}$)"""
+    private val validNumeric       = """(^-?\d+$)|(^-?\d+.\d*$)"""
+    private val validDecimalPlaces = """(^-?\d+$)|(^-?\d+.\d{1,""" + precision + """}$)"""
 
     private val baseFormatter = stringFormatter(requiredKey, args)
 
@@ -96,14 +96,14 @@ trait Formatters {
         .bind(key, data)
         .right.map(_.replace(",", "").replace(" ", ""))
         .right.flatMap {
-          case s if !s.matches(validNumeric) =>
-            Left(Seq(FormError(key, nonNumericKey, args)))
-          case s if !s.matches(validDecimalPlaces) =>
-            Left(Seq(FormError(key, invalidPrecisionKey, args)))
-          case s =>
-            nonFatalCatch
-              .either(BigDecimal(s))
-              .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
+        case s if !s.matches(validNumeric) =>
+          Left(Seq(FormError(key, nonNumericKey, args)))
+        case s if !s.matches(validDecimalPlaces) =>
+          Left(Seq(FormError(key, invalidPrecisionKey, args)))
+        case s =>
+          nonFatalCatch
+            .either(BigDecimal(s))
+            .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
       }
 
     override def unbind(key: String, value: BigDecimal): Map[String, String] =

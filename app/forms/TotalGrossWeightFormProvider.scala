@@ -22,12 +22,13 @@ import play.api.data.Form
 
 class TotalGrossWeightFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Int] =
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> int(
-        "totalGrossWeight.error.required",
-        "totalGrossWeight.error.wholeNumber",
-        "totalGrossWeight.error.nonNumeric")
-          .verifying(inRange(0, 99999999, "totalGrossWeight.error.outOfRange"))
+      "value" -> decimal(
+        requiredKey         = "totalGrossWeight.error.required",
+        nonNumericKey       = "totalGrossWeight.error.nonNumeric",
+        invalidPrecisionKey = "totalGrossWeight.error.precision",
+        precision           = 3
+      ).verifying(inRange(BigDecimal(0.001), BigDecimal(99999999.999), "totalGrossWeight.error.outOfRange"))
     )
 }
