@@ -14,19 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{LodgingPersonType, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
+class RemoveDocumentFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  val requiredKey = "removeDocument.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "lodgingPersonType"
+  val form = new RemoveDocumentFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

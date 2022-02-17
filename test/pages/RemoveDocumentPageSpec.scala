@@ -18,25 +18,19 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, LodgingPersonType, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
+class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
-  "LodgingPersonTypePage" - {
-
-    beRetrievable[LodgingPersonType](LodgingPersonTypePage)
-
-    beSettable[LodgingPersonType](LodgingPersonTypePage)
-
-    beRemovable[LodgingPersonType](LodgingPersonTypePage)
+  "RemoveDocumentPage" - {
 
     "must navigate in Normal Mode" - {
 
-      "to Overall CRN Known" in {
+      "to Index" in {
 
-        LodgingPersonTypePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.OverallCrnKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        RemoveDocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.IndexController.onPageLoad)
       }
     }
 
@@ -44,7 +38,7 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        LodgingPersonTypePage.navigate(CheckMode, emptyUserAnswers)
+        RemoveDocumentPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

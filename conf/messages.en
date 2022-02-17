@@ -276,14 +276,14 @@ dangerousGood.change.hidden = if it is classed as a dangerous good
 dangerousGoodCode.title = What is the dangerous goods code?
 dangerousGoodCode.heading = What is the dangerous goods code?
 dangerousGoodCode.checkYourAnswersLabel = Dangerous goods code
-dangerousGoodCode.error.required = Enter the dangerous good
-dangerousGoodCode.error.length = DangerousGoodCode must be 200 characters or less
-dangerousGoodCode.change.hidden = the dangerous good code
+dangerousGoodCode.error.required = Enter the dangerous goods code
+dangerousGoodCode.error.length = Dangerous goods code must be 200 characters or less
+dangerousGoodCode.change.hidden = the dangerous goods code
 
 consignorsIdentity.title = How do you want to identify the consignor?
 consignorsIdentity.heading = How do you want to identify the consignor?
-consignorsIdentity.gb-eori = I'll provide the consignor's GB EORI number
-consignorsIdentity.name-address = I'll provide the consignor's name and address
+consignorsIdentity.gb-eori = I’ll provide the consignor’s GB EORI number
+consignorsIdentity.name-address = I’ll provide the consignor’s name and address
 consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
 consignorsIdentity.error.required = Select consignorsIdentity
 consignorsIdentity.change.hidden = ConsignorsIdentity
@@ -314,3 +314,67 @@ consignorName.checkYourAnswersLabel = consignorName
 consignorName.error.required = Enter consignorName
 consignorName.error.length = ConsignorName must be 35 characters or less
 consignorName.change.hidden = ConsignorName
+
+consignorsIdentity.error.required = Select how you want to identify the consignor
+consignorsIdentity.change.hidden = how you want to identify the consignor
+
+addAnyDocuments.title = Do you need to add any documents?
+addAnyDocuments.heading = Do you need to add any documents?
+addAnyDocuments.checkYourAnswersLabel = Do you need to add any documents?
+addAnyDocuments.error.required = Select yes if you need to add any documents
+addAnyDocuments.change.hidden = if you need to add any documents
+
+addDocument.title = Documents
+addDocument.heading = Documents
+addDocument.addAnother = Do you need to add another document?
+addDocument.error.required = Select yes if you need to add another document
+
+document.title = What document do you need to add?
+document.heading = What document do you need to add?
+document.documentType = Document type
+document.reference = Reference or identification number
+document.error.documentType.required = Select the document type
+document.error.reference.required = Enter the reference or identification number
+document.error.reference.length = Reference or identification number must be 35 characters or less
+document.documentType.change.hidden = the document type
+document.reference.change.hidden = the reference or identification number
+
+goodsItemCrn.title = What is the Commercial Reference Number (CRN)?
+goodsItemCrn.heading = What is the Commercial Reference Number (CRN)?
+goodsItemCrn.checkYourAnswersLabel = Commercial Reference Number (CRN)
+goodsItemCrn.error.required = Enter the Commercial Reference Number (CRN)
+goodsItemCrn.error.length = GoodsItemCrn must be 70 characters or less
+goodsItemCrn.change.hidden = the Commercial Reference Number
+
+goodsItemCrnKnown.title = Can you provide a Commercial Reference Number (CRN)?
+goodsItemCrnKnown.heading = Can you provide a Commercial Reference Number (CRN)?
+goodsItemCrnKnown.checkYourAnswersLabel = CRN known
+goodsItemCrnKnown.error.required = Select yes if you can provide a Commercial Reference Number (CRN)
+goodsItemCrnKnown.change.hidden = if you can provide a Commercial Reference Number
+
+overallCrn.title = What is the Commercial Reference Number (CRN) for the consignment?
+overallCrn.heading = What is the Commercial Reference Number (CRN) for the consignment?
+overallCrn.checkYourAnswersLabel = Commercial Reference Number (CRN)
+overallCrn.error.required = Enter the Commercial Reference Number (CRN) for the consignment
+overallCrn.error.length = Commercial Reference Number must be 70 characters or less
+overallCrn.change.hidden = the Commercial Reference Number (CRN) for the consignment
+
+overallCrnKnown.title = Can you provide a Commercial Reference Number (CRN) for the whole consignment?
+overallCrnKnown.heading = Can you provide a Commercial Reference Number (CRN) for the whole consignment?
+overallCrnKnown.checkYourAnswersLabel = CRN for whole consignment
+overallCrnKnown.error.required = Select yes if you can provide a Commercial Reference Number (CRN) for the whole consignment
+overallCrnKnown.change.hidden = if you can provide a Commercial Reference Number for the whole consignment
+
+removeDocument.title = Do you need to remove this document?
+removeDocument.heading = Do you need to remove this document?
+removeDocument.error.required = Select yes if you need to remove this document
+
+goodsItemGrossWeight.title = What is the gross weight of the goods?
+goodsItemGrossWeight.heading = What is the gross weight of the goods?
+goodsItemGrossWeight.checkYourAnswersLabel = Gross weight
+goodsItemGrossWeight.error.nonNumeric = Enter the gross weight of the goods using numbers
+goodsItemGrossWeight.error.required = Enter the gross weight of the goods
+goodsItemGrossWeight.error.wholeNumber = Enter the gross weight of the goods using whole numbers
+goodsItemGrossWeight.error.outOfRange = Gross weight must be between {0} and {1}
+goodsItemGrossWeight.change.hidden = the gross weight of the goods
+

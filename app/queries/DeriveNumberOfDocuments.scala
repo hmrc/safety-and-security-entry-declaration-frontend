@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import controllers.routes
-import models.{LodgingPersonType, NormalMode, UserAnswers}
+import models.{Document, Index}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
+case class DeriveNumberOfDocuments(itemIndex: Index) extends Derivable[List[Document], Int] {
 
-  override def path: JsPath = JsPath \ toString
+  override val derive: List[Document] => Int = _.size
 
-  override def toString: String = "lodgingPersonType"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "documents"
 }

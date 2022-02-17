@@ -17,16 +17,13 @@
 package pages
 
 import controllers.routes
-import models.{LodgingPersonType, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
+final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "lodgingPersonType"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+  override def toString: String = "removeDocument"
 }

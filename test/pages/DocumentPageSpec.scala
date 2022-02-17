@@ -18,25 +18,25 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, LodgingPersonType, NormalMode}
+import models.{Document, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
+class DocumentPageSpec extends SpecBase with PageBehaviours {
 
-  "LodgingPersonTypePage" - {
+  "DocumentPage" - {
 
-    beRetrievable[LodgingPersonType](LodgingPersonTypePage)
+    beRetrievable[Document](DocumentPage(index, index))
 
-    beSettable[LodgingPersonType](LodgingPersonTypePage)
+    beSettable[Document](DocumentPage(index, index))
 
-    beRemovable[LodgingPersonType](LodgingPersonTypePage)
+    beRemovable[Document](DocumentPage(index, index))
 
     "must navigate in Normal Mode" - {
 
-      "to Overall CRN Known" in {
+      "to Add Document" in {
 
-        LodgingPersonTypePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.OverallCrnKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        DocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.AddDocumentController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
       }
     }
 
@@ -44,7 +44,7 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        LodgingPersonTypePage.navigate(CheckMode, emptyUserAnswers)
+        DocumentPage(index, index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

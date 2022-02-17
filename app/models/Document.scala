@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import controllers.routes
-import models.{LodgingPersonType, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json._
 
-case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
+case class Document (documentType: DocumentType, reference: String)
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "lodgingPersonType"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+object Document {
+  implicit val format: OFormat[Document] = Json.format[Document]
 }

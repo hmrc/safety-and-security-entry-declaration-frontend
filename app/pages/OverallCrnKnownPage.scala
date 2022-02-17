@@ -17,16 +17,19 @@
 package pages
 
 import controllers.routes
-import models.{LodgingPersonType, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
+case object OverallCrnKnownPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "lodgingPersonType"
+  override def toString: String = "overallCrnKnown"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+    answers.get(OverallCrnKnownPage) match {
+      case Some(true)  => routes.OverallCrnController.onPageLoad(NormalMode, answers.lrn)
+      case Some(false) => routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
+    }
 }

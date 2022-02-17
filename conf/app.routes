@@ -185,3 +185,48 @@ GET        /:lrn/consignorName/:itemIndex                        controllers.Con
 POST       /:lrn/consignorName/:itemIndex                        controllers.ConsignorNameController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/changeConsignorName/:itemIndex                  controllers.ConsignorNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeConsignorName/:itemIndex                  controllers.ConsignorNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/addAnyDocuments/:index                        controllers.AddAnyDocumentsController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/addAnyDocuments/:index                        controllers.AddAnyDocumentsController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeAddAnyDocuments/:index                  controllers.AddAnyDocumentsController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeAddAnyDocuments/:index                  controllers.AddAnyDocumentsController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/addDocument/:index                        controllers.AddDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/addDocument/:index                        controllers.AddDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeAddDocument/:index                  controllers.AddDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeAddDocument/:index                  controllers.AddDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/document/:itemIndex/:documentIndex                        controllers.DocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+POST       /:lrn/document/:itemIndex/:documentIndex                        controllers.DocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+GET        /:lrn/changeDocument/:itemIndex/:documentIndex                  controllers.DocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+POST       /:lrn/changeDocument/:itemIndex/:documentIndex                  controllers.DocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+
+GET        /:lrn/goodsItemCrn/:index                        controllers.GoodsItemCrnController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/goodsItemCrn/:index                        controllers.GoodsItemCrnController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeGoodsItemCrn/:index                  controllers.GoodsItemCrnController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeGoodsItemCrn/:index                  controllers.GoodsItemCrnController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/goodsItemCrnKnown/:index                        controllers.GoodsItemCrnKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/goodsItemCrnKnown/:index                        controllers.GoodsItemCrnKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeGoodsItemCrnKnown/:index                  controllers.GoodsItemCrnKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeGoodsItemCrnKnown/:index                  controllers.GoodsItemCrnKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/overallCrn                        controllers.OverallCrnController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/overallCrn                        controllers.OverallCrnController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeOverallCrn                  controllers.OverallCrnController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeOverallCrn                  controllers.OverallCrnController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/overallCrnKnown                        controllers.OverallCrnKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/overallCrnKnown                        controllers.OverallCrnKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeOverallCrnKnown                  controllers.OverallCrnKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeOverallCrnKnown                  controllers.OverallCrnKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/removeDocument/:itemIndex/:documentIndex                        controllers.RemoveDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+POST       /:lrn/removeDocument/:itemIndex/:documentIndex                        controllers.RemoveDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+GET        /:lrn/changeRemoveDocument/:itemIndex/:documentIndex                  controllers.RemoveDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+POST       /:lrn/changeRemoveDocument/:itemIndex/:documentIndex                  controllers.RemoveDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
+
+GET        /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
