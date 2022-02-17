@@ -26,4 +26,8 @@ case class ConsignorEORIPage(index: Index) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "consignorEORI"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.ConsigneeKnownController.onPageLoad(NormalMode,answers.lrn,index)
+  }
 }

@@ -24,11 +24,11 @@ sealed trait ConsignorsIdentity
 
 object ConsignorsIdentity extends Enumerable.Implicits {
 
-  case object Gbeori extends WithName("gb-eori") with ConsignorsIdentity
-  case object Nameaddress extends WithName("name-address") with ConsignorsIdentity
+  case object GBEORI extends WithName("gb-eori") with ConsignorsIdentity
+  case object NameAddress extends WithName("name-address") with ConsignorsIdentity
 
   val values: Seq[ConsignorsIdentity] = Seq(
-    Gbeori, Nameaddress
+    GBEORI, NameAddress
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {

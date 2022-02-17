@@ -18,7 +18,8 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{ConsignorsIdentity, CheckMode, NormalMode}
+import models.ConsignorsIdentity.{GBEORI, NameAddress}
+import models.{CheckMode, ConsignorsIdentity, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
@@ -32,11 +33,18 @@ class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
     beRemovable[ConsignorsIdentity](ConsignorsIdentityPage(index))
 
     "must navigate in Normal Mode" - {
+      "to consignors EORI when answer is `I'll provide consignors EORI`" in {
+          val answers = emptyUserAnswers.set(ConsignorsIdentityPage(index),GBEORI).success.value
 
-      "to Index" in {
+          ConsignorsIdentityPage(index).navigate(NormalMode, answers)
+            .mustEqual(routes.ConsignorEORIController.onPageLoad(NormalMode,answers.lrn,index))
+      }
 
-        ConsignorsIdentityPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+      "to consignors name when answer is `I'll provide consignors name and address`" in {
+        val answers = emptyUserAnswers.set(ConsignorsIdentityPage(index),NameAddress).success.value
+
+        ConsignorsIdentityPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.ConsignorNameController.onPageLoad(NormalMode,answers.lrn,index))
       }
     }
 

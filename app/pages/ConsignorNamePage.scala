@@ -26,4 +26,8 @@ case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "consignorName"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.ConsignorAddressController.onPageLoad(NormalMode,answers.lrn,index)
+  }
 }

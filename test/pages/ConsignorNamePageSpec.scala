@@ -34,10 +34,9 @@ class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
-
+      "to `Consignor's address`" in {
         ConsignorNamePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.ConsignorAddressController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 
