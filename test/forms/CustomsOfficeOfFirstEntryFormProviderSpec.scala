@@ -17,13 +17,14 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.CustomsOffice
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
 class CustomsOfficeOfFirstEntryFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "customsOfficeOfFirstEntry.error.required"
   val lengthKey = "customsOfficeOfFirstEntry.error.length"
-  val maxLength = 8
 
   val form = new CustomsOfficeOfFirstEntryFormProvider()()
 
@@ -34,14 +35,7 @@ class CustomsOfficeOfFirstEntryFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      arbitrary[CustomsOffice].map(_.code)
     )
 
     behave like mandatoryField(
@@ -49,5 +43,16 @@ class CustomsOfficeOfFirstEntryFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind any values other than valid customs office codes" in {
+
+      val invalidAnswers = arbitrary[String].suchThat(x => !CustomsOffice.allCustomsOffices.map(_.code).contains(x))
+
+      forAll(invalidAnswers) {
+        answer =>
+          val result = form.bind(Map("value" -> answer)).apply(fieldName)
+          result.errors must contain only FormError(fieldName, requiredKey)
+      }
+    }
   }
 }

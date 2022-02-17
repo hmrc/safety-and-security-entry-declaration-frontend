@@ -17,11 +17,11 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{CustomsOffice, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CustomsOfficeOfFirstEntryPage extends QuestionPage[String] {
+case object CustomsOfficeOfFirstEntryPage extends QuestionPage[CustomsOffice] {
 
   override def path: JsPath = JsPath \ toString
 

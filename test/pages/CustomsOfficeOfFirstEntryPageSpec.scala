@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, CustomsOffice, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class CustomsOfficeOfFirstEntryPageSpec extends SpecBase with PageBehaviours {
 
   "CustomsOfficeOfFirstEntryPage" - {
 
-    beRetrievable[String](CustomsOfficeOfFirstEntryPage)
+    beRetrievable[CustomsOffice](CustomsOfficeOfFirstEntryPage)
 
-    beSettable[String](CustomsOfficeOfFirstEntryPage)
+    beSettable[CustomsOffice](CustomsOfficeOfFirstEntryPage)
 
-    beRemovable[String](CustomsOfficeOfFirstEntryPage)
+    beRemovable[CustomsOffice](CustomsOfficeOfFirstEntryPage)
 
     "must navigate in Normal Mode" - {
 

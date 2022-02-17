@@ -33,7 +33,7 @@ object CustomsOfficeOfFirstEntrySummary  {
 
         SummaryListRowViewModel(
           key     = "customsOfficeOfFirstEntry.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.name).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.CustomsOfficeOfFirstEntryController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("customsOfficeOfFirstEntry.change.hidden"))
