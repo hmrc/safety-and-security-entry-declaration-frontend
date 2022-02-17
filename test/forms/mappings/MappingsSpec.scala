@@ -16,11 +16,14 @@
 
 package forms.mappings
 
+import models.Enumerable
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
-import models.Enumerable
 
 object MappingsSpec {
 
@@ -37,7 +40,7 @@ object MappingsSpec {
   }
 }
 
-class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mappings {
+class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mappings with ScalaCheckPropertyChecks {
 
   import MappingsSpec._
 
@@ -165,6 +168,80 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))
+    }
+  }
+
+  "decimal" - {
+
+    val testForm: Form[BigDecimal] = Form(
+      "value" -> decimal(precision = 2)
+    )
+
+    "must bind integers" in {
+
+      forAll(arbitrary[Int]) {
+        int =>
+          val result = testForm.bind(Map("value" -> int.toString))
+          result.get mustEqual BigDecimal(int)
+          result.errors mustBe empty
+      }
+    }
+
+    "must bind valid decimals with a precision up to that specified" in {
+
+      val gen = for {
+        number <- arbitrary[Int]
+        decimals <- Gen.choose(0, 99)
+      } yield number + "." + decimals
+
+      forAll(gen) {
+        decimal =>
+          val result = testForm.bind(Map("value" -> decimal))
+          result.get mustEqual BigDecimal(decimal)
+          result.errors mustBe empty
+      }
+    }
+
+    "must bind valid numbers with spaces and commas" in {
+
+      val result = testForm.bind(Map("value" -> " 1, 234 . 56 "))
+      result.get mustEqual BigDecimal("1234.56")
+      result.errors mustBe empty
+    }
+
+    "must not bind values with non-numeric characters except spaces and commas" in {
+
+      val result = testForm.bind(Map("value" -> "abc"))
+      result.errors must contain only FormError("value", "error.nonNumeric")
+    }
+
+    "must not bind decimals with too high a precision" in {
+
+      val gen = for {
+        number <- arbitrary[Int]
+        decimals <- Gen.choose(100, Int.MaxValue)
+      } yield number + "." + decimals
+
+      forAll(gen) {
+        decimal =>
+          val result = testForm.bind(Map("value" -> decimal))
+          result.errors must contain only FormError("value", "error.precision")
+      }
+    }
+
+    "must not bind an empty value" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain only FormError("value", "error.required")
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain only FormError("value", "error.required")
+    }
+
+    "must unbind a valid value" in {
+      val result = testForm.fill(BigDecimal(1.23))
+      result.apply("value").value.value mustEqual "1.23"
     }
   }
 }

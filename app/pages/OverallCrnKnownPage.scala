@@ -31,5 +31,6 @@ case object OverallCrnKnownPage extends QuestionPage[Boolean] {
     answers.get(OverallCrnKnownPage) match {
       case Some(true)  => routes.OverallCrnController.onPageLoad(NormalMode, answers.lrn)
       case Some(false) => routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 }
