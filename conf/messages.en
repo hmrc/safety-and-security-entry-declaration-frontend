@@ -287,3 +287,30 @@ consignorsIdentity.name-address = I'll provide the consignor's name and address
 consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
 consignorsIdentity.error.required = Select consignorsIdentity
 consignorsIdentity.change.hidden = ConsignorsIdentity
+
+consigneeKnown.title = consigneeKnown
+consigneeKnown.heading = consigneeKnown
+consigneeKnown.checkYourAnswersLabel = consigneeKnown
+consigneeKnown.error.required = Select yes if consigneeKnown
+consigneeKnown.change.hidden = ConsigneeKnown
+
+consignorAddress.title = consignorAddress
+consignorAddress.heading = consignorAddress
+consignorAddress.checkYourAnswersLabel = consignorAddress
+consignorAddress.error.required = Enter consignorAddress
+consignorAddress.error.length = ConsignorAddress must be 35 characters or less
+consignorAddress.change.hidden = ConsignorAddress
+
+consignorEORI.title = consignorEORI
+consignorEORI.heading = consignorEORI
+consignorEORI.checkYourAnswersLabel = consignorEORI
+consignorEORI.error.required = Enter consignorEORI
+consignorEORI.error.length = ConsignorEORI must be 50 characters or less
+consignorEORI.change.hidden = ConsignorEORI
+
+consignorName.title = consignorName
+consignorName.heading = consignorName
+consignorName.checkYourAnswersLabel = consignorName
+consignorName.error.required = Enter consignorName
+consignorName.error.length = ConsignorName must be 35 characters or less
+consignorName.change.hidden = ConsignorName
