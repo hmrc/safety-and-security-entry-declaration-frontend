@@ -378,13 +378,17 @@ goodsItemGrossWeight.error.wholeNumber = Enter the gross weight of the goods usi
 goodsItemGrossWeight.error.outOfRange = Gross weight must be between {0} and {1}
 goodsItemGrossWeight.change.hidden = the gross weight of the goods
 
-
+address.streetAndNumber = Street and number:
 address.streetAndNumber.error.required = Enter the street and number
 address.streetAndNumber.error.length = Street and number must be 35 characters or less
+address.city = City:
 address.city.error.required = Enter the city
 address.city.error.length = City must be 35 characters or less
+address.postCode = PostCode:
 address.postCode.error.required = Enter the post code
 address.postCode.error.length = Post code must be 9 characters or less
+address.country = Country Code:
+address.country.hint = For example, ES
 address.country.error.required = Enter the country
 address.country.error.length = Country must be 2 characters
 

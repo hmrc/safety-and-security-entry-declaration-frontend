@@ -36,10 +36,36 @@
 
         @govukInput(
             InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("consignorAddress.heading")).asPageHeading()
+                field = form("streetAndNumber"),
+                label = LabelViewModel(messages("address.streetAndNumber")).withCssClass("govuk-fieldset__legend-m")
             )
             .withWidth(Full)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("city"),
+                label = LabelViewModel(messages("address.city")).withCssClass("govuk-fieldset__legend-m")
+            )
+            .withWidth(Full)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("postCode"),
+                label = LabelViewModel(messages("address.postCode")).withCssClass("govuk-fieldset__legend-m")
+            )
+            .withWidth(Fixed10)
+            .withWidth(Full)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("country"),
+                label = LabelViewModel(messages("address.country")).withCssClass("govuk-fieldset__legend-m")
+            )
+            .withWidth(Fixed2)
+            .withHint(HintViewModel(messages("address.country.hint")))
         )
 
         @govukButton(
