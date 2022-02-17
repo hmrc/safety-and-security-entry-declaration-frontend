@@ -276,17 +276,17 @@ dangerousGood.change.hidden = if it is classed as a dangerous good
 dangerousGoodCode.title = What is the dangerous goods code?
 dangerousGoodCode.heading = What is the dangerous goods code?
 dangerousGoodCode.checkYourAnswersLabel = Dangerous goods code
-dangerousGoodCode.error.required = Enter the dangerous good
-dangerousGoodCode.error.length = DangerousGoodCode must be 200 characters or less
-dangerousGoodCode.change.hidden = the dangerous good code
+dangerousGoodCode.error.required = Enter the dangerous goods code
+dangerousGoodCode.error.length = Dangerous goods code must be 200 characters or less
+dangerousGoodCode.change.hidden = the dangerous goods code
 
 consignorsIdentity.title = How do you want to identify the consignor?
 consignorsIdentity.heading = How do you want to identify the consignor?
-consignorsIdentity.gb-eori = I'll provide the consignor's GB EORI number
-consignorsIdentity.name-address = I'll provide the consignor's name and address
+consignorsIdentity.gb-eori = I’ll provide the consignor’s GB EORI number
+consignorsIdentity.name-address = I’ll provide the consignor’s name and address
 consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
-consignorsIdentity.error.required = Select consignorsIdentity
-consignorsIdentity.change.hidden = ConsignorsIdentity
+consignorsIdentity.error.required = Select how you want to identify the consignor
+consignorsIdentity.change.hidden = how you want to identify the consignor
 
 addAnyDocuments.title = Do you need to add any documents?
 addAnyDocuments.heading = Do you need to add any documents?
