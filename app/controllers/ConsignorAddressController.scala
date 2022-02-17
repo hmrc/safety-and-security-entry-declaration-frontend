@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import forms.{AddressFormProvider, ConsignorAddressFormProvider}
+import forms.AddressFormProvider
 
 import javax.inject.Inject
 import models.{Address, Index, LocalReferenceNumber, Mode}

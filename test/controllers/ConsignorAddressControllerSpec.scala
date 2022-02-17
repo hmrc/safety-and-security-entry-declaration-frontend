@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import forms.{AddressFormProvider, ConsignorAddressFormProvider}
+import forms.AddressFormProvider
 import models.{Address, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
