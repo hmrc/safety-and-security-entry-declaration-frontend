@@ -48,7 +48,7 @@ class ConsignorAddressController @Inject()(
 
       val preparedForm = request.userAnswers.get(ConsignorAddressPage(index)) match {
         case None => form
-        case Some(value) => form.fill(Address(value.streetAndNumber,value.city,value.postCode,value.country))
+        case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, lrn, index))
