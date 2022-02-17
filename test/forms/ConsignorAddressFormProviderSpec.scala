@@ -20,8 +20,8 @@ import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
 
-class AddressFormProviderSpec extends StringFieldBehaviours {
-  val form = new AddressFormProvider()()
+class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
+  val form = new ConsignorAddressFormProvider()()
 
   ".streetAndNumber" - {
       val fieldName = "streetAndNumber"

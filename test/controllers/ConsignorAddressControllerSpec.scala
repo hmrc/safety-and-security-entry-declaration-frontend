@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import forms.AddressFormProvider
+import forms.ConsignorAddressFormProvider
 import models.{Address, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new AddressFormProvider()
+  val formProvider = new ConsignorAddressFormProvider()
   val form = formProvider()
 
   lazy val consignorAddressRoute = routes.ConsignorAddressController.onPageLoad(NormalMode, lrn, index).url

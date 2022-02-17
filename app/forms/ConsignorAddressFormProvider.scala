@@ -24,7 +24,7 @@ import play.api.data.Forms.mapping
 
 import javax.inject.Inject
 
-class AddressFormProvider @Inject() extends Mappings {
+class ConsignorAddressFormProvider @Inject() extends Mappings {
   def apply() : Form[Address] = Form(
     mapping(
       "streetAndNumber" -> text("address.streetAndNumber.error.required").verifying(maxLength(35,"address.streetAndNumber.error.length")),

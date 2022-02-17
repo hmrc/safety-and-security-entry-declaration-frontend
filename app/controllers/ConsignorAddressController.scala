@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.ConsignorAddressFormProvider
 
 import javax.inject.Inject
 import models.{Address, Index, LocalReferenceNumber, Mode}
@@ -31,14 +31,14 @@ import views.html.ConsignorAddressView
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorAddressController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AddressFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: ConsignorAddressView
+                                            override val messagesApi: MessagesApi,
+                                            sessionRepository: SessionRepository,
+                                            identify: IdentifierAction,
+                                            getData: DataRetrievalActionProvider,
+                                            requireData: DataRequiredAction,
+                                            formProvider: ConsignorAddressFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: ConsignorAddressView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
