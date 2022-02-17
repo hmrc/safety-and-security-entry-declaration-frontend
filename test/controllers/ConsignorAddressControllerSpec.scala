@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import forms.ConsignorAddressFormProvider
+import forms.{AddressFormProvider, ConsignorAddressFormProvider}
 import models.{Address, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new ConsignorAddressFormProvider()
+  val formProvider = new AddressFormProvider()
   val form = formProvider()
 
   lazy val consignorAddressRoute = routes.ConsignorAddressController.onPageLoad(NormalMode, lrn, index).url
@@ -70,7 +70,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Address("test","test","test","GB")), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -88,7 +88,10 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consignorAddressRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody("streetAndNumber" -> "test",
+              "city" -> "test",
+              "postCode" -> "test",
+              "country" -> "GB")
 
         val result          = route(application, request).value
         val expectedAnswers = emptyUserAnswers.set(ConsignorAddressPage(index), Address("test","test","test","GB")).success.value
@@ -106,9 +109,9 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consignorAddressRoute)
-            .withFormUrlEncodedBody(("value", ""))
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[ConsignorAddressView]
 
@@ -140,7 +143,10 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consignorAddressRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody("streetAndNumber" -> "test",
+              "city" -> "test",
+              "postCode" -> "test",
+              "country" -> "GB")
 
         val result = route(application, request).value
 
