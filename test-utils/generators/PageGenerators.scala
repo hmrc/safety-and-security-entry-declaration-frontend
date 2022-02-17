@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
+    Arbitrary(GoodsItemGrossWeightPage(Index(0)))
+
   implicit lazy val arbitraryConsignorsIdentityPage: Arbitrary[ConsignorsIdentityPage] =
     Arbitrary(ConsignorsIdentityPage(Index(0)))
 
@@ -31,8 +34,23 @@ trait PageGenerators {
   implicit lazy val arbitraryDangerousGoodPage: Arbitrary[DangerousGoodPage] =
     Arbitrary(DangerousGoodPage(Index(0)))
 
-  implicit lazy val arbitraryRemovePackagePage: Arbitrary[RemovePackagePage] =
-    Arbitrary(RemovePackagePage(Index(0), Index(0)))
+  implicit lazy val arbitraryOverallCrnKnownPage: Arbitrary[OverallCrnKnownPage.type] =
+    Arbitrary(OverallCrnKnownPage)
+
+  implicit lazy val arbitraryOverallCrnPage: Arbitrary[OverallCrnPage.type] =
+    Arbitrary(OverallCrnPage)
+
+  implicit lazy val arbitraryGoodsItemCrnKnownPage: Arbitrary[GoodsItemCrnKnownPage] =
+    Arbitrary(GoodsItemCrnKnownPage(Index(0)))
+
+  implicit lazy val arbitraryGoodsItemCrnPage: Arbitrary[GoodsItemCrnPage] =
+    Arbitrary(GoodsItemCrnPage(Index(0)))
+
+  implicit lazy val arbitraryDocumentPage: Arbitrary[DocumentPage] =
+    Arbitrary(DocumentPage(Index(0), Index(0)))
+
+  implicit lazy val arbitraryAddAnyDocumentsPage: Arbitrary[AddAnyDocumentsPage] =
+    Arbitrary(AddAnyDocumentsPage(Index(0)))
 
   implicit lazy val arbitraryNumberOfPiecesPage: Arbitrary[NumberOfPiecesPage] =
     Arbitrary(NumberOfPiecesPage(Index(0), Index(0)))

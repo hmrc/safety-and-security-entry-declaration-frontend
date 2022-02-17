@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, GrossWeight, Index, Mode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
@@ -32,9 +32,16 @@ case class AddPackagePage(itemIndex: Index) extends Page {
       }
     } else {
       mode match {
-        // TODO: Update navigation
-        case NormalMode => routes.IndexController.onPageLoad
-        case CheckMode  => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+        case NormalMode =>
+          (answers.get(GrossWeightPage), answers.get(OverallCrnKnownPage)) match {
+            case (Some(GrossWeight.PerItem), _) => routes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+            case (_, Some(true))                => routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+            case (_, Some(false))               => routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+            case _                              => routes.JourneyRecoveryController.onPageLoad()
+          }
+
+        case CheckMode  =>
+          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }
     }
 }

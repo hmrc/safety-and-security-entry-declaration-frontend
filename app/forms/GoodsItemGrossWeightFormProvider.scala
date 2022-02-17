@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{LodgingPersonType, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
+class GoodsItemGrossWeightFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "lodgingPersonType"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+  def apply(): Form[Int] =
+    Form(
+      "value" -> int(
+        "goodsItemGrossWeight.error.required",
+        "goodsItemGrossWeight.error.wholeNumber",
+        "goodsItemGrossWeight.error.nonNumeric")
+          .verifying(inRange(1, 99999999, "goodsItemGrossWeight.error.outOfRange"))
+    )
 }
