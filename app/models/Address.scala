@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.Json
 
-class AddPackageFormProvider @Inject() extends Mappings {
+case class Address(streetAndNumber: String, city: String, postCode: String, country: String) {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addPackage.error.required")
-    )
+}
+
+object Address {
+  implicit val format = Json.format[Address]
 }

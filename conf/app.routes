@@ -166,6 +166,26 @@ POST       /:lrn/consignorsIdentity/:itemIndex                       controllers
 GET        /:lrn/changeConsignorsIdentity/:itemIndex                   controllers.ConsignorsIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeConsignorsIdentity/:itemIndex                 controllers.ConsignorsIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 
+GET        /:lrn/consigneeKnown/:itemIndex                        controllers.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consigneeKnown/:itemIndex                        controllers.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsigneeKnown/:itemIndex                  controllers.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsigneeKnown/:itemIndex                  controllers.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/consignorAddress/:itemIndex                        controllers.ConsignorAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consignorAddress/:itemIndex                        controllers.ConsignorAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsignorAddress/:itemIndex                  controllers.ConsignorAddressController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsignorAddress/:itemIndex                  controllers.ConsignorAddressController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/consignorEORI/:itemIndex                        controllers.ConsignorEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consignorEORI/:itemIndex                        controllers.ConsignorEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsignorEORI/:itemIndex                  controllers.ConsignorEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsignorEORI/:itemIndex                  controllers.ConsignorEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/consignorName/:itemIndex                        controllers.ConsignorNameController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consignorName/:itemIndex                        controllers.ConsignorNameController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsignorName/:itemIndex                  controllers.ConsignorNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsignorName/:itemIndex                  controllers.ConsignorNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
 GET        /:lrn/addAnyDocuments/:index                        controllers.AddAnyDocumentsController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/addAnyDocuments/:index                        controllers.AddAnyDocumentsController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeAddAnyDocuments/:index                  controllers.AddAnyDocumentsController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)

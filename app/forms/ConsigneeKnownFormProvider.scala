@@ -17,13 +17,14 @@
 package forms
 
 import javax.inject.Inject
+
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class AddPackageFormProvider @Inject() extends Mappings {
+class ConsigneeKnownFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("addPackage.error.required")
+      "value" -> boolean("consigneeKnown.error.required")
     )
 }

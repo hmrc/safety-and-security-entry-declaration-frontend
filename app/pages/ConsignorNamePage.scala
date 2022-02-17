@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import controllers.routes
+import models.{Index, NormalMode, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class AddPackageFormProvider @Inject() extends Mappings {
+case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addPackage.error.required")
-    )
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+
+  override def toString: String = "consignorName"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.ConsignorAddressController.onPageLoad(NormalMode,answers.lrn,index)
+  }
 }

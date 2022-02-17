@@ -17,13 +17,15 @@
 package forms
 
 import javax.inject.Inject
+
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class AddPackageFormProvider @Inject() extends Mappings {
+class ConsignorEORIFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[String] =
     Form(
-      "value" -> boolean("addPackage.error.required")
+      "value" -> text("consignorEORI.error.required")
+        .verifying(maxLength(50, "consignorEORI.error.length"))
     )
 }

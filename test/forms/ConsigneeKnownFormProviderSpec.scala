@@ -16,14 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.Mappings
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class AddPackageFormProvider @Inject() extends Mappings {
+class ConsigneeKnownFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("addPackage.error.required")
+  val requiredKey = "consigneeKnown.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new ConsigneeKnownFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }
