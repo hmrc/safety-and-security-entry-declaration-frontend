@@ -22,6 +22,33 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryUnloadingCodePage: Arbitrary[UnloadingCodePage.type] =
+    Arbitrary(UnloadingCodePage)
+
+  implicit lazy val arbitraryNotifiedPartyNamePage: Arbitrary[NotifiedPartyNamePage.type] =
+    Arbitrary(NotifiedPartyNamePage)
+
+  implicit lazy val arbitraryNotifiedPartyIdentityPage: Arbitrary[NotifiedPartyIdentityPage.type] =
+    Arbitrary(NotifiedPartyIdentityPage)
+
+  implicit lazy val arbitraryNotifiedPartyEORIPage: Arbitrary[NotifiedPartyEORIPage.type] =
+    Arbitrary(NotifiedPartyEORIPage)
+
+  implicit lazy val arbitraryNotifiedPartyAddressPage: Arbitrary[NotifiedPartyAddressPage.type] =
+    Arbitrary(NotifiedPartyAddressPage)
+
+  implicit lazy val arbitraryConsigneeNamePage: Arbitrary[ConsigneeNamePage.type] =
+    Arbitrary(ConsigneeNamePage)
+
+  implicit lazy val arbitraryConsigneeIdentityPage: Arbitrary[ConsigneeIdentityPage.type] =
+    Arbitrary(ConsigneeIdentityPage)
+
+  implicit lazy val arbitraryConsigneeEORIPage: Arbitrary[ConsigneeEORIPage.type] =
+    Arbitrary(ConsigneeEORIPage)
+
+  implicit lazy val arbitraryConsigneeAddressPage: Arbitrary[ConsigneeAddressPage.type] =
+    Arbitrary(ConsigneeAddressPage)
+
   implicit lazy val arbitraryConsignorNamePage: Arbitrary[ConsignorNamePage] =
     Arbitrary(ConsignorNamePage(Index(0)))
 

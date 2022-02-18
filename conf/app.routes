@@ -230,3 +230,48 @@ GET        /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsI
 POST       /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/consigneeAddress                        controllers.ConsigneeAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/consigneeAddress                        controllers.ConsigneeAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeConsigneeAddress                  controllers.ConsigneeAddressController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeConsigneeAddress                  controllers.ConsigneeAddressController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/consigneeEORI                        controllers.ConsigneeEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/consigneeEORI                        controllers.ConsigneeEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeConsigneeEORI                  controllers.ConsigneeEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeConsigneeEORI                  controllers.ConsigneeEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/consigneeIdentity                        controllers.ConsigneeIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/consigneeIdentity                        controllers.ConsigneeIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeConsigneeIdentity                  controllers.ConsigneeIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeConsigneeIdentity                  controllers.ConsigneeIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/consigneeName                        controllers.ConsigneeNameController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/consigneeName                        controllers.ConsigneeNameController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeConsigneeName                  controllers.ConsigneeNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeConsigneeName                  controllers.ConsigneeNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/notifiedPartyAddress                        controllers.NotifiedPartyAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/notifiedPartyAddress                        controllers.NotifiedPartyAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNotifiedPartyAddress                  controllers.NotifiedPartyAddressController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNotifiedPartyAddress                  controllers.NotifiedPartyAddressController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/notifiedPartyEORI                        controllers.NotifiedPartyEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/notifiedPartyEORI                        controllers.NotifiedPartyEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNotifiedPartyEORI                  controllers.NotifiedPartyEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNotifiedPartyEORI                  controllers.NotifiedPartyEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/notifiedPartyIdentity                        controllers.NotifiedPartyIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/notifiedPartyIdentity                        controllers.NotifiedPartyIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNotifiedPartyIdentity                  controllers.NotifiedPartyIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNotifiedPartyIdentity                  controllers.NotifiedPartyIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/notifiedPartyName                        controllers.NotifiedPartyNameController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/notifiedPartyName                        controllers.NotifiedPartyNameController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNotifiedPartyName                  controllers.NotifiedPartyNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNotifiedPartyName                  controllers.NotifiedPartyNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/unloadingCode                        controllers.UnloadingCodeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/unloadingCode                        controllers.UnloadingCodeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeUnloadingCode                  controllers.UnloadingCodeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeUnloadingCode                  controllers.UnloadingCodeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
