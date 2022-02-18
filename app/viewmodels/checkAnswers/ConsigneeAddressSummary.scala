@@ -33,7 +33,7 @@ object ConsigneeAddressSummary  {
 
         SummaryListRowViewModel(
           key     = "consigneeAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.ConsigneeAddressController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("consigneeAddress.change.hidden"))

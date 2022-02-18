@@ -33,7 +33,7 @@ object NotifiedPartyAddressSummary  {
 
         SummaryListRowViewModel(
           key     = "notifiedPartyAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.NotifiedPartyAddressController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("notifiedPartyAddress.change.hidden"))

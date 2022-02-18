@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.NotifiedPartyAddressFormProvider
-import models.NormalMode
+import models.{Address, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -58,7 +58,7 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test","GB")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +70,7 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Address("test","test","test","GB")), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -88,10 +88,13 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyAddressRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody("streetAndNumber" -> "test",
+              "city" -> "test",
+              "postCode" -> "test",
+              "country" -> "GB")
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test","GB")).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual NotifiedPartyAddressPage(index).navigate(NormalMode, expectedAnswers).url
@@ -106,9 +109,9 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyAddressRoute)
-            .withFormUrlEncodedBody(("value", ""))
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[NotifiedPartyAddressView]
 
@@ -140,7 +143,10 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyAddressRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody("streetAndNumber" -> "test",
+              "city" -> "test",
+              "postCode" -> "test",
+              "country" -> "GB")
 
         val result = route(application, request).value
 

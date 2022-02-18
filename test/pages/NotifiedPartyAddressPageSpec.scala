@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyAddressPage" - {
 
-    beRetrievable[String](NotifiedPartyAddressPage(index))
+    beRetrievable[Address](NotifiedPartyAddressPage(index))
 
-    beSettable[String](NotifiedPartyAddressPage(index))
+    beSettable[Address](NotifiedPartyAddressPage(index))
 
-    beRemovable[String](NotifiedPartyAddressPage(index))
+    beRemovable[Address](NotifiedPartyAddressPage(index))
 
     "must navigate in Normal Mode" - {
 

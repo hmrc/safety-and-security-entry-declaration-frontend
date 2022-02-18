@@ -17,15 +17,18 @@
 package forms
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.Address
 import play.api.data.Form
+import play.api.data.Forms.mapping
 
 class NotifiedPartyAddressFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("notifiedPartyAddress.error.required")
-        .verifying(maxLength(35, "notifiedPartyAddress.error.length"))
-    )
+  def apply() : Form[Address] = Form(
+    mapping(
+      "streetAndNumber" -> text("address.streetAndNumber.error.required").verifying(maxLength(35,"address.streetAndNumber.error.length")),
+      "city" -> text("address.city.error.required").verifying(maxLength(35,"address.city.error.length")),
+      "postCode" -> text("address.postCode.error.required").verifying(maxLength(9,"address.postCode.error.length")),
+      "country" -> text("address.country.error.required").verifying(exactLength(2,"address.country.error.length")),
+    )(Address.apply)(Address.unapply)
+  )
 }

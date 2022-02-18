@@ -20,34 +20,69 @@ import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
 class ConsigneeAddressFormProviderSpec extends StringFieldBehaviours {
-
-  val requiredKey = "consigneeAddress.error.required"
-  val lengthKey = "consigneeAddress.error.length"
-  val maxLength = 35
-
   val form = new ConsigneeAddressFormProvider()()
 
-  ".value" - {
-
-    val fieldName = "value"
+  ".streetAndNumber" - {
+    val fieldName = "streetAndNumber"
+    val lengthKey = "address.streetAndNumber.error.length"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(35)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = 35,
+      lengthError = FormError(fieldName, lengthKey, Seq(35))
     )
+  }
 
-    behave like mandatoryField(
+  ".city" - {
+    val fieldName = "city"
+    val lengthKey = "address.city.error.length"
+
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      stringsWithMaxLength(35)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = 35,
+      lengthError = FormError(fieldName, lengthKey, Seq(35))
+    )
+  }
+
+  ".postCode" - {
+    val fieldName = "postCode"
+    val lengthKey = "address.postCode.error.length"
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(9)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = 35,
+      lengthError = FormError(fieldName, lengthKey, Seq(9))
+    )
+  }
+
+  ".country" - {
+    val fieldName = "country"
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithExactLength(2)
     )
   }
 }

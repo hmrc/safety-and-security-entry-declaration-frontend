@@ -18,7 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 
@@ -26,11 +26,11 @@ class ConsigneeAddressPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeAddressPage" - {
 
-    beRetrievable[String](ConsigneeAddressPage(index))
+    beRetrievable[Address](ConsigneeAddressPage(index))
 
-    beSettable[String](ConsigneeAddressPage(index))
+    beSettable[Address](ConsigneeAddressPage(index))
 
-    beRemovable[String](ConsigneeAddressPage(index))
+    beRemovable[Address](ConsigneeAddressPage(index))
 
     "must navigate in Normal Mode" - {
 
