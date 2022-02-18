@@ -397,4 +397,63 @@ address.country.error.required = Enter the country
 address.country.error.length = Country must be 2 characters
 
 
+consigneeAddress.title = What is the consignee's address?
+consigneeAddress.heading = What is the consignee's address?
+consigneeAddress.checkYourAnswersLabel = Consignee's address
+consigneeAddress.change.hidden = the consignee's address
 
+consigneeEORI.title = What is the consignee's GB EORI number?
+consigneeEORI.heading = What is the consignee's GB EORI number?
+consigneeEORI.checkYourAnswersLabel = Consignee's GB EORI
+consigneeEORI.error.required = Enter the consignee's GB EORI number
+consigneeEORI.error.length = The GB EORI number must be 35 characters or less
+consigneeEORI.change.hidden = the consignee's GB EORI number
+
+consigneeIdentity.title = How do you want to identify the cosignee?
+consigneeIdentity.heading = How do you want to identify the cosignee?
+consigneeIdentity.GBEORI = I'll provide the consignee's GB EORI number
+consigneeIdentity.nameAddress = I'll provide the consignee's name and address
+consigneeIdentity.checkYourAnswersLabel = How do you want to identify the cosignee?
+consigneeIdentity.error.required = Select how you want to identify the consignee
+consigneeIdentity.change.hidden = how the consignee is identified
+
+consigneeName.title = What is the consignee's name?
+consigneeName.heading = What is the consignee's name?
+consigneeName.checkYourAnswersLabel = Consingee's name
+consigneeName.error.required = Enter the consignee's name
+consigneeName.error.length = The consignee's name must be 35 characters or less
+consigneeName.change.hidden = the consignee's name
+
+notifiedPartyAddress.title = What is the notified party's name?
+notifiedPartyAddress.heading = What is the notified party's name?
+notifiedPartyAddress.checkYourAnswersLabel = Notified party's address
+notifiedPartyAddress.change.hidden = the notified party's address
+
+notifiedPartyEORI.title = What is the notified party's GB EORI number?
+notifiedPartyEORI.heading = What is the notified party's GB EORI number?
+notifiedPartyEORI.checkYourAnswersLabel = Notified party's GB EORI number
+notifiedPartyEORI.error.required = Enter the notified party's GB EORI number
+notifiedPartyEORI.error.length = The notified party's GB EORI number must be 35 characters or less
+notifiedPartyEORI.change.hidden = the notified party's GB EORI number
+
+notifiedPartyIdentity.title = How do you want to identify the notified party?
+notifiedPartyIdentity.heading = How do you want to identify the notified party?
+notifiedPartyIdentity.GBEORI = I'll provide the notified party's GB EORI number
+notifiedPartyIdentity.nameAddress = I'll provide the notified party's name and address
+notifiedPartyIdentity.checkYourAnswersLabel = How do you want to identify the notified party?
+notifiedPartyIdentity.error.required = Select notifiedPartyIdentity
+notifiedPartyIdentity.change.hidden = NotifiedPartyIdentity
+
+notifiedPartyName.title = What is the notified party's name?
+notifiedPartyName.heading = What is the notified party's name?
+notifiedPartyName.checkYourAnswersLabel = Notified party's name
+notifiedPartyName.error.required = Enter the notified party's name
+notifiedPartyName.error.length = The notified party's name must be 100 characters or less
+notifiedPartyName.change.hidden = the notified party's name
+
+unloadingCode.title = What is the unloading code?
+unloadingCode.heading = What is the unloading code?
+unloadingCode.checkYourAnswersLabel = Unloading code
+unloadingCode.error.required = Enter the unloading code
+unloadingCode.error.length = The unloading code must be 10 characters or less
+unloadingCode.change.hidden = the unloading code

@@ -24,6 +24,78 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryUnloadingCodeUserAnswersEntry: Arbitrary[(UnloadingCodePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[UnloadingCodePage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNotifiedPartyNameUserAnswersEntry: Arbitrary[(NotifiedPartyNamePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[NotifiedPartyNamePage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNotifiedPartyIdentityUserAnswersEntry: Arbitrary[(NotifiedPartyIdentityPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[NotifiedPartyIdentityPage]
+        value <- arbitrary[NotifiedPartyIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNotifiedPartyEORIUserAnswersEntry: Arbitrary[(NotifiedPartyEORIPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[NotifiedPartyEORIPage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNotifiedPartyAddressUserAnswersEntry: Arbitrary[(NotifiedPartyAddressPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[NotifiedPartyAddressPage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsigneeNameUserAnswersEntry: Arbitrary[(ConsigneeNamePage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneeNamePage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsigneeIdentityUserAnswersEntry: Arbitrary[(ConsigneeIdentityPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneeIdentityPage]
+        value <- arbitrary[ConsigneeIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsigneeEORIUserAnswersEntry: Arbitrary[(ConsigneeEORIPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneeEORIPage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsigneeAddressUserAnswersEntry: Arbitrary[(ConsigneeAddressPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneeAddressPage]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
 
   implicit lazy val arbitraryConsignorNameUserAnswersEntry: Arbitrary[(ConsignorNamePage, JsValue)] =
     Arbitrary {

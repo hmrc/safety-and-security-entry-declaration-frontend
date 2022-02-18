@@ -230,3 +230,48 @@ GET        /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsI
 POST       /:lrn/goodsItemGrossWeight/:index                  controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeGoodsItemGrossWeight/:index                        controllers.GoodsItemGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/consigneeAddress/:itemIndex                           controllers.ConsigneeAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consigneeAddress/:itemIndex                           controllers.ConsigneeAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsigneeAddress/:itemIndex                     controllers.ConsigneeAddressController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsigneeAddress/:itemIndex                     controllers.ConsigneeAddressController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/consigneeEORI/:itemIndex                           controllers.ConsigneeEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consigneeEORI/:itemIndex                           controllers.ConsigneeEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsigneeEORI/:itemIndex                     controllers.ConsigneeEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsigneeEORI/:itemIndex                     controllers.ConsigneeEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/consigneeIdentity/:itemIndex                           controllers.ConsigneeIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consigneeIdentity/:itemIndex                           controllers.ConsigneeIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsigneeIdentity/:itemIndex                     controllers.ConsigneeIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsigneeIdentity/:itemIndex                     controllers.ConsigneeIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/consigneeName/:itemIndex                           controllers.ConsigneeNameController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/consigneeName/:itemIndex                           controllers.ConsigneeNameController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeConsigneeName/:itemIndex                     controllers.ConsigneeNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeConsigneeName/:itemIndex                     controllers.ConsigneeNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/notifiedPartyAddress/:itemIndex                           controllers.NotifiedPartyAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/notifiedPartyAddress/:itemIndex                           controllers.NotifiedPartyAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeNotifiedPartyAddress/:itemIndex                     controllers.NotifiedPartyAddressController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeNotifiedPartyAddress/:itemIndex                     controllers.NotifiedPartyAddressController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/notifiedPartyEORI/:itemIndex                           controllers.NotifiedPartyEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/notifiedPartyEORI/:itemIndex                           controllers.NotifiedPartyEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeNotifiedPartyEORI/:itemIndex                     controllers.NotifiedPartyEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeNotifiedPartyEORI/:itemIndex                     controllers.NotifiedPartyEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/notifiedPartyIdentity/:itemIndex                           controllers.NotifiedPartyIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/notifiedPartyIdentity/:itemIndex                           controllers.NotifiedPartyIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeNotifiedPartyIdentity/:itemIndex                     controllers.NotifiedPartyIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeNotifiedPartyIdentity/:itemIndex                     controllers.NotifiedPartyIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/notifiedPartyName/:itemIndex                           controllers.NotifiedPartyNameController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/notifiedPartyName/:itemIndex                           controllers.NotifiedPartyNameController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeNotifiedPartyName/:itemIndex                     controllers.NotifiedPartyNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeNotifiedPartyName/:itemIndex                     controllers.NotifiedPartyNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/unloadingCode/:itemIndex                           controllers.UnloadingCodeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/unloadingCode/:itemIndex                           controllers.UnloadingCodeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changeUnloadingCode/:itemIndex                     controllers.UnloadingCodeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changeUnloadingCode/:itemIndex                     controllers.UnloadingCodeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)

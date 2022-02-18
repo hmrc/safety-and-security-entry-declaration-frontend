@@ -17,21 +17,17 @@
 package pages
 
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{Address, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeKnownPage(index: Index) extends QuestionPage[Boolean] {
+case class NotifiedPartyAddressPage(index: Index) extends QuestionPage[Address] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "consigneeKnown"
+  override def toString: String = "notifiedPartyAddress"
 
-  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
-    answers.get(ConsigneeKnownPage(index)) match {
-      case Some(true) => routes.ConsigneeIdentityController.onPageLoad(NormalMode,answers.lrn,index)
-      case Some(false) => routes.NotifiedPartyIdentityController.onPageLoad(NormalMode,answers.lrn,index)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.UnloadingCodeController.onPageLoad(NormalMode,answers.lrn,index)
   }
 }

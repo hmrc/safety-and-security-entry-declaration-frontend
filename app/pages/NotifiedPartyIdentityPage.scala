@@ -17,20 +17,21 @@
 package pages
 
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
+import models.{Index, NormalMode, NotifiedPartyIdentity, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeKnownPage(index: Index) extends QuestionPage[Boolean] {
+case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[NotifiedPartyIdentity] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "consigneeKnown"
+  override def toString: String = "notifiedPartyIdentity"
 
   override protected def navigateInNormalMode(answers:UserAnswers): Call = {
-    answers.get(ConsigneeKnownPage(index)) match {
-      case Some(true) => routes.ConsigneeIdentityController.onPageLoad(NormalMode,answers.lrn,index)
-      case Some(false) => routes.NotifiedPartyIdentityController.onPageLoad(NormalMode,answers.lrn,index)
+    answers.get(NotifiedPartyIdentityPage(index)) match {
+      case Some(GBEORI) => routes.NotifiedPartyEORIController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(NameAddress) => routes.NotifiedPartyNameController.onPageLoad(NormalMode,answers.lrn,index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }
