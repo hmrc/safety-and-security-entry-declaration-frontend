@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.NotifiedPartyIdentityPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,8 +28,8 @@ import viewmodels.implicits._
 
 object NotifiedPartyIdentitySummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotifiedPartyIdentityPage).map {
+  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(NotifiedPartyIdentityPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -42,7 +42,7 @@ object NotifiedPartyIdentitySummary  {
           key     = "notifiedPartyIdentity.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.NotifiedPartyIdentityController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.NotifiedPartyIdentityController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("notifiedPartyIdentity.change.hidden"))
           )
         )

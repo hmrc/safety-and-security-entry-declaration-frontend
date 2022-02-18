@@ -17,13 +17,13 @@
 package pages
 
 import controllers.routes
-import models.{NotifiedPartyIdentity, NormalMode, UserAnswers}
+import models.{Index, NormalMode, NotifiedPartyIdentity, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object NotifiedPartyIdentityPage extends QuestionPage[NotifiedPartyIdentity] {
+case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[NotifiedPartyIdentity] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "notifiedPartyIdentity"
 }

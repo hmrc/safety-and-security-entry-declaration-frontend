@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.ConsigneeAddressPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,15 +27,15 @@ import viewmodels.implicits._
 
 object ConsigneeAddressSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsigneeAddressPage).map {
+  def row(answers: UserAnswers,index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(ConsigneeAddressPage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "consigneeAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.ConsigneeAddressController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.ConsigneeAddressController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("consigneeAddress.change.hidden"))
           )
         )

@@ -17,13 +17,13 @@
 package pages
 
 import controllers.routes
-import models.{ConsigneeIdentity, NormalMode, UserAnswers}
+import models.{ConsigneeIdentity, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object ConsigneeIdentityPage extends QuestionPage[ConsigneeIdentity] {
+case class ConsigneeIdentityPage(index: Index) extends QuestionPage[ConsigneeIdentity] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "consigneeIdentity"
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.ConsigneeIdentityFormProvider
 
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.ConsigneeIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,29 +43,29 @@ class ConsigneeIdentityController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsigneeIdentityPage) match {
+      val preparedForm = request.userAnswers.get(ConsigneeIdentityPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, mode, lrn, index))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeIdentityPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeIdentityPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(ConsigneeIdentityPage.navigate(mode, updatedAnswers))
+          } yield Redirect(ConsigneeIdentityPage(index).navigate(mode, updatedAnswers))
       )
   }
 }

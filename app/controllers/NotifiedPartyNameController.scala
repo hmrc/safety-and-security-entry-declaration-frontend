@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.NotifiedPartyNameFormProvider
 
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.NotifiedPartyNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,29 +43,29 @@ class NotifiedPartyNameController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NotifiedPartyNamePage) match {
+      val preparedForm = request.userAnswers.get(NotifiedPartyNamePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, mode, lrn, index))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyNamePage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(NotifiedPartyNamePage.navigate(mode, updatedAnswers))
+          } yield Redirect(NotifiedPartyNamePage(index).navigate(mode, updatedAnswers))
       )
   }
 }

@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.ConsigneeEORIFormProvider
 
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.ConsigneeEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,29 +43,29 @@ class ConsigneeEORIController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsigneeEORIPage) match {
+      val preparedForm = request.userAnswers.get(ConsigneeEORIPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, mode, lrn, index))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeEORIPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeEORIPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(ConsigneeEORIPage.navigate(mode, updatedAnswers))
+          } yield Redirect(ConsigneeEORIPage(index).navigate(mode, updatedAnswers))
       )
   }
 }

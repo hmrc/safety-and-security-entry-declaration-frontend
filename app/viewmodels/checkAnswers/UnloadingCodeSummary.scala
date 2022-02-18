@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.UnloadingCodePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,15 +27,15 @@ import viewmodels.implicits._
 
 object UnloadingCodeSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnloadingCodePage).map {
+  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(UnloadingCodePage(index)).map {
       answer =>
 
         SummaryListRowViewModel(
           key     = "unloadingCode.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.UnloadingCodeController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.UnloadingCodeController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("unloadingCode.change.hidden"))
           )
         )
