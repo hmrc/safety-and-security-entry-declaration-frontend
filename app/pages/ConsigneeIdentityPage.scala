@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import models.ConsigneeIdentity.{GBEORI, NameAddress}
 import models.{ConsigneeIdentity, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -26,4 +27,12 @@ case class ConsigneeIdentityPage(index: Index) extends QuestionPage[ConsigneeIde
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "consigneeIdentity"
+
+  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
+    answers.get(ConsigneeIdentityPage(index)) match {
+      case Some(GBEORI) => routes.ConsigneeEORIController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(NameAddress) => routes.ConsigneeNameController.onPageLoad(NormalMode,answers.lrn,index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

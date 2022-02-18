@@ -26,4 +26,8 @@ case class NotifiedPartyNamePage(index: Index) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "notifiedPartyName"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.NotifiedPartyAddressController.onPageLoad(NormalMode,answers.lrn,index)
+  }
 }

@@ -34,10 +34,10 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to unloading code page" in {
 
         NotifiedPartyAddressPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.UnloadingCodeController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 

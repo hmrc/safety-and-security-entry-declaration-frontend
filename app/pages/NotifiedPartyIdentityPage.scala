@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import models.{Index, NormalMode, NotifiedPartyIdentity, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -26,4 +27,12 @@ case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[Notified
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "notifiedPartyIdentity"
+
+  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
+    answers.get(NotifiedPartyIdentityPage(index)) match {
+      case Some(GBEORI) => routes.NotifiedPartyEORIController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(NameAddress) => routes.NotifiedPartyNameController.onPageLoad(NormalMode,answers.lrn,index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

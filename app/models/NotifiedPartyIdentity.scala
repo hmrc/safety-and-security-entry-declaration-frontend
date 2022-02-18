@@ -24,11 +24,11 @@ sealed trait NotifiedPartyIdentity
 
 object NotifiedPartyIdentity extends Enumerable.Implicits {
 
-  case object Gbeori extends WithName("gBEORI") with NotifiedPartyIdentity
-  case object Nameaddress extends WithName("nameAddress") with NotifiedPartyIdentity
+  case object GBEORI extends WithName("GBEORI") with NotifiedPartyIdentity
+  case object NameAddress extends WithName("nameAddress") with NotifiedPartyIdentity
 
   val values: Seq[NotifiedPartyIdentity] = Seq(
-    Gbeori, Nameaddress
+    GBEORI, NameAddress
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
