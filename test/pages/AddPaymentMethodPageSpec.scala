@@ -21,23 +21,24 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
+class AddPaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
-class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
+  "AddPaymentMethodPage" - {
 
-  "UnloadingCodePage" - {
+    beRetrievable[Boolean](AddPaymentMethodPage(index))
 
-    beRetrievable[String](UnloadingCodePage(index))
+    beSettable[Boolean](AddPaymentMethodPage(index))
 
-    beSettable[String](UnloadingCodePage(index))
-
-    beRemovable[String](UnloadingCodePage(index))
+    beRemovable[Boolean](AddPaymentMethodPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to `do you want to add a payment method` page" in {
+      "to `carrier payment method` when answer is yes" in {
 
-        UnloadingCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddPaymentMethodController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        val answers = emptyUserAnswers.set(AddPaymentMethodPage(index),true).success.value
+
+        AddPaymentMethodPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.CarrierPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index))
       }
     }
 
@@ -45,7 +46,7 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        UnloadingCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        AddPaymentMethodPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -18,26 +18,25 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CarrierPaymentMethod, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
+class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
 
-class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
+  "CarrierPaymentMethodPage" - {
 
-  "UnloadingCodePage" - {
+    beRetrievable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
 
-    beRetrievable[String](UnloadingCodePage(index))
+    beSettable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
 
-    beSettable[String](UnloadingCodePage(index))
-
-    beRemovable[String](UnloadingCodePage(index))
+    beRemovable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to `do you want to add a payment method` page" in {
+      "to Index" in {
 
-        UnloadingCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddPaymentMethodController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        CarrierPaymentMethodPage(index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routes.IndexController.onPageLoad)
       }
     }
 
@@ -45,7 +44,7 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        UnloadingCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        CarrierPaymentMethodPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

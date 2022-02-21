@@ -21,13 +21,17 @@ import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class UnloadingCodePage(index: Index) extends QuestionPage[String] {
+case class AddPaymentMethodPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "unloadingCode"
+  override def toString: String = "addPaymentMethod"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.AddPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+    answers.get(AddPaymentMethodPage(index)) match {
+      case Some(true) => routes.CarrierPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
+
   }
 }

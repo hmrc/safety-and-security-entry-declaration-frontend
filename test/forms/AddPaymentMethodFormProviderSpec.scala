@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class UnloadingCodePage(index: Index) extends QuestionPage[String] {
+class AddPaymentMethodFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  val requiredKey = "addPaymentMethod.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "unloadingCode"
+  val form = new AddPaymentMethodFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.AddPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

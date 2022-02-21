@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case class UnloadingCodePage(index: Index) extends QuestionPage[String] {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.CarrierPaymentMethod
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+class CarrierPaymentMethodFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "unloadingCode"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.AddPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
-  }
+  def apply(): Form[CarrierPaymentMethod] =
+    Form(
+      "value" -> enumerable[CarrierPaymentMethod]("carrierPaymentMethod.error.required")
+    )
 }
