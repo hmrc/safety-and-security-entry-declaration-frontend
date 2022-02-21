@@ -130,4 +130,9 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(LodgingPersonType.values.toSeq)
     }
+
+  implicit lazy val arbitraryGbEori: Arbitrary[GbEori] =
+    Arbitrary {
+      Gen.listOfN(12, Gen.numChar).map { content: List[Char] => new GbEori(content.mkString) }
+    }
 }

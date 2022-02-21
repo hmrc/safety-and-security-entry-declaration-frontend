@@ -21,7 +21,6 @@ import org.scalacheck.Arbitrary
 import pages._
 
 trait PageGenerators {
-
   implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage] =
     Arbitrary(CarrierPaymentMethodPage(Index(0)))
 

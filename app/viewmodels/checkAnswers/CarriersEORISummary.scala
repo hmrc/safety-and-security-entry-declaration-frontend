@@ -33,7 +33,7 @@ object CarriersEORISummary  {
 
         SummaryListRowViewModel(
           key     = "carriersEORI.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.value).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.CarriersEORIController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("carriersEORI.change.hidden"))

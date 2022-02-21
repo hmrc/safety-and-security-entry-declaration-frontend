@@ -19,12 +19,21 @@ package forms.mappings
 import java.time.{LocalDate, LocalTime}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import models.Enumerable
+import models.{Enumerable, GbEori}
 
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
+
+  protected def gbEori(
+    errorKey: String = "error.required",
+    lengthKey: String = "error.eori.length",
+    nonNumericKey: String = "error.eori.numeric",
+    args: Seq[String] = Nil
+  ): FieldMapping[GbEori] = {
+    of(gbEoriFormatter(errorKey, lengthKey, nonNumericKey, args))
+  }
 
   protected def int(requiredKey: String = "error.required",
                     wholeNumberKey: String = "error.wholeNumber",

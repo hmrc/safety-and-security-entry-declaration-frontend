@@ -16,9 +16,11 @@
 
 package pages
 
+import models.GbEori
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case object CarriersEORIPage extends QuestionPage[String] {
+case object CarriersEORIPage extends QuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ toString
 

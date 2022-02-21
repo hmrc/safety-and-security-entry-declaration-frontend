@@ -18,7 +18,7 @@ package forms.mappings
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
+import models.{Enumerable, GbEori}
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -126,4 +126,48 @@ trait Formatters {
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
+
+  private[mappings] def gbEoriFormatter(
+    requiredKey: String,
+    lengthKey: String = "error.eori.length",
+    nonNumericKey: String = "error.eori.numeric",
+    args: Seq[String] = Nil
+  ): Formatter[GbEori] = new Formatter[GbEori] {
+    private val baseFormatter = stringFormatter(requiredKey, args)
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], GbEori] = {
+      baseFormatter.bind(key, data).right.flatMap { s: String =>
+        val spacesRemoved = s.filterNot { _ == ' ' }
+        val clean = if (spacesRemoved.startsWith("GB")) {
+          spacesRemoved.drop(2)
+        } else {
+          spacesRemoved
+        }
+        val len = clean.length
+
+        val nonNumericError: Option[FormError] = {
+          if (clean.exists { !('0' to '9').contains(_) }) {
+            Some(FormError(key, nonNumericKey, args))
+          } else {
+            None
+          }
+        }
+        val lengthError: Option[FormError] = if (len != 12 && len != 15) {
+          Some(FormError(key, lengthKey, args))
+        } else {
+          None
+        }
+
+        val allErrors = Seq.empty[FormError] ++ nonNumericError ++ lengthError
+
+        if (allErrors.nonEmpty) {
+          Left(allErrors)
+        } else {
+          Right(new GbEori(clean))
+        }
+      }
+    }
+
+    override def unbind(key: String, value: GbEori): Map[String, String] = Map(key -> value.value)
+  }
 }
