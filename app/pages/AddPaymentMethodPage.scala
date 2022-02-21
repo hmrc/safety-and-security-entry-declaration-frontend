@@ -26,4 +26,12 @@ case class AddPaymentMethodPage(index: Index) extends QuestionPage[Boolean] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "addPaymentMethod"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(AddPaymentMethodPage(index)) match {
+      case Some(true) => routes.CarrierPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  }
 }

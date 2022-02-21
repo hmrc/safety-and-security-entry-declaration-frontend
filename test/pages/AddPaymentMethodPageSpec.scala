@@ -33,10 +33,12 @@ class AddPaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to `carrier payment method` when answer is yes" in {
 
-        AddPaymentMethodPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(AddPaymentMethodPage(index),true).success.value
+
+        AddPaymentMethodPage(index).navigate(NormalMode, answers)
+          .mustEqual(routes.CarrierPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index))
       }
     }
 

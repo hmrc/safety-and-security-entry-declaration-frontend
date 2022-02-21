@@ -34,10 +34,10 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to `do you want to add a payment method` page" in {
 
         UnloadingCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routes.AddPaymentMethodController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 

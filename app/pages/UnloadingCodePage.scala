@@ -26,4 +26,8 @@ case class UnloadingCodePage(index: Index) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "unloadingCode"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.AddPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+  }
 }
