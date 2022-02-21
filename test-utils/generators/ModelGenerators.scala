@@ -24,6 +24,11 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryCarrierPaymentMethod: Arbitrary[CarrierPaymentMethod] =
+    Arbitrary {
+      Gen.oneOf(CarrierPaymentMethod.values.toSeq)
+    }
+
   implicit lazy val arbitraryNotifiedPartyIdentity: Arbitrary[NotifiedPartyIdentity] =
     Arbitrary {
       Gen.oneOf(NotifiedPartyIdentity.values.toSeq)

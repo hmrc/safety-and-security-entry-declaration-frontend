@@ -275,3 +275,13 @@ GET        /:lrn/unloadingCode/:itemIndex                           controllers.
 POST       /:lrn/unloadingCode/:itemIndex                           controllers.UnloadingCodeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/changeUnloadingCode/:itemIndex                     controllers.UnloadingCodeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeUnloadingCode/:itemIndex                     controllers.UnloadingCodeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/addPaymentMethod                        controllers.AddPaymentMethodController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addPaymentMethod                        controllers.AddPaymentMethodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddPaymentMethod                  controllers.AddPaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddPaymentMethod                  controllers.AddPaymentMethodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierPaymentMethod                        controllers.CarrierPaymentMethodController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierPaymentMethod                        controllers.CarrierPaymentMethodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeCarrierPaymentMethod                  controllers.CarrierPaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeCarrierPaymentMethod                  controllers.CarrierPaymentMethodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

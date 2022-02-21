@@ -457,3 +457,17 @@ unloadingCode.checkYourAnswersLabel = Unloading code
 unloadingCode.error.required = Enter the unloading code
 unloadingCode.error.length = The unloading code must be 10 characters or less
 unloadingCode.change.hidden = the unloading code
+
+addPaymentMethod.title = addPaymentMethod
+addPaymentMethod.heading = addPaymentMethod
+addPaymentMethod.checkYourAnswersLabel = addPaymentMethod
+addPaymentMethod.error.required = Select yes if addPaymentMethod
+addPaymentMethod.change.hidden = AddPaymentMethod
+
+carrierPaymentMethod.title = How will the carrier be paid?
+carrierPaymentMethod.heading = How will the carrier be paid?
+carrierPaymentMethod.cash = Payment in cash
+carrierPaymentMethod.credit_card = Payment by credit card
+carrierPaymentMethod.checkYourAnswersLabel = How will the carrier be paid?
+carrierPaymentMethod.error.required = Select carrierPaymentMethod
+carrierPaymentMethod.change.hidden = CarrierPaymentMethod
