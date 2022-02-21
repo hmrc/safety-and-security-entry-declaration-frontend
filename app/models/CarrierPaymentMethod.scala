@@ -25,10 +25,15 @@ sealed trait CarrierPaymentMethod
 object CarrierPaymentMethod extends Enumerable.Implicits {
 
   case object Cash extends WithName("cash") with CarrierPaymentMethod
-  case object Credit_card extends WithName("credit_card") with CarrierPaymentMethod
+  case object CreditCard extends WithName("credit_card") with CarrierPaymentMethod
+  case object Cheque extends WithName("cheque") with CarrierPaymentMethod
+  case object CreditTransfer extends WithName("credit_transfer") with CarrierPaymentMethod
+  case object AccountHolderWithCarrier extends WithName("account_holder_carrier") with CarrierPaymentMethod
+  case object NotPrePaid extends WithName("not_pre_paid") with CarrierPaymentMethod
+  case object Other extends WithName("other") with CarrierPaymentMethod
 
   val values: Seq[CarrierPaymentMethod] = Seq(
-    Cash, Credit_card
+    Cash, CreditCard, Cheque, CreditTransfer, AccountHolderWithCarrier, NotPrePaid, Other
   )
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
