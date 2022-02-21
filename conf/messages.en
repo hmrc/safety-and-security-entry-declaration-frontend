@@ -458,11 +458,11 @@ unloadingCode.error.required = Enter the unloading code
 unloadingCode.error.length = The unloading code must be 10 characters or less
 unloadingCode.change.hidden = the unloading code
 
-addPaymentMethod.title = addPaymentMethod
-addPaymentMethod.heading = addPaymentMethod
-addPaymentMethod.checkYourAnswersLabel = addPaymentMethod
-addPaymentMethod.error.required = Select yes if addPaymentMethod
-addPaymentMethod.change.hidden = AddPaymentMethod
+addPaymentMethod.title = Do you want to add a payment method?
+addPaymentMethod.heading = Do you want to add a payment method?
+addPaymentMethod.checkYourAnswersLabel = Payment method added
+addPaymentMethod.error.required = Select if you want to add a payment method
+addPaymentMethod.change.hidden = add a payment method
 
 carrierPaymentMethod.title = How will the carrier be paid?
 carrierPaymentMethod.heading = How will the carrier be paid?
@@ -474,5 +474,5 @@ carrierPaymentMethod.account_holder_carrier = Account holder with carrier
 carrierPaymentMethod.not_pre_paid = Not pre-paid
 carrierPaymentMethod.other = Other
 carrierPaymentMethod.checkYourAnswersLabel = How will the carrier be paid?
-carrierPaymentMethod.error.required = Select carrierPaymentMethod
-carrierPaymentMethod.change.hidden = CarrierPaymentMethod
+carrierPaymentMethod.error.required = Select the carrier payment method
+carrierPaymentMethod.change.hidden = the carrier payment method
