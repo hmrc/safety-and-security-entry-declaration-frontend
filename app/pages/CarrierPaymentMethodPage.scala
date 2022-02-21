@@ -17,13 +17,13 @@
 package pages
 
 import controllers.routes
-import models.{CarrierPaymentMethod, NormalMode, UserAnswers}
+import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CarrierPaymentMethodPage extends QuestionPage[CarrierPaymentMethod] {
+case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "carrierPaymentMethod"
 }

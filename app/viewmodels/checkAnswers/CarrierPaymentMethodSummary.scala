@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.CarrierPaymentMethodPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,8 +28,8 @@ import viewmodels.implicits._
 
 object CarrierPaymentMethodSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CarrierPaymentMethodPage).map {
+  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(CarrierPaymentMethodPage(index)).map {
       answer =>
 
         val value = ValueViewModel(
@@ -42,7 +42,7 @@ object CarrierPaymentMethodSummary  {
           key     = "carrierPaymentMethod.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.CarrierPaymentMethodController.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", routes.CarrierPaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("carrierPaymentMethod.change.hidden"))
           )
         )
