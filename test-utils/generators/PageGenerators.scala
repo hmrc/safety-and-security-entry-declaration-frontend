@@ -22,11 +22,11 @@ import pages._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage.type] =
-    Arbitrary(CarrierPaymentMethodPage)
+  implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage] =
+    Arbitrary(CarrierPaymentMethodPage(Index(0)))
 
-  implicit lazy val arbitraryAddPaymentMethodPage: Arbitrary[AddPaymentMethodPage.type] =
-    Arbitrary(AddPaymentMethodPage)
+  implicit lazy val arbitraryAddPaymentMethodPage: Arbitrary[AddPaymentMethodPage] =
+    Arbitrary(AddPaymentMethodPage(Index(0)))
 
   implicit lazy val arbitraryUnloadingCodePage: Arbitrary[UnloadingCodePage] =
     Arbitrary(UnloadingCodePage(Index(0)))
