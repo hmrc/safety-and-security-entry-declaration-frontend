@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.Json
 
-case class Address(streetAndNumber: String, city: String, postCode: String, country: String) {
+case class Address(streetAndNumber: String, city: String, postCode: String, country: Country) {
 
 }
 

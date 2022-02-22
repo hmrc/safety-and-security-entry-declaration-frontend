@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@import models.Country._
 @import viewmodels.InputWidth._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
+    govukSelect: GovukSelect,
     govukInput: GovukInput,
     govukButton: GovukButton
 )
@@ -28,7 +30,7 @@
 
 @layout(pageTitle = title(form, messages("consignorAddress.title"))) {
 
-    @formHelper(action = routes.ConsignorAddressController.onSubmit(mode, lrn, index)) {
+    @formHelper(action = routes.ConsignorAddressController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -61,13 +63,14 @@
             .withWidth(Full)
         )
 
-        @govukInput(
-            InputViewModel(
+        @govukSelect(
+            SelectViewModel(
                 field = form("country"),
+                items = selectItems(internationalCountries),
                 label = LabelViewModel(messages("address.country")).withCssClass("govuk-fieldset__legend-m")
             )
-            .withWidth(Fixed2)
-            .withHint(HintViewModel(messages("address.country.hint")))
+            .withCssClass(InputWidth.Fixed20.toString)
+            .withCssClass("autocomplete")
         )
 
         @govukButton(

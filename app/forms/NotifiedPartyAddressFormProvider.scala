@@ -18,7 +18,8 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.Mappings
-import models.Address
+import models.{Address, Country}
+import models.Country.internationalCountries
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
@@ -28,7 +29,8 @@ class NotifiedPartyAddressFormProvider @Inject() extends Mappings {
       "streetAndNumber" -> text("address.streetAndNumber.error.required").verifying(maxLength(35,"address.streetAndNumber.error.length")),
       "city" -> text("address.city.error.required").verifying(maxLength(35,"address.city.error.length")),
       "postCode" -> text("address.postCode.error.required").verifying(maxLength(9,"address.postCode.error.length")),
-      "country" -> text("address.country.error.required").verifying(exactLength(2,"address.country.error.length")),
+      "country" -> text("address.country.error.required").verifying("address.country.error.required", value => internationalCountries.exists(_.code == value))
+        .transform[Country](value => internationalCountries.find(_.code == value).get, _.code)
     )(Address.apply)(Address.unapply)
   )
 }
