@@ -18,9 +18,10 @@ package controllers
 
 import base.SpecBase
 import forms.NotifiedPartyAddressFormProvider
-import models.{Address, NormalMode}
+import models.{Address, Country, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.NotifiedPartyAddressPage
 import play.api.inject.bind
@@ -35,6 +36,7 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new NotifiedPartyAddressFormProvider()
   val form = formProvider()
+  val country = arbitrary[Country].sample.value
 
   lazy val notifiedPartyAddressRoute = routes.NotifiedPartyAddressController.onPageLoad(NormalMode, lrn, index).url
 
@@ -58,7 +60,7 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test","GB")).success.value
+      val userAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test",country)).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +72,7 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Address("test","test","test","GB")), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(Address("test","test","test",country)), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -91,10 +93,10 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody("streetAndNumber" -> "test",
               "city" -> "test",
               "postCode" -> "test",
-              "country" -> "GB")
+              "country" -> country.code)
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test","GB")).success.value
+        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test",country)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual NotifiedPartyAddressPage(index).navigate(NormalMode, expectedAnswers).url

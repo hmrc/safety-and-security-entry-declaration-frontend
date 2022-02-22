@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import models.Country
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
 class NotifiedPartyAddressFormProviderSpec extends StringFieldBehaviours {
@@ -82,7 +84,7 @@ class NotifiedPartyAddressFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithExactLength(2)
+      arbitrary[Country].map(_.code)
     )
   }
 }
