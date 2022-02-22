@@ -88,7 +88,7 @@ trait ModelGenerators {
         streetAndNumber <- arbitrary[String]
         city <- arbitrary[String]
         postCode <- arbitrary[String]
-        country <- arbitrary[String]
+        country <- arbitrary[Country]
       } yield Address(streetAndNumber,city, postCode, country)
     }
 
