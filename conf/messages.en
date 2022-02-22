@@ -485,3 +485,11 @@ carrierPaymentMethod.other = Other
 carrierPaymentMethod.checkYourAnswersLabel = How will the carrier be paid?
 carrierPaymentMethod.error.required = Select the carrier payment method
 carrierPaymentMethod.change.hidden = the carrier payment method
+
+containerNumber.title = containerNumber
+containerNumber.heading = containerNumber
+containerNumber.hint = Must be 20 digits long
+containerNumber.checkYourAnswersLabel = containerNumber
+containerNumber.error.required = Enter containerNumber
+containerNumber.error.length = ContainerNumber must be 20 characters or less
+containerNumber.change.hidden = ContainerNumber

@@ -17,65 +17,60 @@
 package controllers
 
 import base.SpecBase
-import forms.DangerousGoodCodeFormProvider
+import forms.ContainerNumberFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DangerousGoodCodePage
+import pages.ContainerNumberPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.DangerousGoodCodeView
-import services.DangerousGoodsService
+import views.html.ContainerNumberView
 
 import scala.concurrent.Future
 
-class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
+class ContainerNumberControllerSpec extends SpecBase with MockitoSugar {
 
-  val application = applicationBuilder(None).build()
-
-  def service: DangerousGoodsService = application.injector.instanceOf[DangerousGoodsService]
-  val formProvider = new DangerousGoodCodeFormProvider(service)
+  val formProvider = new ContainerNumberFormProvider()
   val form = formProvider()
-  val dangerousGood = arbitraryDangerousGood.arbitrary.sample.value
 
-  lazy val dangerousGoodCodeRoute = routes.DangerousGoodCodeController.onPageLoad(NormalMode, lrn, index).url
+  lazy val containerNumberRoute = routes.ContainerNumberController.onPageLoad(NormalMode, lrn, index, index).url
 
-  "DangerousGoodCode Controller" - {
+  "ContainerNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, dangerousGoodCodeRoute)
+        val request = FakeRequest(GET, containerNumberRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DangerousGoodCodeView]
+        val view = application.injector.instanceOf[ContainerNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(DangerousGoodCodePage(index), dangerousGood).success.value
+      val userAnswers = emptyUserAnswers.set(ContainerNumberPage(index, index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, dangerousGoodCodeRoute)
+        val request = FakeRequest(GET, containerNumberRoute)
 
-        val view = application.injector.instanceOf[DangerousGoodCodeView]
+        val view = application.injector.instanceOf[ContainerNumberView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(dangerousGood), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -92,14 +87,14 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, dangerousGoodCodeRoute)
-            .withFormUrlEncodedBody(("value", dangerousGood.code))
+          FakeRequest(POST, containerNumberRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(DangerousGoodCodePage(index), dangerousGood).success.value
+        val expectedAnswers = emptyUserAnswers.set(ContainerNumberPage(index, index), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DangerousGoodCodePage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual ContainerNumberPage(index, index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -110,17 +105,17 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, dangerousGoodCodeRoute)
+          FakeRequest(POST, containerNumberRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[DangerousGoodCodeView]
+        val view = application.injector.instanceOf[ContainerNumberView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -129,7 +124,7 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, dangerousGoodCodeRoute)
+        val request = FakeRequest(GET, containerNumberRoute)
 
         val result = route(application, request).value
 
@@ -144,7 +139,7 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, dangerousGoodCodeRoute)
+          FakeRequest(POST, containerNumberRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value

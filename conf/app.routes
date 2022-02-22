@@ -285,3 +285,8 @@ GET        /:lrn/carrierPaymentMethod/:itemIndex                        controll
 POST       /:lrn/carrierPaymentMethod/:itemIndex                        controllers.CarrierPaymentMethodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/changeCarrierPaymentMethod/:itemIndex                  controllers.CarrierPaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeCarrierPaymentMethod/:itemIndex                  controllers.CarrierPaymentMethodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/containerNumber/:itemIndex/:packageIndex                         controllers.ContainerNumberController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
+POST       /:lrn/containerNumber/:itemIndex/:packageIndex                         controllers.ContainerNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
+GET        /:lrn/changeContainerNumber/:itemIndex/:packageIndex                   controllers.ContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
+POST       /:lrn/changeContainerNumber/:itemIndex/:packageIndex                  controllers.ContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)

@@ -17,54 +17,55 @@
 package controllers
 
 import controllers.actions._
-import forms.ConsigneeNameFormProvider
+import forms.ContainerNumberFormProvider
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.ConsigneeNamePage
+import pages.ContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConsigneeNameView
-
+import views.html.ContainerNumberView
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsigneeNameController @Inject()(
+class ContainerNumberController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalActionProvider,
                                         requireData: DataRequiredAction,
-                                        formProvider: ConsigneeNameFormProvider,
+                                        formProvider: ContainerNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: ConsigneeNameView
+                                        view: ContainerNumberView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsigneeNamePage(index)) match {
+      val preparedForm = request.userAnswers.get(ContainerNumberPage(itemIndex, packageIndex)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, mode, lrn, itemIndex, packageIndex))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeNamePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ContainerNumberPage(itemIndex, packageIndex), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(ConsigneeNamePage(index).navigate(mode, updatedAnswers))
+          } yield Redirect(ContainerNumberPage(itemIndex, packageIndex ).navigate(mode, updatedAnswers))
       )
   }
 }

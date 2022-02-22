@@ -22,6 +22,9 @@ import pages._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryContainerNumberPage: Arbitrary[ContainerNumberPage] =
+    Arbitrary(ContainerNumberPage(Index(0),Index(0)))
+
   implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage] =
     Arbitrary(CarrierPaymentMethodPage(Index(0)))
 
