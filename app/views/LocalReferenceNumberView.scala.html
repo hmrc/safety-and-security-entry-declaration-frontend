@@ -34,12 +34,15 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("localReferenceNumber.heading")</h1>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("localReferenceNumber.heading")).asPageHeading()
+                label = LabelViewModel(messages("localReferenceNumber.label"))
             )
             .withWidth(Full)
+            .withHint(HintViewModel(messages("localReferenceNumber.hint")))
         )
 
         @govukButton(

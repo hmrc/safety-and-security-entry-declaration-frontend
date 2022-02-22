@@ -64,20 +64,28 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-localReferenceNumber.title = Name your ENS
-localReferenceNumber.heading = Name your ENS
+localReferenceNumber.title = Name your entry summary declaration (ENS)
+localReferenceNumber.heading = Name your entry summary declaration (ENS)
+localReferenceNumber.hint = For example, Apples from New Zealand or Shoes 23/3/22.
+localReferenceNumber.label = Give your entry summary declaration a brief descriptive title to easily recognise it. Do not use a previous name for a new declaration.
 localReferenceNumber.error.required = Enter the name of your ENS
 localReferenceNumber.error.invalid = Name can only contain letters and numbers
 localReferenceNumber.error.length = Name must be 22 characters or less
 localReferenceNumber.change.hidden = the name of your ENS
 
-lodgingPersonType.title = Are you the carrier or a representative?
-lodgingPersonType.heading = Are you the carrier or a representative?
-lodgingPersonType.carrier = Carrier
-lodgingPersonType.representative = Representative
-lodgingPersonType.checkYourAnswersLabel = Are you the carrier or a representative?
+lodgingPersonType.title = Choosing the carrier
+lodgingPersonType.heading = Choosing the carrier
+lodgingPersonType.label1 = A carrier is legally required to submit an ENS. The carrier is defined as the operator of the 'active means of transport'.
+lodgingPersonType.label2 = This means the vessel, aircraft, train or road vehicle used to bring the goods into Great Britain.
+lodgingPersonType.label3 = For example, if a freight truck is on a ferry and unaccompanied, the ferry company is the carrier.
+lodgingPersonType.label4 = If a truck is accompanied and driven on and off the ferry by its driver, the haulage company is the carrier. If a truck is accompanied and driven on and off the ferry by its driver, the haulage company is the carrier.
+lodgingPersonType.question = Is your company the carrier for this consignment?
+lodgingPersonType.carrier = Yes, my company is the carrier
+lodgingPersonType.representative = No, a different company is the carrier
+lodgingPersonType.checkYourAnswersLabel = Choosing the carrier
 lodgingPersonType.error.required = Select if you are the carrier or a representative
 lodgingPersonType.change.hidden = if you are the carrier or a representative
+
 
 grossWeight.title = How do you want to give the gross weight of the goods?
 grossWeight.heading = How do you want to give the gross weight of the goods?
@@ -216,6 +224,7 @@ goodsDescription.change.hidden = the description of the goods
 
 declarationPlace.title = Where are you completing this declaration?
 declarationPlace.heading = Where are you completing this declaration?
+declarationPlace.hint = Enter the postcode of your current location
 declarationPlace.checkYourAnswersLabel = Declaration place
 declarationPlace.error.required = Enter where you are completing this declaration
 declarationPlace.error.length = Where you are completing this declaration must be 35 characters or less

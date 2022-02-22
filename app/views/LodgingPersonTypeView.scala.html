@@ -32,10 +32,16 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
+        <h1 class="govuk-heading-xl">@messages("lodgingPersonType.heading")</h1>
+        <p class="govuk-body">@messages("lodgingPersonType.label1")</p>
+        <p class="govuk-body">@messages("lodgingPersonType.label2")</p>
+        <p class="govuk-body">@messages("lodgingPersonType.label3")</p>
+        <p class="govuk-body">@messages("lodgingPersonType.label4")</p>
+
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("lodgingPersonType.heading")).asPageHeading(),
+                legend = LegendViewModel(messages("lodgingPersonType.question")).asPageHeading(),
                 items  = LodgingPersonType.options
             )
         )
