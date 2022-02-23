@@ -382,7 +382,7 @@ object KindOfPackage {
       kindsOfPackage.map { kindOfPackage =>
         SelectItemViewModel(
           value = kindOfPackage.code,
-          text = kindOfPackage.name
+          text = s"${kindOfPackage.code}: ${kindOfPackage.name}"
         )
       }
 }
