@@ -24,13 +24,16 @@ import queries.DeriveNumberOfPackages
 
 case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
+  override def path: JsPath =
+    JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "removePackage"
 
   override def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(DeriveNumberOfPackages(itemIndex)) match {
-      case Some(n) if n > 0 => routes.AddPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-      case _                => routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(0))
+      case Some(n) if n > 0 =>
+        routes.AddPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+      case _ =>
+        routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(0))
     }
 }

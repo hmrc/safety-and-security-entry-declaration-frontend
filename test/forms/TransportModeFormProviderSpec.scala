@@ -32,7 +32,7 @@ class TransportModeFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[TransportMode](
       form,
       fieldName,
-      validValues  = TransportMode.values,
+      validValues = TransportMode.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

@@ -30,40 +30,45 @@ import views.html.RemoveCountryEnRouteView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveCountryEnRouteController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: RemoveCountryEnRouteFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: RemoveCountryEnRouteView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class RemoveCountryEnRouteController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: RemoveCountryEnRouteFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveCountryEnRouteView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
       Ok(view(form, mode, lrn, index))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-
-        value =>
-          if (value) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
-          } else {
-            Future.successful(Redirect(RemoveCountryEnRoutePage(index).navigate(mode, request.userAnswers)))
-          }
-      )
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <-
+                  Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
+            } else {
+              Future.successful(
+                Redirect(RemoveCountryEnRoutePage(index).navigate(mode, request.userAnswers))
+              )
+            }
+        )
+    }
 }

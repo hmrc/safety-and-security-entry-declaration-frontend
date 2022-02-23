@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
   "ConsignorEORIPage" - {
@@ -36,8 +35,11 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to `Do you know the consignee?`" in {
 
-        ConsignorEORIPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.ConsigneeKnownController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        ConsignorEORIPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorEORIPage(index).navigate(CheckMode, emptyUserAnswers)
+        ConsignorEORIPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

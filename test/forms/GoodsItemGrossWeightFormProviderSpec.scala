@@ -34,7 +34,10 @@ class GoodsItemGrossWeightFormProviderSpec extends DecimalFieldBehaviours {
     val maximum = BigDecimal(99999999.999)
     val precision = 3
 
-    val validDataGenerator = Gen.choose(minimum, maximum).map(_.setScale(precision, RoundingMode.HALF_DOWN)).map(_.toString)
+    val validDataGenerator = Gen
+      .choose(minimum, maximum)
+      .map(_.setScale(precision, RoundingMode.HALF_DOWN))
+      .map(_.toString)
 
     behave like fieldThatBindsValidData(
       form,
@@ -45,18 +48,19 @@ class GoodsItemGrossWeightFormProviderSpec extends DecimalFieldBehaviours {
     behave like decimalField(
       form,
       fieldName,
-      nonNumericError       = FormError(fieldName, "goodsItemGrossWeight.error.nonNumeric"),
+      nonNumericError = FormError(fieldName, "goodsItemGrossWeight.error.nonNumeric"),
       invalidPrecisionError = FormError(fieldName, "goodsItemGrossWeight.error.precision"),
-      precision             = precision
+      precision = precision
     )
 
     behave like decimalWithRange(
       form,
       fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
-      expectedError = FormError(fieldName, "goodsItemGrossWeight.error.outOfRange", Seq(minimum, maximum)),
-      precision     = precision
+      minimum = minimum,
+      maximum = maximum,
+      expectedError =
+        FormError(fieldName, "goodsItemGrossWeight.error.outOfRange", Seq(minimum, maximum)),
+      precision = precision
     )
 
     behave like mandatoryField(

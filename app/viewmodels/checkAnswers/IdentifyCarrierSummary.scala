@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object IdentifyCarrierSummary  {
+object IdentifyCarrierSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IdentifyCarrierPage).map {
-      answer =>
+    answers.get(IdentifyCarrierPage).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"identifyCarrier.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"identifyCarrier.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "identifyCarrier.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.IdentifyCarrierController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("identifyCarrier.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "identifyCarrier.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.IdentifyCarrierController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("identifyCarrier.change.hidden"))
         )
+      )
     }
 }

@@ -25,18 +25,21 @@ import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalAction (lrn: LocalReferenceNumber, repository: SessionRepository)
-                          (implicit val executionContext: ExecutionContext)
-  extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
+class DataRetrievalAction(lrn: LocalReferenceNumber, repository: SessionRepository)(
+  implicit val executionContext: ExecutionContext
+) extends ActionTransformer[IdentifierRequest, OptionalDataRequest] {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+  override protected def transform[A](
+    request: IdentifierRequest[A]
+  ): Future[OptionalDataRequest[A]] =
     repository.get(request.userId, lrn).map {
       OptionalDataRequest(request.request, request.userId, _)
     }
 }
 
-class DataRetrievalActionProvider @Inject()(repository: SessionRepository)
-                                           (implicit ec: ExecutionContext) {
+class DataRetrievalActionProvider @Inject() (repository: SessionRepository)(
+  implicit ec: ExecutionContext
+) {
 
   def apply(lrn: LocalReferenceNumber): DataRetrievalAction =
     new DataRetrievalAction(lrn, repository)

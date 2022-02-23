@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
   "UnloadingCodePage" - {
@@ -36,8 +35,11 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
       "to `do you want to add a payment method` page" in {
 
-        UnloadingCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddPaymentMethodController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        UnloadingCodePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.AddPaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        UnloadingCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        UnloadingCodePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

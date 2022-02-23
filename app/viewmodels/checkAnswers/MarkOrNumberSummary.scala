@@ -25,19 +25,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MarkOrNumberSummary  {
+object MarkOrNumberSummary {
 
-  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MarkOrNumberPage(itemIndex, packageIndex)).map {
-      answer =>
+  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    answers.get(MarkOrNumberPage(itemIndex, packageIndex)).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "markOrNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.MarkOrNumberController.onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex).url)
-              .withVisuallyHiddenText(messages("markOrNumber.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "markOrNumber.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.MarkOrNumberController
+              .onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex)
+              .url
+          ).withVisuallyHiddenText(messages("markOrNumber.change.hidden"))
         )
+      )
     }
 }

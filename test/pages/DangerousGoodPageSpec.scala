@@ -35,18 +35,20 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
       "to dangerous good code page when answer is yes" in {
 
-        val answers = emptyUserAnswers.set(DangerousGoodPage(index),true).success.value
+        val answers = emptyUserAnswers.set(DangerousGoodPage(index), true).success.value
 
-        DangerousGoodPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.DangerousGoodCodeController.onPageLoad(NormalMode,answers.lrn,index))
+        DangerousGoodPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to consignor identity page when answer is no" in {
 
-        val answers = emptyUserAnswers.set(DangerousGoodPage(index),false).success.value
+        val answers = emptyUserAnswers.set(DangerousGoodPage(index), false).success.value
 
-        DangerousGoodPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.ConsignorsIdentityController.onPageLoad(NormalMode,answers.lrn,index))
+        DangerousGoodPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 
@@ -54,7 +56,8 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DangerousGoodPage(index).navigate(CheckMode, emptyUserAnswers)
+        DangerousGoodPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

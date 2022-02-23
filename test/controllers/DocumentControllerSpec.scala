@@ -57,7 +57,10 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -73,7 +76,10 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(document), NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(document), NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -93,11 +99,14 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, documentRoute)
             .withFormUrlEncodedBody(("documentType", documentType.code), ("reference", "reference"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(DocumentPage(index, index), document).success.value
+        val result = route(application, request).value
+        val expectedAnswers =
+          emptyUserAnswers.set(DocumentPage(index, index), document).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DocumentPage(index, index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual DocumentPage(index, index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -118,7 +127,10 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

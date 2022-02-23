@@ -32,7 +32,7 @@ class IdentifyCarrierFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[IdentifyCarrier](
       form,
       fieldName,
-      validValues  = IdentifyCarrier.values,
+      validValues = IdentifyCarrier.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

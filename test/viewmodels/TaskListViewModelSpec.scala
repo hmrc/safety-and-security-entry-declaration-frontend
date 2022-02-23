@@ -27,7 +27,8 @@ class TaskListViewModelSpec extends SpecBase {
 
     "must not include a row for carrier details" in {
 
-      val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+      val answers =
+        emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
 
       val taskListViewModel = TaskListViewModel.fromAnswers(answers)(stubMessages())
       taskListViewModel.rows.size mustEqual 1
@@ -38,7 +39,8 @@ class TaskListViewModelSpec extends SpecBase {
 
     "must include a row for carrier details" in {
 
-      val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+      val answers =
+        emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
 
       val taskListViewModel = TaskListViewModel.fromAnswers(answers)(stubMessages())
       taskListViewModel.rows.size mustEqual 2

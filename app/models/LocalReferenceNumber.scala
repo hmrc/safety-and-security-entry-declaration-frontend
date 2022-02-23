@@ -30,7 +30,7 @@ object LocalReferenceNumber {
   private def fromString(input: String): Option[LocalReferenceNumber] = {
     input match {
       case pattern(lrn) => Some(LocalReferenceNumber(lrn))
-      case _            => None
+      case _ => None
     }
   }
 
@@ -53,15 +53,16 @@ object LocalReferenceNumber {
       JsString(o.value)
   }
 
-  implicit val pathBindable: PathBindable[LocalReferenceNumber] = new PathBindable[LocalReferenceNumber] {
+  implicit val pathBindable: PathBindable[LocalReferenceNumber] =
+    new PathBindable[LocalReferenceNumber] {
 
-    override def bind(key: String, value: String): Either[String, LocalReferenceNumber] =
-      fromString(value) match {
-        case Some(lrn) => Right(lrn)
-        case None      => Left("Invalid Local Reference Number")
-      }
+      override def bind(key: String, value: String): Either[String, LocalReferenceNumber] =
+        fromString(value) match {
+          case Some(lrn) => Right(lrn)
+          case None => Left("Invalid Local Reference Number")
+        }
 
-    override def unbind(key: String, value: LocalReferenceNumber): String =
-      value.value
-  }
+      override def unbind(key: String, value: LocalReferenceNumber): String =
+        value.value
+    }
 }

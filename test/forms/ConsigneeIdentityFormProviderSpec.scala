@@ -32,7 +32,7 @@ class ConsigneeIdentityFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[ConsigneeIdentity](
       form,
       fieldName,
-      validValues  = ConsigneeIdentity.values,
+      validValues = ConsigneeIdentity.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

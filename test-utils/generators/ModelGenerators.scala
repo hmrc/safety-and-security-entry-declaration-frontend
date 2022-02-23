@@ -42,9 +42,10 @@ trait ModelGenerators {
     DangerousGood("4", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"),
     DangerousGood("5", "CARTRIDGES FOR WEAPONS with bursting charge"),
     DangerousGood("6", "CARTRIDGES FOR WEAPONS with bursting charge"),
-    DangerousGood("7", "CARTRIDGES FOR WEAPONS with bursting charge"))
+    DangerousGood("7", "CARTRIDGES FOR WEAPONS with bursting charge")
+  )
 
-  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice]=
+  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       Gen.oneOf(CustomsOffice.allCustomsOffices)
     }
@@ -58,7 +59,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         documentType <- arbitrary[DocumentType]
-        reference    <- arbitrary[String]
+        reference <- arbitrary[String]
       } yield Document(documentType, reference)
     }
 
@@ -89,17 +90,21 @@ trait ModelGenerators {
         city <- arbitrary[String]
         postCode <- arbitrary[String]
         country <- arbitrary[Country]
-      } yield Address(streetAndNumber,city, postCode, country)
+      } yield Address(streetAndNumber, city, postCode, country)
     }
 
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =
     Arbitrary {
       for {
-        hour      <- Gen.choose(0, 23)
-        minute    <- Gen.choose(0, 59)
+        hour <- Gen.choose(0, 23)
+        minute <- Gen.choose(0, 59)
         earlyDate = LocalDate.now.atStartOfDay().atZone(ZoneOffset.UTC).toInstant.toEpochMilli
-        lateDate  = LocalDate.now.plusYears(100).atStartOfDay().atZone(ZoneOffset.UTC).toInstant.toEpochMilli
-        date      <- Gen.choose(earlyDate, lateDate).map(m => Instant.ofEpochMilli(m).atOffset(ZoneOffset.UTC).toLocalDate)
+        lateDate =
+          LocalDate.now.plusYears(100).atStartOfDay().atZone(ZoneOffset.UTC).toInstant.toEpochMilli
+        date <-
+          Gen
+            .choose(earlyDate, lateDate)
+            .map(m => Instant.ofEpochMilli(m).atOffset(ZoneOffset.UTC).toLocalDate)
       } yield ArrivalDateAndTime(date, LocalTime.of(hour, minute))
     }
 
@@ -112,7 +117,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         length <- Gen.choose(1, 22)
-        chars  <- Gen.listOfN(length, Gen.alphaNumChar)
+        chars <- Gen.listOfN(length, Gen.alphaNumChar)
       } yield LocalReferenceNumber(chars.mkString)
     }
 

@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CustomsOfficeOfFirstEntrySummary  {
+object CustomsOfficeOfFirstEntrySummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CustomsOfficeOfFirstEntryPage).map {
-      answer =>
+    answers.get(CustomsOfficeOfFirstEntryPage).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "customsOfficeOfFirstEntry.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer.name).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.CustomsOfficeOfFirstEntryController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("customsOfficeOfFirstEntry.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "customsOfficeOfFirstEntry.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer.name).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.CustomsOfficeOfFirstEntryController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("customsOfficeOfFirstEntry.change.hidden"))
         )
+      )
     }
 }

@@ -30,7 +30,7 @@ import views.html.CarriersEORIView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarriersEORIController @Inject()(
+class CarriersEORIController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
@@ -39,12 +39,14 @@ class CarriersEORIController @Inject()(
   formProvider: CarriersEORIFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: CarriersEORIView
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(CarriersEORIPage) match {
         case None => form
@@ -52,20 +54,20 @@ class CarriersEORIController @Inject()(
       }
 
       Ok(view(preparedForm, mode, lrn))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CarriersEORIPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(CarriersEORIPage.navigate(mode, updatedAnswers))
-      )
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CarriersEORIPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(CarriersEORIPage.navigate(mode, updatedAnswers))
+        )
+    }
 }

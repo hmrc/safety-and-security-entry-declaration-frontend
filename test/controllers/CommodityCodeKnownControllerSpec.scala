@@ -36,7 +36,8 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new CommodityCodeKnownFormProvider()
   val form = formProvider()
 
-  lazy val commodityCodeKnownRoute = routes.CommodityCodeKnownController.onPageLoad(NormalMode, lrn, index).url
+  lazy val commodityCodeKnownRoute =
+    routes.CommodityCodeKnownController.onPageLoad(NormalMode, lrn, index).url
 
   "CommodityCodeKnown Controller" - {
 
@@ -52,7 +53,10 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CommodityCodeKnownView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn,index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -70,7 +74,10 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn,index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -90,11 +97,14 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, commodityCodeKnownRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
+        val result = route(application, request).value
+        val expectedAnswers =
+          emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CommodityCodeKnownPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual CommodityCodeKnownPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +125,10 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn,index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

@@ -27,9 +27,9 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
   val form = Form(
     "value" -> localTime(
-      requiredKey    = "error.required",
+      requiredKey = "error.required",
       allRequiredKey = "error.required.all",
-      invalidKey     = "error.invalid"
+      invalidKey = "error.invalid"
     )
   )
 
@@ -42,17 +42,16 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
   "must bind valid data" in {
 
-    forAll(validTimes) {
-      time =>
+    forAll(validTimes) { time =>
 
-        val data = Map(
-          "value.hour"   -> time.getHour.toString,
-          "value.minutes" -> time.getMinute.toString
-        )
+      val data = Map(
+        "value.hour" -> time.getHour.toString,
+        "value.minutes" -> time.getMinute.toString
+      )
 
-        val result = form.bind(data)
+      val result = form.bind(data)
 
-        result.value.value mustEqual time
+      result.value.value mustEqual time
     }
   }
 
@@ -65,13 +64,12 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
   "must fail to bind with a missing hour" in {
 
-    forAll(validTimes) {
-      time =>
+    forAll(validTimes) { time =>
 
-        val data = Map("value.minutes" -> time.getMinute.toString)
-        val result = form.bind(data)
+      val data = Map("value.minutes" -> time.getMinute.toString)
+      val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required", List("hour"))
+      result.errors must contain only FormError("value", "error.required", List("hour"))
     }
   }
 
@@ -79,9 +77,8 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
     forAll(validTimes, invalidField) {
       case (time, field) =>
-
         val data = Map(
-          "value.hour"   -> field,
+          "value.hour" -> field,
           "value.minutes" -> time.getMinute.toString
         )
         val result = form.bind(data)
@@ -92,13 +89,12 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
   "must fail to bind with a missing minutes" in {
 
-    forAll(validTimes) {
-      time =>
+    forAll(validTimes) { time =>
 
-        val data = Map("value.hour" -> time.getHour.toString)
-        val result = form.bind(data)
+      val data = Map("value.hour" -> time.getHour.toString)
+      val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.required", List("minutes"))
+      result.errors must contain only FormError("value", "error.required", List("minutes"))
     }
   }
 
@@ -106,9 +102,8 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
     forAll(validTimes, invalidField) {
       case (time, field) =>
-
         val data = Map(
-          "value.hour"   -> time.getHour.toString,
+          "value.hour" -> time.getHour.toString,
           "value.minutes" -> field
         )
         val result = form.bind(data)
@@ -119,13 +114,12 @@ class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropert
 
   "must unbind a time" in {
 
-    forAll(validTimes) {
-      time =>
+    forAll(validTimes) { time =>
 
-        val filledForm = form.fill(time)
+      val filledForm = form.fill(time)
 
-        filledForm("value.hour").value.value mustEqual time.getHour.toString
-        filledForm("value.minutes").value.value mustEqual time.getMinute.toString
+      filledForm("value.hour").value.value mustEqual time.getHour.toString
+      filledForm("value.minutes").value.value mustEqual time.getMinute.toString
     }
   }
 }

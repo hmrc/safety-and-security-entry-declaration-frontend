@@ -27,7 +27,7 @@ class NumberOfPiecesFormProvider @Inject() extends Mappings {
       "value" -> int(
         "numberOfPieces.error.required",
         "numberOfPieces.error.wholeNumber",
-        "numberOfPieces.error.nonNumeric")
-          .verifying(inRange(1, 99999, "numberOfPieces.error.outOfRange"))
+        "numberOfPieces.error.nonNumeric"
+      ).verifying(inRange(1, 99999, "numberOfPieces.error.outOfRange"))
     )
 }

@@ -36,7 +36,8 @@ class GoodsDescriptionControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new GoodsDescriptionFormProvider()
   val form = formProvider()
 
-  lazy val goodsDescriptionRoute = routes.GoodsDescriptionController.onPageLoad(NormalMode, lrn,index).url
+  lazy val goodsDescriptionRoute =
+    routes.GoodsDescriptionController.onPageLoad(NormalMode, lrn, index).url
 
   "GoodsDescription Controller" - {
 
@@ -52,7 +53,10 @@ class GoodsDescriptionControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[GoodsDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn,index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -70,7 +74,10 @@ class GoodsDescriptionControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn,index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -90,11 +97,14 @@ class GoodsDescriptionControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, goodsDescriptionRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(GoodsDescriptionPage(index), "answer").success.value
+        val result = route(application, request).value
+        val expectedAnswers =
+          emptyUserAnswers.set(GoodsDescriptionPage(index), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual GoodsDescriptionPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual GoodsDescriptionPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +125,10 @@ class GoodsDescriptionControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn,index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

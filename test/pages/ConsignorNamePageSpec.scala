@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
 
   "ConsignorNamePage" - {
@@ -35,8 +34,11 @@ class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to `Consignor's address`" in {
-        ConsignorNamePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.ConsignorAddressController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        ConsignorNamePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.ConsignorAddressController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -44,7 +46,8 @@ class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorNamePage(index).navigate(CheckMode, emptyUserAnswers)
+        ConsignorNamePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -35,10 +35,13 @@ class AddPaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
       "to `carrier payment method` when answer is yes" in {
 
-        val answers = emptyUserAnswers.set(AddPaymentMethodPage(index),true).success.value
+        val answers = emptyUserAnswers.set(AddPaymentMethodPage(index), true).success.value
 
-        AddPaymentMethodPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.CarrierPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index))
+        AddPaymentMethodPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(
+            routes.CarrierPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
+          )
       }
     }
 
@@ -46,7 +49,8 @@ class AddPaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddPaymentMethodPage(index).navigate(CheckMode, emptyUserAnswers)
+        AddPaymentMethodPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

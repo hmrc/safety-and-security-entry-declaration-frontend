@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object NotifiedPartyIdentitySummary  {
+object NotifiedPartyIdentitySummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotifiedPartyIdentityPage(index)).map {
-      answer =>
+    answers.get(NotifiedPartyIdentityPage(index)).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"notifiedPartyIdentity.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"notifiedPartyIdentity.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "notifiedPartyIdentity.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.NotifiedPartyIdentityController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("notifiedPartyIdentity.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "notifiedPartyIdentity.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.NotifiedPartyIdentityController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("notifiedPartyIdentity.change.hidden"))
         )
+      )
     }
 }

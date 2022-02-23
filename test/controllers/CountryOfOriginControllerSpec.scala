@@ -54,7 +54,10 @@ class CountryOfOriginControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CountryOfOriginView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -72,7 +75,10 @@ class CountryOfOriginControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(country), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(country), NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -92,11 +98,13 @@ class CountryOfOriginControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, countryOfOriginRoute)
             .withFormUrlEncodedBody(("value", country.code))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers.set(CountryOfOriginPage, country).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CountryOfOriginPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual CountryOfOriginPage
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -117,7 +125,10 @@ class CountryOfOriginControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

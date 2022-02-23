@@ -32,7 +32,7 @@ class CarrierPaymentMethodFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[CarrierPaymentMethod](
       form,
       fieldName,
-      validValues  = CarrierPaymentMethod.values,
+      validValues = CarrierPaymentMethod.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

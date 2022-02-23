@@ -23,16 +23,19 @@ import play.twirl.api.HtmlFormat
 import queries.AllDocumentsQuery
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-object DocumentSummary  {
+object DocumentSummary {
 
   def rows(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): List[ListItem] =
     answers.get(AllDocumentsQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
       case (document, index) =>
-
         ListItem(
-          name      = HtmlFormat.escape(document.documentType.name).toString,
-          changeUrl = routes.DocumentController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url,
-          removeUrl = routes.RemoveDocumentController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url
+          name = HtmlFormat.escape(document.documentType.name).toString,
+          changeUrl = routes.DocumentController
+            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .url,
+          removeUrl = routes.RemoveDocumentController
+            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .url
         )
     }
 }

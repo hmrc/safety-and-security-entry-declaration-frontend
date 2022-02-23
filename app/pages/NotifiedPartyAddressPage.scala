@@ -28,6 +28,6 @@ case class NotifiedPartyAddressPage(index: Index) extends QuestionPage[Address] 
   override def toString: String = "notifiedPartyAddress"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.UnloadingCodeController.onPageLoad(NormalMode,answers.lrn,index)
+    routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

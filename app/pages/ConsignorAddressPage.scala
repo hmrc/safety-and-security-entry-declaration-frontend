@@ -27,7 +27,7 @@ case class ConsignorAddressPage(index: Index) extends QuestionPage[Address] {
 
   override def toString: String = "consignorAddress"
 
-  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
-    routes.ConsigneeKnownController.onPageLoad(NormalMode,answers.lrn,index)
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    routes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

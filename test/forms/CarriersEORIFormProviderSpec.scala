@@ -25,7 +25,6 @@ class CarriersEORIFormProviderSpec extends GbEoriFieldBehaviours {
 
   private val form = new CarriersEORIFormProvider()()
 
-
   ".value" - {
 
     behave like mandatoryField(

@@ -36,7 +36,8 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new NotifiedPartyEORIFormProvider()
   val form = formProvider()
 
-  lazy val notifiedPartyEORIRoute = routes.NotifiedPartyEORIController.onPageLoad(NormalMode, lrn, index).url
+  lazy val notifiedPartyEORIRoute =
+    routes.NotifiedPartyEORIController.onPageLoad(NormalMode, lrn, index).url
 
   "NotifiedPartyEORI Controller" - {
 
@@ -52,7 +53,10 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NotifiedPartyEORIView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -70,7 +74,10 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -90,11 +97,14 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, notifiedPartyEORIRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyEORIPage(index), "answer").success.value
+        val result = route(application, request).value
+        val expectedAnswers =
+          emptyUserAnswers.set(NotifiedPartyEORIPage(index), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NotifiedPartyEORIPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual NotifiedPartyEORIPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +125,10 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

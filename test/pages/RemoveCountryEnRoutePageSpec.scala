@@ -30,16 +30,24 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Add Country En Route when there is at least one country in user answers" in {
 
-        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), arbitrary[Country].sample.value).success.value
+        val answers = emptyUserAnswers
+          .set(CountryEnRoutePage(Index(0)), arbitrary[Country].sample.value)
+          .success
+          .value
 
-        RemoveCountryEnRoutePage(index).navigate(NormalMode, answers)
+        RemoveCountryEnRoutePage(index)
+          .navigate(NormalMode, answers)
           .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
       }
 
       "to Goods Pass Through Other Countries when there are no countries in user answers" in {
 
-        RemoveCountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        RemoveCountryEnRoutePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.GoodsPassThroughOtherCountriesController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -47,7 +55,8 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemoveCountryEnRoutePage(index).navigate(CheckMode, emptyUserAnswers)
+        RemoveCountryEnRoutePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

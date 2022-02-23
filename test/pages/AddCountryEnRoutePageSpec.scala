@@ -29,16 +29,23 @@ class AddCountryEnRoutePageSpec extends SpecBase {
 
       "to Country En Route with an index equal to the number of countries we have details for when the answer is yes" in {
 
-        val answers = emptyUserAnswers.set(CountryEnRoutePage(index), arbitrary[Country].sample.value).success.value
+        val answers = emptyUserAnswers
+          .set(CountryEnRoutePage(index), arbitrary[Country].sample.value)
+          .success
+          .value
 
-        AddCountryEnRoutePage.navigate(NormalMode, answers, addAnother = true)
+        AddCountryEnRoutePage
+          .navigate(NormalMode, answers, addAnother = true)
           .mustEqual(routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))
       }
 
       "to Customs Office of First Entry when the answer is no" in {
 
-        AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        AddCountryEnRoutePage
+          .navigate(NormalMode, emptyUserAnswers, addAnother = false)
+          .mustEqual(
+            routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -46,7 +53,8 @@ class AddCountryEnRoutePageSpec extends SpecBase {
 
       "to Check Your Answers" in {
 
-        AddCountryEnRoutePage.navigate(CheckMode, emptyUserAnswers)
+        AddCountryEnRoutePage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

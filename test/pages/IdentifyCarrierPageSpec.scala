@@ -35,7 +35,8 @@ class IdentifyCarrierPageSpec extends SpecBase with PageBehaviours {
 
       "to Carriers EORI" in {
 
-        IdentifyCarrierPage.navigate(NormalMode, emptyUserAnswers)
+        IdentifyCarrierPage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.CarriersEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -44,7 +45,8 @@ class IdentifyCarrierPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        IdentifyCarrierPage.navigate(CheckMode, emptyUserAnswers)
+        IdentifyCarrierPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

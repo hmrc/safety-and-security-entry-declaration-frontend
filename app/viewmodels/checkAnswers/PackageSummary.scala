@@ -29,11 +29,14 @@ object PackageSummary {
   def rows(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): Seq[ListItem] =
     answers.get(AllPackageItemsQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
       case (packageItem, index) =>
-
         ListItem(
           name = HtmlFormat.escape(packageItem.kind.code + " - " + packageItem.kind.name).toString,
-          changeUrl = routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url,
-          removeUrl = routes.RemovePackageController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index)).url
+          changeUrl = routes.CheckPackageItemController
+            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .url,
+          removeUrl = routes.RemovePackageController
+            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .url
         )
     }
 }

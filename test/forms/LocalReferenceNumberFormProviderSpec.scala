@@ -45,14 +45,13 @@ class LocalReferenceNumberFormProviderSpec extends StringFieldBehaviours {
 
       val invalidData = for {
         noValidChars <- Gen.choose(0, 21)
-        validChars   <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
-        invalidChar  <- Gen.oneOf('?', '.', ',')
+        validChars <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
+        invalidChar <- Gen.oneOf('?', '.', ',')
       } yield (validChars :+ invalidChar).mkString
 
-      forAll(invalidData) {
-        invalidAnswer =>
-          val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
-          result.errors must contain only FormError(fieldName, invalidKey, Seq("[A-Za-z0-9]+"))
+      forAll(invalidData) { invalidAnswer =>
+        val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, invalidKey, Seq("[A-Za-z0-9]+"))
       }
     }
 

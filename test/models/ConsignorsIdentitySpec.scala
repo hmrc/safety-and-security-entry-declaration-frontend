@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class ConsignorsIdentitySpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class ConsignorsIdentitySpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "ConsignorsIdentity" - {
 
@@ -32,10 +36,12 @@ class ConsignorsIdentitySpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
       val gen = Gen.oneOf(ConsignorsIdentity.values.toSeq)
 
-      forAll(gen) {
-        consignorsIdentity =>
+      forAll(gen) { consignorsIdentity =>
 
-          JsString(consignorsIdentity.toString).validate[ConsignorsIdentity].asOpt.value mustEqual consignorsIdentity
+        JsString(consignorsIdentity.toString)
+          .validate[ConsignorsIdentity]
+          .asOpt
+          .value mustEqual consignorsIdentity
       }
     }
 
@@ -43,10 +49,9 @@ class ConsignorsIdentitySpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
       val gen = arbitrary[String] suchThat (!ConsignorsIdentity.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[ConsignorsIdentity] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[ConsignorsIdentity] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +59,9 @@ class ConsignorsIdentitySpec extends AnyFreeSpec with Matchers with ScalaCheckPr
 
       val gen = Gen.oneOf(ConsignorsIdentity.values.toSeq)
 
-      forAll(gen) {
-        consignorsIdentity =>
+      forAll(gen) { consignorsIdentity =>
 
-          Json.toJson(consignorsIdentity) mustEqual JsString(consignorsIdentity.toString)
+        Json.toJson(consignorsIdentity) mustEqual JsString(consignorsIdentity.toString)
       }
     }
   }

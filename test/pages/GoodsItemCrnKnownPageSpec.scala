@@ -37,7 +37,8 @@ class GoodsItemCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(GoodsItemCrnKnownPage(index), true).success.value
 
-        GoodsItemCrnKnownPage(index).navigate(NormalMode, answers)
+        GoodsItemCrnKnownPage(index)
+          .navigate(NormalMode, answers)
           .mustEqual(routes.GoodsItemCrnController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
@@ -45,7 +46,8 @@ class GoodsItemCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(GoodsItemCrnKnownPage(index), false).success.value
 
-        GoodsItemCrnKnownPage(index).navigate(NormalMode, answers)
+        GoodsItemCrnKnownPage(index)
+          .navigate(NormalMode, answers)
           .mustEqual(routes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, index))
       }
     }
@@ -54,7 +56,8 @@ class GoodsItemCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemCrnKnownPage(index).navigate(CheckMode, emptyUserAnswers)
+        GoodsItemCrnKnownPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

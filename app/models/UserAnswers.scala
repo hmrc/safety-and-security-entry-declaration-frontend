@@ -24,11 +24,11 @@ import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              id: String,
-                              lrn: LocalReferenceNumber,
-                              data: JsObject = Json.obj(),
-                              lastUpdated: Instant = Instant.now
-                            ) {
+  id: String,
+  lrn: LocalReferenceNumber,
+  data: JsObject = Json.obj(),
+  lastUpdated: Instant = Instant.now
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -45,10 +45,9 @@ final case class UserAnswers(
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy (data = d)
-        page.cleanup(Some(value), updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
     }
   }
 
@@ -61,10 +60,9 @@ final case class UserAnswers(
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy (data = d)
-        page.cleanup(None, updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(None, updatedAnswers)
     }
   }
 }
@@ -77,10 +75,10 @@ object UserAnswers {
 
     (
       (__ \ "userId").read[String] and
-      (__ \ "lrn").read[LocalReferenceNumber] and
-      (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
-    ) (UserAnswers.apply _)
+        (__ \ "lrn").read[LocalReferenceNumber] and
+        (__ \ "data").read[JsObject] and
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
+    )(UserAnswers.apply _)
   }
 
   val writes: OWrites[UserAnswers] = {
@@ -89,10 +87,10 @@ object UserAnswers {
 
     (
       (__ \ "userId").write[String] and
-      (__ \ "lrn").write[LocalReferenceNumber] and
-      (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-    ) (unlift(UserAnswers.unapply))
+        (__ \ "lrn").write[LocalReferenceNumber] and
+        (__ \ "data").write[JsObject] and
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
+    )(unlift(UserAnswers.unapply))
   }
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)

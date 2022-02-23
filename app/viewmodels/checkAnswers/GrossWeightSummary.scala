@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object GrossWeightSummary  {
+object GrossWeightSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(GrossWeightPage).map {
-      answer =>
+    answers.get(GrossWeightPage).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"grossWeight.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"grossWeight.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "grossWeight.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.GrossWeightController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("grossWeight.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "grossWeight.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.GrossWeightController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("grossWeight.change.hidden"))
         )
+      )
     }
 }

@@ -23,12 +23,15 @@ import scala.io.Source
 import play.api.libs.json.Json
 
 @Singleton
-class DangerousGoodsService @Inject()(env:Environment, configuration: Configuration) {
+class DangerousGoodsService @Inject() (env: Environment, configuration: Configuration) {
 
-  private val dangerousGoodsFile : String = configuration.get[String]("dangerous-goods-file")
+  private val dangerousGoodsFile: String = configuration.get[String]("dangerous-goods-file")
 
-  val allDangerousGoods : Seq[DangerousGood] = {
-    val json = env.resourceAsStream(dangerousGoodsFile).fold(throw new Exception("no dangerous good file found"))(Source.fromInputStream).mkString
+  val allDangerousGoods: Seq[DangerousGood] = {
+    val json = env
+      .resourceAsStream(dangerousGoodsFile)
+      .fold(throw new Exception("no dangerous good file found"))(Source.fromInputStream)
+      .mkString
 
     Json.parse(json).as[Seq[DangerousGood]]
   }

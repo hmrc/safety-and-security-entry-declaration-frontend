@@ -35,8 +35,12 @@ class NumberOfPiecesPageSpec extends SpecBase with PageBehaviours {
 
       "to Add Mark or Number" in {
 
-        NumberOfPiecesPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddMarkOrNumberController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
+        NumberOfPiecesPage(index, index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.AddMarkOrNumberController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
+          )
       }
     }
 
@@ -44,7 +48,8 @@ class NumberOfPiecesPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NumberOfPiecesPage(index, index).navigate(CheckMode, emptyUserAnswers)
+        NumberOfPiecesPage(index, index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

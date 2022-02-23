@@ -21,5 +21,6 @@ import play.api.libs.json.{JsObject, JsPath}
 
 final case class PackageQuery(itemIndex: Index, packageIndex: Index) extends Settable[JsObject] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position
+  override def path: JsPath =
+    JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position
 }

@@ -24,8 +24,10 @@ import models.DangerousGood
 import org.scalacheck.Arbitrary.arbitrary
 import services.DangerousGoodsService
 
-
-class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours with SpecBase with ModelGenerators {
+class DangerousGoodCodeFormProviderSpec
+  extends StringFieldBehaviours
+  with SpecBase
+  with ModelGenerators {
 
   val requiredKey = "dangerousGoodCode.error.required"
   val lengthKey = "dangerousGoodCode.error.length"
@@ -33,7 +35,6 @@ class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours with SpecB
   val application = applicationBuilder(None).build()
 
   def service: DangerousGoodsService = application.injector.instanceOf[DangerousGoodsService]
-
 
   val form = new DangerousGoodCodeFormProvider(service)()
 
@@ -54,12 +55,12 @@ class DangerousGoodCodeFormProviderSpec extends StringFieldBehaviours with SpecB
     )
 
     "must not bind any values other than valid dangerous goods" in {
-      val invalidAnswers = arbitrary[String].suchThat(x => !allDangerousGoods.map(_.code).contains(x))
+      val invalidAnswers =
+        arbitrary[String].suchThat(x => !allDangerousGoods.map(_.code).contains(x))
 
-      forAll(invalidAnswers) {
-        answer =>
-          val result = form.bind(Map("value" -> answer)).apply(fieldName)
-          result.errors must contain only FormError(fieldName, requiredKey)
+      forAll(invalidAnswers) { answer =>
+        val result = form.bind(Map("value" -> answer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, requiredKey)
       }
     }
   }

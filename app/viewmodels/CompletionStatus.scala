@@ -29,10 +29,11 @@ object CompletionStatus {
   case object InProgress extends CompletionStatus
   case object Invalid extends CompletionStatus
 
-  def tag(status: CompletionStatus)(implicit messages: Messages): Tag = status match {
-    case Completed  => TagViewModel(Text(messages("taskList.completed")))
-    case NotStarted => TagViewModel(Text(messages("taskList.notStarted"))).grey()
-    case InProgress => TagViewModel(Text(messages("taskList.inProgress"))).yellow()
-    case Invalid    => TagViewModel(Text(messages("taskList.invalid"))).red()
-  }
+  def tag(status: CompletionStatus)(implicit messages: Messages): Tag =
+    status match {
+      case Completed => TagViewModel(Text(messages("taskList.completed")))
+      case NotStarted => TagViewModel(Text(messages("taskList.notStarted"))).grey()
+      case InProgress => TagViewModel(Text(messages("taskList.inProgress"))).yellow()
+      case Invalid => TagViewModel(Text(messages("taskList.invalid"))).red()
+    }
 }

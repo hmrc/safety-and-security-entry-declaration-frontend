@@ -31,16 +31,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionRepository @Inject()(
-                                   mongoComponent: MongoComponent,
-                                   appConfig: FrontendAppConfig,
-                                   clock: Clock
-                                 )(implicit ec: ExecutionContext)
+class SessionRepository @Inject() (
+  mongoComponent: MongoComponent,
+  appConfig: FrontendAppConfig,
+  clock: Clock
+)(implicit ec: ExecutionContext)
   extends PlayMongoRepository[UserAnswers](
     collectionName = "user-answers",
     mongoComponent = mongoComponent,
-    domainFormat   = UserAnswers.format,
-    indexes        = Seq(
+    domainFormat = UserAnswers.format,
+    indexes = Seq(
       IndexModel(
         Indexes.ascending("lastUpdated"),
         IndexOptions()
@@ -70,17 +70,16 @@ class SessionRepository @Inject()(
     collection
       .updateOne(
         filter = byUserId(userId),
-        update = Updates.set("lastUpdated", Instant.now(clock)),
+        update = Updates.set("lastUpdated", Instant.now(clock))
       )
       .toFuture
       .map(_ => true)
 
   def get(userId: String, lrn: LocalReferenceNumber): Future[Option[UserAnswers]] =
-    keepAlive(userId).flatMap {
-      _ =>
-        collection
-          .find(byUserIdAndLrn(userId, lrn))
-          .headOption
+    keepAlive(userId).flatMap { _ =>
+      collection
+        .find(byUserIdAndLrn(userId, lrn))
+        .headOption
     }
 
   def set(answers: UserAnswers): Future[Boolean] = {
@@ -89,9 +88,9 @@ class SessionRepository @Inject()(
 
     collection
       .replaceOne(
-        filter      = byUserId(updatedAnswers.id),
+        filter = byUserId(updatedAnswers.id),
         replacement = updatedAnswers,
-        options     = ReplaceOptions().upsert(true)
+        options = ReplaceOptions().upsert(true)
       )
       .toFuture
       .map(_ => true)

@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class GoodsDescriptionPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsDescriptionPage" - {
@@ -36,8 +35,12 @@ class GoodsDescriptionPageSpec extends SpecBase with PageBehaviours {
 
       "to Kind of Package for the first index" in {
 
-        GoodsDescriptionPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
+        GoodsDescriptionPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.KindOfPackageController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
+          )
       }
     }
 
@@ -45,7 +48,8 @@ class GoodsDescriptionPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsDescriptionPage(index).navigate(CheckMode, emptyUserAnswers)
+        GoodsDescriptionPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

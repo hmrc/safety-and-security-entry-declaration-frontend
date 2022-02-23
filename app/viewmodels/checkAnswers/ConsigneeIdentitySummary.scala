@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsigneeIdentitySummary  {
+object ConsigneeIdentitySummary {
 
-  def row(answers: UserAnswers,index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsigneeIdentityPage(index)).map {
-      answer =>
+  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(ConsigneeIdentityPage(index)).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"consigneeIdentity.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"consigneeIdentity.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "consigneeIdentity.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.ConsigneeIdentityController.onPageLoad(CheckMode, answers.lrn,index).url)
-              .withVisuallyHiddenText(messages("consigneeIdentity.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "consigneeIdentity.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.ConsigneeIdentityController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("consigneeIdentity.change.hidden"))
         )
+      )
     }
 }

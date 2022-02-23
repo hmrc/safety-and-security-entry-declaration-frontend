@@ -29,9 +29,11 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
 
-  class Harness(lrn: LocalReferenceNumber, sessionRepository: SessionRepository) extends DataRetrievalAction(lrn, sessionRepository) {
+  class Harness(lrn: LocalReferenceNumber, sessionRepository: SessionRepository)
+    extends DataRetrievalAction(lrn, sessionRepository) {
 
-    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+      transform(request)
   }
 
   "Data Retrieval Action" - {
@@ -44,7 +46,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
         when(sessionRepository.get(userAnswersId, lrn)) thenReturn Future(None)
         val action = new Harness(lrn, sessionRepository)
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), userAnswersId)).futureValue
+        val result =
+          action.callTransform(IdentifierRequest(FakeRequest(), userAnswersId)).futureValue
 
         result.userAnswers must not be defined
       }
@@ -58,7 +61,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
         when(sessionRepository.get(userAnswersId, lrn)) thenReturn Future(Some(emptyUserAnswers))
         val action = new Harness(lrn, sessionRepository)
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), userAnswersId)).futureValue
+        val result =
+          action.callTransform(IdentifierRequest(FakeRequest(), userAnswersId)).futureValue
 
         result.userAnswers.value mustEqual emptyUserAnswers
       }

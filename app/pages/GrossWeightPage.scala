@@ -29,8 +29,10 @@ case object GrossWeightPage extends QuestionPage[GrossWeight] {
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(GrossWeightPage) match {
-      case Some(GrossWeight.PerItem) => routes.TransportModeController.onPageLoad(NormalMode, answers.lrn)
-      case Some(GrossWeight.Overall) => routes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case Some(GrossWeight.PerItem) =>
+        routes.TransportModeController.onPageLoad(NormalMode, answers.lrn)
+      case Some(GrossWeight.Overall) =>
+        routes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn)
       case _ => routes.JourneyRecoveryController.onPageLoad()
     }
 }

@@ -23,7 +23,8 @@ import play.api.mvc.Call
 
 case class MarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
+  override def path: JsPath =
+    JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "markOrNumber"
 

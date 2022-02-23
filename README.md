@@ -15,6 +15,17 @@ and then running `./migrate.sh` to run the generated migration script as well.
 
 You can see the different types of supported pages in the `.g8` directory.
 
+## Scalafmt
+
+We have a scalafmt config in the project to help maintain code readability. There are some limitations to
+what scalafmt can fix but the config provided generally does a good job of keeping things readable.
+
+To apply the scalafmt config, install the binary (make sure you're on version >= 2.5.3) and simply run
+`scalafmt app test`. Note that running scalafmt on the `.g8` templates may introduce a couple of issues due to
+not being valid scala source files, so I recommend skipping them if you're not modifying them.
+
+It's also possible to install the scalafmt plugin for your IDE if you're using one.
+
 ## Running tests in Intellij
 In order to run the tests in Intellij, you should add the following to your test run configurations under "VM Options":
 ```

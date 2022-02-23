@@ -20,7 +20,6 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import viewmodels.govuk.select._
 
-
 case class DangerousGood(code: String, name: String)
 
 object DangerousGood {
@@ -29,11 +28,10 @@ object DangerousGood {
 
   def selectItems(dangerousGoods: Seq[DangerousGood]): Seq[SelectItem] =
     SelectItem(value = None, text = "Select a dangerous good") +:
-      dangerousGoods.map {
-        dangerousGood =>
-          SelectItemViewModel(
-            value = dangerousGood.code,
-            text  = dangerousGood.name
-          )
+      dangerousGoods.map { dangerousGood =>
+        SelectItemViewModel(
+          value = dangerousGood.code,
+          text = dangerousGood.name
+        )
       }
 }

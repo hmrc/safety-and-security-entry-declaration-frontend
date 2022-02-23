@@ -35,7 +35,8 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
       "to Overall CRN Known" in {
 
-        LodgingPersonTypePage.navigate(NormalMode, emptyUserAnswers)
+        LodgingPersonTypePage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.OverallCrnKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -44,7 +45,8 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        LodgingPersonTypePage.navigate(CheckMode, emptyUserAnswers)
+        LodgingPersonTypePage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

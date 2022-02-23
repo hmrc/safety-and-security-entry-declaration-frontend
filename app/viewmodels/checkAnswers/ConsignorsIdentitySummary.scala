@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsignorsIdentitySummary  {
+object ConsignorsIdentitySummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsignorsIdentityPage(index)).map {
-      answer =>
+    answers.get(ConsignorsIdentityPage(index)).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"consignorsIdentity.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"consignorsIdentity.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "consignorsIdentity.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.ConsignorsIdentityController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("consignorsIdentity.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "consignorsIdentity.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.ConsignorsIdentityController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("consignorsIdentity.change.hidden"))
         )
+      )
     }
 }

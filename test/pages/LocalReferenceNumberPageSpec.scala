@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
   "LocalReferenceNumberPage" - {
@@ -36,7 +35,8 @@ class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Declaration Place" in {
 
-        LocalReferenceNumberPage.navigate(NormalMode, emptyUserAnswers)
+        LocalReferenceNumberPage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.DeclarationPlaceController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -45,7 +45,8 @@ class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        LocalReferenceNumberPage.navigate(CheckMode, emptyUserAnswers)
+        LocalReferenceNumberPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

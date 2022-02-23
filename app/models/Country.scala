@@ -229,11 +229,10 @@ object Country {
 
   def selectItems(countries: Seq[Country]): Seq[SelectItem] =
     SelectItem(value = None, text = "Select a country") +:
-      countries.map {
-        country =>
-          SelectItemViewModel(
-            value = country.code,
-            text  = country.name
-          )
+      countries.map { country =>
+        SelectItemViewModel(
+          value = country.code,
+          text = country.name
+        )
       }
 }

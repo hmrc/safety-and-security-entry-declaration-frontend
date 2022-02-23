@@ -28,7 +28,10 @@ class CustomsOfficeOfFirstEntryFormProvider @Inject() extends Mappings {
   def apply(): Form[CustomsOffice] =
     Form(
       "value" -> text("customsOfficeOfFirstEntry.error.required")
-        .verifying("customsOfficeOfFirstEntry.error.required", value => allCustomsOffices.exists(_.code == value))
+        .verifying(
+          "customsOfficeOfFirstEntry.error.required",
+          value => allCustomsOffices.exists(_.code == value)
+        )
         .transform[CustomsOffice](value => allCustomsOffices.find(_.code == value).get, _.code)
     )
 }

@@ -37,12 +37,17 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new RemovePackageFormProvider()
   val form = formProvider()
 
-  lazy val removePackageRoute = routes.RemovePackageController.onPageLoad(NormalMode, lrn, index, index).url
+  lazy val removePackageRoute =
+    routes.RemovePackageController.onPageLoad(NormalMode, lrn, index, index).url
 
   private val baseAnswers =
     emptyUserAnswers
-      .set(KindOfPackagePage(index, index), KindOfPackage.allKindsOfPackage.head).success.value
-      .set(NumberOfPackagesPage(index, index), 1).success.value
+      .set(KindOfPackagePage(index, index), KindOfPackage.allKindsOfPackage.head)
+      .success
+      .value
+      .set(NumberOfPackagesPage(index, index), 1)
+      .success
+      .value
 
   "RemovePackage Controller" - {
 
@@ -58,7 +63,10 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemovePackageView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -78,11 +86,13 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, removePackageRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
         val expectedAnswers = baseAnswers.remove(PackageQuery(index, index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemovePackagePage(index, index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemovePackagePage(index, index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -103,11 +113,13 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, removePackageRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
         val expectedAnswers = baseAnswers
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemovePackagePage(index, index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemovePackagePage(index, index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, never()).set(any())
       }
     }
@@ -128,7 +140,10 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CarrierPaymentMethodSummary  {
+object CarrierPaymentMethodSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CarrierPaymentMethodPage(index)).map {
-      answer =>
+    answers.get(CarrierPaymentMethodPage(index)).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"carrierPaymentMethod.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"carrierPaymentMethod.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "carrierPaymentMethod.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.CarrierPaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("carrierPaymentMethod.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "carrierPaymentMethod.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.CarrierPaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("carrierPaymentMethod.change.hidden"))
         )
+      )
     }
 }

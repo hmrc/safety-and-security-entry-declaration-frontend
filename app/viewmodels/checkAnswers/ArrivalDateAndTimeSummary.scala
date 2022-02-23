@@ -28,24 +28,27 @@ import viewmodels.implicits._
 
 import java.time.format.DateTimeFormatter
 
-object ArrivalDateAndTimeSummary  {
+object ArrivalDateAndTimeSummary {
 
   private def dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
   private def timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ArrivalDateAndTimePage).map {
-      answer =>
+    answers.get(ArrivalDateAndTimePage).map { answer =>
 
-        val value = HtmlFormat.escape(answer.date.format(dateFormatter)).toString + "<br/>" + HtmlFormat.escape(answer.time.format(timeFormatter)).toString
+      val value = HtmlFormat
+        .escape(answer.date.format(dateFormatter))
+        .toString + "<br/>" + HtmlFormat.escape(answer.time.format(timeFormatter)).toString
 
-        SummaryListRowViewModel(
-          key     = "arrivalDateAndTime.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.ArrivalDateAndTimeController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("arrivalDateAndTime.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "arrivalDateAndTime.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.ArrivalDateAndTimeController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("arrivalDateAndTime.change.hidden"))
         )
+      )
     }
 }

@@ -28,10 +28,12 @@ class LocalReferenceNumberFormProvider @Inject() extends Mappings {
   def apply(): Form[LocalReferenceNumber] =
     Form(
       "value" -> text("localReferenceNumber.error.required")
-        .verifying(firstError(
-          maxLength(22, "localReferenceNumber.error.length"),
-          regexp(validData, "localReferenceNumber.error.invalid")
-        ))
+        .verifying(
+          firstError(
+            maxLength(22, "localReferenceNumber.error.length"),
+            regexp(validData, "localReferenceNumber.error.invalid")
+          )
+        )
         .transform[LocalReferenceNumber](LocalReferenceNumber(_), _.value)
     )
 }

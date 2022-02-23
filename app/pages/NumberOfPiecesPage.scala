@@ -23,7 +23,8 @@ import play.api.mvc.Call
 
 case class NumberOfPiecesPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Int] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
+  override def path: JsPath =
+    JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "numberOfPieces"
 

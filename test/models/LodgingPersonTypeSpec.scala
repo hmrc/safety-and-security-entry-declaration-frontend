@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class LodgingPersonTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class LodgingPersonTypeSpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "LodgingPersonType" - {
 
@@ -32,10 +36,12 @@ class LodgingPersonTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPro
 
       val gen = Gen.oneOf(LodgingPersonType.values.toSeq)
 
-      forAll(gen) {
-        lodgingPersonType =>
+      forAll(gen) { lodgingPersonType =>
 
-          JsString(lodgingPersonType.toString).validate[LodgingPersonType].asOpt.value mustEqual lodgingPersonType
+        JsString(lodgingPersonType.toString)
+          .validate[LodgingPersonType]
+          .asOpt
+          .value mustEqual lodgingPersonType
       }
     }
 
@@ -43,10 +49,9 @@ class LodgingPersonTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPro
 
       val gen = arbitrary[String] suchThat (!LodgingPersonType.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[LodgingPersonType] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[LodgingPersonType] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +59,9 @@ class LodgingPersonTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPro
 
       val gen = Gen.oneOf(LodgingPersonType.values.toSeq)
 
-      forAll(gen) {
-        lodgingPersonType =>
+      forAll(gen) { lodgingPersonType =>
 
-          Json.toJson(lodgingPersonType) mustEqual JsString(lodgingPersonType.toString)
+        Json.toJson(lodgingPersonType) mustEqual JsString(lodgingPersonType.toString)
       }
     }
   }

@@ -31,39 +31,42 @@ import views.html.AddDocumentView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddDocumentController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: AddDocumentFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: AddDocumentView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AddDocumentController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddDocumentFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddDocumentView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val documents = DocumentSummary.rows(request.userAnswers, index)
 
       Ok(view(form, mode, lrn, index, documents))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val documents = DocumentSummary.rows(request.userAnswers, index)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val documents = DocumentSummary.rows(request.userAnswers, index)
 
-          BadRequest(view(formWithErrors, mode, lrn, index, documents))
-        },
-
-        value =>
-          Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
-      )
-  }
+            BadRequest(view(formWithErrors, mode, lrn, index, documents))
+          },
+          value =>
+            Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
+        )
+    }
 }

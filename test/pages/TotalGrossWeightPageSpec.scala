@@ -35,7 +35,8 @@ class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Transport Mode" in {
 
-        TotalGrossWeightPage.navigate(NormalMode, emptyUserAnswers)
+        TotalGrossWeightPage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -44,7 +45,8 @@ class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        TotalGrossWeightPage.navigate(CheckMode, emptyUserAnswers)
+        TotalGrossWeightPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -24,21 +24,22 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object GoodsPassThroughOtherCountriesSummary  {
+object GoodsPassThroughOtherCountriesSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(GoodsPassThroughOtherCountriesPage).map {
-      answer =>
+    answers.get(GoodsPassThroughOtherCountriesPage).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "goodsPassThroughOtherCountries.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.GoodsPassThroughOtherCountriesController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("goodsPassThroughOtherCountries.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "goodsPassThroughOtherCountries.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.GoodsPassThroughOtherCountriesController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("goodsPassThroughOtherCountries.change.hidden"))
         )
+      )
     }
 }

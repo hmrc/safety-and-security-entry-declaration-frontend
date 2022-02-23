@@ -37,7 +37,8 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
 
         val answers = emptyUserAnswers.set(GoodsPassThroughOtherCountriesPage, true).success.value
 
-        GoodsPassThroughOtherCountriesPage.navigate(NormalMode, answers)
+        GoodsPassThroughOtherCountriesPage
+          .navigate(NormalMode, answers)
           .mustEqual(routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0)))
       }
 
@@ -45,7 +46,8 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
 
         val answers = emptyUserAnswers.set(GoodsPassThroughOtherCountriesPage, false).success.value
 
-        GoodsPassThroughOtherCountriesPage.navigate(NormalMode, answers)
+        GoodsPassThroughOtherCountriesPage
+          .navigate(NormalMode, answers)
           .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn))
       }
     }
@@ -54,7 +56,8 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
 
       "to Check Your Answers" in {
 
-        GoodsPassThroughOtherCountriesPage.navigate(CheckMode, emptyUserAnswers)
+        GoodsPassThroughOtherCountriesPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -28,39 +28,42 @@ import views.html.AddPackageView
 
 import javax.inject.Inject
 
-class AddPackageController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: AddPackageFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: AddPackageView
-                                 ) extends FrontendBaseController with I18nSupport {
+class AddPackageController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddPackageFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddPackageView
+) extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
-      implicit request =>
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-        val rows = PackageSummary.rows(request.userAnswers, itemIndex)
+      val rows = PackageSummary.rows(request.userAnswers, itemIndex)
 
-        Ok(view(form, mode, lrn, itemIndex, rows))
+      Ok(view(form, mode, lrn, itemIndex, rows))
     }
 
-    def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-      implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-        form.bindFromRequest().fold(
+      form
+        .bindFromRequest()
+        .fold(
           formWithErrors => {
             val rows = PackageSummary.rows(request.userAnswers, itemIndex)
 
             BadRequest(view(formWithErrors, mode, lrn, itemIndex, rows))
           },
-
           value =>
-            Redirect(AddPackagePage(itemIndex).navigate(mode, request.userAnswers, itemIndex, value))
+            Redirect(
+              AddPackagePage(itemIndex).navigate(mode, request.userAnswers, itemIndex, value)
+            )
         )
     }
 }

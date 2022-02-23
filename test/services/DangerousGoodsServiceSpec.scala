@@ -28,11 +28,11 @@ class DangerousGoodsServiceSpec extends SpecBase with MockitoSugar {
 
   "Dangerous Good Service Spec" - {
     "will expose all dangerous goods" in {
-        val result = service.allDangerousGoods
+      val result = service.allDangerousGoods
 
-        result.length mustEqual 4
-        result.head.code mustEqual "4"
-        result.head.name mustEqual "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
+      result.length mustEqual 4
+      result.head.code mustEqual "4"
+      result.head.name mustEqual "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"
     }
   }
 }

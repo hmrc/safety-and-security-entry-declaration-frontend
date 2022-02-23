@@ -32,7 +32,10 @@ class CheckPackageItemControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckPackageItemController.onPageLoad(NormalMode, lrn, index, index).url)
+        val request = FakeRequest(
+          GET,
+          routes.CheckPackageItemController.onPageLoad(NormalMode, lrn, index, index).url
+        )
 
         val result = route(application, request).value
 
@@ -40,7 +43,10 @@ class CheckPackageItemControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(NormalMode, list, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(NormalMode, list, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -49,7 +55,10 @@ class CheckPackageItemControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckPackageItemController.onPageLoad(NormalMode, lrn, index, index).url)
+        val request = FakeRequest(
+          GET,
+          routes.CheckPackageItemController.onPageLoad(NormalMode, lrn, index, index).url
+        )
 
         val result = route(application, request).value
 

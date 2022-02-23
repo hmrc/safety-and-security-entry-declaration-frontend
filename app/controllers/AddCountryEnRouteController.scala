@@ -30,38 +30,39 @@ import views.html.AddCountryEnRouteView
 
 import javax.inject.Inject
 
-class AddCountryEnRouteController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: AddCountryEnRouteFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: AddCountryEnRouteView
-                                 ) extends FrontendBaseController with I18nSupport {
+class AddCountryEnRouteController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddCountryEnRouteFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddCountryEnRouteView
+) extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val countries = CountryEnRouteSummary.rows(request.userAnswers)
 
       Ok(view(form, mode, lrn, countries))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val countries = CountryEnRouteSummary.rows(request.userAnswers)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val countries = CountryEnRouteSummary.rows(request.userAnswers)
 
-          BadRequest(view(formWithErrors, mode, lrn, countries))
-        },
-
-        value =>
-          Redirect(AddCountryEnRoutePage.navigate(mode, request.userAnswers, value))
-      )
-  }
+            BadRequest(view(formWithErrors, mode, lrn, countries))
+          },
+          value => Redirect(AddCountryEnRoutePage.navigate(mode, request.userAnswers, value))
+        )
+    }
 }

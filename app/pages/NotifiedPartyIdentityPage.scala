@@ -28,10 +28,12 @@ case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[Notified
 
   override def toString: String = "notifiedPartyIdentity"
 
-  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(NotifiedPartyIdentityPage(index)) match {
-      case Some(GBEORI) => routes.NotifiedPartyEORIController.onPageLoad(NormalMode,answers.lrn,index)
-      case Some(NameAddress) => routes.NotifiedPartyNameController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(GBEORI) =>
+        routes.NotifiedPartyEORIController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(NameAddress) =>
+        routes.NotifiedPartyNameController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }

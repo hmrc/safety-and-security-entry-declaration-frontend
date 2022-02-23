@@ -23,16 +23,23 @@ import org.scalacheck.{Gen, Shrink}
 
 import scala.math.BigDecimal.RoundingMode
 
-trait Generators extends UserAnswersGenerator with PageGenerators with ModelGenerators with UserAnswersEntryGenerators {
+trait Generators
+  extends UserAnswersGenerator
+  with PageGenerators
+  with ModelGenerators
+  with UserAnswersEntryGenerators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
-  def genIntersperseString(gen: Gen[String],
-                           value: String,
-                           frequencyV: Int = 1,
-                           frequencyN: Int = 10): Gen[String] = {
+  def genIntersperseString(
+    gen: Gen[String],
+    value: String,
+    frequencyV: Int = 1,
+    frequencyN: Int = 10
+  ): Gen[String] = {
 
-    val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
+    val genValue: Gen[Option[String]] =
+      Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
 
     for {
       seq1 <- gen
@@ -53,10 +60,10 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
     alphaStr.suchThat(_.nonEmpty)
@@ -68,13 +75,13 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       .map(_.formatted("%f"))
 
   def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ < value)
+    arbitrary[Int] suchThat (_ < value)
 
   def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ > value)
+    arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def decimalsOutsideRange(min: BigDecimal, max: BigDecimal, precision: Int): Gen[BigDecimal] =
     arbitrary[BigDecimal]
@@ -83,9 +90,9 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
@@ -102,11 +109,12 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
       chars <- listOfN(length, alphaNumChar)
     } yield chars.mkString
 
-  def stringsLongerThan(minLength: Int): Gen[String] = for {
-    maxLength <- (minLength * 2).max(100)
-    length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, alphaNumChar)
-  } yield chars.mkString
+  def stringsLongerThan(minLength: Int): Gen[String] =
+    for {
+      maxLength <- (minLength * 2).max(100)
+      length <- Gen.chooseNum(minLength + 1, maxLength)
+      chars <- listOfN(length, alphaNumChar)
+    } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
@@ -124,9 +132,8 @@ trait Generators extends UserAnswersGenerator with PageGenerators with ModelGene
     def toMillis(date: LocalDate): Long =
       date.atStartOfDay.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
 
-    Gen.choose(toMillis(min), toMillis(max)).map {
-      millis =>
-        Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
+    Gen.choose(toMillis(min), toMillis(max)).map { millis =>
+      Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
   }
 }

@@ -28,7 +28,10 @@ class CountryEnRouteFormProvider @Inject() extends Mappings {
   def apply(): Form[Country] =
     Form(
       "value" -> text("countryEnRoute.error.required")
-        .verifying("countryEnRoute.error.required", value => internationalCountries.exists(_.code == value))
+        .verifying(
+          "countryEnRoute.error.required",
+          value => internationalCountries.exists(_.code == value)
+        )
         .transform[Country](value => internationalCountries.find(_.code == value).get, _.code)
     )
 }

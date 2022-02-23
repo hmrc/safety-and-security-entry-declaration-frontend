@@ -28,6 +28,6 @@ case class UnloadingCodePage(index: Index) extends QuestionPage[String] {
   override def toString: String = "unloadingCode"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.AddPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+    routes.AddPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

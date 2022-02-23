@@ -37,18 +37,18 @@ class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
 
-
-        CommodityCodeKnownPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.CommodityCodeController.onPageLoad(NormalMode,answers.lrn,index))
+        CommodityCodeKnownPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to GoodsDescriptionPage when answer is no" in {
 
         val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), false).success.value
 
-
-        CommodityCodeKnownPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.GoodsDescriptionController.onPageLoad(NormalMode,answers.lrn,index))
+        CommodityCodeKnownPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.GoodsDescriptionController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 
@@ -56,7 +56,8 @@ class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CommodityCodeKnownPage(index).navigate(CheckMode, emptyUserAnswers)
+        CommodityCodeKnownPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

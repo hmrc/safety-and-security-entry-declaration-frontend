@@ -30,21 +30,23 @@ import views.html.CountryEnRouteView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryEnRouteController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CountryEnRouteFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CountryEnRouteView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryEnRouteController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: CountryEnRouteFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CountryEnRouteView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryEnRoutePage(index)) match {
         case None => form
@@ -52,20 +54,21 @@ class CountryEnRouteController @Inject()(
       }
 
       Ok(view(preparedForm, mode, lrn, index))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryEnRoutePage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(CountryEnRoutePage(index).navigate(mode, updatedAnswers))
-      )
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(CountryEnRoutePage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(CountryEnRoutePage(index).navigate(mode, updatedAnswers))
+        )
+    }
 }

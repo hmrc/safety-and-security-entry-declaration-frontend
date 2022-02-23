@@ -22,12 +22,19 @@ import models.DangerousGood
 import play.api.data.Form
 import services.DangerousGoodsService
 
-class DangerousGoodCodeFormProvider @Inject()(dangerousGoodsService: DangerousGoodsService) extends Mappings {
+class DangerousGoodCodeFormProvider @Inject() (dangerousGoodsService: DangerousGoodsService)
+  extends Mappings {
 
   def apply(): Form[DangerousGood] =
     Form(
       "value" -> text("dangerousGoodCode.error.required")
-        .verifying("dangerousGoodCode.error.required",value => dangerousGoodsService.allDangerousGoods.exists(_.code == value))
-        .transform[DangerousGood](value=> dangerousGoodsService.allDangerousGoods.find(_.code == value).get,_.code)
+        .verifying(
+          "dangerousGoodCode.error.required",
+          value => dangerousGoodsService.allDangerousGoods.exists(_.code == value)
+        )
+        .transform[DangerousGood](
+          value => dangerousGoodsService.allDangerousGoods.find(_.code == value).get,
+          _.code
+        )
     )
 }

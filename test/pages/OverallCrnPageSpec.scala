@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class OverallCrnPageSpec extends SpecBase with PageBehaviours {
 
   "OverallCrnPage" - {
@@ -36,7 +35,8 @@ class OverallCrnPageSpec extends SpecBase with PageBehaviours {
 
       "to Gross Weight" in {
 
-        OverallCrnPage.navigate(NormalMode, emptyUserAnswers)
+        OverallCrnPage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.GrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -45,7 +45,8 @@ class OverallCrnPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        OverallCrnPage.navigate(CheckMode, emptyUserAnswers)
+        OverallCrnPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

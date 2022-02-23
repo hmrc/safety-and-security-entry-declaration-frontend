@@ -30,21 +30,23 @@ import views.html.CustomsOfficeOfFirstEntryView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsOfficeOfFirstEntryController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CustomsOfficeOfFirstEntryFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CustomsOfficeOfFirstEntryView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CustomsOfficeOfFirstEntryController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: CustomsOfficeOfFirstEntryFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CustomsOfficeOfFirstEntryView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(CustomsOfficeOfFirstEntryPage) match {
         case None => form
@@ -52,20 +54,21 @@ class CustomsOfficeOfFirstEntryController @Inject()(
       }
 
       Ok(view(preparedForm, mode, lrn))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CustomsOfficeOfFirstEntryPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(CustomsOfficeOfFirstEntryPage.navigate(mode, updatedAnswers))
-      )
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(CustomsOfficeOfFirstEntryPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(CustomsOfficeOfFirstEntryPage.navigate(mode, updatedAnswers))
+        )
+    }
 }

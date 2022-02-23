@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, CustomsOffice, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class CustomsOfficeOfFirstEntryPageSpec extends SpecBase with PageBehaviours {
 
   "CustomsOfficeOfFirstEntryPage" - {
@@ -36,8 +35,11 @@ class CustomsOfficeOfFirstEntryPageSpec extends SpecBase with PageBehaviours {
 
       "to Arrival Date and Time" in {
 
-        CustomsOfficeOfFirstEntryPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        CustomsOfficeOfFirstEntryPage
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class CustomsOfficeOfFirstEntryPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CustomsOfficeOfFirstEntryPage.navigate(CheckMode, emptyUserAnswers)
+        CustomsOfficeOfFirstEntryPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

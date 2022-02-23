@@ -36,7 +36,8 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new ConsignorEORIFormProvider()
   val form = formProvider()
 
-  lazy val consignorEORIRoute = routes.ConsignorEORIController.onPageLoad(NormalMode, lrn, index).url
+  lazy val consignorEORIRoute =
+    routes.ConsignorEORIController.onPageLoad(NormalMode, lrn, index).url
 
   "ConsignorEORI Controller" - {
 
@@ -52,7 +53,10 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ConsignorEORIView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -70,7 +74,10 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -90,11 +97,13 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, consignorEORIRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers.set(ConsignorEORIPage(index), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ConsignorEORIPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual ConsignorEORIPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +124,10 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

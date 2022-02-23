@@ -39,7 +39,8 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
           val answers = emptyUserAnswers.set(OverallCrnKnownPage, true).success.value
 
-          GoodsItemGrossWeightPage(index).navigate(NormalMode, answers)
+          GoodsItemGrossWeightPage(index)
+            .navigate(NormalMode, answers)
             .mustEqual(routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index))
         }
       }
@@ -50,8 +51,11 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
           val answers = emptyUserAnswers.set(OverallCrnKnownPage, false).success.value
 
-          GoodsItemGrossWeightPage(index).navigate(NormalMode, answers)
-            .mustEqual(routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index))
+          GoodsItemGrossWeightPage(index)
+            .navigate(NormalMode, answers)
+            .mustEqual(
+              routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
+            )
         }
       }
     }
@@ -60,7 +64,8 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemGrossWeightPage(index).navigate(CheckMode, emptyUserAnswers)
+        GoodsItemGrossWeightPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

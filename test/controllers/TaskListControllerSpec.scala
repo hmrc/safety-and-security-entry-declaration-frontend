@@ -27,7 +27,8 @@ import views.html.TaskListView
 
 class TaskListControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+  private val answers =
+    emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
 
   "Check Your Answers Controller" - {
 
@@ -44,7 +45,10 @@ class TaskListControllerSpec extends SpecBase with SummaryListFluency {
         val taskList = TaskListViewModel.fromAnswers(answers)(messages(application))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(lrn, taskList)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(lrn, taskList)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

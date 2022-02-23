@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class NotifiedPartyIdentitySpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class NotifiedPartyIdentitySpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "NotifiedPartyIdentity" - {
 
@@ -32,21 +36,23 @@ class NotifiedPartyIdentitySpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = Gen.oneOf(NotifiedPartyIdentity.values.toSeq)
 
-      forAll(gen) {
-        notifiedPartyIdentity =>
+      forAll(gen) { notifiedPartyIdentity =>
 
-          JsString(notifiedPartyIdentity.toString).validate[NotifiedPartyIdentity].asOpt.value mustEqual notifiedPartyIdentity
+        JsString(notifiedPartyIdentity.toString)
+          .validate[NotifiedPartyIdentity]
+          .asOpt
+          .value mustEqual notifiedPartyIdentity
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!NotifiedPartyIdentity.values.map(_.toString).contains(_))
+      val gen =
+        arbitrary[String] suchThat (!NotifiedPartyIdentity.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[NotifiedPartyIdentity] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[NotifiedPartyIdentity] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +60,9 @@ class NotifiedPartyIdentitySpec extends AnyFreeSpec with Matchers with ScalaChec
 
       val gen = Gen.oneOf(NotifiedPartyIdentity.values.toSeq)
 
-      forAll(gen) {
-        notifiedPartyIdentity =>
+      forAll(gen) { notifiedPartyIdentity =>
 
-          Json.toJson(notifiedPartyIdentity) mustEqual JsString(notifiedPartyIdentity.toString)
+        Json.toJson(notifiedPartyIdentity) mustEqual JsString(notifiedPartyIdentity.toString)
       }
     }
   }

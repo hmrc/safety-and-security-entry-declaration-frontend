@@ -33,12 +33,24 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
           val answers =
             emptyUserAnswers
-              .set(KindOfPackagePage(Index(0), Index(0)), KindOfPackage.standardKindsOfPackages.head).success.value
-              .set(NumberOfPackagesPage(Index(0), Index(0)), 1).success.value
-              .set(MarkOrNumberPage(Index(0), Index(0)), "mark or number").success.value
+              .set(
+                KindOfPackagePage(Index(0), Index(0)),
+                KindOfPackage.standardKindsOfPackages.head
+              )
+              .success
+              .value
+              .set(NumberOfPackagesPage(Index(0), Index(0)), 1)
+              .success
+              .value
+              .set(MarkOrNumberPage(Index(0), Index(0)), "mark or number")
+              .success
+              .value
 
-          AddPackagePage(Index(0)).navigate(NormalMode, answers, Index(0), addAnother = true)
-            .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, Index(0), Index(1)))
+          AddPackagePage(Index(0))
+            .navigate(NormalMode, answers, Index(0), addAnother = true)
+            .mustEqual(
+              routes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, Index(0), Index(1))
+            )
         }
       }
 
@@ -50,8 +62,11 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
             val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
 
-            AddPackagePage(index).navigate(NormalMode, answers, index, addAnother = false)
-              .mustEqual(routes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, index))
+            AddPackagePage(index)
+              .navigate(NormalMode, answers, index, addAnother = false)
+              .mustEqual(
+                routes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, index)
+              )
           }
         }
 
@@ -63,11 +78,18 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
               val answers =
                 emptyUserAnswers
-                  .set(GrossWeightPage, GrossWeight.Overall).success.value
-                  .set(OverallCrnKnownPage, true).success.value
+                  .set(GrossWeightPage, GrossWeight.Overall)
+                  .success
+                  .value
+                  .set(OverallCrnKnownPage, true)
+                  .success
+                  .value
 
-              AddPackagePage(index).navigate(NormalMode, answers, index, addAnother = false)
-                .mustEqual(routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index))
+              AddPackagePage(index)
+                .navigate(NormalMode, answers, index, addAnother = false)
+                .mustEqual(
+                  routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+                )
             }
           }
 
@@ -77,11 +99,18 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
               val answers =
                 emptyUserAnswers
-                  .set(GrossWeightPage, GrossWeight.Overall).success.value
-                  .set(OverallCrnKnownPage, false).success.value
+                  .set(GrossWeightPage, GrossWeight.Overall)
+                  .success
+                  .value
+                  .set(OverallCrnKnownPage, false)
+                  .success
+                  .value
 
-              AddPackagePage(index).navigate(NormalMode, answers, index, addAnother = false)
-                .mustEqual(routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index))
+              AddPackagePage(index)
+                .navigate(NormalMode, answers, index, addAnother = false)
+                .mustEqual(
+                  routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
+                )
             }
           }
         }
@@ -91,7 +120,8 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddPackagePage(index).navigate(CheckMode, emptyUserAnswers)
+        AddPackagePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

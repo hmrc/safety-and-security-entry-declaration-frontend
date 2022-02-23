@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class NotifiedPartyEORIPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyEORIPage" - {
@@ -36,8 +35,11 @@ class NotifiedPartyEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to unloading code" in {
 
-        NotifiedPartyEORIPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.UnloadingCodeController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        NotifiedPartyEORIPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.UnloadingCodeController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class NotifiedPartyEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NotifiedPartyEORIPage(index).navigate(CheckMode, emptyUserAnswers)
+        NotifiedPartyEORIPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

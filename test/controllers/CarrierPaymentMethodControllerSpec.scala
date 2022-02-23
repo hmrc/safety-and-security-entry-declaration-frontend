@@ -33,7 +33,8 @@ import scala.concurrent.Future
 
 class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val carrierPaymentMethodRoute = routes.CarrierPaymentMethodController.onPageLoad(NormalMode, lrn, index).url
+  lazy val carrierPaymentMethodRoute =
+    routes.CarrierPaymentMethodController.onPageLoad(NormalMode, lrn, index).url
 
   val formProvider = new CarrierPaymentMethodFormProvider()
   val form = formProvider()
@@ -52,13 +53,19 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CarrierPaymentMethodView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(CarrierPaymentMethodPage(index), CarrierPaymentMethod.values.head).success.value
+      val userAnswers = emptyUserAnswers
+        .set(CarrierPaymentMethodPage(index), CarrierPaymentMethod.values.head)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +77,12 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(CarrierPaymentMethod.values.head), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(CarrierPaymentMethod.values.head),
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -90,11 +102,16 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, carrierPaymentMethodRoute)
             .withFormUrlEncodedBody(("value", CarrierPaymentMethod.values.head.toString))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(CarrierPaymentMethodPage(index), CarrierPaymentMethod.values.head).success.value
+        val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers
+          .set(CarrierPaymentMethodPage(index), CarrierPaymentMethod.values.head)
+          .success
+          .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CarrierPaymentMethodPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual CarrierPaymentMethodPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +132,10 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

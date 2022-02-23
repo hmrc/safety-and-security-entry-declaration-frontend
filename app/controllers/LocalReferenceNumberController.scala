@@ -29,37 +29,38 @@ import views.html.LocalReferenceNumberView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class LocalReferenceNumberController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        formProvider: LocalReferenceNumberFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: LocalReferenceNumberView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class LocalReferenceNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  formProvider: LocalReferenceNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: LocalReferenceNumberView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = identify {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    identify { implicit request =>
       Ok(view(form, mode))
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = identify.async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    identify.async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            val updatedAnswers = UserAnswers(request.userId, value)
 
-        value => {
-          val updatedAnswers = UserAnswers(request.userId, value)
-
-          sessionRepository.set(updatedAnswers).map {
-            _ =>
+            sessionRepository.set(updatedAnswers).map { _ =>
               Redirect(LocalReferenceNumberPage.navigate(mode, updatedAnswers))
+            }
           }
-        }
-      )
-  }
+        )
+    }
 }

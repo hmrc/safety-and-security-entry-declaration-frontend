@@ -23,5 +23,5 @@ import java.time.{LocalDate, LocalTime}
 case class ArrivalDateAndTime(date: LocalDate, time: LocalTime)
 
 object ArrivalDateAndTime {
-  implicit val format:OFormat[ArrivalDateAndTime] = Json.format[ArrivalDateAndTime]
+  implicit val format: OFormat[ArrivalDateAndTime] = Json.format[ArrivalDateAndTime]
 }

@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
   "CommodityCodePage" - {
@@ -36,8 +35,12 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Kind of Package for the first index" in {
 
-        CommodityCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
+        CommodityCodePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.KindOfPackageController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
+          )
       }
     }
 
@@ -45,7 +48,8 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CommodityCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        CommodityCodePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

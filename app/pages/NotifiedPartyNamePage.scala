@@ -28,6 +28,6 @@ case class NotifiedPartyNamePage(index: Index) extends QuestionPage[String] {
   override def toString: String = "notifiedPartyName"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.NotifiedPartyAddressController.onPageLoad(NormalMode,answers.lrn,index)
+    routes.NotifiedPartyAddressController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

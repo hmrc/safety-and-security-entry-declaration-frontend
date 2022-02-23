@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DeclarationPlaceSummary  {
+object DeclarationPlaceSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DeclarationPlacePage).map {
-      answer =>
+    answers.get(DeclarationPlacePage).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "declarationPlace.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.DeclarationPlaceController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("declarationPlace.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "declarationPlace.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.DeclarationPlaceController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("declarationPlace.change.hidden"))
         )
+      )
     }
 }

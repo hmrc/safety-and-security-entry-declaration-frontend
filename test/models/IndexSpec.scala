@@ -30,25 +30,22 @@ class IndexSpec extends SpecBase with EitherValues with ScalaCheckPropertyChecks
 
     "must bind positive integers to an index that is one less than the value" in {
 
-      forAll(Gen.choose(1, Int.MaxValue)) {
-        number =>
-          pathBindable.bind("key", number.toString).value mustEqual Index(number - 1)
+      forAll(Gen.choose(1, Int.MaxValue)) { number =>
+        pathBindable.bind("key", number.toString).value mustEqual Index(number - 1)
       }
     }
 
     "must not bind from negative numbers or 0" in {
 
-      forAll(Gen.choose(Int.MinValue, 0)) {
-        number =>
-          pathBindable.bind("key", number.toString) mustBe a[Left[_, Index]]
+      forAll(Gen.choose(Int.MinValue, 0)) { number =>
+        pathBindable.bind("key", number.toString) mustBe a[Left[_, Index]]
       }
     }
 
     "must unbind to a number 1 greater than the index" in {
 
-      forAll(Gen.choose(0, Int.MaxValue - 1)) {
-        number =>
-          pathBindable.unbind("key", Index(number)) mustEqual (number + 1).toString
+      forAll(Gen.choose(0, Int.MaxValue - 1)) { number =>
+        pathBindable.unbind("key", Index(number)) mustEqual (number + 1).toString
       }
     }
 

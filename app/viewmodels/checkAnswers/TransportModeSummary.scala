@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TransportModeSummary  {
+object TransportModeSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TransportModePage).map {
-      answer =>
+    answers.get(TransportModePage).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"transportMode.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"transportMode.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "transportMode.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.TransportModeController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("transportMode.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "transportMode.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.TransportModeController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("transportMode.change.hidden"))
         )
+      )
     }
 }

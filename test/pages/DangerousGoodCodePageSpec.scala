@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, DangerousGood, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
   "DangerousGoodCodePage" - {
@@ -36,8 +35,11 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Consignor Identity page" in {
 
-        DangerousGoodCodePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.ConsignorsIdentityController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        DangerousGoodCodePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.ConsignorsIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DangerousGoodCodePage(index).navigate(CheckMode, emptyUserAnswers)
+        DangerousGoodCodePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -35,17 +35,20 @@ class NotifiedPartyIdentitySpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to `consignee EORI page` when answered `gb eori`" in {
-        val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index),GBEORI).success.value
+        val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
 
-        NotifiedPartyIdentityPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(NormalMode,answers.lrn,index))
+        NotifiedPartyIdentityPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to `consignee name` when answered `name & address`" in {
-        val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index),NameAddress).success.value
+        val answers =
+          emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
 
-        NotifiedPartyIdentityPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.NotifiedPartyNameController.onPageLoad(NormalMode,answers.lrn,index))
+        NotifiedPartyIdentityPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.NotifiedPartyNameController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 
@@ -53,7 +56,8 @@ class NotifiedPartyIdentitySpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NotifiedPartyIdentityPage(index).navigate(CheckMode, emptyUserAnswers)
+        NotifiedPartyIdentityPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

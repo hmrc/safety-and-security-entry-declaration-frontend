@@ -25,10 +25,16 @@ class GoodsItemGrossWeightFormProvider @Inject() extends Mappings {
   def apply(): Form[BigDecimal] =
     Form(
       "value" -> decimal(
-        requiredKey         = "goodsItemGrossWeight.error.required",
-        nonNumericKey       = "goodsItemGrossWeight.error.nonNumeric",
+        requiredKey = "goodsItemGrossWeight.error.required",
+        nonNumericKey = "goodsItemGrossWeight.error.nonNumeric",
         invalidPrecisionKey = "goodsItemGrossWeight.error.precision",
-        precision           = 3
-      ).verifying(inRange(BigDecimal(0.001), BigDecimal(99999999.999), "goodsItemGrossWeight.error.outOfRange"))
+        precision = 3
+      ).verifying(
+        inRange(
+          BigDecimal(0.001),
+          BigDecimal(99999999.999),
+          "goodsItemGrossWeight.error.outOfRange"
+        )
+      )
     )
 }

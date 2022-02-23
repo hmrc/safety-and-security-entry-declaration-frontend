@@ -30,8 +30,9 @@ case class RemoveCountryEnRoutePage(index: Index) extends QuestionPage[Boolean] 
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(DeriveNumberOfCountriesEnRoute) match {
-      case Some(n) if n > 0 => routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
-      case _                => routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+      case Some(n) if n > 0 =>
+        routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
+      case _ => routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
     }
   }
 }

@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DangerousGoodCodeSummary  {
+object DangerousGoodCodeSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DangerousGoodCodePage(index)).map {
-      dangerousGoods =>
+    answers.get(DangerousGoodCodePage(index)).map { dangerousGoods =>
 
-        SummaryListRowViewModel(
-          key     = "dangerousGoodCode.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(dangerousGoods.name).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.DangerousGoodCodeController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("dangerousGoodCode.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "dangerousGoodCode.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(dangerousGoods.name).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.DangerousGoodCodeController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("dangerousGoodCode.change.hidden"))
         )
+      )
     }
 }

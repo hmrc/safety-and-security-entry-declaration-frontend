@@ -26,19 +26,20 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
 import views.html.TaskListView
 
-class TaskListController @Inject()(
-                                    val controllerComponents: MessagesControllerComponents,
-                                    identify: IdentifierAction,
-                                    getData: DataRetrievalActionProvider,
-                                    requireData: DataRequiredAction,
-                                    view: TaskListView
-                                  ) extends FrontendBaseController with I18nSupport {
+class TaskListController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  view: TaskListView
+) extends FrontendBaseController
+  with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val viewModel = TaskListViewModel.fromAnswers(request.userAnswers)
 
       Ok(view(lrn, viewModel))
-  }
+    }
 }

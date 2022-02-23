@@ -24,21 +24,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object AddMarkOrNumberSummary  {
+object AddMarkOrNumberSummary {
 
-  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AddMarkOrNumberPage(itemIndex, packageIndex)).map {
-      answer =>
+  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    answers.get(AddMarkOrNumberPage(itemIndex, packageIndex)).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "addMarkOrNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.AddMarkOrNumberController.onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex).url)
-              .withVisuallyHiddenText(messages("addMarkOrNumber.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "addMarkOrNumber.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.AddMarkOrNumberController
+              .onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex)
+              .url
+          ).withVisuallyHiddenText(messages("addMarkOrNumber.change.hidden"))
         )
+      )
     }
 }

@@ -37,7 +37,8 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new ArrivalDateAndTimeFormProvider()
   val form = formProvider()
 
-  lazy val arrivalDateAndTimeRoute = routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, lrn).url
+  lazy val arrivalDateAndTimeRoute =
+    routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, lrn).url
 
   val validDate = LocalDate.now(ZoneOffset.UTC)
   val validTime = LocalTime.now(ZoneOffset.UTC).withSecond(0).withNano(0)
@@ -59,7 +60,10 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -75,7 +79,10 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(arrivalDateAndTime), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(arrivalDateAndTime), NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -94,17 +101,19 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, arrivalDateAndTimeRoute)
             .withFormUrlEncodedBody(
-              "date.day"    -> validDate.getDayOfMonth.toString,
-              "date.month"  -> validDate.getMonthValue.toString,
-              "date.year"   -> validDate.getYear.toString,
-              "time.hour"   -> validTime.getHour.toString,
+              "date.day" -> validDate.getDayOfMonth.toString,
+              "date.month" -> validDate.getMonthValue.toString,
+              "date.year" -> validDate.getYear.toString,
+              "time.hour" -> validTime.getHour.toString,
               "time.minutes" -> validTime.getMinute.toString
             )
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ArrivalDateAndTimePage.navigate(NormalMode, userAnswers).url
+        redirectLocation(result).value mustEqual ArrivalDateAndTimePage
+          .navigate(NormalMode, userAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(userAnswers))
       }
     }
@@ -125,7 +134,10 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -151,10 +163,10 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, arrivalDateAndTimeRoute)
             .withFormUrlEncodedBody(
-              "date.day"    -> validDate.getDayOfMonth.toString,
-              "date.month"  -> validDate.getMonthValue.toString,
-              "date.year"   -> validDate.getYear.toString,
-              "time.hour"   -> validTime.getHour.toString,
+              "date.day" -> validDate.getDayOfMonth.toString,
+              "date.month" -> validDate.getMonthValue.toString,
+              "date.year" -> validDate.getYear.toString,
+              "time.hour" -> validTime.getHour.toString,
               "time.minutes" -> validTime.getMinute.toString
             )
 
