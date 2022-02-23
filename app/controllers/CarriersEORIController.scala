@@ -18,7 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.CarriersEORIFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import models.GbEori._
 import pages.CarriersEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -26,19 +28,18 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.CarriersEORIView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CarriersEORIController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: CarriersEORIFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CarriersEORIView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: CarriersEORIFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CarriersEORIView
+)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 

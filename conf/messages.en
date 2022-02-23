@@ -42,6 +42,8 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 error.prefix = Error:
+error.eori.length = GB EORI must be 12 or 15 characters in length
+error.eori.numeric = GB EORI must contain only numbers
 
 index.title = Safety and Security
 index.heading = Safety and Security
@@ -133,7 +135,6 @@ carriersEORI.title = What is the GB EORI number of the carrier?
 carriersEORI.heading = What is the GB EORI number of the carrier?
 carriersEORI.checkYourAnswersLabel = GB EORI number
 carriersEORI.error.required = Enter the GB EORI number of the carrier
-carriersEORI.error.length = EORI number must be 100 characters or less
 carriersEORI.change.hidden = the GB EORI number of the carrier
 
 arrivalDateAndTime.title = When is the consignment due to arrive in Great Britain?

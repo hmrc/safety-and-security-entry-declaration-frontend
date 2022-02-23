@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("carriersEORI.title"))) {
 
-    @formHelper(action = routes.CarriersEORIController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.CarriersEORIController.onSubmit(mode, lrn)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -37,9 +37,10 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("carriersEORI.heading")).asPageHeading()
+                label = LabelViewModel(messages("carriersEORI.heading")).asPageHeading(),
             )
             .withWidth(Full)
+            .withPrefix(PrefixOrSuffix(content = Text("GB")))
         )
 
         @govukButton(

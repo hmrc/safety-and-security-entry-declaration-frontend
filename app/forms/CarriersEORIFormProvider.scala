@@ -20,12 +20,8 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
+import models.GbEori
 
 class CarriersEORIFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("carriersEORI.error.required")
-        .verifying(maxLength(100, "carriersEORI.error.length"))
-    )
+  def apply(): Form[GbEori] = Form("value" -> gbEori("carriersEORI.error.required"))
 }

@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import forms.behaviours.GbEoriFieldBehaviours
-import play.api.data.FormError
+import play.api.libs.json._
 
-class CarriersEORIFormProviderSpec extends GbEoriFieldBehaviours {
-  private val fieldName = "value"
-  private val requiredKey = "carriersEORI.error.required"
+/**
+ * Represents a GB EORI number
+ *
+ * A GB EORI is written as "GB" followed by 12 or 15 numeric characters. Since this models
+ * a GB EORI specifically, we only record the numeric characters.
+ */
+class GbEori(val value: String) extends AnyVal
 
-  private val form = new CarriersEORIFormProvider()()
-
-
-  ".value" - {
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-
-    behave like gbEoriField(form, fieldName)
-  }
+object GbEori {
+  implicit val reads: Reads[GbEori] = Reads.StringReads.map { new GbEori(_) }
+  implicit val writes: Writes[GbEori] = Writes.StringWrites.contramap { _.value }
 }

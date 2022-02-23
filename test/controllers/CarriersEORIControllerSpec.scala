@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.CarriersEORIFormProvider
-import models.NormalMode
+import models.{GbEori, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -33,10 +33,11 @@ import scala.concurrent.Future
 
 class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new CarriersEORIFormProvider()
-  val form = formProvider()
+  private val formProvider = new CarriersEORIFormProvider()
+  private val form = formProvider()
 
-  lazy val carriersEORIRoute = routes.CarriersEORIController.onPageLoad(NormalMode, lrn).url
+  private lazy val carriersEORIRoute = routes.CarriersEORIController.onPageLoad(NormalMode, lrn).url
+  private val eori = new GbEori("123456789000")
 
   "CarriersEORI Controller" - {
 
@@ -58,7 +59,7 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(CarriersEORIPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(CarriersEORIPage, eori).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +71,7 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(eori), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -88,10 +89,10 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, carriersEORIRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", eori.value))
 
-        val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(CarriersEORIPage, "answer").success.value
+        val result          = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(CarriersEORIPage, eori).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CarriersEORIPage.navigate(NormalMode, expectedAnswers).url
