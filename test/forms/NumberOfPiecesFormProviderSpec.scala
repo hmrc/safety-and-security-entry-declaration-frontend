@@ -41,15 +41,15 @@ class NumberOfPiecesFormProviderSpec extends IntFieldBehaviours {
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "numberOfPieces.error.nonNumeric"),
+      nonNumericError = FormError(fieldName, "numberOfPieces.error.nonNumeric"),
       wholeNumberError = FormError(fieldName, "numberOfPieces.error.wholeNumber")
     )
 
     behave like intFieldWithRange(
       form,
       fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
+      minimum = minimum,
+      maximum = maximum,
       expectedError = FormError(fieldName, "numberOfPieces.error.outOfRange", Seq(minimum, maximum))
     )
 

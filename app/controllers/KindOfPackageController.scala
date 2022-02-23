@@ -30,44 +30,59 @@ import views.html.KindOfPackageView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class KindOfPackageController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: KindOfPackageFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: KindOfPackageView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class KindOfPackageController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: KindOfPackageFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: KindOfPackageView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
-      implicit request =>
+  def onPageLoad(
+    mode: Mode,
+    lrn: LocalReferenceNumber,
+    itemIndex: Index,
+    packageIndex: Index
+  ): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-        val preparedForm = request.userAnswers.get(KindOfPackagePage(itemIndex, packageIndex)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+      val preparedForm = request.userAnswers.get(KindOfPackagePage(itemIndex, packageIndex)) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
 
-        Ok(view(preparedForm, mode, lrn, itemIndex, packageIndex))
+      Ok(view(preparedForm, mode, lrn, itemIndex, packageIndex))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
-      implicit request =>
+  def onSubmit(
+    mode: Mode,
+    lrn: LocalReferenceNumber,
+    itemIndex: Index,
+    packageIndex: Index
+  ): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
-        form.bindFromRequest().fold(
+      form
+        .bindFromRequest()
+        .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
-
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(KindOfPackagePage(itemIndex, packageIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(KindOfPackagePage(itemIndex, packageIndex).navigate(mode, updatedAnswers))
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.set(KindOfPackagePage(itemIndex, packageIndex), value)
+              )
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(
+              KindOfPackagePage(itemIndex, packageIndex).navigate(mode, updatedAnswers)
+            )
         )
     }
 }

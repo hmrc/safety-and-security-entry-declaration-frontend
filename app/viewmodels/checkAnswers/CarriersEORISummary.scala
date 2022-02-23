@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CarriersEORISummary  {
+object CarriersEORISummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CarriersEORIPage).map {
-      answer =>
+    answers.get(CarriersEORIPage).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "carriersEORI.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer.value).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.CarriersEORIController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("carriersEORI.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "carriersEORI.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.CarriersEORIController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("carriersEORI.change.hidden"))
         )
+      )
     }
 }

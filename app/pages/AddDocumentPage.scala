@@ -26,13 +26,15 @@ final case class AddDocumentPage(index: Index) extends Page {
   def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
     if (addAnother) {
       answers.get(DeriveNumberOfDocuments(itemIndex)) match {
-        case Some(size) => routes.DocumentController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None       => routes.JourneyRecoveryController.onPageLoad()
+        case Some(size) =>
+          routes.DocumentController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
+        case None => routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
       mode match {
-        case NormalMode => routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-        case CheckMode  => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+        case NormalMode =>
+          routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }
     }
 }

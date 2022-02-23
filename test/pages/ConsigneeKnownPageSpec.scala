@@ -34,17 +34,21 @@ class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to `How do you want to identify the consignee` when answer is yes" in {
-        val answers = emptyUserAnswers.set(ConsigneeKnownPage(index),true).success.value
+        val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), true).success.value
 
-        ConsigneeKnownPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.ConsigneeIdentityController.onPageLoad(NormalMode,answers.lrn,index))
+        ConsigneeKnownPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to `How do you want to identify the notified party` when answer is no" in {
-        val answers = emptyUserAnswers.set(ConsigneeKnownPage(index),false).success.value
+        val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), false).success.value
 
-        ConsigneeKnownPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(NormalMode,answers.lrn,index))
+        ConsigneeKnownPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(
+            routes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+          )
       }
     }
 
@@ -52,7 +56,8 @@ class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsigneeKnownPage(index).navigate(CheckMode, emptyUserAnswers)
+        ConsigneeKnownPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

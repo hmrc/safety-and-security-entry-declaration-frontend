@@ -32,7 +32,7 @@ class NotifiedPartyIdentityFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[NotifiedPartyIdentity](
       form,
       fieldName,
-      validValues  = NotifiedPartyIdentity.values,
+      validValues = NotifiedPartyIdentity.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

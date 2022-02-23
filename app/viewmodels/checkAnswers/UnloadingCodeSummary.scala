@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object UnloadingCodeSummary  {
+object UnloadingCodeSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnloadingCodePage(index)).map {
-      answer =>
+    answers.get(UnloadingCodePage(index)).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "unloadingCode.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.UnloadingCodeController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("unloadingCode.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "unloadingCode.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.UnloadingCodeController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("unloadingCode.change.hidden"))
         )
+      )
     }
 }

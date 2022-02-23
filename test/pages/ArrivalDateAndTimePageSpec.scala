@@ -35,7 +35,8 @@ class ArrivalDateAndTimePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Route Details" in {
 
-        ArrivalDateAndTimePage.navigate(NormalMode, emptyUserAnswers)
+        ArrivalDateAndTimePage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.CheckRouteDetailsController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
@@ -44,7 +45,8 @@ class ArrivalDateAndTimePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ArrivalDateAndTimePage.navigate(CheckMode, emptyUserAnswers)
+        ArrivalDateAndTimePage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

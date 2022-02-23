@@ -40,7 +40,12 @@ object MappingsSpec {
   }
 }
 
-class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mappings with ScalaCheckPropertyChecks {
+class MappingsSpec
+  extends AnyFreeSpec
+  with Matchers
+  with OptionValues
+  with Mappings
+  with ScalaCheckPropertyChecks {
 
   import MappingsSpec._
 
@@ -63,7 +68,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
     "must not bind a string of whitespace only" in {
       val result = testForm.bind(Map("value" -> " \t"))
-      result.errors must contain (FormError("value", "error.required"))
+      result.errors must contain(FormError("value", "error.required"))
     }
 
     "must not bind an empty map" in {
@@ -179,11 +184,10 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
     "must bind integers" in {
 
-      forAll(arbitrary[Int]) {
-        int =>
-          val result = testForm.bind(Map("value" -> int.toString))
-          result.get mustEqual BigDecimal(int)
-          result.errors mustBe empty
+      forAll(arbitrary[Int]) { int =>
+        val result = testForm.bind(Map("value" -> int.toString))
+        result.get mustEqual BigDecimal(int)
+        result.errors mustBe empty
       }
     }
 
@@ -194,11 +198,10 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
         decimals <- Gen.choose(0, 99)
       } yield number + "." + decimals
 
-      forAll(gen) {
-        decimal =>
-          val result = testForm.bind(Map("value" -> decimal))
-          result.get mustEqual BigDecimal(decimal)
-          result.errors mustBe empty
+      forAll(gen) { decimal =>
+        val result = testForm.bind(Map("value" -> decimal))
+        result.get mustEqual BigDecimal(decimal)
+        result.errors mustBe empty
       }
     }
 
@@ -222,10 +225,9 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
         decimals <- Gen.choose(100, Int.MaxValue)
       } yield number + "." + decimals
 
-      forAll(gen) {
-        decimal =>
-          val result = testForm.bind(Map("value" -> decimal))
-          result.errors must contain only FormError("value", "error.precision")
+      forAll(gen) { decimal =>
+        val result = testForm.bind(Map("value" -> decimal))
+        result.errors must contain only FormError("value", "error.precision")
       }
     }
 

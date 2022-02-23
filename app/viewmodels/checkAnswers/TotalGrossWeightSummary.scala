@@ -24,19 +24,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object TotalGrossWeightSummary  {
+object TotalGrossWeightSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TotalGrossWeightPage).map {
-      answer =>
+    answers.get(TotalGrossWeightPage).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "totalGrossWeight.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.TotalGrossWeightController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("totalGrossWeight.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "totalGrossWeight.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.TotalGrossWeightController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("totalGrossWeight.change.hidden"))
         )
+      )
     }
 }

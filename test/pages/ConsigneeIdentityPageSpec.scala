@@ -35,17 +35,19 @@ class ConsigneeIdentitySpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to `consignee EORI page` when answered `gb eori`" in {
-        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index),GBEORI).success.value
+        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
 
-        ConsigneeIdentityPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.ConsigneeEORIController.onPageLoad(NormalMode,answers.lrn,index))
+        ConsigneeIdentityPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to `consignee name` when answered `name & address`" in {
-        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index),NameAddress).success.value
+        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
 
-        ConsigneeIdentityPage(index).navigate(NormalMode, answers)
-          .mustEqual(routes.ConsigneeNameController.onPageLoad(NormalMode,answers.lrn,index))
+        ConsigneeIdentityPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 
@@ -53,7 +55,8 @@ class ConsigneeIdentitySpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsigneeIdentityPage(index).navigate(CheckMode, emptyUserAnswers)
+        ConsigneeIdentityPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

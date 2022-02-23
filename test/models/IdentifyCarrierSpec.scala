@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class IdentifyCarrierSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class IdentifyCarrierSpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "IdentifyCarrier" - {
 
@@ -32,10 +36,12 @@ class IdentifyCarrierSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
       val gen = Gen.oneOf(IdentifyCarrier.values.toSeq)
 
-      forAll(gen) {
-        identifyCarrier =>
+      forAll(gen) { identifyCarrier =>
 
-          JsString(identifyCarrier.toString).validate[IdentifyCarrier].asOpt.value mustEqual identifyCarrier
+        JsString(identifyCarrier.toString)
+          .validate[IdentifyCarrier]
+          .asOpt
+          .value mustEqual identifyCarrier
       }
     }
 
@@ -43,10 +49,9 @@ class IdentifyCarrierSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
       val gen = arbitrary[String] suchThat (!IdentifyCarrier.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[IdentifyCarrier] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[IdentifyCarrier] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +59,9 @@ class IdentifyCarrierSpec extends AnyFreeSpec with Matchers with ScalaCheckPrope
 
       val gen = Gen.oneOf(IdentifyCarrier.values.toSeq)
 
-      forAll(gen) {
-        identifyCarrier =>
+      forAll(gen) { identifyCarrier =>
 
-          Json.toJson(identifyCarrier) mustEqual JsString(identifyCarrier.toString)
+        Json.toJson(identifyCarrier) mustEqual JsString(identifyCarrier.toString)
       }
     }
   }

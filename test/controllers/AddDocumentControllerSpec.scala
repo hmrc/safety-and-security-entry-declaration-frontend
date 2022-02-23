@@ -46,7 +46,10 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddDocumentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, List.empty)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, List.empty)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -59,10 +62,12 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, addDocumentRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddDocumentPage(index).navigate(NormalMode, emptyUserAnswers, index, true).url
+        redirectLocation(result).value mustEqual AddDocumentPage(index)
+          .navigate(NormalMode, emptyUserAnswers, index, true)
+          .url
       }
     }
 
@@ -82,7 +87,10 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, List.empty)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, List.empty)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

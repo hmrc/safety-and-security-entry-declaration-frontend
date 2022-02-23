@@ -27,7 +27,7 @@ class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
   val form = new ArrivalDateAndTimeFormProvider()()
 
-  val validDates = datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1,1 ))
+  val validDates = datesBetween(LocalDate.of(2000, 1, 1), LocalDate.of(3000, 1, 1))
 
   val validTimes = for {
     hour <- Gen.choose(0, 23)
@@ -38,12 +38,11 @@ class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
     forAll(validDates, validTimes) {
       case (date, time) =>
-
         val data = Map(
-          "date.day"    -> date.getDayOfMonth.toString,
-          "date.month"  -> date.getMonthValue.toString,
-          "date.year"   -> date.getYear.toString,
-          "time.hour"   -> time.getHour.toString,
+          "date.day" -> date.getDayOfMonth.toString,
+          "date.month" -> date.getMonthValue.toString,
+          "date.year" -> date.getYear.toString,
+          "time.hour" -> time.getHour.toString,
           "time.minutes" -> time.getMinute.toString
         )
 
@@ -56,17 +55,19 @@ class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
   "must not bind when date is missing" in {
 
-    forAll(validTimes) {
-      time =>
+    forAll(validTimes) { time =>
 
-        val data = Map(
-          "time.hour"   -> time.getHour.toString,
-          "time.minutes" -> time.getMinute.toString
-        )
+      val data = Map(
+        "time.hour" -> time.getHour.toString,
+        "time.minutes" -> time.getMinute.toString
+      )
 
-        val result = form.bind(data)
+      val result = form.bind(data)
 
-        result.errors must contain only FormError("date", "arrivalDateAndTime.date.error.required.all")
+      result.errors must contain only FormError(
+        "date",
+        "arrivalDateAndTime.date.error.required.all"
+      )
     }
   }
 
@@ -74,12 +75,11 @@ class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
     forAll(validDates, validTimes) {
       case (date, time) =>
-
         val data = Map(
-          "date.day"    -> "invalid",
-          "date.month"  -> date.getMonthValue.toString,
-          "date.year"   -> date.getYear.toString,
-          "time.hour"   -> time.getHour.toString,
+          "date.day" -> "invalid",
+          "date.month" -> date.getMonthValue.toString,
+          "date.year" -> date.getYear.toString,
+          "time.hour" -> time.getHour.toString,
           "time.minutes" -> time.getMinute.toString
         )
 
@@ -91,18 +91,20 @@ class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
   "must not bind when time is missing" in {
 
-    forAll(validDates) {
-      date =>
+    forAll(validDates) { date =>
 
-        val data = Map(
-          "date.day"    -> date.getDayOfMonth.toString,
-          "date.month"  -> date.getMonthValue.toString,
-          "date.year"   -> date.getYear.toString
-        )
+      val data = Map(
+        "date.day" -> date.getDayOfMonth.toString,
+        "date.month" -> date.getMonthValue.toString,
+        "date.year" -> date.getYear.toString
+      )
 
-        val result = form.bind(data)
+      val result = form.bind(data)
 
-        result.errors must contain only FormError("time", "arrivalDateAndTime.time.error.required.all")
+      result.errors must contain only FormError(
+        "time",
+        "arrivalDateAndTime.time.error.required.all"
+      )
     }
   }
 
@@ -110,12 +112,11 @@ class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
     forAll(validDates, validTimes) {
       case (date, time) =>
-
         val data = Map(
-          "date.day"    -> date.getDayOfMonth.toString,
-          "date.month"  -> date.getMonthValue.toString,
-          "date.year"   -> date.getYear.toString,
-          "time.hour"   -> "invalid",
+          "date.day" -> date.getDayOfMonth.toString,
+          "date.month" -> date.getMonthValue.toString,
+          "date.year" -> date.getYear.toString,
+          "time.hour" -> "invalid",
           "time.minutes" -> time.getMinute.toString
         )
 

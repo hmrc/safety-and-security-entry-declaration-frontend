@@ -22,19 +22,18 @@ import play.api.data.{Form, FormError}
 class DecimalFieldBehaviours extends FieldBehaviours {
 
   def decimalField(
-                    form: Form[_],
-                    fieldName: String,
-                    nonNumericError: FormError,
-                    invalidPrecisionError: FormError,
-                    precision: Int
-                  ): Unit = {
+    form: Form[_],
+    fieldName: String,
+    nonNumericError: FormError,
+    invalidPrecisionError: FormError,
+    precision: Int
+  ): Unit = {
 
     "must not bind non-numeric values" in {
 
-      forAll(nonNumerics) {
-        nonNumeric =>
-          val result = form.bind(Map(fieldName -> nonNumeric)).apply(fieldName)
-          result.errors must contain only nonNumericError
+      forAll(nonNumerics) { nonNumeric =>
+        val result = form.bind(Map(fieldName -> nonNumeric)).apply(fieldName)
+        result.errors must contain only nonNumericError
       }
     }
 
@@ -42,32 +41,30 @@ class DecimalFieldBehaviours extends FieldBehaviours {
 
       val gen = for {
         highPrecision <- Gen.choose(precision + 1, precision * 2 + 1)
-        digits        <- Gen.listOfN(highPrecision, Gen.numChar)
+        digits <- Gen.listOfN(highPrecision, Gen.numChar)
       } yield "1." + digits.mkString
 
-      forAll(gen) {
-        number =>
-          val result = form.bind(Map(fieldName -> number)).apply(fieldName)
-          result.errors must contain only invalidPrecisionError
+      forAll(gen) { number =>
+        val result = form.bind(Map(fieldName -> number)).apply(fieldName)
+        result.errors must contain only invalidPrecisionError
       }
     }
   }
 
   def decimalWithRange(
-                        form: Form[_],
-                        fieldName: String,
-                        minimum: BigDecimal,
-                        maximum: BigDecimal,
-                        precision: Int,
-                        expectedError: FormError
-                      ): Unit = {
+    form: Form[_],
+    fieldName: String,
+    minimum: BigDecimal,
+    maximum: BigDecimal,
+    precision: Int,
+    expectedError: FormError
+  ): Unit = {
 
     s"must not bind decimals outside the range $minimum to $maximum" in {
 
-      forAll(decimalsOutsideRange(minimum, maximum, precision)) {
-        number =>
-          val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
-          result.errors must contain only expectedError
+      forAll(decimalsOutsideRange(minimum, maximum, precision)) { number =>
+        val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
+        result.errors must contain only expectedError
       }
     }
   }

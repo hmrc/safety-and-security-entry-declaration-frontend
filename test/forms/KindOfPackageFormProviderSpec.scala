@@ -47,12 +47,12 @@ class KindOfPackageFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind any values other than valid kind of package codes" in {
 
-      val invalidAnswers = arbitrary[String].suchThat(x => !KindOfPackage.allKindsOfPackage.map(_.code).contains(x))
+      val invalidAnswers =
+        arbitrary[String].suchThat(x => !KindOfPackage.allKindsOfPackage.map(_.code).contains(x))
 
-      forAll(invalidAnswers) {
-        answer =>
-          val result = form.bind(Map("value" -> answer)).apply(fieldName)
-          result.errors must contain only FormError(fieldName, requiredKey)
+      forAll(invalidAnswers) { answer =>
+        val result = form.bind(Map("value" -> answer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, requiredKey)
       }
     }
   }

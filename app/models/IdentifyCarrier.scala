@@ -28,17 +28,19 @@ object IdentifyCarrier extends Enumerable.Implicits {
   case object NameAndAddress extends WithName("nameAddress") with IdentifyCarrier
 
   val values: Seq[IdentifyCarrier] = Seq(
-    GbEori, NameAndAddress
+    GbEori,
+    NameAndAddress
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"identifyCarrier.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
-  }
+  def options(implicit messages: Messages): Seq[RadioItem] =
+    values.zipWithIndex.map {
+      case (value, index) =>
+        RadioItem(
+          content = Text(messages(s"identifyCarrier.${value.toString}")),
+          value = Some(value.toString),
+          id = Some(s"value_$index")
+        )
+    }
 
   implicit val enumerable: Enumerable[IdentifyCarrier] =
     Enumerable(values.map(v => v.toString -> v): _*)

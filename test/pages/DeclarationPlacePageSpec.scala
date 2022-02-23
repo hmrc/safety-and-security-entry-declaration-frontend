@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
   "DeclarationPlacePage" - {
@@ -36,8 +35,11 @@ class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
       "to Lodging Person" in {
 
-        DeclarationPlacePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        DeclarationPlacePage
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DeclarationPlacePage.navigate(CheckMode, emptyUserAnswers)
+        DeclarationPlacePage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

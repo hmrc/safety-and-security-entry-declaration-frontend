@@ -29,7 +29,9 @@ class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers])
     mock[SessionRepository]
   )(ExecutionContext.Implicits.global) {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+  override protected def transform[A](
+    request: IdentifierRequest[A]
+  ): Future[OptionalDataRequest[A]] =
     Future(OptionalDataRequest(request.request, request.userId, dataToReturn))
 }
 

@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
   "MarkOrNumberPage" - {
@@ -36,8 +35,12 @@ class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Package Item" in {
 
-        MarkOrNumberPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.CheckPackageItemController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
+        MarkOrNumberPage(index, index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckPackageItemController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
+          )
       }
     }
 
@@ -45,7 +48,8 @@ class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        MarkOrNumberPage(index, index).navigate(CheckMode, emptyUserAnswers)
+        MarkOrNumberPage(index, index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -29,7 +29,8 @@ case class AddPaymentMethodPage(index: Index) extends QuestionPage[Boolean] {
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(AddPaymentMethodPage(index)) match {
-      case Some(true) => routes.CarrierPaymentMethodController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(true) =>
+        routes.CarrierPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
 

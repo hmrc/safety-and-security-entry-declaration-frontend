@@ -27,10 +27,12 @@ case class ConsigneeKnownPage(index: Index) extends QuestionPage[Boolean] {
 
   override def toString: String = "consigneeKnown"
 
-  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(ConsigneeKnownPage(index)) match {
-      case Some(true) => routes.ConsigneeIdentityController.onPageLoad(NormalMode,answers.lrn,index)
-      case Some(false) => routes.NotifiedPartyIdentityController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(true) =>
+        routes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(false) =>
+        routes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }

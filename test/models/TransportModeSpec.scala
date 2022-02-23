@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class TransportModeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class TransportModeSpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "TransportMode" - {
 
@@ -32,10 +36,9 @@ class TransportModeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       val gen = Gen.oneOf(TransportMode.values.toSeq)
 
-      forAll(gen) {
-        transportMode =>
+      forAll(gen) { transportMode =>
 
-          JsString(transportMode.toString).validate[TransportMode].asOpt.value mustEqual transportMode
+        JsString(transportMode.toString).validate[TransportMode].asOpt.value mustEqual transportMode
       }
     }
 
@@ -43,10 +46,9 @@ class TransportModeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       val gen = arbitrary[String] suchThat (!TransportMode.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[TransportMode] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[TransportMode] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +56,9 @@ class TransportModeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropert
 
       val gen = Gen.oneOf(TransportMode.values.toSeq)
 
-      forAll(gen) {
-        transportMode =>
+      forAll(gen) { transportMode =>
 
-          Json.toJson(transportMode) mustEqual JsString(transportMode.toString)
+        Json.toJson(transportMode) mustEqual JsString(transportMode.toString)
       }
     }
   }

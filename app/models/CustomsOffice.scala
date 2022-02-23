@@ -157,16 +157,15 @@ object CustomsOffice {
       CustomsOffice("GB005180", "Montrose"),
       CustomsOffice("GB005190", "Portbury"),
       CustomsOffice("GB005200", "Fishguard"),
-      CustomsOffice("GB005210", "Heysham"),
+      CustomsOffice("GB005210", "Heysham")
     )
 
   def selectItems(kindsOfPackage: Seq[CustomsOffice]): Seq[SelectItem] =
     SelectItem(value = None, text = "Select a customs office") +:
-      kindsOfPackage.map {
-        kindOfPackage =>
-          SelectItemViewModel(
-            value = kindOfPackage.code,
-            text  = kindOfPackage.name
-          )
+      kindsOfPackage.map { kindOfPackage =>
+        SelectItemViewModel(
+          value = kindOfPackage.code,
+          text = kindOfPackage.name
+        )
       }
 }

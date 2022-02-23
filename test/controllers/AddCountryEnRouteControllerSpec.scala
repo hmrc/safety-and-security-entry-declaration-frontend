@@ -32,7 +32,8 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AddCountryEnRouteFormProvider()
   val form = formProvider()
 
-  lazy val addCountryEnRouteRoute = routes.AddCountryEnRouteController.onPageLoad(NormalMode, lrn).url
+  lazy val addCountryEnRouteRoute =
+    routes.AddCountryEnRouteController.onPageLoad(NormalMode, lrn).url
 
   "AddCountryEnRoute Controller" - {
 
@@ -51,7 +52,10 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val list = CountryEnRouteSummary.rows(emptyUserAnswers)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(
+          request,
+          implicitly
+        ).toString
       }
     }
 
@@ -69,7 +73,9 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddCountryEnRoutePage.navigate(NormalMode, emptyUserAnswers, addAnother = true).url
+        redirectLocation(result).value mustEqual AddCountryEnRoutePage
+          .navigate(NormalMode, emptyUserAnswers, addAnother = true)
+          .url
       }
     }
 
@@ -92,7 +98,10 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val list = CountryEnRouteSummary.rows(emptyUserAnswers)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(
+          request,
+          implicitly
+        ).toString
       }
     }
 

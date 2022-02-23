@@ -36,7 +36,8 @@ class GoodsPassThroughOtherCountriesControllerSpec extends SpecBase with Mockito
   val formProvider = new GoodsPassThroughOtherCountriesFormProvider()
   val form = formProvider()
 
-  lazy val goodsPassThroughOtherCountriesRoute = routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, lrn).url
+  lazy val goodsPassThroughOtherCountriesRoute =
+    routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, lrn).url
 
   "GoodsPassThroughOtherCountries Controller" - {
 
@@ -52,7 +53,10 @@ class GoodsPassThroughOtherCountriesControllerSpec extends SpecBase with Mockito
         val view = application.injector.instanceOf[GoodsPassThroughOtherCountriesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -70,7 +74,10 @@ class GoodsPassThroughOtherCountriesControllerSpec extends SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -90,11 +97,14 @@ class GoodsPassThroughOtherCountriesControllerSpec extends SpecBase with Mockito
           FakeRequest(POST, goodsPassThroughOtherCountriesRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(GoodsPassThroughOtherCountriesPage, true).success.value
+        val result = route(application, request).value
+        val expectedAnswers =
+          emptyUserAnswers.set(GoodsPassThroughOtherCountriesPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual GoodsPassThroughOtherCountriesPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual GoodsPassThroughOtherCountriesPage
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -115,7 +125,10 @@ class GoodsPassThroughOtherCountriesControllerSpec extends SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

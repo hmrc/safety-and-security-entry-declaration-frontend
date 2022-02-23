@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class CarrierPaymentMethodSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class CarrierPaymentMethodSpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "CarrierPaymentMethod" - {
 
@@ -32,21 +36,23 @@ class CarrierPaymentMethodSpec extends AnyFreeSpec with Matchers with ScalaCheck
 
       val gen = Gen.oneOf(CarrierPaymentMethod.values.toSeq)
 
-      forAll(gen) {
-        carrierPaymentMethod =>
+      forAll(gen) { carrierPaymentMethod =>
 
-          JsString(carrierPaymentMethod.toString).validate[CarrierPaymentMethod].asOpt.value mustEqual carrierPaymentMethod
+        JsString(carrierPaymentMethod.toString)
+          .validate[CarrierPaymentMethod]
+          .asOpt
+          .value mustEqual carrierPaymentMethod
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!CarrierPaymentMethod.values.map(_.toString).contains(_))
+      val gen =
+        arbitrary[String] suchThat (!CarrierPaymentMethod.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[CarrierPaymentMethod] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[CarrierPaymentMethod] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +60,9 @@ class CarrierPaymentMethodSpec extends AnyFreeSpec with Matchers with ScalaCheck
 
       val gen = Gen.oneOf(CarrierPaymentMethod.values.toSeq)
 
-      forAll(gen) {
-        carrierPaymentMethod =>
+      forAll(gen) { carrierPaymentMethod =>
 
-          Json.toJson(carrierPaymentMethod) mustEqual JsString(carrierPaymentMethod.toString)
+        Json.toJson(carrierPaymentMethod) mustEqual JsString(carrierPaymentMethod.toString)
       }
     }
   }

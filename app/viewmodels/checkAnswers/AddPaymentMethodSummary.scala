@@ -24,21 +24,22 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object AddPaymentMethodSummary  {
+object AddPaymentMethodSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AddPaymentMethodPage(index)).map {
-      answer =>
+    answers.get(AddPaymentMethodPage(index)).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "addPaymentMethod.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.AddPaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("addPaymentMethod.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "addPaymentMethod.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.AddPaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("addPaymentMethod.change.hidden"))
         )
+      )
     }
 }

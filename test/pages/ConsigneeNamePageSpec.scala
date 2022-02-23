@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeNamePage" - {
@@ -36,8 +35,11 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
 
       "to consignee address" in {
 
-        ConsigneeNamePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.ConsigneeAddressController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        ConsigneeNamePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.ConsigneeAddressController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsigneeNamePage(index).navigate(CheckMode, emptyUserAnswers)
+        ConsigneeNamePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OverallCrnSummary  {
+object OverallCrnSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverallCrnPage).map {
-      answer =>
+    answers.get(OverallCrnPage).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "overallCrn.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.OverallCrnController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("overallCrn.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "overallCrn.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.OverallCrnController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("overallCrn.change.hidden"))
         )
+      )
     }
 }

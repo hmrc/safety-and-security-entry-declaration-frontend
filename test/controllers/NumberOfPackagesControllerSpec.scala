@@ -38,7 +38,8 @@ class NumberOfPackagesControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = 1
 
-  lazy val numberOfPackagesRoute = routes.NumberOfPackagesController.onPageLoad(NormalMode, lrn, index, index).url
+  lazy val numberOfPackagesRoute =
+    routes.NumberOfPackagesController.onPageLoad(NormalMode, lrn, index, index).url
 
   "NumberOfPackages Controller" - {
 
@@ -54,13 +55,17 @@ class NumberOfPackagesControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NumberOfPackagesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NumberOfPackagesPage(index, index), validAnswer).success.value
+      val userAnswers =
+        emptyUserAnswers.set(NumberOfPackagesPage(index, index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +77,13 @@ class NumberOfPackagesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(validAnswer),
+          NormalMode,
+          lrn,
+          index,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -92,11 +103,14 @@ class NumberOfPackagesControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, numberOfPackagesRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NumberOfPackagesPage(index, index), validAnswer).success.value
+        val result = route(application, request).value
+        val expectedAnswers =
+          emptyUserAnswers.set(NumberOfPackagesPage(index, index), validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NumberOfPackagesPage(index, index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual NumberOfPackagesPage(index, index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -117,7 +131,10 @@ class NumberOfPackagesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

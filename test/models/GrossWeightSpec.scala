@@ -24,7 +24,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class GrossWeightSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class GrossWeightSpec
+  extends AnyFreeSpec
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with OptionValues {
 
   "GrossWeight" - {
 
@@ -32,10 +36,9 @@ class GrossWeightSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val gen = Gen.oneOf(GrossWeight.values.toSeq)
 
-      forAll(gen) {
-        grossWeight =>
+      forAll(gen) { grossWeight =>
 
-          JsString(grossWeight.toString).validate[GrossWeight].asOpt.value mustEqual grossWeight
+        JsString(grossWeight.toString).validate[GrossWeight].asOpt.value mustEqual grossWeight
       }
     }
 
@@ -43,10 +46,9 @@ class GrossWeightSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val gen = arbitrary[String] suchThat (!GrossWeight.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
+      forAll(gen) { invalidValue =>
 
-          JsString(invalidValue).validate[GrossWeight] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[GrossWeight] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +56,9 @@ class GrossWeightSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val gen = Gen.oneOf(GrossWeight.values.toSeq)
 
-      forAll(gen) {
-        grossWeight =>
+      forAll(gen) { grossWeight =>
 
-          Json.toJson(grossWeight) mustEqual JsString(grossWeight.toString)
+        Json.toJson(grossWeight) mustEqual JsString(grossWeight.toString)
       }
     }
   }

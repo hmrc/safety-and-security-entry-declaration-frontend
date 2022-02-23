@@ -35,7 +35,8 @@ class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
 
       "to Index" in {
 
-        CarrierPaymentMethodPage(index).navigate(NormalMode, emptyUserAnswers)
+        CarrierPaymentMethodPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -44,7 +45,8 @@ class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CarrierPaymentMethodPage(index).navigate(CheckMode, emptyUserAnswers)
+        CarrierPaymentMethodPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -54,7 +54,10 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[TotalGrossWeightView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -72,7 +75,10 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -96,7 +102,9 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(TotalGrossWeightPage, validAnswer).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TotalGrossWeightPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual TotalGrossWeightPage
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -117,7 +125,10 @@ class TotalGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

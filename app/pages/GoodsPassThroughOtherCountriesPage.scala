@@ -29,9 +29,11 @@ case object GoodsPassThroughOtherCountriesPage extends QuestionPage[Boolean] {
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(GoodsPassThroughOtherCountriesPage) match {
-      case Some(true)  => routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) => routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
-      case None        => routes.JourneyRecoveryController.onPageLoad()
+      case Some(true) =>
+        routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case Some(false) =>
+        routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+      case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }

@@ -35,7 +35,8 @@ class TransportModePageSpec extends SpecBase with PageBehaviours {
 
       "to the Task List" in {
 
-        TransportModePage.navigate(NormalMode, emptyUserAnswers)
+        TransportModePage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
@@ -44,7 +45,8 @@ class TransportModePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        TransportModePage.navigate(CheckMode, emptyUserAnswers)
+        TransportModePage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

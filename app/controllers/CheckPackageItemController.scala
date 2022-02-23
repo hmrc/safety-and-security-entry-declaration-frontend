@@ -26,29 +26,34 @@ import viewmodels.checkAnswers._
 import viewmodels.govuk.summarylist._
 import views.html.CheckPackageItemView
 
-class CheckPackageItemController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            identify: IdentifierAction,
-                                            getData: DataRetrievalActionProvider,
-                                            requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: CheckPackageItemView
-                                          ) extends FrontendBaseController with I18nSupport {
+class CheckPackageItemController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckPackageItemView
+) extends FrontendBaseController
+  with I18nSupport {
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
-      implicit request =>
+  def onPageLoad(
+    mode: Mode,
+    lrn: LocalReferenceNumber,
+    itemIndex: Index,
+    packageIndex: Index
+  ): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-        val list = SummaryListViewModel(
-          rows = Seq(
-            KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex),
-            NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex),
-            NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex),
-            AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex),
-            MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex)
-          ).flatten
-        )
+      val list = SummaryListViewModel(
+        rows = Seq(
+          KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex),
+          NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex),
+          NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex),
+          AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex),
+          MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex)
+        ).flatten
+      )
 
-        Ok(view(mode, list, lrn, itemIndex, packageIndex))
+      Ok(view(mode, list, lrn, itemIndex, packageIndex))
     }
 }

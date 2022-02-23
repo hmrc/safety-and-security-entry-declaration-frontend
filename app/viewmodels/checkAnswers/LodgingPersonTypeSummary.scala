@@ -26,25 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LodgingPersonTypeSummary  {
+object LodgingPersonTypeSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LodgingPersonTypePage).map {
-      answer =>
+    answers.get(LodgingPersonTypePage).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"lodgingPersonType.$answer"))
-          )
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"lodgingPersonType.$answer"))
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "lodgingPersonType.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.LodgingPersonTypeController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("lodgingPersonType.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "lodgingPersonType.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.LodgingPersonTypeController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("lodgingPersonType.change.hidden"))
         )
+      )
     }
 }

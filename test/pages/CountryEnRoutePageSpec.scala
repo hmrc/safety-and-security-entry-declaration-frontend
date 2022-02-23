@@ -35,8 +35,11 @@ class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Add Country En Route" in {
 
-        CountryEnRoutePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        CountryEnRoutePage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -44,7 +47,8 @@ class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryEnRoutePage(index).navigate(CheckMode, emptyUserAnswers)
+        CountryEnRoutePage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

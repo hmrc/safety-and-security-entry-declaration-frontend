@@ -43,7 +43,7 @@ trait GbEoriFieldBehaviours extends FieldBehaviours {
         "GB 123 456 789 000 000",
         "GB123456789000",
         "123 456 789 000",
-        "123456789000",
+        "123456789000"
       )
 
       // Generate some more variations

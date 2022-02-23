@@ -30,21 +30,23 @@ import views.html.AddAnyDocumentsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAnyDocumentsController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: AddAnyDocumentsFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: AddAnyDocumentsView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AddAnyDocumentsController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddAnyDocumentsFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddAnyDocumentsView
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+  with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(AddAnyDocumentsPage(index)) match {
         case None => form
@@ -52,20 +54,21 @@ class AddAnyDocumentsController @Inject()(
       }
 
       Ok(view(preparedForm, mode, lrn, index))
-  }
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyDocumentsPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddAnyDocumentsPage(index).navigate(mode, updatedAnswers))
-      )
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(AddAnyDocumentsPage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddAnyDocumentsPage(index).navigate(mode, updatedAnswers))
+        )
+    }
 }

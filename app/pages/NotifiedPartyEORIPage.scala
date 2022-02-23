@@ -28,6 +28,6 @@ case class NotifiedPartyEORIPage(index: Index) extends QuestionPage[String] {
   override def toString: String = "notifiedPartyEORI"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.UnloadingCodeController.onPageLoad(NormalMode,answers.lrn,index)
+    routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

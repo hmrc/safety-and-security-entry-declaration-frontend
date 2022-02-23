@@ -28,17 +28,19 @@ object ConsigneeIdentity extends Enumerable.Implicits {
   case object NameAddress extends WithName("nameAddress") with ConsigneeIdentity
 
   val values: Seq[ConsigneeIdentity] = Seq(
-    GBEORI, NameAddress
+    GBEORI,
+    NameAddress
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"consigneeIdentity.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
-  }
+  def options(implicit messages: Messages): Seq[RadioItem] =
+    values.zipWithIndex.map {
+      case (value, index) =>
+        RadioItem(
+          content = Text(messages(s"consigneeIdentity.${value.toString}")),
+          value = Some(value.toString),
+          id = Some(s"value_$index")
+        )
+    }
 
   implicit val enumerable: Enumerable[ConsigneeIdentity] =
     Enumerable(values.map(v => v.toString -> v): _*)

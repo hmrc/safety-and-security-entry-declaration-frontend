@@ -35,13 +35,14 @@ class PackageItemSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
           stringsWithMaxLength(140) -> "mark or number"
         ) {
           case (kindOfPackage, markOrNumber) =>
-
             val json = Json.obj(
               "kindOfPackage" -> Json.toJson(kindOfPackage),
-              "markOrNumber"  -> markOrNumber
+              "markOrNumber" -> markOrNumber
             )
 
-            json.validate[PackageItem] mustEqual JsSuccess(BulkPackageItem(kindOfPackage, Some(markOrNumber)))
+            json.validate[PackageItem] mustEqual JsSuccess(
+              BulkPackageItem(kindOfPackage, Some(markOrNumber))
+            )
         }
       }
 
@@ -53,14 +54,15 @@ class PackageItemSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
           Gen.choose(1, 99999) -> "number of pieces"
         ) {
           case (kindOfPackage, markOrNumber, numberOfPieces) =>
-
             val json = Json.obj(
-              "kindOfPackage"  -> Json.toJson(kindOfPackage),
+              "kindOfPackage" -> Json.toJson(kindOfPackage),
               "numberOfPieces" -> numberOfPieces,
-              "markOrNumber"   -> markOrNumber
+              "markOrNumber" -> markOrNumber
             )
 
-            json.validate[PackageItem] mustEqual JsSuccess(UnpackedPackageItem(kindOfPackage, numberOfPieces, Some(markOrNumber)))
+            json.validate[PackageItem] mustEqual JsSuccess(
+              UnpackedPackageItem(kindOfPackage, numberOfPieces, Some(markOrNumber))
+            )
         }
       }
 
@@ -72,14 +74,15 @@ class PackageItemSpec extends SpecBase with ScalaCheckPropertyChecks with Genera
           Gen.choose(1, 99999) -> "number of pacakges"
         ) {
           case (kindOfPackage, markOrNumber, numberOfPackages) =>
-
             val json = Json.obj(
-              "kindOfPackage"  -> Json.toJson(kindOfPackage),
+              "kindOfPackage" -> Json.toJson(kindOfPackage),
               "numberOfPackages" -> numberOfPackages,
-              "markOrNumber"   -> markOrNumber
+              "markOrNumber" -> markOrNumber
             )
 
-            json.validate[PackageItem] mustEqual JsSuccess(StandardPackageItem(kindOfPackage, numberOfPackages, markOrNumber))
+            json.validate[PackageItem] mustEqual JsSuccess(
+              StandardPackageItem(kindOfPackage, numberOfPackages, markOrNumber)
+            )
         }
       }
     }

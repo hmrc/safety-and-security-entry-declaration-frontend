@@ -37,7 +37,8 @@ class OverallCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(OverallCrnKnownPage, true).success.value
 
-        OverallCrnKnownPage.navigate(NormalMode, answers)
+        OverallCrnKnownPage
+          .navigate(NormalMode, answers)
           .mustEqual(routes.OverallCrnController.onPageLoad(NormalMode, answers.lrn))
       }
 
@@ -45,7 +46,8 @@ class OverallCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(OverallCrnKnownPage, false).success.value
 
-        OverallCrnKnownPage.navigate(NormalMode, answers)
+        OverallCrnKnownPage
+          .navigate(NormalMode, answers)
           .mustEqual(routes.GrossWeightController.onPageLoad(NormalMode, answers.lrn))
       }
     }
@@ -54,7 +56,8 @@ class OverallCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        OverallCrnKnownPage.navigate(CheckMode, emptyUserAnswers)
+        OverallCrnKnownPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

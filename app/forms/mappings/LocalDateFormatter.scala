@@ -24,16 +24,22 @@ import play.api.data.format.Formatter
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
-                                            invalidKey: String,
-                                            allRequiredKey: String,
-                                            twoRequiredKey: String,
-                                            requiredKey: String,
-                                            args: Seq[String] = Seq.empty
-                                          ) extends Formatter[LocalDate] with Formatters {
+  invalidKey: String,
+  allRequiredKey: String,
+  twoRequiredKey: String,
+  requiredKey: String,
+  args: Seq[String] = Seq.empty
+) extends Formatter[LocalDate]
+  with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
-  private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
+  private def toDate(
+    key: String,
+    day: Int,
+    month: Int,
+    year: Int
+  ): Either[Seq[FormError], LocalDate] =
     Try(LocalDate.of(year, month, day)) match {
       case Success(date) =>
         Right(date)
@@ -41,7 +47,10 @@ private[mappings] class LocalDateFormatter(
         Left(Seq(FormError(key, invalidKey, args)))
     }
 
-  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+  private def formatDate(
+    key: String,
+    data: Map[String, String]
+  ): Either[Seq[FormError], LocalDate] = {
 
     val int = intFormatter(
       requiredKey = invalidKey,
@@ -51,18 +60,17 @@ private[mappings] class LocalDateFormatter(
     )
 
     for {
-      day   <- int.bind(s"$key.day", data).right
+      day <- int.bind(s"$key.day", data).right
       month <- int.bind(s"$key.month", data).right
-      year  <- int.bind(s"$key.year", data).right
-      date  <- toDate(key, day, month, year).right
+      year <- int.bind(s"$key.year", data).right
+      date <- toDate(key, day, month, year).right
     } yield date
   }
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    val fields = fieldKeys.map {
-      field =>
-        field -> data.get(s"$key.$field").filter(_.nonEmpty)
+    val fields = fieldKeys.map { field =>
+      field -> data.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
     lazy val missingFields = fields

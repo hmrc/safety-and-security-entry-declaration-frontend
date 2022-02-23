@@ -24,21 +24,22 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OverallCrnKnownSummary  {
+object OverallCrnKnownSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverallCrnKnownPage).map {
-      answer =>
+    answers.get(OverallCrnKnownPage).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "overallCrnKnown.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.OverallCrnKnownController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("overallCrnKnown.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "overallCrnKnown.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.OverallCrnKnownController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("overallCrnKnown.change.hidden"))
         )
+      )
     }
 }

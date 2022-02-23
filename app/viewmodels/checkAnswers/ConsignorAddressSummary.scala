@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsignorAddressSummary  {
+object ConsignorAddressSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsignorAddressPage(index)).map {
-      answer =>
+    answers.get(ConsignorAddressPage(index)).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "consignorAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.ConsignorAddressController.onPageLoad(CheckMode, answers.lrn, index).url)
-              .withVisuallyHiddenText(messages("consignorAddress.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "consignorAddress.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.ConsignorAddressController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("consignorAddress.change.hidden"))
         )
+      )
     }
 }

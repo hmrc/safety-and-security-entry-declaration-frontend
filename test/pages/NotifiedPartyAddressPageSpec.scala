@@ -21,7 +21,6 @@ import controllers.routes
 import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyAddressPage" - {
@@ -36,8 +35,11 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
       "to unloading code page" in {
 
-        NotifiedPartyAddressPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.UnloadingCodeController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        NotifiedPartyAddressPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.UnloadingCodeController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NotifiedPartyAddressPage(index).navigate(CheckMode, emptyUserAnswers)
+        NotifiedPartyAddressPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

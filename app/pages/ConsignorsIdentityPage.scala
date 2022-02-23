@@ -28,10 +28,11 @@ case class ConsignorsIdentityPage(index: Index) extends QuestionPage[ConsignorsI
 
   override def toString: String = "consignorsIdentity"
 
-  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(ConsignorsIdentityPage(index)) match {
-      case Some(GBEORI) => routes.ConsignorEORIController.onPageLoad(NormalMode,answers.lrn,index)
-      case Some(NameAddress) => routes.ConsignorNameController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(GBEORI) => routes.ConsignorEORIController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(NameAddress) =>
+        routes.ConsignorNameController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }

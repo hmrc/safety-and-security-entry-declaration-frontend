@@ -21,26 +21,25 @@ import models.Country
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
-
 class ConsignorAddressFormProviderSpec extends StringFieldBehaviours {
   val form = new ConsignorAddressFormProvider()()
 
   ".streetAndNumber" - {
-      val fieldName = "streetAndNumber"
-      val lengthKey = "address.streetAndNumber.error.length"
+    val fieldName = "streetAndNumber"
+    val lengthKey = "address.streetAndNumber.error.length"
 
-      behave like fieldThatBindsValidData(
-        form,
-        fieldName,
-        stringsWithMaxLength(35)
-      )
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(35)
+    )
 
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = 35,
-        lengthError = FormError(fieldName, lengthKey, Seq(35))
-      )
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = 35,
+      lengthError = FormError(fieldName, lengthKey, Seq(35))
+    )
   }
 
   ".city" - {

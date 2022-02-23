@@ -24,19 +24,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object NumberOfPackagesSummary  {
+object NumberOfPackagesSummary {
 
-  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NumberOfPackagesPage(itemIndex, packageIndex)).map {
-      answer =>
+  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    answers.get(NumberOfPackagesPage(itemIndex, packageIndex)).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "numberOfPackages.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.NumberOfPackagesController.onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex).url)
-              .withVisuallyHiddenText(messages("numberOfPackages.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "numberOfPackages.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.NumberOfPackagesController
+              .onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex)
+              .url
+          ).withVisuallyHiddenText(messages("numberOfPackages.change.hidden"))
         )
+      )
     }
 }

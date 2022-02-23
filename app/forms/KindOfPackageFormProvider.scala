@@ -27,7 +27,10 @@ class KindOfPackageFormProvider @Inject() extends Mappings {
   def apply(): Form[KindOfPackage] =
     Form(
       "value" -> text("kindOfPackage.error.required")
-        .verifying("kindOfPackage.error.required", value => allKindsOfPackage.exists(_.code == value))
+        .verifying(
+          "kindOfPackage.error.required",
+          value => allKindsOfPackage.exists(_.code == value)
+        )
         .transform[KindOfPackage](value => allKindsOfPackage.find(_.code == value).get, _.code)
     )
 }

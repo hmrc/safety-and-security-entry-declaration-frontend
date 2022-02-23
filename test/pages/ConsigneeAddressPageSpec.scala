@@ -21,7 +21,6 @@ import controllers.routes
 import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class ConsigneeAddressPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeAddressPage" - {
@@ -36,8 +35,11 @@ class ConsigneeAddressPageSpec extends SpecBase with PageBehaviours {
 
       "to unloading code page" in {
 
-        ConsigneeAddressPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.UnloadingCodeController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        ConsigneeAddressPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.UnloadingCodeController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class ConsigneeAddressPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsigneeAddressPage(index).navigate(CheckMode, emptyUserAnswers)
+        ConsigneeAddressPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

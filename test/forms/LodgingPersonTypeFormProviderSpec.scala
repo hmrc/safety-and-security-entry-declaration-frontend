@@ -32,7 +32,7 @@ class LodgingPersonTypeFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[LodgingPersonType](
       form,
       fieldName,
-      validValues  = LodgingPersonType.values,
+      validValues = LodgingPersonType.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

@@ -25,19 +25,20 @@ import models.ArrivalDateAndTime
 
 class ArrivalDateAndTimeFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[ArrivalDateAndTime] = Form(
-     mapping(
-       "date" -> localDate(
-         invalidKey     = "arrivalDateAndTime.date.error.invalid",
-         allRequiredKey = "arrivalDateAndTime.date.error.required.all",
-         twoRequiredKey = "arrivalDateAndTime.date.error.required.two",
-         requiredKey    = "arrivalDateAndTime.date.error.required"
+  def apply(): Form[ArrivalDateAndTime] =
+    Form(
+      mapping(
+        "date" -> localDate(
+          invalidKey = "arrivalDateAndTime.date.error.invalid",
+          allRequiredKey = "arrivalDateAndTime.date.error.required.all",
+          twoRequiredKey = "arrivalDateAndTime.date.error.required.two",
+          requiredKey = "arrivalDateAndTime.date.error.required"
         ),
-       "time" -> localTime(
-         invalidKey     = "arrivalDateAndTime.time.error.invalid",
-         allRequiredKey = "arrivalDateAndTime.time.error.required.all",
-         requiredKey    = "arrivalDateAndTime.time.error.required"
-       )
-    )(ArrivalDateAndTime.apply)(ArrivalDateAndTime.unapply)
-  )
+        "time" -> localTime(
+          invalidKey = "arrivalDateAndTime.time.error.invalid",
+          allRequiredKey = "arrivalDateAndTime.time.error.required.all",
+          requiredKey = "arrivalDateAndTime.time.error.required"
+        )
+      )(ArrivalDateAndTime.apply)(ArrivalDateAndTime.unapply)
+    )
 }

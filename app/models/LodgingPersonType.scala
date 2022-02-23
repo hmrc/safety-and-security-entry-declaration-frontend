@@ -28,17 +28,19 @@ object LodgingPersonType extends Enumerable.Implicits {
   case object Representative extends WithName("representative") with LodgingPersonType
 
   val values: Seq[LodgingPersonType] = Seq(
-    Carrier, Representative
+    Carrier,
+    Representative
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"lodgingPersonType.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
-  }
+  def options(implicit messages: Messages): Seq[RadioItem] =
+    values.zipWithIndex.map {
+      case (value, index) =>
+        RadioItem(
+          content = Text(messages(s"lodgingPersonType.${value.toString}")),
+          value = Some(value.toString),
+          id = Some(s"value_$index")
+        )
+    }
 
   implicit val enumerable: Enumerable[LodgingPersonType] =
     Enumerable(values.map(v => v.toString -> v): _*)

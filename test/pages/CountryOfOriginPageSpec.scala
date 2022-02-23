@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
   "CountryOfOriginPage" - {
@@ -36,8 +35,12 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
       "to Goods Pass Through Other Countries" in {
 
-        CountryOfOriginPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        CountryOfOriginPage
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.GoodsPassThroughOtherCountriesController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -45,7 +48,8 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryOfOriginPage.navigate(CheckMode, emptyUserAnswers)
+        CountryOfOriginPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

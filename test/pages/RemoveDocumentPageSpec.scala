@@ -29,7 +29,8 @@ class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Index" in {
 
-        RemoveDocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
+        RemoveDocumentPage(index, index)
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -38,7 +39,8 @@ class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemoveDocumentPage(index, index).navigate(CheckMode, emptyUserAnswers)
+        RemoveDocumentPage(index, index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

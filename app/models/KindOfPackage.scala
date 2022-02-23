@@ -41,7 +41,7 @@ object KindOfPackage {
     Seq(
       KindOfPackage("NE", "Unpacked or unpackaged"),
       KindOfPackage("NF", "Unpacked or unpackaged, single unit"),
-      KindOfPackage("NG", "Unpacked or unpackaged, multiple un"),
+      KindOfPackage("NG", "Unpacked or unpackaged, multiple un")
     )
 
   val standardKindsOfPackages: Seq[KindOfPackage] =
@@ -379,11 +379,10 @@ object KindOfPackage {
 
   def selectItems(kindsOfPackage: Seq[KindOfPackage]): Seq[SelectItem] =
     SelectItem(value = None, text = "Select a kind of package") +:
-      kindsOfPackage.map {
-        kindOfPackage =>
-          SelectItemViewModel(
-            value = kindOfPackage.code,
-            text  = kindOfPackage.name
-          )
+      kindsOfPackage.map { kindOfPackage =>
+        SelectItemViewModel(
+          value = kindOfPackage.code,
+          text = kindOfPackage.name
+        )
       }
 }

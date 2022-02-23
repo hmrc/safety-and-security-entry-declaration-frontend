@@ -36,7 +36,8 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new LocalReferenceNumberFormProvider()
   val form = formProvider()
 
-  lazy val localReferenceNumberRoute = routes.LocalReferenceNumberController.onPageLoad(NormalMode).url
+  lazy val localReferenceNumberRoute =
+    routes.LocalReferenceNumberController.onPageLoad(NormalMode).url
 
   "LocalReferenceNumber Controller" - {
 
@@ -52,7 +53,10 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[LocalReferenceNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -76,7 +80,9 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(LocalReferenceNumberPage, lrn).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual LocalReferenceNumberPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual LocalReferenceNumberPage
+          .navigate(NormalMode, expectedAnswers)
+          .url
       }
     }
 
@@ -96,7 +102,10 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          request,
+          messages(application)
+        ).toString
       }
     }
   }

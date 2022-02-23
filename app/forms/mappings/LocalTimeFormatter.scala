@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -24,21 +23,25 @@ import java.time.LocalTime
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalTimeFormatter(
-                                            invalidKey: String,
-                                            allRequiredKey: String,
-                                            requiredKey: String,
-                                            args: Seq[String] = Seq.empty
-                                          ) extends Formatter[LocalTime] with Formatters {
+  invalidKey: String,
+  allRequiredKey: String,
+  requiredKey: String,
+  args: Seq[String] = Seq.empty
+) extends Formatter[LocalTime]
+  with Formatters {
 
   private val fieldKeys: List[String] = List("hour", "minutes")
 
   private def toTime(key: String, hour: Int, minute: Int): Either[Seq[FormError], LocalTime] =
     Try(LocalTime.of(hour, minute)) match {
       case Success(time) => Right(time)
-      case Failure(_)    => Left(Seq(FormError(key, invalidKey, args)))
+      case Failure(_) => Left(Seq(FormError(key, invalidKey, args)))
     }
 
-  private def formatTime(key: String, data: Map[String, String]): Either[Seq[FormError], LocalTime] = {
+  private def formatTime(
+    key: String,
+    data: Map[String, String]
+  ): Either[Seq[FormError], LocalTime] = {
 
     val int = intFormatter(
       requiredKey = invalidKey,
@@ -48,17 +51,16 @@ private[mappings] class LocalTimeFormatter(
     )
 
     for {
-      hour    <- int.bind(s"$key.hour", data).right
+      hour <- int.bind(s"$key.hour", data).right
       minute <- int.bind(s"$key.minutes", data).right
-      time    <- toTime(key, hour, minute).right
+      time <- toTime(key, hour, minute).right
     } yield time
   }
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalTime] = {
 
-    val fields = fieldKeys.map {
-      field =>
-        field -> data.get(s"$key.$field").filter(_.nonEmpty)
+    val fields = fieldKeys.map { field =>
+      field -> data.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
     lazy val missingFields = fields
@@ -80,7 +82,7 @@ private[mappings] class LocalTimeFormatter(
 
   override def unbind(key: String, value: LocalTime): Map[String, String] =
     Map(
-      s"$key.hour"    -> value.getHour.toString,
+      s"$key.hour" -> value.getHour.toString,
       s"$key.minutes" -> value.getMinute.toString
     )
 }

@@ -37,16 +37,22 @@ class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), true).success.value
 
-        AddMarkOrNumberPage(index, index).navigate(NormalMode, answers)
-          .mustEqual(routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, index, index))
+        AddMarkOrNumberPage(index, index)
+          .navigate(NormalMode, answers)
+          .mustEqual(
+            routes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, index, index)
+          )
       }
 
       "to Check Package Item if the answer is no" in {
 
         val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), false).success.value
 
-        AddMarkOrNumberPage(index, index).navigate(NormalMode, answers)
-          .mustEqual(routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, index, index))
+        AddMarkOrNumberPage(index, index)
+          .navigate(NormalMode, answers)
+          .mustEqual(
+            routes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, index, index)
+          )
       }
     }
 
@@ -54,7 +60,8 @@ class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddMarkOrNumberPage(index, index).navigate(CheckMode, emptyUserAnswers)
+        AddMarkOrNumberPage(index, index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

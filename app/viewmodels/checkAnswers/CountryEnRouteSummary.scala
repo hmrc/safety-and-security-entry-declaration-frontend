@@ -27,32 +27,35 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CountryEnRouteSummary  {
+object CountryEnRouteSummary {
 
   def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AllCountriesEnRouteQuery).map {
-      countries =>
+    answers.get(AllCountriesEnRouteQuery).map { countries =>
 
-        val value = countries.map(_.name).mkString("<br/>")
+      val value = countries.map(_.name).mkString("<br/>")
 
-        SummaryListRowViewModel(
-          key     = "countryEnRoute.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("countryEnRoute.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "countryEnRoute.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("countryEnRoute.change.hidden"))
         )
+      )
     }
 
   def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
     answers.get(AllCountriesEnRouteQuery).getOrElse(List.empty).zipWithIndex.map {
       case (country, index) =>
-
         ListItem(
           name = HtmlFormat.escape(country.name).toString,
-          changeUrl = routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
-          removeUrl = routes.RemoveCountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
+          changeUrl =
+            routes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
+          removeUrl = routes.RemoveCountryEnRouteController
+            .onPageLoad(NormalMode, answers.lrn, Index(index))
+            .url
         )
     }
 }

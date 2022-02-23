@@ -23,7 +23,10 @@ import models.{Enumerable, GbEori}
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
+  protected def text(
+    errorKey: String = "error.required",
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 
   protected def gbEori(
@@ -35,44 +38,51 @@ trait Mappings extends Formatters with Constraints {
     of(gbEoriFormatter(errorKey, lengthKey, nonNumericKey, args))
   }
 
-  protected def int(requiredKey: String = "error.required",
-                    wholeNumberKey: String = "error.wholeNumber",
-                    nonNumericKey: String = "error.nonNumeric",
-                    args: Seq[String] = Seq.empty): FieldMapping[Int] =
+  protected def int(
+    requiredKey: String = "error.required",
+    wholeNumberKey: String = "error.wholeNumber",
+    nonNumericKey: String = "error.nonNumeric",
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
   protected def decimal(
-                         requiredKey: String = "error.required",
-                         nonNumericKey: String = "error.nonNumeric",
-                         invalidPrecisionKey: String = "error.precision",
-                         precision: Int,
-                         args: Seq[String] = Seq.empty
-                       ): FieldMapping[BigDecimal] =
+    requiredKey: String = "error.required",
+    nonNumericKey: String = "error.nonNumeric",
+    invalidPrecisionKey: String = "error.precision",
+    precision: Int,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[BigDecimal] =
     of(decimalFormatter(requiredKey, nonNumericKey, invalidPrecisionKey, precision, args))
 
-  protected def boolean(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean",
-                        args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
+  protected def boolean(
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.boolean",
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
-
-  protected def enumerable[A](requiredKey: String = "error.required",
-                              invalidKey: String = "error.invalid",
-                              args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): FieldMapping[A] =
+  protected def enumerable[A](
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.invalid",
+    args: Seq[String] = Seq.empty
+  )(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey, args))
 
   protected def localDate(
-                           invalidKey: String,
-                           allRequiredKey: String,
-                           twoRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
+    invalidKey: String,
+    allRequiredKey: String,
+    twoRequiredKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
   protected def localTime(
-                           invalidKey: String,
-                           allRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalTime] =
+    invalidKey: String,
+    allRequiredKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[LocalTime] =
     of(new LocalTimeFormatter(invalidKey, allRequiredKey, requiredKey, args))
 }

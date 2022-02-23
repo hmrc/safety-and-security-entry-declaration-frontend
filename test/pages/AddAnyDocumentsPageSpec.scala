@@ -37,7 +37,8 @@ class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(AddAnyDocumentsPage(index), true).success.value
 
-        AddAnyDocumentsPage(index).navigate(NormalMode, answers)
+        AddAnyDocumentsPage(index)
+          .navigate(NormalMode, answers)
           .mustEqual(routes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, index))
       }
 
@@ -45,7 +46,8 @@ class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(AddAnyDocumentsPage(index), false).success.value
 
-        AddAnyDocumentsPage(index).navigate(NormalMode, answers)
+        AddAnyDocumentsPage(index)
+          .navigate(NormalMode, answers)
           .mustEqual(routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
@@ -54,7 +56,8 @@ class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        AddAnyDocumentsPage(index).navigate(CheckMode, emptyUserAnswers)
+        AddAnyDocumentsPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

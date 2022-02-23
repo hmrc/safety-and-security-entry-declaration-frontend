@@ -35,8 +35,11 @@ class NumberOfPackagesPageSpec extends SpecBase with PageBehaviours {
 
       "to Mark or Number" in {
 
-        NumberOfPackagesPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.MarkOrNumberController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index))
+        NumberOfPackagesPage(index, index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.MarkOrNumberController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
+          )
       }
     }
 
@@ -44,7 +47,8 @@ class NumberOfPackagesPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        NumberOfPackagesPage(index, index).navigate(CheckMode, emptyUserAnswers)
+        NumberOfPackagesPage(index, index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

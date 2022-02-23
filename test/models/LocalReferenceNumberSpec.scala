@@ -27,10 +27,10 @@ import play.api.mvc.PathBindable
 
 class LocalReferenceNumberSpec
   extends AnyFreeSpec
-    with Matchers
-    with ScalaCheckPropertyChecks
-    with Generators
-    with EitherValues {
+  with Matchers
+  with ScalaCheckPropertyChecks
+  with Generators
+  with EitherValues {
 
   private val pathBindable = implicitly[PathBindable[LocalReferenceNumber]]
 
@@ -38,26 +38,27 @@ class LocalReferenceNumberSpec
 
     "must bind and unbind valid values from/to a URL" in {
 
-      forAll(arbitrary[LocalReferenceNumber]) {
-        lrn =>
+      forAll(arbitrary[LocalReferenceNumber]) { lrn =>
 
-          pathBindable.bind("key", lrn.value).value mustEqual lrn
-          pathBindable.unbind("key", lrn) mustEqual lrn.value
+        pathBindable.bind("key", lrn.value).value mustEqual lrn
+        pathBindable.unbind("key", lrn) mustEqual lrn.value
       }
     }
 
     "must not bind invalid values from a URL" in {
 
-      pathBindable.bind("key", "invalid value").left.value mustEqual "Invalid Local Reference Number"
+      pathBindable
+        .bind("key", "invalid value")
+        .left
+        .value mustEqual "Invalid Local Reference Number"
     }
 
     "must serialise and deserialise to/from a JsString of the inner value" in {
 
-      forAll(arbitrary[LocalReferenceNumber]) {
-        lrn =>
-          
-          Json.toJson(lrn) mustEqual JsString(lrn.value)
-          JsString(lrn.value).validate[LocalReferenceNumber] mustEqual JsSuccess(lrn)
+      forAll(arbitrary[LocalReferenceNumber]) { lrn =>
+
+        Json.toJson(lrn) mustEqual JsString(lrn.value)
+        JsString(lrn.value).validate[LocalReferenceNumber] mustEqual JsSuccess(lrn)
       }
     }
   }

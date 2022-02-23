@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class CarriersEORIPageSpec extends SpecBase with PageBehaviours {
 
   "CarriersEORIPage" - {
@@ -36,7 +35,8 @@ class CarriersEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Index" in {
 
-        CarriersEORIPage.navigate(NormalMode, emptyUserAnswers)
+        CarriersEORIPage
+          .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,8 @@ class CarriersEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CarriersEORIPage.navigate(CheckMode, emptyUserAnswers)
+        CarriersEORIPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

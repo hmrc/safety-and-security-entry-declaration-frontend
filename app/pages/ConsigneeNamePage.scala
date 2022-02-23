@@ -28,6 +28,6 @@ case class ConsigneeNamePage(index: Index) extends QuestionPage[String] {
   override def toString: String = "consigneeName"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.ConsigneeAddressController.onPageLoad(NormalMode,answers.lrn,index)
+    routes.ConsigneeAddressController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

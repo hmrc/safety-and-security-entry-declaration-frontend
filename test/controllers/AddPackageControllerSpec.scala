@@ -36,9 +36,15 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
 
   val baseAnswers =
     emptyUserAnswers
-      .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head).success.value
-      .set(NumberOfPackagesPage(index, index), 1).success.value
-      .set(MarkOrNumberPage(index, index), "Mark or number").success.value
+      .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head)
+      .success
+      .value
+      .set(NumberOfPackagesPage(index, index), 1)
+      .success
+      .value
+      .set(MarkOrNumberPage(index, index), "Mark or number")
+      .success
+      .value
 
   "AddPackage Controller" - {
 
@@ -57,7 +63,10 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val list = PackageSummary.rows(baseAnswers, index)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, list)(
+          request,
+          implicitly
+        ).toString
       }
     }
 
@@ -73,7 +82,9 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddPackagePage(index).navigate(NormalMode, baseAnswers, index, addAnother = true).url
+        redirectLocation(result).value mustEqual AddPackagePage(index)
+          .navigate(NormalMode, baseAnswers, index, addAnother = true)
+          .url
       }
     }
 
@@ -96,7 +107,10 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val list = PackageSummary.rows(emptyUserAnswers, index)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, list)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, list)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

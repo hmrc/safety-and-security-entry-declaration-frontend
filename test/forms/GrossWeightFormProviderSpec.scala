@@ -32,7 +32,7 @@ class GrossWeightFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[GrossWeight](
       form,
       fieldName,
-      validValues  = GrossWeight.values,
+      validValues = GrossWeight.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

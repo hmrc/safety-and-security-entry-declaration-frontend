@@ -46,12 +46,12 @@ class CustomsOfficeOfFirstEntryFormProviderSpec extends StringFieldBehaviours {
 
     "must not bind any values other than valid customs office codes" in {
 
-      val invalidAnswers = arbitrary[String].suchThat(x => !CustomsOffice.allCustomsOffices.map(_.code).contains(x))
+      val invalidAnswers =
+        arbitrary[String].suchThat(x => !CustomsOffice.allCustomsOffices.map(_.code).contains(x))
 
-      forAll(invalidAnswers) {
-        answer =>
-          val result = form.bind(Map("value" -> answer)).apply(fieldName)
-          result.errors must contain only FormError(fieldName, requiredKey)
+      forAll(invalidAnswers) { answer =>
+        val result = form.bind(Map("value" -> answer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, requiredKey)
       }
     }
   }

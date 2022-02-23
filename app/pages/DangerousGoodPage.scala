@@ -27,10 +27,12 @@ case class DangerousGoodPage(index: Index) extends QuestionPage[Boolean] {
 
   override def toString: String = "dangerousGood"
 
-  override protected def navigateInNormalMode(answers:UserAnswers): Call = {
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(DangerousGoodPage(index)) match {
-      case Some(true) => routes.DangerousGoodCodeController.onPageLoad(NormalMode,answers.lrn,index)
-      case Some(false) => routes.ConsignorsIdentityController.onPageLoad(NormalMode,answers.lrn,index)
+      case Some(true) =>
+        routes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(false) =>
+        routes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }

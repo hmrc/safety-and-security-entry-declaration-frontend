@@ -27,20 +27,24 @@ case class AddPackagePage(itemIndex: Index) extends Page {
   def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
     if (addAnother) {
       answers.get(DeriveNumberOfPackages(itemIndex)) match {
-        case Some(size) => routes.KindOfPackageController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None       => routes.JourneyRecoveryController.onPageLoad()
+        case Some(size) =>
+          routes.KindOfPackageController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
+        case None => routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
       mode match {
         case NormalMode =>
           (answers.get(GrossWeightPage), answers.get(OverallCrnKnownPage)) match {
-            case (Some(GrossWeight.PerItem), _) => routes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case (_, Some(true))                => routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case (_, Some(false))               => routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case _                              => routes.JourneyRecoveryController.onPageLoad()
+            case (Some(GrossWeight.PerItem), _) =>
+              routes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+            case (_, Some(true)) =>
+              routes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+            case (_, Some(false)) =>
+              routes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+            case _ => routes.JourneyRecoveryController.onPageLoad()
           }
 
-        case CheckMode  =>
+        case CheckMode =>
           routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }
     }

@@ -37,21 +37,25 @@ object TaskListViewModel {
 
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
-      messageKey          = messages("taskList.routeDetails"),
-      link                = routes.CountryOfOriginController.onPageLoad(NormalMode, answers.lrn),
-      id                  = "route-details",
+      messageKey = messages("taskList.routeDetails"),
+      link = routes.CountryOfOriginController.onPageLoad(NormalMode, answers.lrn),
+      id = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
 
-  private def carrierDetailsRow(answers: UserAnswers)(implicit messages: Messages): Option[TaskListRow] =
+  private def carrierDetailsRow(
+    answers: UserAnswers
+  )(implicit messages: Messages): Option[TaskListRow] =
     answers.get(LodgingPersonTypePage) match {
       case Some(LodgingPersonType.Representative) =>
-        Some(TaskListRow(
-          messageKey          = messages("taskList.carrier"),
-          link                = routes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn),
-          id                  = "carrier-details",
-          completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
-        ))
+        Some(
+          TaskListRow(
+            messageKey = messages("taskList.carrier"),
+            link = routes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn),
+            id = "carrier-details",
+            completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+          )
+        )
 
       case Some(LodgingPersonType.Carrier) =>
         None
@@ -60,4 +64,6 @@ object TaskListViewModel {
     }
 }
 
-final case class TaskListRow(messageKey: String, link: Call, id:String, completionStatusTag: Tag)(implicit messages: Messages)
+final case class TaskListRow(messageKey: String, link: Call, id: String, completionStatusTag: Tag)(
+  implicit messages: Messages
+)

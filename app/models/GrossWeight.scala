@@ -28,17 +28,19 @@ object GrossWeight extends Enumerable.Implicits {
   case object PerItem extends WithName("perItem") with GrossWeight
 
   val values: Seq[GrossWeight] = Seq(
-    Overall, PerItem
+    Overall,
+    PerItem
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"grossWeight.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
-  }
+  def options(implicit messages: Messages): Seq[RadioItem] =
+    values.zipWithIndex.map {
+      case (value, index) =>
+        RadioItem(
+          content = Text(messages(s"grossWeight.${value.toString}")),
+          value = Some(value.toString),
+          id = Some(s"value_$index")
+        )
+    }
 
   implicit val enumerable: Enumerable[GrossWeight] =
     Enumerable(values.map(v => v.toString -> v): _*)

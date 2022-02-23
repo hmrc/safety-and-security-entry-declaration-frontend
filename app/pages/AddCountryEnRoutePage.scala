@@ -23,16 +23,18 @@ import queries.DeriveNumberOfCountriesEnRoute
 
 case object AddCountryEnRoutePage extends Page {
 
- def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-   if (addAnother) {
-     answers.get(DeriveNumberOfCountriesEnRoute) match {
-       case Some(size) => routes.CountryEnRouteController.onPageLoad(mode, answers.lrn, Index(size))
-       case None => routes.JourneyRecoveryController.onPageLoad()
-     }
-   } else {
-     mode match {
-       case NormalMode => routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
-       case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-     }
-   }
+  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfCountriesEnRoute) match {
+        case Some(size) =>
+          routes.CountryEnRouteController.onPageLoad(mode, answers.lrn, Index(size))
+        case None => routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      mode match {
+        case NormalMode =>
+          routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      }
+    }
 }

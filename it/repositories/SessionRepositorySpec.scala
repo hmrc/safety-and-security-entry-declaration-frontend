@@ -17,32 +17,34 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionRepositorySpec
   extends AnyFreeSpec
-    with Matchers
-    with DefaultPlayMongoRepositorySupport[UserAnswers]
-    with ScalaFutures
-    with IntegrationPatience
-    with OptionValues
-    with MockitoSugar {
+  with Matchers
+  with DefaultPlayMongoRepositorySupport[UserAnswers]
+  with ScalaFutures
+  with IntegrationPatience
+  with OptionValues
+  with MockitoSugar {
 
   private val instant = Instant.now
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
   private val userId = "id"
   private val lrn = LocalReferenceNumber("ABC123")
-  private val userAnswers = UserAnswers(userId, lrn, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val userAnswers =
+    UserAnswers(userId, lrn, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1
 
-  private def getFilter(userId: String, lrn: LocalReferenceNumber) = Filters.and(
-    Filters.equal("userId", userId),
-    Filters.equal("lrn", lrn.value)
-  )
+  private def getFilter(userId: String, lrn: LocalReferenceNumber) =
+    Filters.and(
+      Filters.equal("userId", userId),
+      Filters.equal("lrn", lrn.value)
+    )
 
   protected override val repository = new SessionRepository(
     mongoComponent = mongoComponent,
-    appConfig      = mockAppConfig,
-    clock          = stubClock
+    appConfig = mockAppConfig,
+    clock = stubClock
   )
 
   ".set" - {
@@ -51,7 +53,7 @@ class SessionRepositorySpec
 
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
-      val setResult     = repository.set(userAnswers).futureValue
+      val setResult = repository.set(userAnswers).futureValue
       val updatedRecord = find(getFilter(userId, lrn)).futureValue.headOption.value
 
       setResult mustEqual true
@@ -67,7 +69,7 @@ class SessionRepositorySpec
 
         insert(userAnswers).futureValue
 
-        val result         = repository.get(userId, lrn).futureValue
+        val result = repository.get(userId, lrn).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -87,7 +89,9 @@ class SessionRepositorySpec
       "must return None" in {
 
         insert(userAnswers).futureValue
-        repository.get("id", LocalReferenceNumber("LRN that does not exist")).futureValue must not be defined
+        repository
+          .get("id", LocalReferenceNumber("LRN that does not exist"))
+          .futureValue must not be defined
       }
     }
   }

@@ -25,19 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object LocalReferenceNumberSummary  {
+object LocalReferenceNumberSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LocalReferenceNumberPage).map {
-      answer =>
+    answers.get(LocalReferenceNumberPage).map { answer =>
 
-        SummaryListRowViewModel(
-          key     = "localReferenceNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer.value).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.LocalReferenceNumberController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("localReferenceNumber.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "localReferenceNumber.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            routes.LocalReferenceNumberController.onPageLoad(CheckMode).url
+          ).withVisuallyHiddenText(messages("localReferenceNumber.change.hidden"))
         )
+      )
     }
 }

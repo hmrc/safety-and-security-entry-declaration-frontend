@@ -33,29 +33,32 @@ import java.time.{Clock, Instant, LocalDate, ZoneId}
 
 trait SpecBase
   extends AnyFreeSpec
-    with Matchers
-    with TryValues
-    with OptionValues
-    with ScalaFutures
-    with IntegrationPatience
-      with Generators {
+  with Matchers
+  with TryValues
+  with OptionValues
+  with ScalaFutures
+  with IntegrationPatience
+  with Generators {
 
-  val index: Index              = Index(0)
-  val userAnswersId: String     = "id"
+  val index: Index = Index(0)
+  val userAnswersId: String = "id"
   val lrn: LocalReferenceNumber = LocalReferenceNumber("ABC123")
 
-  val arbitraryDate: LocalDate        = datesBetween(LocalDate.of(2022, 7, 1), LocalDate.of(2050, 12, 31)).sample.value
-  val arbitraryInstant: Instant       = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
+  val arbitraryDate: LocalDate =
+    datesBetween(LocalDate.of(2022, 7, 1), LocalDate.of(2050, 12, 31)).sample.value
+  val arbitraryInstant: Instant = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
   val stubClockAtArbitraryDate: Clock = Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
 
-  def emptyUserAnswers : UserAnswers = UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)
+  def emptyUserAnswers: UserAnswers =
+    UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  def messages(app: Application): Messages =
+    app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected def applicationBuilder(
-                                    userAnswers: Option[UserAnswers] = None,
-                                    clock: Clock = stubClockAtArbitraryDate,
-                                  ): GuiceApplicationBuilder =
+    userAnswers: Option[UserAnswers] = None,
+    clock: Clock = stubClockAtArbitraryDate
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .configure(
         "dangerous-goods-file" -> "test-dangerousGoods.json"
@@ -63,7 +66,8 @@ trait SpecBase
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalActionProvider].toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
+        bind[DataRetrievalActionProvider]
+          .toInstance(new FakeDataRetrievalActionProvider(userAnswers)),
         bind[Clock].toInstance(clock)
       )
 }

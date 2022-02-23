@@ -32,17 +32,23 @@ object TransportMode extends Enumerable.Implicits {
   case object RoroUnaccompanied extends WithName("roro.unaccompanied") with TransportMode
 
   val values: Seq[TransportMode] = Seq(
-    RoroAccompanied, RoroUnaccompanied, Maritime, Rail, Road, Air
+    RoroAccompanied,
+    RoroUnaccompanied,
+    Maritime,
+    Rail,
+    Road,
+    Air
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"transportMode.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
-  }
+  def options(implicit messages: Messages): Seq[RadioItem] =
+    values.zipWithIndex.map {
+      case (value, index) =>
+        RadioItem(
+          content = Text(messages(s"transportMode.${value.toString}")),
+          value = Some(value.toString),
+          id = Some(s"value_$index")
+        )
+    }
 
   implicit val enumerable: Enumerable[TransportMode] =
     Enumerable(values.map(v => v.toString -> v): _*)

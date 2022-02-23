@@ -35,8 +35,11 @@ class DocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Add Document" in {
 
-        DocumentPage(index, index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddDocumentController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+        DocumentPage(index, index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.AddDocumentController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -44,7 +47,8 @@ class DocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DocumentPage(index, index).navigate(CheckMode, emptyUserAnswers)
+        DocumentPage(index, index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

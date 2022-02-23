@@ -21,7 +21,8 @@ import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) extends QuestionPage[Boolean] {
+final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index)
+  extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 

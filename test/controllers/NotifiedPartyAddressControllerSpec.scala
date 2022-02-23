@@ -38,7 +38,8 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider()
   val country = arbitrary[Country].sample.value
 
-  lazy val notifiedPartyAddressRoute = routes.NotifiedPartyAddressController.onPageLoad(NormalMode, lrn, index).url
+  lazy val notifiedPartyAddressRoute =
+    routes.NotifiedPartyAddressController.onPageLoad(NormalMode, lrn, index).url
 
   "NotifiedPartyAddress Controller" - {
 
@@ -54,13 +55,19 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NotifiedPartyAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test",country)).success.value
+      val userAnswers = emptyUserAnswers
+        .set(NotifiedPartyAddressPage(index), Address("test", "test", "test", country))
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +79,12 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Address("test","test","test",country)), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(Address("test", "test", "test", country)),
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -90,16 +102,23 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyAddressRoute)
-            .withFormUrlEncodedBody("streetAndNumber" -> "test",
+            .withFormUrlEncodedBody(
+              "streetAndNumber" -> "test",
               "city" -> "test",
               "postCode" -> "test",
-              "country" -> country.code)
+              "country" -> country.code
+            )
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyAddressPage(index), Address("test","test","test",country)).success.value
+        val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers
+          .set(NotifiedPartyAddressPage(index), Address("test", "test", "test", country))
+          .success
+          .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NotifiedPartyAddressPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual NotifiedPartyAddressPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -120,7 +139,10 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -145,10 +167,12 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyAddressRoute)
-            .withFormUrlEncodedBody("streetAndNumber" -> "test",
+            .withFormUrlEncodedBody(
+              "streetAndNumber" -> "test",
               "city" -> "test",
               "postCode" -> "test",
-              "country" -> "GB")
+              "country" -> "GB"
+            )
 
         val result = route(application, request).value
 

@@ -37,7 +37,8 @@ class GrossWeightPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
 
-        GrossWeightPage.navigate(NormalMode, answers)
+        GrossWeightPage
+          .navigate(NormalMode, answers)
           .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, answers.lrn))
       }
 
@@ -45,7 +46,8 @@ class GrossWeightPageSpec extends SpecBase with PageBehaviours {
 
         val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.Overall).success.value
 
-        GrossWeightPage.navigate(NormalMode, answers)
+        GrossWeightPage
+          .navigate(NormalMode, answers)
           .mustEqual(routes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn))
       }
     }
@@ -54,7 +56,8 @@ class GrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GrossWeightPage.navigate(CheckMode, emptyUserAnswers)
+        GrossWeightPage
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

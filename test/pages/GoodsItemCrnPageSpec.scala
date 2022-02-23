@@ -21,7 +21,6 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-
 class GoodsItemCrnPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsItemCrnPage" - {
@@ -36,8 +35,11 @@ class GoodsItemCrnPageSpec extends SpecBase with PageBehaviours {
 
       "to Add Any Documents" in {
 
-        GoodsItemCrnPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+        GoodsItemCrnPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(
+            routes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+          )
       }
     }
 
@@ -45,7 +47,8 @@ class GoodsItemCrnPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemCrnPage(index).navigate(CheckMode, emptyUserAnswers)
+        GoodsItemCrnPage(index)
+          .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
