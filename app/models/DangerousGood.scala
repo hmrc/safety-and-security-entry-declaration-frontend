@@ -31,7 +31,7 @@ object DangerousGood {
       dangerousGoods.map { dangerousGood =>
         SelectItemViewModel(
           value = dangerousGood.code,
-          text = dangerousGood.name
+          text = s"${dangerousGood.code}: ${dangerousGood.name}"
         )
       }
 }

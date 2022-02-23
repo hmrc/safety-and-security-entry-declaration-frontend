@@ -473,10 +473,10 @@ object DocumentType {
 
   def selectItems(documentType: Seq[DocumentType]): Seq[SelectItem] =
     SelectItem(value = None, text = "Select a document type") +:
-      documentType.map { kindOfPackage =>
+      documentType.map { doc =>
         SelectItemViewModel(
-          value = kindOfPackage.code,
-          text = kindOfPackage.name
+          value = doc.code,
+          text = s"${doc.code}: ${doc.name}"
         )
       }
 }
