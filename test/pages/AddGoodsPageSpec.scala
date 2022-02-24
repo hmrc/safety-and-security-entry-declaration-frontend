@@ -29,10 +29,7 @@ class AddGoodsPageSpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to Good for the next index if the answer is yes" in {
-
-        val document = arbitrary[GoodItem].sample.value
-
-        val answers = emptyUserAnswers.set(CommodityCodeKnownPage(Index(0)),true).success.value
+        val answers = emptyUserAnswers.set(UnloadingCodePage(Index(0)),"11111111").success.value
 
         AddGoodsPage()
           .navigate(NormalMode, answers, addAnother = true)

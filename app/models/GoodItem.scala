@@ -18,11 +18,11 @@ package models
 
 import play.api.libs.json.{Reads, __}
 
-case class GoodItem(commodityCode: String)
+case class GoodItem(unloadingCode: String)
 
 object GoodItem {
   implicit lazy val reads: Reads[GoodItem] = {
-    (__ \ "commodityCode").read[String].map(commodityCode => GoodItem(commodityCode))
+    (__ \ "unloadingCode").read[String].map(GoodItem(_))
   }
 }
 

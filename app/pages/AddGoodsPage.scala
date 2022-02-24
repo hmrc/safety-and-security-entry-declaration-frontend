@@ -31,10 +31,6 @@ final case class AddGoodsPage() extends Page {
         case None => routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
-      mode match {
-        case NormalMode =>
-          routes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, Index(0))
-        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
+      routes.IndexController.onPageLoad
     }
 }
