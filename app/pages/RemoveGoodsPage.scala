@@ -24,5 +24,5 @@ final case class RemoveGoodsPage(goodItemIndex: Index)
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "removeDocument"
+  override def toString: String = "removeGood"
 }
