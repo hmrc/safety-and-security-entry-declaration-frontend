@@ -497,3 +497,6 @@ addGoods.heading = Goods
 removeGoods.title = Do you need to remove this good item?
 removeGoods.heading = Do you need to remove this good item?
 removeGoods.error.required = Select yes if you need to remove this good item
+
+checkGoodItem.title = Check Your Answers
+checkGoodItem.heading = Check Your Answers

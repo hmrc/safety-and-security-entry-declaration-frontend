@@ -43,6 +43,17 @@ class AddPaymentMethodPageSpec extends SpecBase with PageBehaviours {
             routes.CarrierPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
           )
       }
+
+      "to `CYA` when answer is no" in {
+
+        val answers = emptyUserAnswers.set(AddPaymentMethodPage(index), false).success.value
+
+        AddPaymentMethodPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(
+            routes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index)
+          )
+      }
     }
 
     "must navigate in Check Mode" - {

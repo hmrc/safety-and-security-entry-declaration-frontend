@@ -295,3 +295,6 @@ GET        /:lrn/removeGoods/:goodsItemIndex                        controllers.
 POST       /:lrn/removeGoods/:goodsItemIndex                        controllers.RemoveGoodsController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, goodsItemIndex: Index)
 GET        /:lrn/changeRemoveGoods/:goodsItemIndex                  controllers.RemoveGoodsController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, goodsItemIndex: Index)
 POST       /:lrn/changeRemoveGoods/:goodsItemIndex                  controllers.RemoveGoodsController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, goodsItemIndex: Index)
+
+GET        /:lrn/check-good-item/:itemIndex                         controllers.CheckGoodItemController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/change-check-good-item/:itemIndex                  controllers.CheckGoodItemController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
