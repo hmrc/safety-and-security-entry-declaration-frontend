@@ -18,18 +18,18 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
   "ConsignorEORIPage" - {
 
-    beRetrievable[String](ConsignorEORIPage(index))
+    beRetrievable[GbEori](ConsignorEORIPage(index))
 
-    beSettable[String](ConsignorEORIPage(index))
+    beSettable[GbEori](ConsignorEORIPage(index))
 
-    beRemovable[String](ConsignorEORIPage(index))
+    beRemovable[GbEori](ConsignorEORIPage(index))
 
     "must navigate in Normal Mode" - {
 

@@ -18,7 +18,7 @@ package base
 
 import controllers.actions._
 import generators.Generators
-import models.{Index, LocalReferenceNumber, UserAnswers}
+import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -40,17 +40,19 @@ trait SpecBase
   with IntegrationPatience
   with Generators {
 
-  val index: Index = Index(0)
-  val userAnswersId: String = "id"
-  val lrn: LocalReferenceNumber = LocalReferenceNumber("ABC123")
+  protected val index: Index = Index(0)
+  protected val userAnswersId: String = "id"
+  protected val lrn: LocalReferenceNumber = LocalReferenceNumber("ABC123")
 
-  val arbitraryDate: LocalDate =
+  protected val arbitraryDate: LocalDate =
     datesBetween(LocalDate.of(2022, 7, 1), LocalDate.of(2050, 12, 31)).sample.value
-  val arbitraryInstant: Instant = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
-  val stubClockAtArbitraryDate: Clock = Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
+  protected val arbitraryInstant: Instant = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
+  protected val stubClockAtArbitraryDate: Clock = Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
 
-  def emptyUserAnswers: UserAnswers =
+  protected def emptyUserAnswers: UserAnswers =
     UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)
+
+  protected val eori = new GbEori("123456789000")
 
   def messages(app: Application): Messages =
     app.injector.instanceOf[MessagesApi].preferred(FakeRequest())

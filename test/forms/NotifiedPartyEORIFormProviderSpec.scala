@@ -16,33 +16,20 @@
 
 package forms
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.GbEoriFieldBehaviours
 import play.api.data.FormError
 
-class NotifiedPartyEORIFormProviderSpec extends StringFieldBehaviours {
+class NotifiedPartyEORIFormProviderSpec extends GbEoriFieldBehaviours {
 
-  val requiredKey = "notifiedPartyEORI.error.required"
-  val lengthKey = "notifiedPartyEORI.error.length"
-  val maxLength = 35
+  private val requiredKey = "notifiedPartyEORI.error.required"
 
-  val form = new NotifiedPartyEORIFormProvider()()
+  private val form = new NotifiedPartyEORIFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    behave like gbEoriField(form, fieldName)
 
     behave like mandatoryField(
       form,

@@ -19,13 +19,13 @@ package forms
 import javax.inject.Inject
 
 import forms.mappings.Mappings
+import models.GbEori
 import play.api.data.Form
 
 class NotifiedPartyEORIFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[GbEori] =
     Form(
-      "value" -> text("notifiedPartyEORI.error.required")
-        .verifying(maxLength(35, "notifiedPartyEORI.error.length"))
+      "value" -> gbEori("notifiedPartyEORI.error.required")
     )
 }

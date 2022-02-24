@@ -20,7 +20,8 @@ import controllers.actions._
 import forms.ConsigneeEORIFormProvider
 
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{GbEori, Index, LocalReferenceNumber, Mode}
+import models.GbEori._
 import pages.ConsigneeEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,12 +64,14 @@ class ConsigneeEORIController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          value =>
-            for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ConsigneeEORIPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneeEORIPage(index).navigate(mode, updatedAnswers))
+          {
+            value: GbEori =>
+              for {
+                updatedAnswers <-
+                  Future.fromTry(request.userAnswers.set(ConsigneeEORIPage(index), value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(ConsigneeEORIPage(index).navigate(mode, updatedAnswers))
+          }
         )
     }
 }

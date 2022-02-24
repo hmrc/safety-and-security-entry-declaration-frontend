@@ -62,7 +62,7 @@ class ConsigneeEORIControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ConsigneeEORIPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(ConsigneeEORIPage(index), eori).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +74,7 @@ class ConsigneeEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form.fill(eori), NormalMode, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -95,10 +95,10 @@ class ConsigneeEORIControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consigneeEORIRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", eori.value))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ConsigneeEORIPage(index), "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(ConsigneeEORIPage(index), eori).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ConsigneeEORIPage(index)
@@ -152,7 +152,7 @@ class ConsigneeEORIControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consigneeEORIRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", eori.value))
 
         val result = route(application, request).value
 
