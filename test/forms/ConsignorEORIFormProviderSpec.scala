@@ -16,10 +16,10 @@
 
 package forms
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.GbEoriFieldBehaviours
 import play.api.data.FormError
 
-class ConsignorEORIFormProviderSpec extends StringFieldBehaviours {
+class ConsignorEORIFormProviderSpec extends GbEoriFieldBehaviours {
 
   val requiredKey = "consignorEORI.error.required"
   val lengthKey = "consignorEORI.error.length"
@@ -31,18 +31,7 @@ class ConsignorEORIFormProviderSpec extends StringFieldBehaviours {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    behave like gbEoriField(form, fieldName)
 
     behave like mandatoryField(
       form,

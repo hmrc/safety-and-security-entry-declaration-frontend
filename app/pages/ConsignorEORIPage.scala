@@ -17,11 +17,12 @@
 package pages
 
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{GbEori, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[String] {
+
+case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 

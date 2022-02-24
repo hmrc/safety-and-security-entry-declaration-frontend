@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, Index, UserAnswers}
+import models.{CheckMode, GbEori, Index, UserAnswers}
 import pages.NotifiedPartyEORIPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,11 +28,11 @@ import viewmodels.implicits._
 object NotifiedPartyEORISummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotifiedPartyEORIPage(index)).map { answer =>
+    answers.get(NotifiedPartyEORIPage(index)).map { answer: GbEori =>
 
       SummaryListRowViewModel(
         key = "notifiedPartyEORI.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",

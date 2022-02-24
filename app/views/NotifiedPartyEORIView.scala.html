@@ -40,6 +40,7 @@
                 label = LabelViewModel(messages("notifiedPartyEORI.heading")).asPageHeading()
             )
             .withWidth(Full)
+            .withPrefix(PrefixOrSuffix(content = Text("GB")))
         )
 
         @govukButton(

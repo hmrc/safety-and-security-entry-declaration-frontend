@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.NotifiedPartyEORIFormProvider
 
 import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{GbEori, Index, LocalReferenceNumber, Mode}
 import pages.NotifiedPartyEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,12 +63,14 @@ class NotifiedPartyEORIController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          value =>
-            for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(NotifiedPartyEORIPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(NotifiedPartyEORIPage(index).navigate(mode, updatedAnswers))
-        )
+          {
+            value: GbEori =>
+              for {
+                updatedAnswers <-
+                  Future.fromTry(request.userAnswers.set(NotifiedPartyEORIPage(index), value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(NotifiedPartyEORIPage(index).navigate(mode, updatedAnswers))
+          }
+      )
     }
 }

@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.CarriersEORIFormProvider
-import models.{GbEori, NormalMode}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,7 +37,6 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
   private val form = formProvider()
 
   private lazy val carriersEORIRoute = routes.CarriersEORIController.onPageLoad(NormalMode, lrn).url
-  private val eori = new GbEori("123456789000")
 
   "CarriersEORI Controller" - {
 
