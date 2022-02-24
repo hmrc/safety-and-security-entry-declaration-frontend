@@ -17,17 +17,20 @@
 package pages
 
 import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
+import queries.{DeriveNumberOfDocuments, DeriveNumberOfGoods}
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+final case class AddGoodsPage() extends Page {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
-
-  override def toString: String = "carrierPaymentMethod"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
-  }
+  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfGoods()) match {
+        case Some(size) =>
+          routes.CommodityCodeKnownController.onPageLoad(mode, answers.lrn, Index(size))
+        case None => routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      routes.IndexController.onPageLoad
+    }
 }

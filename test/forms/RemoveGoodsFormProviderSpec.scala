@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+class RemoveGoodsFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  val requiredKey = "removeGoods.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "carrierPaymentMethod"
+  val form = new RemoveGoodsFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

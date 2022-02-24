@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+class AddGoodsFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "carrierPaymentMethod"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addGoods.error.required")
+    )
 }

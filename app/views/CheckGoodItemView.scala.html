@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@this(
+        layout: templates.Layout,
+        govukSummaryList: GovukSummaryList
+)
 
-import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+@(mode: Mode, list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+@layout(pageTitle = titleNoForm(messages("checkGoodItem.title"))) {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+    <h1 class="govuk-heading-xl">@messages("checkGoodItem.heading")</h1>
 
-  override def toString: String = "carrierPaymentMethod"
+    @govukSummaryList(list)
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
-  }
+    <a href="@routes.AddGoodsController.onPageLoad(mode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
 }

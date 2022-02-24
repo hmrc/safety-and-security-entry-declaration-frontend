@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+final case class GoodItemQuery(itemIndex: Index) extends Settable[JsObject] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
-
-  override def toString: String = "carrierPaymentMethod"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
-  }
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position
 }

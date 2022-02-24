@@ -486,3 +486,17 @@ carrierPaymentMethod.other = Other
 carrierPaymentMethod.checkYourAnswersLabel = How will the carrier be paid?
 carrierPaymentMethod.error.required = Select the carrier payment method
 carrierPaymentMethod.change.hidden = the carrier payment method
+
+addGoods.error.required = Select yes if you need to add another good
+addGoods.change.hidden = the good
+addGoods.remove.hidden = the good
+addGoods.addAnother = Do you need to add another good?
+addGoods.title = Goods
+addGoods.heading = Goods
+
+removeGoods.title = Do you need to remove this good item?
+removeGoods.heading = Do you need to remove this good item?
+removeGoods.error.required = Select yes if you need to remove this good item
+
+checkGoodItem.title = Check Your Answers
+checkGoodItem.heading = Check Your Answers

@@ -18,26 +18,22 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CarrierPaymentMethod, CheckMode, NormalMode}
+import models.{CheckMode, Document, GoodItem, Index, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
+class AddGoodsPageSpec extends SpecBase with PageBehaviours {
 
-  "CarrierPaymentMethodPage" - {
-
-    beRetrievable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
-
-    beSettable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
-
-    beRemovable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
+  "AddGoodsPage" - {
 
     "must navigate in Normal Mode" - {
 
-      "to CYA" in {
+      "to Good for the next index if the answer is yes" in {
+        val answers = emptyUserAnswers.set(UnloadingCodePage(Index(0)),"11111111").success.value
 
-        CarrierPaymentMethodPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.CheckGoodItemController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        AddGoodsPage()
+          .navigate(NormalMode, answers, addAnother = true)
+          .mustEqual(routes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(1)))
       }
     }
 
@@ -45,7 +41,7 @@ class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CarrierPaymentMethodPage(index)
+        AddGoodsPage()
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

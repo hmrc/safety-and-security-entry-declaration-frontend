@@ -63,6 +63,13 @@ trait ModelGenerators {
       } yield Document(documentType, reference)
     }
 
+  implicit lazy val arbitraryGoodItem: Arbitrary[GoodItem] =
+    Arbitrary {
+      for {
+        commodityCode <- arbitrary[String]
+      } yield GoodItem(commodityCode)
+    }
+
   implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
     Arbitrary {
       Gen.oneOf(DocumentType.allDocumentTypes)

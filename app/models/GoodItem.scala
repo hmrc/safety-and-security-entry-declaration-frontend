@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json.{Reads, __}
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+case class GoodItem(unloadingCode: String)
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
-
-  override def toString: String = "carrierPaymentMethod"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
+object GoodItem {
+  implicit lazy val reads: Reads[GoodItem] = {
+    (__ \ "unloadingCode").read[String].map(GoodItem(_))
   }
 }
+
+

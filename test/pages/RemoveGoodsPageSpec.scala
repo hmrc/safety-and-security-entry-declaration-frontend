@@ -18,26 +18,20 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{CarrierPaymentMethod, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
+class RemoveGoodsPageSpec extends SpecBase with PageBehaviours {
 
-  "CarrierPaymentMethodPage" - {
-
-    beRetrievable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
-
-    beSettable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
-
-    beRemovable[CarrierPaymentMethod](CarrierPaymentMethodPage(index))
+  "RemoveGoodsPage" - {
 
     "must navigate in Normal Mode" - {
 
-      "to CYA" in {
+      "to Index" in {
 
-        CarrierPaymentMethodPage(index)
+        RemoveGoodsPage(index)
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.CheckGoodItemController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+          .mustEqual(routes.IndexController.onPageLoad)
       }
     }
 
@@ -45,7 +39,7 @@ class CarrierPaymentMethodSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CarrierPaymentMethodPage(index)
+        RemoveGoodsPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
