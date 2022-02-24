@@ -22,6 +22,7 @@ import models.{Index, LocalReferenceNumber, Mode}
 import pages.RemoveGoodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.GoodItemQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RemoveGoodsView
@@ -74,14 +75,21 @@ class RemoveGoodsController @Inject()(
             Future
               .successful(BadRequest(view(formWithErrors, mode, lrn, goodItemIndex))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(
-                request.userAnswers.set(RemoveGoodsPage(goodItemIndex), value)
+            if (value) {
+              for {
+                updatedAnswers <-
+                  Future.fromTry(request.userAnswers.remove(GoodItemQuery(goodItemIndex)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(
+                RemoveGoodsPage(goodItemIndex).navigate(mode, updatedAnswers)
               )
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(
-              RemoveGoodsPage(goodItemIndex).navigate(mode, updatedAnswers)
-            )
+            } else {
+              Future.successful(
+                Redirect(
+                  RemoveGoodsPage(goodItemIndex).navigate(mode, request.userAnswers)
+                )
+              )
+            }
         )
     }
 }

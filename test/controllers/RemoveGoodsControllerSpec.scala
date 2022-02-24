@@ -17,17 +17,18 @@
 package controllers
 
 import base.SpecBase
-import forms.{RemoveDocumentFormProvider, RemoveGoodsFormProvider}
-import models.NormalMode
+import forms.{RemoveGoodsFormProvider}
+import models.{NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{RemoveDocumentPage, RemoveGoodsPage}
+import pages.{CommodityCodePage, RemoveGoodsPage, RemovePackagePage, UnloadingCodePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.{GoodItemQuery}
 import repositories.SessionRepository
-import views.html.{RemoveDocumentView, RemoveGoodsView}
+import views.html.{RemoveGoodsView}
 
 import scala.concurrent.Future
 
@@ -38,6 +39,16 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val removeGoodsRoute =
     routes.RemoveGoodsController.onPageLoad(NormalMode, lrn, index).url
+
+
+  private val baseAnswers =
+    emptyUserAnswers
+      .set(UnloadingCodePage(index), "423432")
+      .success
+      .value
+      .set(CommodityCodePage(index), "1111")
+      .success
+      .value
 
   "RemoveGoods Controller" - {
 
@@ -60,35 +71,14 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemoveGoodsPage(index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeGoodsRoute)
-
-        val view = application.injector.instanceOf[RemoveGoodsView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(
-          request,
-          messages(application)
-        ).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must remove the package and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -98,8 +88,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers =
-          emptyUserAnswers.set(RemoveGoodsPage(index), true).success.value
+        val expectedAnswers = baseAnswers.remove(GoodItemQuery(index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveGoodsPage(index)
@@ -108,6 +97,35 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
+
+    "must redirect to the next page without removing the package when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeGoodsRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveGoodsPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
+        verify(mockSessionRepository, never()).set(any())
+      }
+    }
+
+
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
