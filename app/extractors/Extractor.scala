@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package extractors
 
-import play.api.libs.json.Json
+import models.UserAnswers
 
-case class Address(streetAndNumber: String, city: String, postCode: String, country: Country)
+/**
+ * Extract a generic set of answers from the user answers
+ */
+trait Extractor[T] extends Extractors {
+  protected implicit def answers: UserAnswers
 
-object Address {
-  implicit val format = Json.format[Address]
+  def extract(): ValidationResult[T]
 }

@@ -18,6 +18,7 @@ package base
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 
+import cats.scalatest.ValidatedValues
 import controllers.actions._
 import generators.Generators
 import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
@@ -36,6 +37,7 @@ trait SpecBase
   with Matchers
   with TryValues
   with OptionValues
+  with ValidatedValues
   with ScalaFutures
   with IntegrationPatience
   with Generators {

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models
+package models.completion.answers
 
-import play.api.libs.json.Json
+import models.{LocalReferenceNumber, TransportMode}
 
-case class Address(streetAndNumber: String, city: String, postCode: String, country: Country)
-
-object Address {
-  implicit val format = Json.format[Address]
-}
+/**
+ * Models the answers given for a completed predeclaration section
+ */
+case class Predec(
+  lrn: LocalReferenceNumber,
+  location: String,
+  crn: Option[String],
+  totalMass: Option[BigDecimal],
+  transport: TransportMode
+)
