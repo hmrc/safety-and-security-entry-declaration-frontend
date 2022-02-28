@@ -13,6 +13,12 @@ some placeholder messages, adding page definitions to test generator utils, etc.
 You can add a new page by running `sbt 'g8Scaffold stringPage'`, for example, filling out the values you're prompted for,
 and then running `./migrate.sh` to run the generated migration script as well.
 
+*Note* that the first time you run a scaffold for a new package, you'll need to add the line
+`import pages.<your package name>._` to these classes:
+* test-utils.generators.PageGenerators
+* test-utils.generators.UserAnswersEntryGenerators
+* test-utils.generators.UserAnswersGenerator
+
 You can see the different types of supported pages in the `.g8` directory.
 
 ## Scalafmt
