@@ -1,4 +1,4 @@
-package controllers
+package controllers.$package$
 
 import base.SpecBase
 import play.api.test.FakeRequest
