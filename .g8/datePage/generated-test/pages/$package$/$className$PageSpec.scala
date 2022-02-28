@@ -1,6 +1,7 @@
-package pages
+package pages.$package$
 
 import base.SpecBase
+import controllers.$package$.{routes => $package$Routes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 

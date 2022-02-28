@@ -1,10 +1,10 @@
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.$package$
 
 import java.time.format.DateTimeFormatter
 
-import controllers.routes
+import controllers.$package$.{routes => $package$Routes}
 import models.{CheckMode, UserAnswers}
-import pages.$className$Page
+import pages.$package$.$className$Page
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -22,7 +22,7 @@ object $className$Summary  {
           key     = "$className;format="decap"$.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateFormatter)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(CheckMode, answers.lrn).url)
+            ActionItemViewModel("site.change", $package$Routes.$className$Controller.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("$className;format="decap"$.change.hidden"))
           )
         )
