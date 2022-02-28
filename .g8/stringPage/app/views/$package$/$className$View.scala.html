@@ -1,4 +1,4 @@
-@import controllers.$package$.{routes => $package$Routes}
+@import controllers.$package$.routes
 @import viewmodels.InputWidth._
 
 @this(
@@ -13,7 +13,7 @@
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
-    @formHelper(action = $package$Routes.$className$Controller.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.$className$Controller.onSubmit(mode, lrn)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

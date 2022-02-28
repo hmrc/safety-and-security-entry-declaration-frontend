@@ -1,4 +1,4 @@
-@import controllers.$package$.{routes => $package$Routes}
+@import controllers.$package$.routes
 
 @this(
     layout: templates.Layout,
@@ -12,7 +12,7 @@
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
-    @formHelper(action = $package$Routes.$className$Controller.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.$className$Controller.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
