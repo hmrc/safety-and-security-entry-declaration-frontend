@@ -1,5 +1,6 @@
-package pages
+package pages.$package$
 
+import controllers.$package$.{routes => $package$Routes}
 import controllers.routes
 import models.{$className$, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
