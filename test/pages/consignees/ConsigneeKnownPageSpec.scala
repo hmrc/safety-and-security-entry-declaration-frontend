@@ -14,32 +14,41 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
+class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
-  "ConsignorEORIPage" - {
+  "ConsigneeKnownPage" - {
 
-    beRetrievable[GbEori](ConsignorEORIPage(index))
+    beRetrievable[Boolean](ConsigneeKnownPage(index))
 
-    beSettable[GbEori](ConsignorEORIPage(index))
+    beSettable[Boolean](ConsigneeKnownPage(index))
 
-    beRemovable[GbEori](ConsignorEORIPage(index))
+    beRemovable[Boolean](ConsigneeKnownPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to `Do you know the consignee?`" in {
+      "to `How do you want to identify the consignee` when answer is yes" in {
+        val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), true).success.value
 
-        ConsignorEORIPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+        ConsigneeKnownPage(index)
+          .navigate(NormalMode, answers)
+          .mustEqual(consigneesRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, index))
+      }
+
+      "to `How do you want to identify the notified party` when answer is no" in {
+        val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), false).success.value
+
+        ConsigneeKnownPage(index)
+          .navigate(NormalMode, answers)
           .mustEqual(
-            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index)
           )
       }
     }
@@ -48,7 +57,7 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorEORIPage(index)
+        ConsigneeKnownPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

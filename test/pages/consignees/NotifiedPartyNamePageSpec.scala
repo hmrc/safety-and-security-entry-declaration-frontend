@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
+class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
 
-  "ConsignorEORIPage" - {
+  "NotifiedPartyNamePage" - {
 
-    beRetrievable[GbEori](ConsignorEORIPage(index))
+    beRetrievable[String](NotifiedPartyNamePage(index))
 
-    beSettable[GbEori](ConsignorEORIPage(index))
+    beSettable[String](NotifiedPartyNamePage(index))
 
-    beRemovable[GbEori](ConsignorEORIPage(index))
+    beRemovable[String](NotifiedPartyNamePage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to `Do you know the consignee?`" in {
+      "to notified party address" in {
 
-        ConsignorEORIPage(index)
+        NotifiedPartyNamePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.NotifiedPartyAddressController
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -48,7 +49,7 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorEORIPage(index)
+        NotifiedPartyNamePage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

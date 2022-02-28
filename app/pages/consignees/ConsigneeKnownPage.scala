@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
 import controllers.routes
-import models.{GbEori, Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+case class ConsigneeKnownPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "consignorEORI"
+  override def toString: String = "consigneeKnown"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
+    answers.get(ConsigneeKnownPage(index)) match {
+      case Some(true) =>
+        consigneeRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(false) =>
+        consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
   }
 }

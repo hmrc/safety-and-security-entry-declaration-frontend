@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package forms.consignees
 
-import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+class ConsigneeNameFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "consignorEORI"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("consigneeName.error.required")
+        .verifying(maxLength(35, "consigneeName.error.length"))
+    )
 }

@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package pages
+package forms.consignees
 
-import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.GbEoriFieldBehaviours
+import play.api.data.FormError
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+class ConsigneeEORIFormProviderSpec extends GbEoriFieldBehaviours {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  val requiredKey = "consigneeEORI.error.required"
+  val lengthKey = "consigneeEORI.error.length"
+  val maxLength = 35
 
-  override def toString: String = "consignorEORI"
+  val form = new ConsigneeEORIFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like gbEoriField(form, fieldName)
   }
 }

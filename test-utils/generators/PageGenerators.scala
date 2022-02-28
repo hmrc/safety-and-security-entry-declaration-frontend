@@ -19,6 +19,7 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages._
+import pages.consignees._
 
 trait PageGenerators {
   implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage] =
@@ -31,28 +32,28 @@ trait PageGenerators {
     Arbitrary(UnloadingCodePage(Index(0)))
 
   implicit lazy val arbitraryNotifiedPartyNamePage: Arbitrary[NotifiedPartyNamePage] =
-    Arbitrary(NotifiedPartyNamePage(Index(0)))
+    Arbitrary(consignees.NotifiedPartyNamePage(Index(0)))
 
   implicit lazy val arbitraryNotifiedPartyIdentityPage: Arbitrary[NotifiedPartyIdentityPage] =
-    Arbitrary(NotifiedPartyIdentityPage(Index(0)))
+    Arbitrary(consignees.NotifiedPartyIdentityPage(Index(0)))
 
   implicit lazy val arbitraryNotifiedPartyEORIPage: Arbitrary[NotifiedPartyEORIPage] =
-    Arbitrary(NotifiedPartyEORIPage(Index(0)))
+    Arbitrary(consignees.NotifiedPartyEORIPage(Index(0)))
 
   implicit lazy val arbitraryNotifiedPartyAddressPage: Arbitrary[NotifiedPartyAddressPage] =
-    Arbitrary(NotifiedPartyAddressPage(Index(0)))
+    Arbitrary(consignees.NotifiedPartyAddressPage(Index(0)))
 
   implicit lazy val arbitraryConsigneeNamePage: Arbitrary[ConsigneeNamePage] =
-    Arbitrary(ConsigneeNamePage(Index(0)))
+    Arbitrary(consignees.ConsigneeNamePage(Index(0)))
 
   implicit lazy val arbitraryConsigneeIdentityPage: Arbitrary[ConsigneeIdentityPage] =
-    Arbitrary(ConsigneeIdentityPage(Index(0)))
+    Arbitrary(consignees.ConsigneeIdentityPage(Index(0)))
 
   implicit lazy val arbitraryConsigneeEORIPage: Arbitrary[ConsigneeEORIPage] =
-    Arbitrary(ConsigneeEORIPage(Index(0)))
+    Arbitrary(consignees.ConsigneeEORIPage(Index(0)))
 
   implicit lazy val arbitraryConsigneeAddressPage: Arbitrary[ConsigneeAddressPage] =
-    Arbitrary(ConsigneeAddressPage(Index(0)))
+    Arbitrary(consignees.ConsigneeAddressPage(Index(0)))
 
   implicit lazy val arbitraryConsignorNamePage: Arbitrary[ConsignorNamePage] =
     Arbitrary(ConsignorNamePage(Index(0)))
@@ -64,7 +65,7 @@ trait PageGenerators {
     Arbitrary(ConsignorAddressPage(Index(0)))
 
   implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage] =
-    Arbitrary(ConsigneeKnownPage(Index(0)))
+    Arbitrary(consignees.ConsigneeKnownPage(Index(0)))
 
   implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
     Arbitrary(GoodsItemGrossWeightPage(Index(0)))
