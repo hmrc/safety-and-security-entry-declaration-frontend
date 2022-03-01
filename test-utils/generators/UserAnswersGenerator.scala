@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.consignors._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
@@ -43,7 +44,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(ConsignorAddressPage, JsValue)] ::
       arbitrary[(ConsigneeKnownPage, JsValue)] ::
       arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
-      arbitrary[(ConsignorsIdentityPage, JsValue)] ::
+      arbitrary[(ConsignorIdentityPage, JsValue)] ::
       arbitrary[(DangerousGoodCodePage, JsValue)] ::
       arbitrary[(DangerousGoodPage, JsValue)] ::
       arbitrary[(OverallCrnKnownPage.type, JsValue)] ::

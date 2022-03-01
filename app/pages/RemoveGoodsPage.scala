@@ -19,8 +19,7 @@ package pages
 import models.Index
 import play.api.libs.json.JsPath
 
-final case class RemoveGoodsPage(goodItemIndex: Index)
-  extends QuestionPage[Boolean] {
+final case class RemoveGoodsPage(goodItemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 

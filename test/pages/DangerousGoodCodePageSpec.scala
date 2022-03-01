@@ -17,7 +17,8 @@
 package pages
 
 import base.SpecBase
-import controllers.routes
+import controllers.consignors.routes
+import controllers.{routes => baseRoutes}
 import models.{CheckMode, DangerousGood, NormalMode}
 import pages.behaviours.PageBehaviours
 
@@ -38,7 +39,7 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
         DangerousGoodCodePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsignorsIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            routes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -49,7 +50,7 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
         DangerousGoodCodePage(index)
           .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

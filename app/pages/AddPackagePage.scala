@@ -18,7 +18,6 @@ package pages
 
 import controllers.routes
 import models.{CheckMode, GrossWeight, Index, Mode, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 

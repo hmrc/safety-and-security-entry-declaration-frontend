@@ -20,6 +20,7 @@ import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
+import pages.consignors._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
@@ -167,12 +168,12 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryConsignorsIdentityUserAnswersEntry
-    : Arbitrary[(ConsignorsIdentityPage, JsValue)] =
+  implicit lazy val arbitraryConsignorIdentityUserAnswersEntry
+    : Arbitrary[(ConsignorIdentityPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[ConsignorsIdentityPage]
-        value <- arbitrary[ConsignorsIdentity].map(Json.toJson(_))
+        page <- arbitrary[ConsignorIdentityPage]
+        value <- arbitrary[ConsignorIdentity].map(Json.toJson(_))
       } yield (page, value)
     }
 

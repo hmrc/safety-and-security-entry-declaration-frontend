@@ -293,13 +293,13 @@ dangerousGoodCode.error.required = Enter the dangerous goods code
 dangerousGoodCode.error.length = Dangerous goods code must be 200 characters or less
 dangerousGoodCode.change.hidden = the dangerous goods code
 
-consignorsIdentity.title = How do you want to identify the consignor?
-consignorsIdentity.heading = How do you want to identify the consignor?
-consignorsIdentity.gb-eori = I’ll provide the consignor’s GB EORI number
-consignorsIdentity.name-address = I’ll provide the consignor’s name and address
-consignorsIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
-consignorsIdentity.error.required = Select consignorsIdentity
-consignorsIdentity.change.hidden = ConsignorsIdentity
+consignorIdentity.title = How do you want to identify the consignor?
+consignorIdentity.heading = How do you want to identify the consignor?
+consignorIdentity.gb-eori = I’ll provide the consignor’s GB EORI number
+consignorIdentity.name-address = I’ll provide the consignor’s name and address
+consignorIdentity.checkYourAnswersLabel = How do you want to identify the consignor?
+consignorIdentity.error.required = Select consignor Identity
+consignorIdentity.change.hidden = Consignor Identity
 
 consigneeKnown.title = Do you know the consignee?
 consigneeKnown.heading = Do you know the consignee?
@@ -326,8 +326,8 @@ consignorName.error.required = Enter the consignor's name
 consignorName.error.length = The name must be 35 characters or less
 consignorName.change.hidden = the consignor's name
 
-consignorsIdentity.error.required = Select how you want to identify the consignor
-consignorsIdentity.change.hidden = how you want to identify the consignor
+consignorIdentity.error.required = Select how you want to identify the consignor
+consignorIdentity.change.hidden = how you want to identify the consignor
 
 addAnyDocuments.title = Do you need to add any documents?
 addAnyDocuments.heading = Do you need to add any documents?

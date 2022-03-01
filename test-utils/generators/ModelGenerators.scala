@@ -50,9 +50,9 @@ trait ModelGenerators {
       Gen.oneOf(CustomsOffice.allCustomsOffices)
     }
 
-  implicit lazy val arbitraryConsignorsIdentity: Arbitrary[ConsignorsIdentity] =
+  implicit lazy val arbitraryConsignorIdentity: Arbitrary[ConsignorIdentity] =
     Arbitrary {
-      Gen.oneOf(ConsignorsIdentity.values)
+      Gen.oneOf(ConsignorIdentity.values)
     }
 
   implicit lazy val arbitraryDocument: Arbitrary[Document] =

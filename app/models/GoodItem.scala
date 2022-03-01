@@ -25,5 +25,3 @@ object GoodItem {
     (__ \ "unloadingCode").read[String].map(GoodItem(_))
   }
 }
-
-

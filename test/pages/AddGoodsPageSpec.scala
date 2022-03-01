@@ -29,11 +29,13 @@ class AddGoodsPageSpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to Good for the next index if the answer is yes" in {
-        val answers = emptyUserAnswers.set(UnloadingCodePage(Index(0)),"11111111").success.value
+        val answers = emptyUserAnswers.set(UnloadingCodePage(Index(0)), "11111111").success.value
 
         AddGoodsPage()
           .navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(routes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+          .mustEqual(
+            routes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(1))
+          )
       }
     }
 

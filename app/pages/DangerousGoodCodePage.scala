@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import controllers.consignors.{routes => consignorRoutes}
 import models.{DangerousGood, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,6 +29,6 @@ case class DangerousGoodCodePage(index: Index) extends QuestionPage[DangerousGoo
   override def toString: String = "dangerousGoodCode"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+    consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

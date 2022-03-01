@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import controllers.consignors.{routes => consignorRoutes}
 import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -32,7 +33,7 @@ case class DangerousGoodPage(index: Index) extends QuestionPage[Boolean] {
       case Some(true) =>
         routes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(false) =>
-        routes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+        consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }
