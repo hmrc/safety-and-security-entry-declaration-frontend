@@ -18,7 +18,8 @@ package viewmodels.checkAnswers
 
 import controllers.consignors.{routes => consignorRoutes}
 import models.{CheckMode, Index, UserAnswers}
-import pages.ConsignorsIdentityPage
+import pages.consignors
+import pages.consignors.ConsignorsIdentityPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -29,7 +30,7 @@ import viewmodels.implicits._
 object ConsignorsIdentitySummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsignorsIdentityPage(index)).map { answer =>
+    answers.get(consignors.ConsignorsIdentityPage(index)).map { answer =>
 
       val value = ValueViewModel(
         HtmlContent(

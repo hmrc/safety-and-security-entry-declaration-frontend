@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.routes
 import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.consignors.ConsignorEORIPage
 
 class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
@@ -27,15 +28,15 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
     beRetrievable[GbEori](ConsignorEORIPage(index))
 
-    beSettable[GbEori](ConsignorEORIPage(index))
+    beSettable[GbEori](consignors.ConsignorEORIPage(index))
 
-    beRemovable[GbEori](ConsignorEORIPage(index))
+    beRemovable[GbEori](consignors.ConsignorEORIPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to `Do you know the consignee?`" in {
 
-        ConsignorEORIPage(index)
+        consignors.ConsignorEORIPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
             routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
@@ -47,7 +48,7 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorEORIPage(index)
+        consignors.ConsignorEORIPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

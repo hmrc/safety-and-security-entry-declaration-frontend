@@ -22,7 +22,8 @@ import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ConsignorNamePage
+import pages.consignors
+import pages.consignors.ConsignorNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -62,7 +63,7 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ConsignorNamePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(consignors.ConsignorNamePage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -98,10 +99,10 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ConsignorNamePage(index), "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(consignors.ConsignorNamePage(index), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ConsignorNamePage(index)
+        redirectLocation(result).value mustEqual consignors.ConsignorNamePage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))

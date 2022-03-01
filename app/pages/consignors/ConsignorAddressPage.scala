@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import controllers.routes
+import models.{Address, Index, NormalMode, UserAnswers}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
+case class ConsignorAddressPage(index: Index) extends QuestionPage[Address] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "consignorName"
+  override def toString: String = "consignorAddress"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
+    routes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

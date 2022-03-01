@@ -19,12 +19,12 @@ package controllers.consignors
 import controllers.actions._
 import forms.consignors.ConsignorEORIFormProvider
 import models.{GbEori, Index, LocalReferenceNumber, Mode}
-import pages.ConsignorEORIPage
+import pages.consignors
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConsignorEORIView
+import views.html.consignors.ConsignorEORIView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +47,7 @@ class ConsignorEORIController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsignorEORIPage(index)) match {
+      val preparedForm = request.userAnswers.get(consignors.ConsignorEORIPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -66,9 +66,9 @@ class ConsignorEORIController @Inject() (
             value: GbEori =>
               for {
                 updatedAnswers <-
-                  Future.fromTry(request.userAnswers.set(ConsignorEORIPage(index), value))
+                  Future.fromTry(request.userAnswers.set(consignors.ConsignorEORIPage(index), value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(ConsignorEORIPage(index).navigate(mode, updatedAnswers))
+              } yield Redirect(consignors.ConsignorEORIPage(index).navigate(mode, updatedAnswers))
           }
         )
     }

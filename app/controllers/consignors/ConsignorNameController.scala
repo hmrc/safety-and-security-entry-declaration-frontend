@@ -19,12 +19,12 @@ package controllers.consignors
 import controllers.actions._
 import forms.consignors.ConsignorNameFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.ConsignorNamePage
+import pages.consignors
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConsignorNameView
+import views.html.consignors.ConsignorNameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +47,7 @@ class ConsignorNameController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsignorNamePage(index)) match {
+      val preparedForm = request.userAnswers.get(consignors.ConsignorNamePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class ConsignorNameController @Inject() (
           value =>
             for {
               updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ConsignorNamePage(index), value))
+                Future.fromTry(request.userAnswers.set(consignors.ConsignorNamePage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsignorNamePage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(consignors.ConsignorNamePage(index).navigate(mode, updatedAnswers))
         )
     }
 }

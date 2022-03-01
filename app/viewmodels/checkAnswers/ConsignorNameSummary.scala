@@ -18,7 +18,8 @@ package viewmodels.checkAnswers
 
 import controllers.consignors.{routes => consignorRoutes}
 import models.{CheckMode, Index, UserAnswers}
-import pages.ConsignorNamePage
+import pages.consignors
+import pages.consignors.ConsignorNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +29,7 @@ import viewmodels.implicits._
 object ConsignorNameSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsignorNamePage(index)).map { answer =>
+    answers.get(consignors.ConsignorNamePage(index)).map { answer =>
 
       SummaryListRowViewModel(
         key = "consignorName.checkYourAnswersLabel",

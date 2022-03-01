@@ -21,6 +21,7 @@ import controllers.routes
 import models.ConsignorsIdentity.{GBEORI, NameAddress}
 import models.{CheckMode, ConsignorsIdentity, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.consignors.ConsignorsIdentityPage
 
 class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
 
@@ -28,23 +29,23 @@ class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
 
     beRetrievable[ConsignorsIdentity](ConsignorsIdentityPage(index))
 
-    beSettable[ConsignorsIdentity](ConsignorsIdentityPage(index))
+    beSettable[ConsignorsIdentity](consignors.ConsignorsIdentityPage(index))
 
-    beRemovable[ConsignorsIdentity](ConsignorsIdentityPage(index))
+    beRemovable[ConsignorsIdentity](consignors.ConsignorsIdentityPage(index))
 
     "must navigate in Normal Mode" - {
       "to consignors EORI when answer is `I'll provide consignors EORI`" in {
-        val answers = emptyUserAnswers.set(ConsignorsIdentityPage(index), GBEORI).success.value
+        val answers = emptyUserAnswers.set(consignors.ConsignorsIdentityPage(index), GBEORI).success.value
 
-        ConsignorsIdentityPage(index)
+        consignors.ConsignorsIdentityPage(index)
           .navigate(NormalMode, answers)
           .mustEqual(routes.ConsignorEORIController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to consignors name when answer is `I'll provide consignors name and address`" in {
-        val answers = emptyUserAnswers.set(ConsignorsIdentityPage(index), NameAddress).success.value
+        val answers = emptyUserAnswers.set(consignors.ConsignorsIdentityPage(index), NameAddress).success.value
 
-        ConsignorsIdentityPage(index)
+        consignors.ConsignorsIdentityPage(index)
           .navigate(NormalMode, answers)
           .mustEqual(routes.ConsignorNameController.onPageLoad(NormalMode, answers.lrn, index))
       }
@@ -54,7 +55,7 @@ class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorsIdentityPage(index)
+        consignors.ConsignorsIdentityPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
