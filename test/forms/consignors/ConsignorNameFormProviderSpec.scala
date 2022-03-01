@@ -14,27 +14,34 @@
  * limitations under the License.
  */
 
-package forms
+package forms.consignors
 
-import forms.behaviours.OptionFieldBehaviours
-import forms.consignors.ConsignorsIdentityFormProvider
-import models.ConsignorsIdentity
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class ConsignorsIdentityFormProviderSpec extends OptionFieldBehaviours {
+class ConsignorNameFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new ConsignorsIdentityFormProvider()()
+  val requiredKey = "consignorName.error.required"
+  val lengthKey = "consignorName.error.length"
+  val maxLength = 35
+
+  val form = new ConsignorNameFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "consignorsIdentity.error.required"
 
-    behave like optionsField[ConsignorsIdentity](
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validValues = ConsignorsIdentity.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(

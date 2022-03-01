@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignors
 
 import base.SpecBase
-import controllers.consignors.routes
-import controllers.{routes => baseRoutes}
-import models.{CheckMode, NormalMode}
+import controllers.routes
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.consignors.ConsignorNamePage
+import pages.consignors
 
-class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
+class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
-  "ConsignorNamePage" - {
+  "ConsignorEORIPage" - {
 
-    beRetrievable[String](ConsignorNamePage(index))
+    beRetrievable[GbEori](ConsignorEORIPage(index))
 
-    beSettable[String](consignors.ConsignorNamePage(index))
+    beSettable[GbEori](consignors.ConsignorEORIPage(index))
 
-    beRemovable[String](consignors.ConsignorNamePage(index))
+    beRemovable[GbEori](consignors.ConsignorEORIPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to `Consignor's address`" in {
-        consignors.ConsignorNamePage(index)
+      "to `Do you know the consignee?`" in {
+
+        consignors.ConsignorEORIPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsignorAddressController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -48,9 +48,9 @@ class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        consignors.ConsignorNamePage(index)
+        consignors.ConsignorEORIPage(index)
           .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

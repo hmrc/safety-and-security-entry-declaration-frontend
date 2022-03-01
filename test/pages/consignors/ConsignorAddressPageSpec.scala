@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignors
 
 import base.SpecBase
 import controllers.routes
 import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.consignors.ConsignorAddressPage
+import pages.consignors
 
 class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
 

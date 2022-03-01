@@ -16,10 +16,10 @@
 
 package controllers.consignors
 
-import controllers.{routes => baseRoutes}
 import base.SpecBase
-import forms.consignors.ConsignorNameFormProvider
-import models.NormalMode
+import controllers.{routes => baseRoutes}
+import forms.consignors.ConsignorsIdentityFormProvider
+import models.{ConsignorsIdentity, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,30 +28,30 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.consignors.ConsignorNameView
+import views.html.consignors.ConsignorsIdentityView
 
 import scala.concurrent.Future
 
-class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
+class ConsignorsIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new ConsignorNameFormProvider()
+  lazy val consignorsIdentityRoute =
+    routes.ConsignorsIdentityController.onPageLoad(NormalMode, lrn, index).url
+
+  val formProvider = new ConsignorsIdentityFormProvider()
   val form = formProvider()
 
-  lazy val consignorNameRoute =
-    routes.ConsignorNameController.onPageLoad(NormalMode, lrn, index).url
-
-  "ConsignorName Controller" - {
+  "ConsignorsIdentity Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, consignorNameRoute)
+        val request = FakeRequest(GET, consignorsIdentityRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ConsignorNameView]
+        val view = application.injector.instanceOf[ConsignorsIdentityView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
@@ -63,22 +63,27 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(consignors.ConsignorNamePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers
+        .set(consignors.ConsignorsIdentityPage(index), ConsignorsIdentity.values.head)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, consignorNameRoute)
+        val request = FakeRequest(GET, consignorsIdentityRoute)
 
-        val view = application.injector.instanceOf[ConsignorNameView]
+        val view = application.injector.instanceOf[ConsignorsIdentityView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(
+          form.fill(ConsignorsIdentity.values.head),
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -95,14 +100,17 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consignorNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, consignorsIdentityRoute)
+            .withFormUrlEncodedBody(("value", ConsignorsIdentity.values.head.toString))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(consignors.ConsignorNamePage(index), "answer").success.value
+        val expectedAnswers = emptyUserAnswers
+          .set(consignors.ConsignorsIdentityPage(index), ConsignorsIdentity.values.head)
+          .success
+          .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignors.ConsignorNamePage(index)
+        redirectLocation(result).value mustEqual consignors.ConsignorsIdentityPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -115,12 +123,12 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consignorNameRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, consignorsIdentityRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[ConsignorNameView]
+        val view = application.injector.instanceOf[ConsignorsIdentityView]
 
         val result = route(application, request).value
 
@@ -137,7 +145,7 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, consignorNameRoute)
+        val request = FakeRequest(GET, consignorsIdentityRoute)
 
         val result = route(application, request).value
 
@@ -146,18 +154,19 @@ class ConsignorNameControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, consignorNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, consignorsIdentityRoute)
+            .withFormUrlEncodedBody(("value", ConsignorsIdentity.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
+
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }

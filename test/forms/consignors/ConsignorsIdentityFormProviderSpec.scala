@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package forms
+package forms.consignors
 
-import forms.behaviours.GbEoriFieldBehaviours
-import forms.consignors.ConsignorEORIFormProvider
+import forms.behaviours.OptionFieldBehaviours
+import models.ConsignorsIdentity
 import play.api.data.FormError
 
-class ConsignorEORIFormProviderSpec extends GbEoriFieldBehaviours {
+class ConsignorsIdentityFormProviderSpec extends OptionFieldBehaviours {
 
-  val requiredKey = "consignorEORI.error.required"
-  val lengthKey = "consignorEORI.error.length"
-  val maxLength = 50
-
-  val form = new ConsignorEORIFormProvider()()
+  val form = new ConsignorsIdentityFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
+    val requiredKey = "consignorsIdentity.error.required"
 
-    behave like gbEoriField(form, fieldName)
+    behave like optionsField[ConsignorsIdentity](
+      form,
+      fieldName,
+      validValues = ConsignorsIdentity.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
 
     behave like mandatoryField(
       form,

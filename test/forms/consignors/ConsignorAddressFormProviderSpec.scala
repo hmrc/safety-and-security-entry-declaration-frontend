@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.consignors
 
 import forms.behaviours.StringFieldBehaviours
-import forms.consignors.ConsignorAddressFormProvider
 import models.Country
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError

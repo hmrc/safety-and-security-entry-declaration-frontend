@@ -16,8 +16,8 @@
 
 package controllers.consignors
 
-import controllers.{routes => baseRoutes}
 import base.SpecBase
+import controllers.{routes => baseRoutes}
 import forms.consignors.ConsignorEORIFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}

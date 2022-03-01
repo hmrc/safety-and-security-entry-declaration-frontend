@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignors
 
 import base.SpecBase
 import controllers.consignors.routes
@@ -22,7 +22,7 @@ import controllers.{routes => baseRoutes}
 import models.ConsignorsIdentity.{GBEORI, NameAddress}
 import models.{CheckMode, ConsignorsIdentity, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.consignors.ConsignorsIdentityPage
+import pages.consignors
 
 class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
 
