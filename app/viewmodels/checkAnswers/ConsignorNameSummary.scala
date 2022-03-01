@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import controllers.routes
+import controllers.consignors.{routes => consignorRoutes}
 import models.{CheckMode, Index, UserAnswers}
 import pages.ConsignorNamePage
 import play.api.i18n.Messages
@@ -36,7 +36,7 @@ object ConsignorNameSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.ConsignorNameController.onPageLoad(CheckMode, answers.lrn, index).url
+            consignorRoutes.ConsignorNameController.onPageLoad(CheckMode, answers.lrn, index).url
           ).withVisuallyHiddenText(messages("consignorName.change.hidden"))
         )
       )

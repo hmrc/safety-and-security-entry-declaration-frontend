@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consignors
 
 import controllers.actions._
-import forms.ConsignorEORIFormProvider
-
-import javax.inject.Inject
-import models.{Index, GbEori, LocalReferenceNumber, Mode}
-import pages.ConsignorEORIPage
+import forms.ConsignorAddressFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import pages.ConsignorAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConsignorEORIView
+import views.html.ConsignorAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorEORIController @Inject() (
+class ConsignorAddressController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: ConsignorEORIFormProvider,
+  formProvider: ConsignorAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ConsignorEORIView
+  view: ConsignorAddressView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -48,7 +47,7 @@ class ConsignorEORIController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsignorEORIPage(index)) match {
+      val preparedForm = request.userAnswers.get(ConsignorAddressPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,14 +62,12 @@ class ConsignorEORIController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          {
-            value: GbEori =>
-              for {
-                updatedAnswers <-
-                  Future.fromTry(request.userAnswers.set(ConsignorEORIPage(index), value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(ConsignorEORIPage(index).navigate(mode, updatedAnswers))
-          }
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(ConsignorAddressPage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(ConsignorAddressPage(index).navigate(mode, updatedAnswers))
         )
     }
 }

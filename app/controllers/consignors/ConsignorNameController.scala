@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consignors
 
 import controllers.actions._
 import forms.ConsignorNameFormProvider
-
-import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.ConsignorNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,6 +26,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ConsignorNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorNameController @Inject() (

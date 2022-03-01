@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import controllers.routes
+import controllers.consignors.{routes => consignorRoutes}
 import models.{CheckMode, GbEori, Index, UserAnswers}
 import pages.ConsignorEORIPage
 import play.api.i18n.Messages
@@ -36,7 +36,7 @@ object ConsignorEORISummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn, index).url
+            consignorRoutes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn, index).url
           ).withVisuallyHiddenText(messages("consignorEORI.change.hidden"))
         )
       )

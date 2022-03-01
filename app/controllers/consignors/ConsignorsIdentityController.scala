@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consignors
 
 import controllers.actions._
-import forms.ConsignorAddressFormProvider
-
-import javax.inject.Inject
-import models.{Address, Index, LocalReferenceNumber, Mode}
-import pages.ConsignorAddressPage
+import forms.ConsignorsIdentityFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import pages.ConsignorsIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ConsignorAddressView
+import views.html.ConsignorsIdentityView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorAddressController @Inject() (
+class ConsignorsIdentityController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: ConsignorAddressFormProvider,
+  formProvider: ConsignorsIdentityFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ConsignorAddressView
+  view: ConsignorsIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -48,7 +47,7 @@ class ConsignorAddressController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsignorAddressPage(index)) match {
+      val preparedForm = request.userAnswers.get(ConsignorsIdentityPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -66,9 +65,9 @@ class ConsignorAddressController @Inject() (
           value =>
             for {
               updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ConsignorAddressPage(index), value))
+                Future.fromTry(request.userAnswers.set(ConsignorsIdentityPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsignorAddressPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(ConsignorsIdentityPage(index).navigate(mode, updatedAnswers))
         )
     }
 }

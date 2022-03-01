@@ -17,6 +17,7 @@
 package pages
 
 import controllers.routes
+import controllers.consignors.{routes => consignorRoutes}
 import models.ConsignorsIdentity.{GBEORI, NameAddress}
 import models.{ConsignorsIdentity, Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
@@ -30,9 +31,9 @@ case class ConsignorsIdentityPage(index: Index) extends QuestionPage[ConsignorsI
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(ConsignorsIdentityPage(index)) match {
-      case Some(GBEORI) => routes.ConsignorEORIController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(GBEORI) => consignorRoutes.ConsignorEORIController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(NameAddress) =>
-        routes.ConsignorNameController.onPageLoad(NormalMode, answers.lrn, index)
+        consignorRoutes.ConsignorNameController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }

@@ -16,6 +16,7 @@
 
 @import models.Country._
 @import viewmodels.InputWidth._
+@import controllers.consignors.{routes => consignorRoutes}
 
 @this(
     layout: templates.Layout,
@@ -30,7 +31,7 @@
 
 @layout(pageTitle = title(form, messages("consignorAddress.title"))) {
 
-    @formHelper(action = routes.ConsignorAddressController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = consignorRoutes.ConsignorAddressController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

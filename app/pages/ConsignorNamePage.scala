@@ -16,7 +16,7 @@
 
 package pages
 
-import controllers.routes
+import controllers.consignors.{routes => consignorRoutes}
 import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,6 +28,6 @@ case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
   override def toString: String = "consignorName"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
+    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }
