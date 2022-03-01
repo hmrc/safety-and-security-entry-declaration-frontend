@@ -33,7 +33,7 @@ case class DangerousGoodPage(index: Index) extends QuestionPage[Boolean] {
       case Some(true) =>
         routes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(false) =>
-        consignorRoutes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+        consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }

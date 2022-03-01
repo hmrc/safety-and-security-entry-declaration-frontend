@@ -32,10 +32,10 @@ import views.html.consignors.ConsignorsIdentityView
 
 import scala.concurrent.Future
 
-class ConsignorsIdentityControllerSpec extends SpecBase with MockitoSugar {
+class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val consignorsIdentityRoute =
-    routes.ConsignorsIdentityController.onPageLoad(NormalMode, lrn, index).url
+    routes.ConsignorIdentityController.onPageLoad(NormalMode, lrn, index).url
 
   val formProvider = new ConsignorsIdentityFormProvider()
   val form = formProvider()

@@ -44,7 +44,7 @@ object ConsignorsIdentitySummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            consignorRoutes.ConsignorsIdentityController.onPageLoad(CheckMode, answers.lrn, index).url
+            consignorRoutes.ConsignorIdentityController.onPageLoad(CheckMode, answers.lrn, index).url
           ).withVisuallyHiddenText(messages("consignorsIdentity.change.hidden"))
         )
       )

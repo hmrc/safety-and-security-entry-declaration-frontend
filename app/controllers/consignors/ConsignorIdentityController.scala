@@ -29,7 +29,7 @@ import views.html.consignors.ConsignorsIdentityView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorsIdentityController @Inject() (
+class ConsignorIdentityController @Inject()(
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,

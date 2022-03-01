@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("consignorsIdentity.title"))) {
 
-    @formHelper(action = consignorRoutes.ConsignorsIdentityController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = consignorRoutes.ConsignorIdentityController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

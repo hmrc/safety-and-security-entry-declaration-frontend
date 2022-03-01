@@ -29,6 +29,6 @@ case class DangerousGoodCodePage(index: Index) extends QuestionPage[DangerousGoo
   override def toString: String = "dangerousGoodCode"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+    consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

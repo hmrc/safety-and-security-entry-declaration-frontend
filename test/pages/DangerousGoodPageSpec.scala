@@ -49,7 +49,7 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
         DangerousGoodPage(index)
           .navigate(NormalMode, answers)
-          .mustEqual(routes.ConsignorsIdentityController.onPageLoad(NormalMode, answers.lrn, index))
+          .mustEqual(routes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 
