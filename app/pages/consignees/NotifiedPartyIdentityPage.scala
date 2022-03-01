@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[NotifiedPartyIdentity] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "identity"
 

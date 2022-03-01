@@ -26,28 +26,6 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "AddNotifiedPartyPage" - {
 
-    beRetrievable[Boolean](AddNotifiedPartyPage)
 
-    beSettable[Boolean](AddNotifiedPartyPage)
-
-    beRemovable[Boolean](AddNotifiedPartyPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        AddNotifiedPartyPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddNotifiedPartyPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
   }
 }

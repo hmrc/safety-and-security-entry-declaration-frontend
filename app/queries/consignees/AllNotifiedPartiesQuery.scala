@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package pages.consignees
+package queries.consignees
 
-import controllers.routes
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.Trader
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Gettable
 
-case class NotifiedPartyEORIPage(index: Index) extends QuestionPage[GbEori] {
+case object AllNotifiedPartiesQuery extends Gettable[List[Trader]] {
 
-  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
-
-  override def toString: String = "eori"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def path: JsPath = JsPath \ "notifiedParties"
 }

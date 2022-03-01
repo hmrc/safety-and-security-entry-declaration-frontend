@@ -18,53 +18,46 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AddConsigneeFormProvider
-import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.consignees.AddConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.consignees.AddConsigneeSummary
 import views.html.consignees.AddConsigneeView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
 
 class AddConsigneeController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddConsigneeFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddConsigneeView
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddConsigneePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      val consignees = AddConsigneeSummary.rows(request.userAnswers)
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(form, mode, lrn, consignees))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+        formWithErrors => {
+          val consignees = AddConsigneeSummary.rows(request.userAnswers)
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConsigneePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddConsigneePage.navigate(mode, updatedAnswers))
+          BadRequest(view(formWithErrors, mode, lrn, consignees))
+        },
+        value => Redirect(AddConsigneePage.navigate(mode, request.userAnswers, value))
       )
   }
 }

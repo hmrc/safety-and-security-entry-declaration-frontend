@@ -15,16 +15,19 @@
  *@
 
 @import controllers.consignees.routes
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, consignees: Seq[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addConsignee.title"))) {
 
@@ -34,10 +37,15 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("addConsignee.heading")</h1>
+
+        @addToList(consignees, Long, "addConsignee.change.hidden", "addConsignee.remove.hidden")
+
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("addConsignee.heading")).asPageHeading()
+                legend = LegendViewModel(messages("addConsignee.heading")).withSize(LegendSize.Medium)
             )
         )
 

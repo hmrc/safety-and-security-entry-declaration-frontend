@@ -20,17 +20,13 @@ import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.AddConsigneeFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.consignees.AddConsigneePage
-import play.api.inject.bind
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import viewmodels.checkAnswers.consignees.AddConsigneeSummary
 import views.html.consignees.AddConsigneeView
-
-import scala.concurrent.Future
 
 class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
@@ -52,38 +48,18 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[AddConsigneeView]
 
+        implicit val msgs: Messages = messages(application)
+        val list = AddConsigneeSummary.rows(emptyUserAnswers)
+
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(request, implicitly).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(AddConsigneePage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, addConsigneeRoute)
-
-        val view = application.injector.instanceOf[AddConsigneeView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+    "must redirect to the next page when valid data is submitted" in {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -92,11 +68,9 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AddConsigneePage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddConsigneePage.navigate(NormalMode, expectedAnswers).url
-        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+        redirectLocation(result).value mustEqual AddConsigneePage.navigate(NormalMode, emptyUserAnswers, addAnother = true).url
       }
     }
 
@@ -113,10 +87,13 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[AddConsigneeView]
 
+        implicit val msgs: Messages = messages(application)
+        val list = AddConsigneeSummary.rows(emptyUserAnswers)
+
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(request, implicitly).toString
       }
     }
 

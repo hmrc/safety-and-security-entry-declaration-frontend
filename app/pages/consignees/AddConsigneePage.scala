@@ -18,14 +18,26 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
+import queries.consignees.DeriveNumberOfConsignees
 
-case object AddConsigneePage extends QuestionPage[Boolean] {
+case object AddConsigneePage extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addConsignee"
+  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfConsignees) match {
+        case Some(size) =>
+          consigneesRoutes.ConsigneeIdentityController.onPageLoad(mode, answers.lrn, Index(size))
+        case None => routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      mode match {
+        case NormalMode =>
+          ???
+        case CheckMode =>
+          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      }
+    }
 }

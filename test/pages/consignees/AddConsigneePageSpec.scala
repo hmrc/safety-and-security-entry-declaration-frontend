@@ -26,28 +26,5 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
 
   "AddConsigneePage" - {
 
-    beRetrievable[Boolean](AddConsigneePage)
-
-    beSettable[Boolean](AddConsigneePage)
-
-    beRemovable[Boolean](AddConsigneePage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        AddConsigneePage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddConsigneePage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
   }
 }

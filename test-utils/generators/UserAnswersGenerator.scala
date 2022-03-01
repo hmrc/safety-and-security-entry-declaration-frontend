@@ -32,58 +32,54 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(RemoveNotifiedPartyPage, JsValue)] ::
-    arbitrary[(RemoveConsigneePage, JsValue)] ::
-    arbitrary[(AddNotifiedPartyPage.type, JsValue)] ::
-    arbitrary[(AddConsigneePage.type, JsValue)] ::
     arbitrary[(PaymentMethodPage, JsValue)] ::
-      arbitrary[(AddPaymentMethodPage, JsValue)] ::
-      arbitrary[(UnloadingCodePage, JsValue)] ::
-      arbitrary[(NotifiedPartyNamePage, JsValue)] ::
-      arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
-      arbitrary[(NotifiedPartyEORIPage, JsValue)] ::
-      arbitrary[(NotifiedPartyAddressPage, JsValue)] ::
-      arbitrary[(ConsigneeNamePage, JsValue)] ::
-      arbitrary[(ConsigneeIdentityPage, JsValue)] ::
-      arbitrary[(ConsigneeEORIPage, JsValue)] ::
-      arbitrary[(ConsigneeAddressPage, JsValue)] ::
-      arbitrary[(ConsignorNamePage, JsValue)] ::
-      arbitrary[(ConsignorEORIPage, JsValue)] ::
-      arbitrary[(ConsignorAddressPage, JsValue)] ::
-      arbitrary[(ConsigneeKnownPage.type, JsValue)] ::
-      arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
-      arbitrary[(ConsignorIdentityPage, JsValue)] ::
-      arbitrary[(DangerousGoodCodePage, JsValue)] ::
-      arbitrary[(DangerousGoodPage, JsValue)] ::
-      arbitrary[(OverallCrnKnownPage.type, JsValue)] ::
-      arbitrary[(OverallCrnPage.type, JsValue)] ::
-      arbitrary[(GoodsItemCrnKnownPage, JsValue)] ::
-      arbitrary[(GoodsItemCrnPage, JsValue)] ::
-      arbitrary[(DocumentPage, JsValue)] ::
-      arbitrary[(AddAnyDocumentsPage, JsValue)] ::
-      arbitrary[(NumberOfPiecesPage, JsValue)] ::
-      arbitrary[(NumberOfPackagesPage, JsValue)] ::
-      arbitrary[(MarkOrNumberPage, JsValue)] ::
-      arbitrary[(KindOfPackagePage, JsValue)] ::
-      arbitrary[(AddMarkOrNumberPage, JsValue)] ::
-      arbitrary[(DeclarationPlacePage.type, JsValue)] ::
-      arbitrary[(GoodsDescriptionPage, JsValue)] ::
-      arbitrary[(CommodityCodeKnownPage, JsValue)] ::
-      arbitrary[(CommodityCodePage, JsValue)] ::
-      arbitrary[(RemoveCountryEnRoutePage, JsValue)] ::
-      arbitrary[(GoodsPassThroughOtherCountriesPage.type, JsValue)] ::
-      arbitrary[(CountryEnRoutePage, JsValue)] ::
-      arbitrary[(CustomsOfficeOfFirstEntryPage.type, JsValue)] ::
-      arbitrary[(CountryOfOriginPage.type, JsValue)] ::
-      arbitrary[(ArrivalDateAndTimePage.type, JsValue)] ::
-      arbitrary[(CarrierEORIPage.type, JsValue)] ::
-      arbitrary[(IdentifyCarrierPage.type, JsValue)] ::
-      arbitrary[(TransportModePage.type, JsValue)] ::
-      arbitrary[(TotalGrossWeightPage.type, JsValue)] ::
-      arbitrary[(ProvideGrossWeightPage.type, JsValue)] ::
-      arbitrary[(LodgingPersonTypePage.type, JsValue)] ::
-      arbitrary[(LocalReferenceNumberPage.type, JsValue)] ::
-      Nil
+    arbitrary[(AddPaymentMethodPage, JsValue)] ::
+    arbitrary[(UnloadingCodePage, JsValue)] ::
+    arbitrary[(NotifiedPartyNamePage, JsValue)] ::
+    arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
+    arbitrary[(NotifiedPartyEORIPage, JsValue)] ::
+    arbitrary[(NotifiedPartyAddressPage, JsValue)] ::
+    arbitrary[(ConsigneeNamePage, JsValue)] ::
+    arbitrary[(ConsigneeIdentityPage, JsValue)] ::
+    arbitrary[(ConsigneeEORIPage, JsValue)] ::
+    arbitrary[(ConsigneeAddressPage, JsValue)] ::
+    arbitrary[(ConsignorNamePage, JsValue)] ::
+    arbitrary[(ConsignorEORIPage, JsValue)] ::
+    arbitrary[(ConsignorAddressPage, JsValue)] ::
+    arbitrary[(ConsigneeKnownPage.type, JsValue)] ::
+    arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
+    arbitrary[(ConsignorIdentityPage, JsValue)] ::
+    arbitrary[(DangerousGoodCodePage, JsValue)] ::
+    arbitrary[(DangerousGoodPage, JsValue)] ::
+    arbitrary[(OverallCrnKnownPage.type, JsValue)] ::
+    arbitrary[(OverallCrnPage.type, JsValue)] ::
+    arbitrary[(GoodsItemCrnKnownPage, JsValue)] ::
+    arbitrary[(GoodsItemCrnPage, JsValue)] ::
+    arbitrary[(DocumentPage, JsValue)] ::
+    arbitrary[(AddAnyDocumentsPage, JsValue)] ::
+    arbitrary[(NumberOfPiecesPage, JsValue)] ::
+    arbitrary[(NumberOfPackagesPage, JsValue)] ::
+    arbitrary[(MarkOrNumberPage, JsValue)] ::
+    arbitrary[(KindOfPackagePage, JsValue)] ::
+    arbitrary[(AddMarkOrNumberPage, JsValue)] ::
+    arbitrary[(DeclarationPlacePage.type, JsValue)] ::
+    arbitrary[(GoodsDescriptionPage, JsValue)] ::
+    arbitrary[(CommodityCodeKnownPage, JsValue)] ::
+    arbitrary[(CommodityCodePage, JsValue)] ::
+    arbitrary[(RemoveCountryEnRoutePage, JsValue)] ::
+    arbitrary[(GoodsPassThroughOtherCountriesPage.type, JsValue)] ::
+    arbitrary[(CountryEnRoutePage, JsValue)] ::
+    arbitrary[(CustomsOfficeOfFirstEntryPage.type, JsValue)] ::
+    arbitrary[(CountryOfOriginPage.type, JsValue)] ::
+    arbitrary[(ArrivalDateAndTimePage.type, JsValue)] ::
+    arbitrary[(CarrierEORIPage.type, JsValue)] ::
+    arbitrary[(IdentifyCarrierPage.type, JsValue)] ::
+    arbitrary[(TransportModePage.type, JsValue)] ::
+    arbitrary[(TotalGrossWeightPage.type, JsValue)] ::
+    arbitrary[(ProvideGrossWeightPage.type, JsValue)] ::
+    arbitrary[(LodgingPersonTypePage.type, JsValue)] ::
+    arbitrary[(LocalReferenceNumberPage.type, JsValue)] ::
+    Nil
 
   implicit lazy val arbitraryUserData: Arbitrary[UserAnswers] = {
 

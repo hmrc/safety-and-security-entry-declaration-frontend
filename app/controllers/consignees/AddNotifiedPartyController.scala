@@ -18,53 +18,46 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AddNotifiedPartyFormProvider
-import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.consignees.AddNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.consignees.AddNotifiedPartySummary
 import views.html.consignees.AddNotifiedPartyView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
 
 class AddNotifiedPartyController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddNotifiedPartyFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddNotifiedPartyView
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddNotifiedPartyPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers)
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(form, mode, lrn, notifiedParties))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+        formWithErrors => {
+          val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers)
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNotifiedPartyPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddNotifiedPartyPage.navigate(mode, updatedAnswers))
+          BadRequest(view(formWithErrors, mode, lrn, notifiedParties))
+        },
+        value => Redirect(AddNotifiedPartyPage.navigate(mode, request.userAnswers, value))
       )
   }
 }
