@@ -18,7 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import models.LodgingPersonType
-import pages.LodgingPersonTypePage
+import pages.preDeclaration.LodgingPersonTypePage
 import play.api.test.Helpers.stubMessages
 
 class TaskListViewModelSpec extends SpecBase {

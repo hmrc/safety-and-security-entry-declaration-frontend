@@ -6,8 +6,8 @@ echo "Applying migration GrossWeight"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /grossWeight                        controllers.GrossWeightController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
-echo "POST       /grossWeight                        controllers.GrossWeightController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /provideGrossWeight                        controllers.GrossWeightController.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "POST       /provideGrossWeight                        controllers.GrossWeightController.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
 echo "GET        /changeGrossWeight                  controllers.GrossWeightController.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
 echo "POST       /changeGrossWeight                  controllers.GrossWeightController.onSubmit(mode: Mode = CheckMode)" >> ../conf/app.routes

@@ -17,6 +17,7 @@
 package pages.consignors
 
 import base.SpecBase
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
 import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -37,7 +38,7 @@ class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
           ConsignorAddressPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }

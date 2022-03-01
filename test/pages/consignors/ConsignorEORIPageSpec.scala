@@ -17,6 +17,7 @@
 package pages.consignors
 
 import base.SpecBase
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
 import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -40,7 +41,7 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
           .ConsignorEORIPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }

@@ -21,14 +21,18 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
+import pages.consignees._
 import pages.consignors._
+import pages.goods._
+import pages.preDeclaration._
+import pages.routeDetails._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
-    arbitrary[(CarrierPaymentMethodPage, JsValue)] ::
+    arbitrary[(PaymentMethodPage, JsValue)] ::
       arbitrary[(AddPaymentMethodPage, JsValue)] ::
       arbitrary[(UnloadingCodePage, JsValue)] ::
       arbitrary[(NotifiedPartyNamePage, JsValue)] ::
@@ -68,11 +72,11 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(CustomsOfficeOfFirstEntryPage.type, JsValue)] ::
       arbitrary[(CountryOfOriginPage.type, JsValue)] ::
       arbitrary[(ArrivalDateAndTimePage.type, JsValue)] ::
-      arbitrary[(CarriersEORIPage.type, JsValue)] ::
+      arbitrary[(CarrierEORIPage.type, JsValue)] ::
       arbitrary[(IdentifyCarrierPage.type, JsValue)] ::
       arbitrary[(TransportModePage.type, JsValue)] ::
       arbitrary[(TotalGrossWeightPage.type, JsValue)] ::
-      arbitrary[(GrossWeightPage.type, JsValue)] ::
+      arbitrary[(ProvideGrossWeightPage.type, JsValue)] ::
       arbitrary[(LodgingPersonTypePage.type, JsValue)] ::
       arbitrary[(LocalReferenceNumberPage.type, JsValue)] ::
       Nil

@@ -17,6 +17,7 @@
 package pages
 
 import base.SpecBase
+import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -25,20 +26,20 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
   "UnloadingCodePage" - {
 
-    beRetrievable[String](UnloadingCodePage(index))
+    beRetrievable[String](pages.UnloadingCodePage(index))
 
-    beSettable[String](UnloadingCodePage(index))
+    beSettable[String](pages.UnloadingCodePage(index))
 
-    beRemovable[String](UnloadingCodePage(index))
+    beRemovable[String](pages.UnloadingCodePage(index))
 
     "must navigate in Normal Mode" - {
 
       "to `do you want to add a payment method` page" in {
 
-        UnloadingCodePage(index)
+        pages.UnloadingCodePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.AddPaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            goodsRoutes.AddPaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -47,7 +48,7 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        UnloadingCodePage(index)
+        pages.UnloadingCodePage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
