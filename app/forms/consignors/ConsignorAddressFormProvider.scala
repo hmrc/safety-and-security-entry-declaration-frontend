@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms
+package forms.consignors
 
 import forms.mappings.Mappings
-import models.{Address, Country}
 import models.Country.internationalCountries
+import models.{Address, Country}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

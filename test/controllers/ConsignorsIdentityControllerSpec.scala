@@ -17,8 +17,8 @@
 package controllers
 
 import base.SpecBase
-import forms.ConsignorsIdentityFormProvider
-import models.{NormalMode, ConsignorsIdentity}
+import forms.consignors.ConsignorsIdentityFormProvider
+import models.{ConsignorsIdentity, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar

@@ -17,7 +17,7 @@
 package controllers.consignors
 
 import controllers.actions._
-import forms.ConsignorEORIFormProvider
+import forms.consignors.ConsignorEORIFormProvider
 import models.{GbEori, Index, LocalReferenceNumber, Mode}
 import pages.ConsignorEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}

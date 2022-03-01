@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.consignors.ConsignorAddressFormProvider
 import models.Country
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError

@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.consignors.ConsignorNameFormProvider
 import play.api.data.FormError
 
 class ConsignorNameFormProviderSpec extends StringFieldBehaviours {

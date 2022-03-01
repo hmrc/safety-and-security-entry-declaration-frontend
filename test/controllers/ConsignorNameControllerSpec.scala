@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import forms.ConsignorNameFormProvider
+import forms.consignors.ConsignorNameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}

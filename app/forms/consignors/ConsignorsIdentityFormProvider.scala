@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.consignors
+
+import forms.mappings.Mappings
+import models.ConsignorsIdentity
+import play.api.data.Form
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.GbEori
+class ConsignorsIdentityFormProvider @Inject() extends Mappings {
 
-class ConsignorEORIFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[GbEori] =
+  def apply(): Form[ConsignorsIdentity] =
     Form(
-      "value" -> gbEori("consignorEORI.error.required")
+      "value" -> enumerable[ConsignorsIdentity]("consignorsIdentity.error.required")
     )
 }

@@ -17,7 +17,7 @@
 package controllers.consignors
 
 import controllers.actions._
-import forms.ConsignorAddressFormProvider
+import forms.consignors.ConsignorAddressFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.ConsignorAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}

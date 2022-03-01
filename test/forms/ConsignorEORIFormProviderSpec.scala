@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.GbEoriFieldBehaviours
+import forms.consignors.ConsignorEORIFormProvider
 import play.api.data.FormError
 
 class ConsignorEORIFormProviderSpec extends GbEoriFieldBehaviours {

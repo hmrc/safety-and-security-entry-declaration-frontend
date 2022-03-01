@@ -17,6 +17,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
+import forms.consignors.ConsignorsIdentityFormProvider
 import models.ConsignorsIdentity
 import play.api.data.FormError
 

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.consignors
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.ConsignorsIdentity
 
-class ConsignorsIdentityFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[ConsignorsIdentity] =
+class ConsignorNameFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[ConsignorsIdentity]("consignorsIdentity.error.required")
+      "value" -> text("consignorName.error.required")
+        .verifying(maxLength(35, "consignorName.error.length"))
     )
 }
