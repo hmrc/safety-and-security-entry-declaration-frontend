@@ -31,7 +31,7 @@ final case class AddAnyDocumentsPage(index: Index) extends QuestionPage[Boolean]
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(AddAnyDocumentsPage(index)) match {
-      case Some(true)  => goodsRoutes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+      case Some(true) => goodsRoutes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
       case Some(false) => goodsRoutes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index)
       case _ => routes.JourneyRecoveryController.onPageLoad()
     }

@@ -23,8 +23,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index)
-  extends QuestionPage[Boolean] {
+case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString

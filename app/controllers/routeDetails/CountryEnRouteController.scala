@@ -65,8 +65,7 @@ class CountryEnRouteController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(routeDetails.CountryEnRoutePage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(routeDetails.CountryEnRoutePage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(routeDetails.CountryEnRoutePage(index).navigate(mode, updatedAnswers))
         )

@@ -72,8 +72,7 @@ class NumberOfPackagesController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(

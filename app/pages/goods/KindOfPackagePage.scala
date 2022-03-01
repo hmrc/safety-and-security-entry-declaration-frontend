@@ -24,8 +24,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class KindOfPackagePage(itemIndex: Index, packageIndex: Index)
-  extends QuestionPage[KindOfPackage] {
+case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[KindOfPackage] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString

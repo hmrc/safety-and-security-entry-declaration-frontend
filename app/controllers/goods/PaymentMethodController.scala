@@ -29,15 +29,15 @@ import views.html.goods.PaymentMethodView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PaymentMethodController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalActionProvider,
-                                         requireData: DataRequiredAction,
-                                         formProvider: PaymentMethodFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: PaymentMethodView
+class PaymentMethodController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: PaymentMethodFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PaymentMethodView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -64,8 +64,7 @@ class PaymentMethodController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(PaymentMethodPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PaymentMethodPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(PaymentMethodPage(index).navigate(mode, updatedAnswers))
         )

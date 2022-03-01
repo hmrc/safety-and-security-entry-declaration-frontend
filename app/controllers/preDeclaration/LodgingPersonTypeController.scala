@@ -64,8 +64,7 @@ class LodgingPersonTypeController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(LodgingPersonTypePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(LodgingPersonTypePage, value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(LodgingPersonTypePage.navigate(mode, updatedAnswers))
         )

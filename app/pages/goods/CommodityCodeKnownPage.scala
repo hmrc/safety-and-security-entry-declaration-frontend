@@ -31,9 +31,9 @@ case class CommodityCodeKnownPage(index: Index) extends QuestionPage[Boolean] {
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(CommodityCodeKnownPage(index)) match {
-      case Some(true)  => goodsRoutes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(true) => goodsRoutes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(false) => goodsRoutes.GoodsDescriptionController.onPageLoad(NormalMode, answers.lrn, index)
-      case None        => routes.JourneyRecoveryController.onPageLoad()
+      case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }

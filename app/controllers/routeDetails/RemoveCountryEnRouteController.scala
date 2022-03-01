@@ -60,8 +60,7 @@ class RemoveCountryEnRouteController @Inject() (
           value =>
             if (value) {
               for {
-                updatedAnswers <-
-                  Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(routeDetails.RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
             } else {

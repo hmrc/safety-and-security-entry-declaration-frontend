@@ -64,8 +64,7 @@ class NotifiedPartyIdentityController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(NotifiedPartyIdentityPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyIdentityPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(NotifiedPartyIdentityPage(index).navigate(mode, updatedAnswers))
         )

@@ -64,8 +64,7 @@ class AddDocumentController @Inject() (
 
             BadRequest(view(formWithErrors, mode, lrn, index, documents))
           },
-          value =>
-            Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
+          value => Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
         )
     }
 }

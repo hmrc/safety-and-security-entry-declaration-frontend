@@ -29,15 +29,15 @@ import views.html.preDeclaration.ProvideGrossWeightView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ProvideGrossWeightController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: SessionRepository,
-                                              identify: IdentifierAction,
-                                              getData: DataRetrievalActionProvider,
-                                              requireData: DataRequiredAction,
-                                              formProvider: ProvideGrossWeightFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: ProvideGrossWeightView
+class ProvideGrossWeightController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: ProvideGrossWeightFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ProvideGrossWeightView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {

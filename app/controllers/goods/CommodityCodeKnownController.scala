@@ -64,8 +64,7 @@ class CommodityCodeKnownController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(CommodityCodeKnownPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CommodityCodeKnownPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(CommodityCodeKnownPage(index).navigate(mode, updatedAnswers))
         )

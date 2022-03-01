@@ -23,8 +23,7 @@ import services.DangerousGoodsService
 
 import javax.inject.Inject
 
-class DangerousGoodCodeFormProvider @Inject() (dangerousGoodsService: DangerousGoodsService)
-  extends Mappings {
+class DangerousGoodCodeFormProvider @Inject() (dangerousGoodsService: DangerousGoodsService) extends Mappings {
 
   def apply(): Form[DangerousGood] =
     Form(

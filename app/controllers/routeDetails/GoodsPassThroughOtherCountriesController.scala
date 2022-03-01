@@ -64,8 +64,7 @@ class GoodsPassThroughOtherCountriesController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(GoodsPassThroughOtherCountriesPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsPassThroughOtherCountriesPage, value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(GoodsPassThroughOtherCountriesPage.navigate(mode, updatedAnswers))
         )

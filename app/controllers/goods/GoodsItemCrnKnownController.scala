@@ -64,8 +64,7 @@ class GoodsItemCrnKnownController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(GoodsItemCrnKnownPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsItemCrnKnownPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(GoodsItemCrnKnownPage(index).navigate(mode, updatedAnswers))
         )

@@ -78,7 +78,7 @@ class RemoveGoodsController @Inject() (
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(GoodItemQuery(goodItemIndex)))
-                _              <- sessionRepository.set(updatedAnswers)
+                _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, updatedAnswers))
             } else {
               Future.successful(

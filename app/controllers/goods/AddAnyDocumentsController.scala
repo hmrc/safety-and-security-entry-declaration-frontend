@@ -64,8 +64,7 @@ class AddAnyDocumentsController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(AddAnyDocumentsPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyDocumentsPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(AddAnyDocumentsPage(index).navigate(mode, updatedAnswers))
         )

@@ -64,8 +64,7 @@ class ConsigneeKnownController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ConsigneeKnownPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeKnownPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(ConsigneeKnownPage(index).navigate(mode, updatedAnswers))
         )

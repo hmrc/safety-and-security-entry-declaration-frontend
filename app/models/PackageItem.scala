@@ -48,9 +48,7 @@ object BulkPackageItem {
           .find(_ == k)
           .map(k => Reads(_ => JsSuccess(k)))
           .getOrElse(
-            Reads(_ =>
-              JsError("Kind of package was not found in the list of bulk kinds of package")
-            )
+            Reads(_ => JsError("Kind of package was not found in the list of bulk kinds of package"))
           )
       }
       .andKeep(
@@ -81,9 +79,7 @@ object UnpackedPackageItem {
           .find(_ == k)
           .map(k => Reads(_ => JsSuccess(k)))
           .getOrElse(
-            Reads(_ =>
-              JsError("Kind of package was not found in the list of unpacked kinds of package")
-            )
+            Reads(_ => JsError("Kind of package was not found in the list of unpacked kinds of package"))
           )
       }
       .andKeep(
@@ -115,9 +111,7 @@ object StandardPackageItem {
           .find(_ == k)
           .map(k => Reads(_ => JsSuccess(k)))
           .getOrElse(
-            Reads(_ =>
-              JsError("Kind of package was not found in the list of standard kinds of package")
-            )
+            Reads(_ => JsError("Kind of package was not found in the list of standard kinds of package"))
           )
       }
       .andKeep(

@@ -64,8 +64,7 @@ class ArrivalDateAndTimeController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(ArrivalDateAndTimePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ArrivalDateAndTimePage, value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(ArrivalDateAndTimePage.navigate(mode, updatedAnswers))
         )

@@ -32,8 +32,8 @@ final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[Big
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(OverallCrnKnownPage) match {
-      case Some(true)  => goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(true) => goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(false) => goodsRoutes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
-      case _           => routes.JourneyRecoveryController.onPageLoad()
+      case _ => routes.JourneyRecoveryController.onPageLoad()
     }
 }

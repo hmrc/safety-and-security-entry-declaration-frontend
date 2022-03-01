@@ -64,8 +64,7 @@ class GoodsItemGrossWeightController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(GoodsItemGrossWeightPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsItemGrossWeightPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(GoodsItemGrossWeightPage(index).navigate(mode, updatedAnswers))
         )

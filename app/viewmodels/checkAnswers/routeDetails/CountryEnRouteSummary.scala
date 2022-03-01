@@ -51,8 +51,7 @@ object CountryEnRouteSummary {
       case (country, index) =>
         ListItem(
           name = HtmlFormat.escape(country.name).toString,
-          changeUrl =
-            routeDetailRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
+          changeUrl = routeDetailRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
           removeUrl = routeDetailRoutes.RemoveCountryEnRouteController
             .onPageLoad(NormalMode, answers.lrn, Index(index))
             .url

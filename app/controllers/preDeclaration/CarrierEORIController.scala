@@ -30,15 +30,15 @@ import views.html.preDeclaration.CarrierEORIView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarrierEORIController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalActionProvider,
-                                       requireData: DataRequiredAction,
-                                       formProvider: CarrierEORIFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: CarrierEORIView
+class CarrierEORIController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: CarrierEORIFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CarrierEORIView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {

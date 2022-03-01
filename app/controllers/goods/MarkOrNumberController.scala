@@ -71,12 +71,12 @@ class MarkOrNumberController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(MarkOrNumberPage(itemIndex, packageIndex), value))
-              _              <- sessionRepository.set(updatedAnswers)
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(MarkOrNumberPage(itemIndex, packageIndex), value))
+              _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(
               MarkOrNumberPage(itemIndex, packageIndex).navigate(mode, updatedAnswers)
             )
