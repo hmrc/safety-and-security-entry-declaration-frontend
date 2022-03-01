@@ -40,7 +40,6 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
   lazy val removeGoodsRoute =
     routes.RemoveGoodsController.onPageLoad(NormalMode, lrn, index).url
 
-
   private val baseAnswers =
     emptyUserAnswers
       .set(UnloadingCodePage(index), "423432")
@@ -124,8 +123,6 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
         verify(mockSessionRepository, never()).set(any())
       }
     }
-
-
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 

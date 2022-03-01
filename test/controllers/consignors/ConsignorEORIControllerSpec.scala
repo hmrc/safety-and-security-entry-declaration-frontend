@@ -63,7 +63,8 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(consignors.ConsignorEORIPage(index), eori).success.value
+      val userAnswers =
+        emptyUserAnswers.set(consignors.ConsignorEORIPage(index), eori).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -99,10 +100,12 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", eori.value))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(consignors.ConsignorEORIPage(index), eori).success.value
+        val expectedAnswers =
+          emptyUserAnswers.set(consignors.ConsignorEORIPage(index), eori).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignors.ConsignorEORIPage(index)
+        redirectLocation(result).value mustEqual consignors
+          .ConsignorEORIPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -142,7 +145,9 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -158,7 +163,9 @@ class ConsignorEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController
+          .onPageLoad()
+          .url
       }
     }
   }

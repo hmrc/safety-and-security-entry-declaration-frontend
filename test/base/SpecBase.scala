@@ -46,8 +46,10 @@ trait SpecBase
 
   protected val arbitraryDate: LocalDate =
     datesBetween(LocalDate.of(2022, 7, 1), LocalDate.of(2050, 12, 31)).sample.value
-  protected val arbitraryInstant: Instant = arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
-  protected val stubClockAtArbitraryDate: Clock = Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
+  protected val arbitraryInstant: Instant =
+    arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
+  protected val stubClockAtArbitraryDate: Clock =
+    Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
 
   protected def emptyUserAnswers: UserAnswers =
     UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)

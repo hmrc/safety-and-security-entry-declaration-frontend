@@ -28,6 +28,6 @@ case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPa
   override def toString: String = "carrierPaymentMethod"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
+    routes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

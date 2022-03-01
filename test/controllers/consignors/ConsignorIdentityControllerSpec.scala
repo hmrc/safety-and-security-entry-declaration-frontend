@@ -110,7 +110,8 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
           .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignors.ConsignorIdentityPage(index)
+        redirectLocation(result).value mustEqual consignors
+          .ConsignorIdentityPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -150,7 +151,9 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -167,7 +170,9 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController
+          .onPageLoad()
+          .url
       }
     }
   }

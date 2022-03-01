@@ -29,15 +29,15 @@ import views.html.consignors.ConsignorIdentityView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsignorIdentityController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             sessionRepository: SessionRepository,
-                                             identify: IdentifierAction,
-                                             getData: DataRetrievalActionProvider,
-                                             requireData: DataRequiredAction,
-                                             formProvider: ConsignorIdentityFormProvider,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: ConsignorIdentityView
+class ConsignorIdentityController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: ConsignorIdentityFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ConsignorIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -64,8 +64,9 @@ class ConsignorIdentityController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(consignors.ConsignorIdentityPage(index), value))
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.set(consignors.ConsignorIdentityPage(index), value)
+              )
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(consignors.ConsignorIdentityPage(index).navigate(mode, updatedAnswers))
         )

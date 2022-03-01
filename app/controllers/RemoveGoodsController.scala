@@ -30,7 +30,7 @@ import views.html.RemoveGoodsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveGoodsController @Inject()(
+class RemoveGoodsController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,

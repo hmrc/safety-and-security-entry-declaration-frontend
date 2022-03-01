@@ -32,7 +32,7 @@ case class AddPaymentMethodPage(index: Index) extends QuestionPage[Boolean] {
       case Some(true) =>
         routes.CarrierPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(false) =>
-        routes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
+        routes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
 

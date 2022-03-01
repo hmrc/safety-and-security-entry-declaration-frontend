@@ -36,7 +36,8 @@ class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
 
       "to `Do you know the consignee?`" in {
 
-        consignors.ConsignorAddressPage(index)
+        consignors
+          .ConsignorAddressPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
             routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
@@ -48,7 +49,8 @@ class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        consignors.ConsignorAddressPage(index)
+        consignors
+          .ConsignorAddressPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

@@ -40,7 +40,9 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
         DangerousGoodPage(index)
           .navigate(NormalMode, answers)
-          .mustEqual(baseRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
+          .mustEqual(
+            baseRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
+          )
       }
 
       "to consignor identity page when answer is no" in {

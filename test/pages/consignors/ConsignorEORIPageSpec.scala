@@ -36,7 +36,8 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to `Do you know the consignee?`" in {
 
-        consignors.ConsignorEORIPage(index)
+        consignors
+          .ConsignorEORIPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
             routes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
@@ -48,7 +49,8 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        consignors.ConsignorEORIPage(index)
+        consignors
+          .ConsignorEORIPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
