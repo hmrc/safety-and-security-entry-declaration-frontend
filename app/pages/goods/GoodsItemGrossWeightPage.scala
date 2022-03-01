@@ -19,7 +19,8 @@ package pages.goods
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
-import pages.{OverallCrnKnownPage, QuestionPage}
+import pages.QuestionPage
+import pages.preDeclaration.OverallCrnKnownPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

@@ -45,7 +45,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
 
   private val baseAnswers =
     emptyUserAnswers
-      .set(UnloadingCodePage(index), "423432")
+      .set(pages.UnloadingCodePage(index), "423432")
       .success
       .value
       .set(CommodityCodePage(index), "1111")

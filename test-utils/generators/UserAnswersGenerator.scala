@@ -23,6 +23,7 @@ import org.scalatest.TryValues
 import pages._
 import pages.consignees._
 import pages.goods._
+import pages.preDeclaration._
 import pages.routeDetails._
 import play.api.libs.json.{JsValue, Json}
 

@@ -21,7 +21,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.OverallCrnKnownPage
+import pages.preDeclaration.OverallCrnKnownPage
 
 class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 

@@ -18,9 +18,10 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
-import pages.{goods, routeDetails, _}
+import pages._
 import pages.consignees._
 import pages.goods._
+import pages.preDeclaration._
 import pages.routeDetails._
 
 trait PageGenerators {
@@ -31,7 +32,7 @@ trait PageGenerators {
     Arbitrary(goods.AddPaymentMethodPage(Index(0)))
 
   implicit lazy val arbitraryUnloadingCodePage: Arbitrary[UnloadingCodePage] =
-    Arbitrary(UnloadingCodePage(Index(0)))
+    Arbitrary(pages.UnloadingCodePage(Index(0)))
 
   implicit lazy val arbitraryNotifiedPartyNamePage: Arbitrary[NotifiedPartyNamePage] =
     Arbitrary(consignees.NotifiedPartyNamePage(Index(0)))

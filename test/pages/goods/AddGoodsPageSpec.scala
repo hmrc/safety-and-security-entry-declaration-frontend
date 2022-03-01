@@ -20,8 +20,8 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, NormalMode}
-import pages.UnloadingCodePage
 import pages.behaviours.PageBehaviours
+import pages.{UnloadingCodePage, preDeclaration}
 
 class AddGoodsPageSpec extends SpecBase with PageBehaviours {
 
@@ -30,7 +30,7 @@ class AddGoodsPageSpec extends SpecBase with PageBehaviours {
     "must navigate in Normal Mode" - {
 
       "to Good for the next index if the answer is yes" in {
-        val answers = emptyUserAnswers.set(UnloadingCodePage(Index(0)),"11111111").success.value
+        val answers = emptyUserAnswers.set(pages.UnloadingCodePage(Index(0)),"11111111").success.value
 
         AddGoodsPage()
           .navigate(NormalMode, answers, addAnother = true)
