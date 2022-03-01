@@ -21,6 +21,7 @@ import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages._
 import pages.consignees._
+import pages.goods._
 import pages.routeDetails._
 import play.api.libs.json.{JsValue, Json}
 

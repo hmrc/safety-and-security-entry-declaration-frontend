@@ -18,16 +18,17 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
-import pages.{routeDetails, _}
+import pages.{goods, routeDetails, _}
 import pages.consignees._
+import pages.goods._
 import pages.routeDetails._
 
 trait PageGenerators {
   implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage] =
-    Arbitrary(CarrierPaymentMethodPage(Index(0)))
+    Arbitrary(goods.CarrierPaymentMethodPage(Index(0)))
 
   implicit lazy val arbitraryAddPaymentMethodPage: Arbitrary[AddPaymentMethodPage] =
-    Arbitrary(AddPaymentMethodPage(Index(0)))
+    Arbitrary(goods.AddPaymentMethodPage(Index(0)))
 
   implicit lazy val arbitraryUnloadingCodePage: Arbitrary[UnloadingCodePage] =
     Arbitrary(UnloadingCodePage(Index(0)))
@@ -69,16 +70,16 @@ trait PageGenerators {
     Arbitrary(consignees.ConsigneeKnownPage(Index(0)))
 
   implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
-    Arbitrary(GoodsItemGrossWeightPage(Index(0)))
+    Arbitrary(goods.GoodsItemGrossWeightPage(Index(0)))
 
   implicit lazy val arbitraryConsignorsIdentityPage: Arbitrary[ConsignorsIdentityPage] =
     Arbitrary(ConsignorsIdentityPage(Index(0)))
 
   implicit lazy val arbitraryDangerousGoodCodePage: Arbitrary[DangerousGoodCodePage] =
-    Arbitrary(DangerousGoodCodePage(Index(0)))
+    Arbitrary(goods.DangerousGoodCodePage(Index(0)))
 
   implicit lazy val arbitraryDangerousGoodPage: Arbitrary[DangerousGoodPage] =
-    Arbitrary(DangerousGoodPage(Index(0)))
+    Arbitrary(goods.DangerousGoodPage(Index(0)))
 
   implicit lazy val arbitraryOverallCrnKnownPage: Arbitrary[OverallCrnKnownPage.type] =
     Arbitrary(OverallCrnKnownPage)
@@ -87,46 +88,46 @@ trait PageGenerators {
     Arbitrary(OverallCrnPage)
 
   implicit lazy val arbitraryGoodsItemCrnKnownPage: Arbitrary[GoodsItemCrnKnownPage] =
-    Arbitrary(GoodsItemCrnKnownPage(Index(0)))
+    Arbitrary(goods.GoodsItemCrnKnownPage(Index(0)))
 
   implicit lazy val arbitraryGoodsItemCrnPage: Arbitrary[GoodsItemCrnPage] =
-    Arbitrary(GoodsItemCrnPage(Index(0)))
+    Arbitrary(goods.GoodsItemCrnPage(Index(0)))
 
   implicit lazy val arbitraryDocumentPage: Arbitrary[DocumentPage] =
-    Arbitrary(DocumentPage(Index(0), Index(0)))
+    Arbitrary(goods.DocumentPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddAnyDocumentsPage: Arbitrary[AddAnyDocumentsPage] =
-    Arbitrary(AddAnyDocumentsPage(Index(0)))
+    Arbitrary(goods.AddAnyDocumentsPage(Index(0)))
 
   implicit lazy val arbitraryNumberOfPiecesPage: Arbitrary[NumberOfPiecesPage] =
-    Arbitrary(NumberOfPiecesPage(Index(0), Index(0)))
+    Arbitrary(goods.NumberOfPiecesPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryNumberOfPackagesPage: Arbitrary[NumberOfPackagesPage] =
-    Arbitrary(NumberOfPackagesPage(Index(0), Index(0)))
+    Arbitrary(goods.NumberOfPackagesPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryMarkOrNumberPage: Arbitrary[MarkOrNumberPage] =
-    Arbitrary(MarkOrNumberPage(Index(0), Index(0)))
+    Arbitrary(goods.MarkOrNumberPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryKindOfPackagePage: Arbitrary[KindOfPackagePage] =
-    Arbitrary(KindOfPackagePage(Index(0), Index(0)))
+    Arbitrary(goods.KindOfPackagePage(Index(0), Index(0)))
 
   implicit lazy val arbitraryAddPackagePage: Arbitrary[AddPackagePage] =
-    Arbitrary(AddPackagePage(Index(0)))
+    Arbitrary(goods.AddPackagePage(Index(0)))
 
   implicit lazy val arbitraryAddMarkOrNumberPage: Arbitrary[AddMarkOrNumberPage] =
-    Arbitrary(AddMarkOrNumberPage(Index(0), Index(0)))
+    Arbitrary(goods.AddMarkOrNumberPage(Index(0), Index(0)))
 
   implicit lazy val arbitraryDeclarationPlacePage: Arbitrary[DeclarationPlacePage.type] =
     Arbitrary(DeclarationPlacePage)
 
   implicit lazy val arbitraryGoodsDescriptionPage: Arbitrary[GoodsDescriptionPage] =
-    Arbitrary(GoodsDescriptionPage(Index(0)))
+    Arbitrary(goods.GoodsDescriptionPage(Index(0)))
 
   implicit lazy val arbitraryCommodityCodeKnownPage: Arbitrary[CommodityCodeKnownPage] =
-    Arbitrary(CommodityCodeKnownPage(Index(0)))
+    Arbitrary(goods.CommodityCodeKnownPage(Index(0)))
 
   implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
-    Arbitrary(CommodityCodePage(Index(0)))
+    Arbitrary(goods.CommodityCodePage(Index(0)))
 
   implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage] =
     Arbitrary(routeDetails.RemoveCountryEnRoutePage(Index(0)))

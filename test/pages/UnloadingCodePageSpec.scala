@@ -17,6 +17,7 @@
 package pages
 
 import base.SpecBase
+import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -38,7 +39,7 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
         UnloadingCodePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.AddPaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            goodsRoutes.AddPaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }

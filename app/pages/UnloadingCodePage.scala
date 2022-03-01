@@ -16,6 +16,7 @@
 
 package pages
 
+import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
@@ -28,6 +29,6 @@ case class UnloadingCodePage(index: Index) extends QuestionPage[String] {
   override def toString: String = "unloadingCode"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.AddPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
+    goodsRoutes.AddPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }
