@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.consignors.ConsignorIdentityFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignors
+import pages.consignors.ConsignorIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -47,7 +48,7 @@ class ConsignorIdentityController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(consignors.ConsignorIdentityPage(index)) match {
+      val preparedForm = request.userAnswers.get(ConsignorIdentityPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,10 +66,10 @@ class ConsignorIdentityController @Inject() (
           value =>
             for {
               updatedAnswers <- Future.fromTry(
-                request.userAnswers.set(consignors.ConsignorIdentityPage(index), value)
+                request.userAnswers.set(ConsignorIdentityPage(index), value)
               )
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(consignors.ConsignorIdentityPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(ConsignorIdentityPage(index).navigate(mode, updatedAnswers))
         )
     }
 }
