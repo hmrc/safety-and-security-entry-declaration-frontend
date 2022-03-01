@@ -34,20 +34,20 @@ import scala.concurrent.Future
 
 class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val consignorsIdentityRoute =
+  lazy val consignorIdentityRoute =
     routes.ConsignorIdentityController.onPageLoad(NormalMode, lrn, index).url
 
   val formProvider = new ConsignorIdentityFormProvider()
   val form = formProvider()
 
-  "ConsignorsIdentity Controller" - {
+  "ConsignorIdentity Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, consignorsIdentityRoute)
+        val request = FakeRequest(GET, consignorIdentityRoute)
 
         val result = route(application, request).value
 
@@ -71,7 +71,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, consignorsIdentityRoute)
+        val request = FakeRequest(GET, consignorIdentityRoute)
 
         val view = application.injector.instanceOf[ConsignorIdentityView]
 
@@ -100,7 +100,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consignorsIdentityRoute)
+          FakeRequest(POST, consignorIdentityRoute)
             .withFormUrlEncodedBody(("value", ConsignorIdentity.values.head.toString))
 
         val result = route(application, request).value
@@ -123,7 +123,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consignorsIdentityRoute)
+          FakeRequest(POST, consignorIdentityRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -145,7 +145,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, consignorsIdentityRoute)
+        val request = FakeRequest(GET, consignorIdentityRoute)
 
         val result = route(application, request).value
 
@@ -160,7 +160,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consignorsIdentityRoute)
+          FakeRequest(POST, consignorIdentityRoute)
             .withFormUrlEncodedBody(("value", ConsignorIdentity.values.head.toString))
 
         val result = route(application, request).value

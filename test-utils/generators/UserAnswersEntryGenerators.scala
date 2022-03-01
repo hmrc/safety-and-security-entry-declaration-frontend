@@ -168,7 +168,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryConsignorsIdentityUserAnswersEntry
+  implicit lazy val arbitraryConsignorIdentityUserAnswersEntry
     : Arbitrary[(ConsignorIdentityPage, JsValue)] =
     Arbitrary {
       for {

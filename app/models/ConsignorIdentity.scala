@@ -36,7 +36,7 @@ object ConsignorIdentity extends Enumerable.Implicits {
     values.zipWithIndex.map {
       case (value, index) =>
         RadioItem(
-          content = Text(messages(s"consignorsIdentity.${value.toString}")),
+          content = Text(messages(s"consignorIdentity.${value.toString}")),
           value = Some(value.toString),
           id = Some(s"value_$index")
         )

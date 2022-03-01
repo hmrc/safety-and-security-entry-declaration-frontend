@@ -28,7 +28,7 @@ case class ConsignorIdentityPage(index: Index) extends QuestionPage[ConsignorIde
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "consignorsIdentity"
+  override def toString: String = "consignorIdentity"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(ConsignorIdentityPage(index)) match {

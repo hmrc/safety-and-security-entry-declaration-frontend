@@ -30,18 +30,18 @@ class ConsignorIdentitySpec
   with ScalaCheckPropertyChecks
   with OptionValues {
 
-  "ConsignorsIdentity" - {
+  "ConsignorIdentity" - {
 
     "must deserialise valid values" in {
 
       val gen = Gen.oneOf(ConsignorIdentity.values.toSeq)
 
-      forAll(gen) { consignorsIdentity =>
+      forAll(gen) { consignorIdentity =>
 
-        JsString(consignorsIdentity.toString)
+        JsString(consignorIdentity.toString)
           .validate[ConsignorIdentity]
           .asOpt
-          .value mustEqual consignorsIdentity
+          .value mustEqual consignorIdentity
       }
     }
 
@@ -59,9 +59,9 @@ class ConsignorIdentitySpec
 
       val gen = Gen.oneOf(ConsignorIdentity.values.toSeq)
 
-      forAll(gen) { consignorsIdentity =>
+      forAll(gen) { consignorIdentity =>
 
-        Json.toJson(consignorsIdentity) mustEqual JsString(consignorsIdentity.toString)
+        Json.toJson(consignorIdentity) mustEqual JsString(consignorIdentity.toString)
       }
     }
   }

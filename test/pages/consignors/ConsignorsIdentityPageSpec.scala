@@ -26,7 +26,7 @@ import pages.consignors
 
 class ConsignorIdentitySpec extends SpecBase with PageBehaviours {
 
-  "ConsignorsIdentityPage" - {
+  "ConsignorIdentityPage" - {
 
     beRetrievable[ConsignorIdentity](ConsignorIdentityPage(index))
 

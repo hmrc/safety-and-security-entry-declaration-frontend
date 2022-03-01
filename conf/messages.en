@@ -326,8 +326,8 @@ consignorName.error.required = Enter the consignor's name
 consignorName.error.length = The name must be 35 characters or less
 consignorName.change.hidden = the consignor's name
 
-consignorsIdentity.error.required = Select how you want to identify the consignor
-consignorsIdentity.change.hidden = how you want to identify the consignor
+consignorIdentity.error.required = Select how you want to identify the consignor
+consignorIdentity.change.hidden = how you want to identify the consignor
 
 addAnyDocuments.title = Do you need to add any documents?
 addAnyDocuments.heading = Do you need to add any documents?
