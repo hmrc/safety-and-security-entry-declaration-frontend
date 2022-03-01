@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.consignors
 
 import base.SpecBase
-import controllers.consignors.routes
-import controllers.{routes => baseRoutes}
-import models.{CheckMode, DangerousGood, NormalMode}
+import controllers.consignees.{routes => consigneesRoutes}
+import controllers.routes
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.consignors
 
-class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
+class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
 
-  "DangerousGoodCodePage" - {
+  "ConsignorEORIPage" - {
 
-    beRetrievable[DangerousGood](DangerousGoodCodePage(index))
+    beRetrievable[GbEori](ConsignorEORIPage(index))
 
-    beSettable[DangerousGood](DangerousGoodCodePage(index))
+    beSettable[GbEori](consignors.ConsignorEORIPage(index))
 
-    beRemovable[DangerousGood](DangerousGoodCodePage(index))
+    beRemovable[GbEori](consignors.ConsignorEORIPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to Consignor Identity page" in {
+      "to `Do you know the consignee?`" in {
 
-        DangerousGoodCodePage(index)
+        consignors
+          .ConsignorEORIPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -48,9 +50,10 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DangerousGoodCodePage(index)
+        consignors
+          .ConsignorEORIPage(index)
           .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

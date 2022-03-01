@@ -37,6 +37,7 @@ class CarrierPaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
         CarrierPaymentMethodPage(index)
           .navigate(NormalMode, emptyUserAnswers)
+
           .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }

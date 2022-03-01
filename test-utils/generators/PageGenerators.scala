@@ -18,6 +18,7 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
+import pages.consignors._
 import pages._
 import pages.consignees._
 import pages.goods._
@@ -59,13 +60,13 @@ trait PageGenerators {
     Arbitrary(consignees.ConsigneeAddressPage(Index(0)))
 
   implicit lazy val arbitraryConsignorNamePage: Arbitrary[ConsignorNamePage] =
-    Arbitrary(ConsignorNamePage(Index(0)))
+    Arbitrary(consignors.ConsignorNamePage(Index(0)))
 
   implicit lazy val arbitraryConsignorEORIPage: Arbitrary[ConsignorEORIPage] =
-    Arbitrary(ConsignorEORIPage(Index(0)))
+    Arbitrary(consignors.ConsignorEORIPage(Index(0)))
 
   implicit lazy val arbitraryConsignorAddressPage: Arbitrary[ConsignorAddressPage] =
-    Arbitrary(ConsignorAddressPage(Index(0)))
+    Arbitrary(consignors.ConsignorAddressPage(Index(0)))
 
   implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage] =
     Arbitrary(consignees.ConsigneeKnownPage(Index(0)))
@@ -73,8 +74,8 @@ trait PageGenerators {
   implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
     Arbitrary(goods.GoodsItemGrossWeightPage(Index(0)))
 
-  implicit lazy val arbitraryConsignorsIdentityPage: Arbitrary[ConsignorsIdentityPage] =
-    Arbitrary(ConsignorsIdentityPage(Index(0)))
+  implicit lazy val arbitraryConsignorIdentityPage: Arbitrary[ConsignorIdentityPage] =
+    Arbitrary(consignors.ConsignorIdentityPage(Index(0)))
 
   implicit lazy val arbitraryDangerousGoodCodePage: Arbitrary[DangerousGoodCodePage] =
     Arbitrary(goods.DangerousGoodCodePage(Index(0)))

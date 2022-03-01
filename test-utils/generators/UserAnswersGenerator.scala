@@ -22,6 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
 import pages.consignees._
+import pages.consignors._
 import pages.goods._
 import pages.preDeclaration._
 import pages.routeDetails._
@@ -47,7 +48,7 @@ trait UserAnswersGenerator extends TryValues {
       arbitrary[(ConsignorAddressPage, JsValue)] ::
       arbitrary[(ConsigneeKnownPage, JsValue)] ::
       arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
-      arbitrary[(ConsignorsIdentityPage, JsValue)] ::
+      arbitrary[(ConsignorIdentityPage, JsValue)] ::
       arbitrary[(DangerousGoodCodePage, JsValue)] ::
       arbitrary[(DangerousGoodPage, JsValue)] ::
       arbitrary[(OverallCrnKnownPage.type, JsValue)] ::

@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package forms.consignors
 
-import play.api.libs.json.{Reads, __}
+import forms.mappings.Mappings
+import models.GbEori
+import play.api.data.Form
 
-case class GoodItem(unloadingCode: String)
+import javax.inject.Inject
 
-object GoodItem {
-  implicit lazy val reads: Reads[GoodItem] = {
-    (__ \ "unloadingCode").read[String].map(GoodItem(_))
-  }
+class ConsignorEORIFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[GbEori] =
+    Form(
+      "value" -> gbEori("consignorEORI.error.required")
+    )
 }

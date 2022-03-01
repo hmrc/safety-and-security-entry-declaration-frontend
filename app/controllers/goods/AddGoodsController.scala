@@ -29,7 +29,7 @@ import views.html.goods.AddGoodsView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AddGoodsController @Inject()(
+class AddGoodsController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
@@ -62,8 +62,7 @@ class AddGoodsController @Inject()(
 
             BadRequest(view(formWithErrors, mode, lrn, goods))
           },
-          value =>
-            Redirect(AddGoodsPage().navigate(mode, request.userAnswers, value))
+          value => Redirect(AddGoodsPage().navigate(mode, request.userAnswers, value))
         )
     }
 }

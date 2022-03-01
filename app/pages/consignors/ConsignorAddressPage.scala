@@ -14,31 +14,22 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import controllers.goods.{routes => goodsRoutes}
+import controllers.consignees.{routes => consigneeRoutes}
 import controllers.routes
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Address, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DangerousGoodPage(index: Index) extends QuestionPage[Boolean] {
+case class ConsignorAddressPage(index: Index) extends QuestionPage[Address] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "dangerousGood"
+  override def toString: String = "consignorAddress"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(DangerousGoodPage(index)) match {
-      case Some(true) =>
-        goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(false) =>
-        consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
-      case None =>
-        routes.JourneyRecoveryController.onPageLoad()
-    }
+    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
   }
 }

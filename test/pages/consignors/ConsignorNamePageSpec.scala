@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.consignors
 
 import base.SpecBase
 import controllers.consignors.routes
 import controllers.{routes => baseRoutes}
-import models.{CheckMode, DangerousGood, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.consignors
 
-class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
+class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
 
-  "DangerousGoodCodePage" - {
+  "ConsignorNamePage" - {
 
-    beRetrievable[DangerousGood](DangerousGoodCodePage(index))
+    beRetrievable[String](ConsignorNamePage(index))
 
-    beSettable[DangerousGood](DangerousGoodCodePage(index))
+    beSettable[String](consignors.ConsignorNamePage(index))
 
-    beRemovable[DangerousGood](DangerousGoodCodePage(index))
+    beRemovable[String](consignors.ConsignorNamePage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to Consignor Identity page" in {
-
-        DangerousGoodCodePage(index)
+      "to `Consignor's address`" in {
+        consignors
+          .ConsignorNamePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            routes.ConsignorAddressController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -48,7 +49,8 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        DangerousGoodCodePage(index)
+        consignors
+          .ConsignorNamePage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-package models
+package forms.consignors
 
-import play.api.libs.json.{Reads, __}
+import forms.behaviours.GbEoriFieldBehaviours
+import play.api.data.FormError
 
-case class GoodItem(unloadingCode: String)
+class ConsignorEORIFormProviderSpec extends GbEoriFieldBehaviours {
 
-object GoodItem {
-  implicit lazy val reads: Reads[GoodItem] = {
-    (__ \ "unloadingCode").read[String].map(GoodItem(_))
+  val requiredKey = "consignorEORI.error.required"
+  val lengthKey = "consignorEORI.error.length"
+  val maxLength = 50
+
+  val form = new ConsignorEORIFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like gbEoriField(form, fieldName)
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

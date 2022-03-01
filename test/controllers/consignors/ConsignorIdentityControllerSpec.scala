@@ -14,55 +14,44 @@
  * limitations under the License.
  */
 
-package controllers.goods
+package controllers.consignors
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.goods.RemoveGoodsFormProvider
-import models.NormalMode
+import forms.consignors.ConsignorIdentityFormProvider
+import models.{ConsignorIdentity, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods.{CommodityCodePage, RemoveGoodsPage}
-import pages.{UnloadingCodePage, goods}
+import pages.consignors
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.GoodItemQuery
 import repositories.SessionRepository
-import views.html.goods.RemoveGoodsView
+import views.html.consignors.ConsignorIdentityView
 
 import scala.concurrent.Future
 
-class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
+class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new RemoveGoodsFormProvider()
+  lazy val consignorIdentityRoute =
+    routes.ConsignorIdentityController.onPageLoad(NormalMode, lrn, index).url
+
+  val formProvider = new ConsignorIdentityFormProvider()
   val form = formProvider()
 
-  lazy val removeGoodsRoute =
-    routes.RemoveGoodsController.onPageLoad(NormalMode, lrn, index).url
-
-  private val baseAnswers =
-    emptyUserAnswers
-      .set(pages.UnloadingCodePage(index), "423432")
-      .success
-      .value
-      .set(CommodityCodePage(index), "1111")
-      .success
-      .value
-
-  "RemoveGoods Controller" - {
+  "ConsignorIdentity Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, removeGoodsRoute)
+        val request = FakeRequest(GET, consignorIdentityRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RemoveGoodsView]
+        val view = application.injector.instanceOf[ConsignorIdentityView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
@@ -72,57 +61,60 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must remove the package and redirect to the next page when the answer is yes" in {
+    "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val userAnswers = emptyUserAnswers
+        .set(consignors.ConsignorIdentityPage(index), ConsignorIdentity.values.head)
+        .success
+        .value
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(baseAnswers))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, removeGoodsRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(GET, consignorIdentityRoute)
+
+        val view = application.injector.instanceOf[ConsignorIdentityView]
 
         val result = route(application, request).value
-        val expectedAnswers = baseAnswers.remove(GoodItemQuery(index)).success.value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveGoodsPage(index)
-          .navigate(NormalMode, expectedAnswers)
-          .url
-        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(
+          form.fill(ConsignorIdentity.values.head),
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
-    "must redirect to the next page without removing the package when the answer is no" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(baseAnswers))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, removeGoodsRoute)
-            .withFormUrlEncodedBody(("value", "false"))
+          FakeRequest(POST, consignorIdentityRoute)
+            .withFormUrlEncodedBody(("value", ConsignorIdentity.values.head.toString))
 
         val result = route(application, request).value
-        val expectedAnswers = baseAnswers
+        val expectedAnswers = emptyUserAnswers
+          .set(consignors.ConsignorIdentityPage(index), ConsignorIdentity.values.head)
+          .success
+          .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual goods.RemoveGoodsPage(index)
+        redirectLocation(result).value mustEqual consignors
+          .ConsignorIdentityPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
-        verify(mockSessionRepository, never()).set(any())
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -132,12 +124,12 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, removeGoodsRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, consignorIdentityRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[RemoveGoodsView]
+        val view = application.injector.instanceOf[ConsignorIdentityView]
 
         val result = route(application, request).value
 
@@ -154,28 +146,33 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, removeGoodsRoute)
+        val request = FakeRequest(GET, consignorIdentityRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController
+          .onPageLoad()
+          .url
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, removeGoodsRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, consignorIdentityRoute)
+            .withFormUrlEncodedBody(("value", ConsignorIdentity.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController
+          .onPageLoad()
+          .url
       }
     }
   }

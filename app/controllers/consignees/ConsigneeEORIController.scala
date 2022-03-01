@@ -63,13 +63,12 @@ class ConsigneeEORIController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          {
-            value: GbEori =>
-              for {
-                updatedAnswers <-
-                  Future.fromTry(request.userAnswers.set(ConsigneeEORIPage(index), value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(ConsigneeEORIPage(index).navigate(mode, updatedAnswers))
+          { value: GbEori =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(ConsigneeEORIPage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(ConsigneeEORIPage(index).navigate(mode, updatedAnswers))
           }
         )
     }

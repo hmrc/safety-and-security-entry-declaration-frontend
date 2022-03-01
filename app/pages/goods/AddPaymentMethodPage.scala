@@ -38,6 +38,5 @@ case class AddPaymentMethodPage(index: Index) extends QuestionPage[Boolean] {
       case None =>
         routes.JourneyRecoveryController.onPageLoad()
     }
-
   }
 }

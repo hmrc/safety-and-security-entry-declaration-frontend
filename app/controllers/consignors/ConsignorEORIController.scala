@@ -14,77 +14,61 @@
  * limitations under the License.
  */
 
-package controllers.goods
+package controllers.consignors
 
 import controllers.actions._
-import forms.goods.RemoveGoodsFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.RemoveGoodsPage
+import forms.consignors.ConsignorEORIFormProvider
+import models.{GbEori, Index, LocalReferenceNumber, Mode}
+import pages.consignors
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.GoodItemQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.goods.RemoveGoodsView
+import views.html.consignors.ConsignorEORIView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveGoodsController @Inject() (
+class ConsignorEORIController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: RemoveGoodsFormProvider,
+  formProvider: ConsignorEORIFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveGoodsView
+  view: ConsignorEORIView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(
-    mode: Mode,
-    lrn: LocalReferenceNumber,
-    goodItemIndex: Index
-  ): Action[AnyContent] =
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm =
-        request.userAnswers.get(RemoveGoodsPage(goodItemIndex)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+      val preparedForm = request.userAnswers.get(consignors.ConsignorEORIPage(index)) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
 
-      Ok(view(preparedForm, mode, lrn, goodItemIndex))
+      Ok(view(preparedForm, mode, lrn, index))
     }
 
-  def onSubmit(
-    mode: Mode,
-    lrn: LocalReferenceNumber,
-    goodItemIndex: Index
-  ): Action[AnyContent] =
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future
-              .successful(BadRequest(view(formWithErrors, mode, lrn, goodItemIndex))),
-          value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(GoodItemQuery(goodItemIndex)))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, updatedAnswers))
-            } else {
-              Future.successful(
-                Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, request.userAnswers))
-              )
-            }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          { value: GbEori =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(consignors.ConsignorEORIPage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(consignors.ConsignorEORIPage(index).navigate(mode, updatedAnswers))
+          }
         )
     }
 }

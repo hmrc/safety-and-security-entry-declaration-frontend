@@ -14,77 +14,61 @@
  * limitations under the License.
  */
 
-package controllers.goods
+package controllers.consignors
 
 import controllers.actions._
-import forms.goods.RemoveGoodsFormProvider
+import forms.consignors.ConsignorAddressFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.RemoveGoodsPage
+import pages.consignors
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.GoodItemQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.goods.RemoveGoodsView
+import views.html.consignors.ConsignorAddressView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveGoodsController @Inject() (
+class ConsignorAddressController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: RemoveGoodsFormProvider,
+  formProvider: ConsignorAddressFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveGoodsView
+  view: ConsignorAddressView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(
-    mode: Mode,
-    lrn: LocalReferenceNumber,
-    goodItemIndex: Index
-  ): Action[AnyContent] =
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm =
-        request.userAnswers.get(RemoveGoodsPage(goodItemIndex)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+      val preparedForm = request.userAnswers.get(consignors.ConsignorAddressPage(index)) match {
+        case None => form
+        case Some(value) => form.fill(value)
+      }
 
-      Ok(view(preparedForm, mode, lrn, goodItemIndex))
+      Ok(view(preparedForm, mode, lrn, index))
     }
 
-  def onSubmit(
-    mode: Mode,
-    lrn: LocalReferenceNumber,
-    goodItemIndex: Index
-  ): Action[AnyContent] =
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future
-              .successful(BadRequest(view(formWithErrors, mode, lrn, goodItemIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(GoodItemQuery(goodItemIndex)))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, updatedAnswers))
-            } else {
-              Future.successful(
-                Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, request.userAnswers))
+            for {
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.set(consignors.ConsignorAddressPage(index), value)
               )
-            }
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(consignors.ConsignorAddressPage(index).navigate(mode, updatedAnswers))
         )
     }
 }

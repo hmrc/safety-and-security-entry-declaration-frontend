@@ -27,7 +27,7 @@ import viewmodels.checkAnswers.preDeclaration.UnloadingCodeSummary
 import viewmodels.govuk.summarylist._
 import views.html.goods.CheckGoodItemView
 
-class CheckGoodItemController @Inject()(
+class CheckGoodItemController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
