@@ -26,17 +26,17 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
   "RemoveConsigneePage" - {
 
-    beRetrievable[Boolean](RemoveConsigneePage)
+    beRetrievable[Boolean](RemoveConsigneePage(index))
 
-    beSettable[Boolean](RemoveConsigneePage)
+    beSettable[Boolean](RemoveConsigneePage(index))
 
-    beRemovable[Boolean](RemoveConsigneePage)
+    beRemovable[Boolean](RemoveConsigneePage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        RemoveConsigneePage.navigate(NormalMode, emptyUserAnswers)
+        RemoveConsigneePage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemoveConsigneePage.navigate(CheckMode, emptyUserAnswers)
+        RemoveConsigneePage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -44,29 +44,29 @@ class ConsigneeKnownController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsigneeKnownPage(index)) match {
+      val preparedForm = request.userAnswers.get(ConsigneeKnownPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, mode, lrn))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeKnownPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeKnownPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneeKnownPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(ConsigneeKnownPage.navigate(mode, updatedAnswers))
         )
     }
 }

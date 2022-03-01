@@ -27,11 +27,11 @@ import pages.routeDetails._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryRemoveNotifiedPartyPage: Arbitrary[RemoveNotifiedPartyPage.type] =
-    Arbitrary(RemoveNotifiedPartyPage)
+  implicit lazy val arbitraryRemoveNotifiedPartyPage: Arbitrary[RemoveNotifiedPartyPage] =
+    Arbitrary(RemoveNotifiedPartyPage(Index(0)))
 
-  implicit lazy val arbitraryRemoveConsigneePage: Arbitrary[RemoveConsigneePage.type] =
-    Arbitrary(RemoveConsigneePage)
+  implicit lazy val arbitraryRemoveConsigneePage: Arbitrary[RemoveConsigneePage] =
+    Arbitrary(RemoveConsigneePage(Index(0)))
 
   implicit lazy val arbitraryAddNotifiedPartyPage: Arbitrary[AddNotifiedPartyPage.type] =
     Arbitrary(AddNotifiedPartyPage)
@@ -80,8 +80,8 @@ trait PageGenerators {
   implicit lazy val arbitraryConsignorAddressPage: Arbitrary[ConsignorAddressPage] =
     Arbitrary(consignors.ConsignorAddressPage(Index(0)))
 
-  implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage] =
-    Arbitrary(consignees.ConsigneeKnownPage(Index(0)))
+  implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage.type] =
+    Arbitrary(consignees.ConsigneeKnownPage)
 
   implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
     Arbitrary(goods.GoodsItemGrossWeightPage(Index(0)))

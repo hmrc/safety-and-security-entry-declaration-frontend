@@ -26,17 +26,17 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveNotifiedPartyPage" - {
 
-    beRetrievable[Boolean](RemoveNotifiedPartyPage)
+    beRetrievable[Boolean](RemoveNotifiedPartyPage(index))
 
-    beSettable[Boolean](RemoveNotifiedPartyPage)
+    beSettable[Boolean](RemoveNotifiedPartyPage(index))
 
-    beRemovable[Boolean](RemoveNotifiedPartyPage)
+    beRemovable[Boolean](RemoveNotifiedPartyPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        RemoveNotifiedPartyPage.navigate(NormalMode, emptyUserAnswers)
+        RemoveNotifiedPartyPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemoveNotifiedPartyPage.navigate(CheckMode, emptyUserAnswers)
+        RemoveNotifiedPartyPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

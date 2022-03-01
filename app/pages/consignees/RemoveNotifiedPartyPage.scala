@@ -18,14 +18,14 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object RemoveNotifiedPartyPage extends QuestionPage[Boolean] {
+final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "removeNotifiedParty"
 }

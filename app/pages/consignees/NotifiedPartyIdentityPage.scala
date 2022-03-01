@@ -28,7 +28,7 @@ case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[Notified
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
-  override def toString: String = "notifiedPartyIdentity"
+  override def toString: String = "identity"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(NotifiedPartyIdentityPage(index)) match {

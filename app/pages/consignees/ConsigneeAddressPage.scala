@@ -24,9 +24,9 @@ import play.api.mvc.Call
 
 case class ConsigneeAddressPage(index: Index) extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
-  override def toString: String = "consigneeAddress"
+  override def toString: String = "address"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
