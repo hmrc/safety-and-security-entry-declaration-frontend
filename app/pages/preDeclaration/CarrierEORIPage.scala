@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.preDeclaration
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CarrierPaymentMethod, Index, NormalMode, UserAnswers}
+import models.GbEori
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class CarrierPaymentMethodPage(index: Index) extends QuestionPage[CarrierPaymentMethod] {
+case object CarrierEORIPage extends QuestionPage[GbEori] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "carrierPaymentMethod"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def toString: String = "carrierEORI"
 }

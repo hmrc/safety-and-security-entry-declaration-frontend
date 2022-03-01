@@ -33,10 +33,10 @@ POST       /:lrn/lodgingPersonType                        controllers.preDeclara
 GET        /:lrn/changeLodgingPersonType                  controllers.preDeclaration.LodgingPersonTypeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeLodgingPersonType                  controllers.preDeclaration.LodgingPersonTypeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/grossWeight                        controllers.preDeclaration.GrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/grossWeight                        controllers.preDeclaration.GrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeGrossWeight                  controllers.preDeclaration.GrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeGrossWeight                  controllers.preDeclaration.GrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/provideGrossWeight                        controllers.preDeclaration.ProvideGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/provideGrossWeight                        controllers.preDeclaration.ProvideGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeGrossWeight                  controllers.preDeclaration.ProvideGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeGrossWeight                  controllers.preDeclaration.ProvideGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/totalGrossWeight                  controllers.preDeclaration.TotalGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/totalGrossWeight                  controllers.preDeclaration.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
@@ -53,10 +53,10 @@ POST       /:lrn/identifyCarrier                        controllers.preDeclarati
 GET        /:lrn/changeIdentifyCarrier                  controllers.preDeclaration.IdentifyCarrierController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeIdentifyCarrier                  controllers.preDeclaration.IdentifyCarrierController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/carriersEORI                        controllers.preDeclaration.CarriersEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/carriersEORI                        controllers.preDeclaration.CarriersEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeCarriersEORI                  controllers.preDeclaration.CarriersEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeCarriersEORI                  controllers.preDeclaration.CarriersEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/carrierEORI                        controllers.preDeclaration.CarrierEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierEORI                        controllers.preDeclaration.CarrierEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeCarrierEORI                  controllers.preDeclaration.CarrierEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeCarrierEORI                  controllers.preDeclaration.CarrierEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/arrivalDateAndTime                        controllers.routeDetails.ArrivalDateAndTimeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/arrivalDateAndTime                        controllers.routeDetails.ArrivalDateAndTimeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
@@ -281,10 +281,10 @@ POST       /:lrn/addPaymentMethod/:itemIndex                        controllers.
 GET        /:lrn/changeAddPaymentMethod/:itemIndex                  controllers.goods.AddPaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeAddPaymentMethod/:itemIndex                  controllers.goods.AddPaymentMethodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 
-GET        /:lrn/carrierPaymentMethod/:itemIndex                        controllers.goods.CarrierPaymentMethodController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
-POST       /:lrn/carrierPaymentMethod/:itemIndex                        controllers.goods.CarrierPaymentMethodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
-GET        /:lrn/changeCarrierPaymentMethod/:itemIndex                  controllers.goods.CarrierPaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
-POST       /:lrn/changeCarrierPaymentMethod/:itemIndex                  controllers.goods.CarrierPaymentMethodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/paymentMethod/:itemIndex                        controllers.goods.PaymentMethodController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/paymentMethod/:itemIndex                        controllers.goods.PaymentMethodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/changePaymentMethod/:itemIndex                  controllers.goods.PaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+POST       /:lrn/changePaymentMethod/:itemIndex                  controllers.goods.PaymentMethodController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 
 GET        /:lrn/addGood                      controllers.goods.AddGoodsController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/addGood                      controllers.goods.AddGoodsController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)

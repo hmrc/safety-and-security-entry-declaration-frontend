@@ -49,7 +49,7 @@ class OverallCrnKnownPageSpec extends SpecBase with PageBehaviours {
 
         OverallCrnKnownPage
           .navigate(NormalMode, answers)
-          .mustEqual(preDecRoutes.GrossWeightController.onPageLoad(NormalMode, answers.lrn))
+          .mustEqual(preDecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn))
       }
     }
 

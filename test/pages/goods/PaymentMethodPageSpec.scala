@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package pages.preDeclaration
+package pages.goods
 
 import base.SpecBase
-import controllers.preDeclaration.{routes => preDecRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import models.{PaymentMethod, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
+class PaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
-class CarriersEORIPageSpec extends SpecBase with PageBehaviours {
+  "PaymentMethodPage" - {
 
-  "CarriersEORIPage" - {
+    beRetrievable[PaymentMethod](PaymentMethodPage(index))
 
-    beRetrievable[GbEori](CarriersEORIPage)
+    beSettable[PaymentMethod](PaymentMethodPage(index))
 
-    beSettable[GbEori](CarriersEORIPage)
-
-    beRemovable[GbEori](CarriersEORIPage)
+    beRemovable[PaymentMethod](PaymentMethodPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to CYA" in {
 
-        CarriersEORIPage
+        PaymentMethodPage(index)
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 
@@ -46,7 +46,7 @@ class CarriersEORIPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CarriersEORIPage
+        PaymentMethodPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

@@ -24,9 +24,9 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryCarrierPaymentMethod: Arbitrary[CarrierPaymentMethod] =
+  implicit lazy val arbitraryPaymentMethod: Arbitrary[PaymentMethod] =
     Arbitrary {
-      Gen.oneOf(CarrierPaymentMethod.values.toSeq)
+      Gen.oneOf(PaymentMethod.values.toSeq)
     }
 
   implicit lazy val arbitraryNotifiedPartyIdentity: Arbitrary[NotifiedPartyIdentity] =
@@ -133,9 +133,9 @@ trait ModelGenerators {
       Gen.oneOf(TransportMode.values.toSeq)
     }
 
-  implicit lazy val arbitraryGrossWeight: Arbitrary[GrossWeight] =
+  implicit lazy val arbitraryGrossWeight: Arbitrary[ProvideGrossWeight] =
     Arbitrary {
-      Gen.oneOf(GrossWeight.values.toSeq)
+      Gen.oneOf(ProvideGrossWeight.values.toSeq)
     }
 
   implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =

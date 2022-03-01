@@ -18,39 +18,39 @@ package controllers.preDeclaration
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.preDeclaration.CarriersEORIFormProvider
+import forms.preDeclaration.CarrierEORIFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.preDeclaration.CarriersEORIPage
+import pages.preDeclaration.CarrierEORIPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.preDeclaration.CarriersEORIView
+import views.html.preDeclaration.CarrierEORIView
 
 import scala.concurrent.Future
 
-class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
+class CarrierEORIControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new CarriersEORIFormProvider()
+  private val formProvider = new CarrierEORIFormProvider()
   private val form = formProvider()
 
-  private lazy val carriersEORIRoute = routes.CarriersEORIController.onPageLoad(NormalMode, lrn).url
+  private lazy val carrierEORIRoute = routes.CarrierEORIController.onPageLoad(NormalMode, lrn).url
 
-  "CarriersEORI Controller" - {
+  "CarrierEORI Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, carriersEORIRoute)
+        val request = FakeRequest(GET, carrierEORIRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CarriersEORIView]
+        val view = application.injector.instanceOf[CarrierEORIView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn)(
@@ -62,14 +62,14 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(CarriersEORIPage, eori).success.value
+      val userAnswers = emptyUserAnswers.set(CarrierEORIPage, eori).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, carriersEORIRoute)
+        val request = FakeRequest(GET, carrierEORIRoute)
 
-        val view = application.injector.instanceOf[CarriersEORIView]
+        val view = application.injector.instanceOf[CarrierEORIView]
 
         val result = route(application, request).value
 
@@ -94,14 +94,14 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, carriersEORIRoute)
+          FakeRequest(POST, carrierEORIRoute)
             .withFormUrlEncodedBody(("value", eori.value))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(CarriersEORIPage, eori).success.value
+        val expectedAnswers = emptyUserAnswers.set(CarrierEORIPage, eori).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CarriersEORIPage
+        redirectLocation(result).value mustEqual CarrierEORIPage
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -114,12 +114,12 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, carriersEORIRoute)
+          FakeRequest(POST, carrierEORIRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[CarriersEORIView]
+        val view = application.injector.instanceOf[CarrierEORIView]
 
         val result = route(application, request).value
 
@@ -136,7 +136,7 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, carriersEORIRoute)
+        val request = FakeRequest(GET, carrierEORIRoute)
 
         val result = route(application, request).value
 
@@ -151,7 +151,7 @@ class CarriersEORIControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, carriersEORIRoute)
+          FakeRequest(POST, carrierEORIRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value

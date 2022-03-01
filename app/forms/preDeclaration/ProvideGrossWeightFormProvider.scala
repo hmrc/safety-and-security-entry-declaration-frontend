@@ -17,15 +17,15 @@
 package forms.preDeclaration
 
 import forms.mappings.Mappings
-import models.GrossWeight
+import models.ProvideGrossWeight
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class GrossWeightFormProvider @Inject() extends Mappings {
+class ProvideGrossWeightFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[GrossWeight] =
+  def apply(): Form[ProvideGrossWeight] =
     Form(
-      "value" -> enumerable[GrossWeight]("grossWeight.error.required")
+      "value" -> enumerable[ProvideGrossWeight]("provideGrossWeight.error.required")
     )
 }

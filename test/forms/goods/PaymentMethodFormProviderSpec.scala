@@ -16,16 +16,30 @@
 
 package forms.goods
 
-import forms.mappings.Mappings
-import models.CarrierPaymentMethod
-import play.api.data.Form
+import forms.behaviours.OptionFieldBehaviours
+import models.PaymentMethod
+import play.api.data.FormError
 
-import javax.inject.Inject
+class PaymentMethodFormProviderSpec extends OptionFieldBehaviours {
 
-class CarrierPaymentMethodFormProvider @Inject() extends Mappings {
+  val form = new PaymentMethodFormProvider()()
 
-  def apply(): Form[CarrierPaymentMethod] =
-    Form(
-      "value" -> enumerable[CarrierPaymentMethod]("carrierPaymentMethod.error.required")
+  ".value" - {
+
+    val fieldName = "value"
+    val requiredKey = "paymentMethod.error.required"
+
+    behave like optionsField[PaymentMethod](
+      form,
+      fieldName,
+      validValues = PaymentMethod.values,
+      invalidError = FormError(fieldName, "error.invalid")
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

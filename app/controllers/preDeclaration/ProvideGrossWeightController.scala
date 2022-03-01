@@ -17,27 +17,27 @@
 package controllers.preDeclaration
 
 import controllers.actions._
-import forms.preDeclaration.GrossWeightFormProvider
+import forms.preDeclaration.ProvideGrossWeightFormProvider
 import models.{LocalReferenceNumber, Mode}
-import pages.preDeclaration.GrossWeightPage
+import pages.preDeclaration.ProvideGrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.preDeclaration.GrossWeightView
+import views.html.preDeclaration.ProvideGrossWeightView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class GrossWeightController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  formProvider: GrossWeightFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: GrossWeightView
+class ProvideGrossWeightController @Inject()(
+                                              override val messagesApi: MessagesApi,
+                                              sessionRepository: SessionRepository,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalActionProvider,
+                                              requireData: DataRequiredAction,
+                                              formProvider: ProvideGrossWeightFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: ProvideGrossWeightView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -47,7 +47,7 @@ class GrossWeightController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(GrossWeightPage) match {
+      val preparedForm = request.userAnswers.get(ProvideGrossWeightPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,9 +64,9 @@ class GrossWeightController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(GrossWeightPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ProvideGrossWeightPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(GrossWeightPage.navigate(mode, updatedAnswers))
+            } yield Redirect(ProvideGrossWeightPage.navigate(mode, updatedAnswers))
         )
     }
 }

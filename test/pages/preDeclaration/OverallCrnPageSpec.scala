@@ -38,7 +38,7 @@ class OverallCrnPageSpec extends SpecBase with PageBehaviours {
 
         OverallCrnPage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(preDecRoutes.GrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(preDecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

@@ -30,5 +30,5 @@ case object OverallCrnPage extends QuestionPage[String] {
   override def toString: String = "overallCrn"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    preDecRoutes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
+    preDecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn)
 }

@@ -18,8 +18,8 @@ package controllers.goods
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.goods.CarrierPaymentMethodFormProvider
-import models.{CarrierPaymentMethod, NormalMode}
+import forms.goods.PaymentMethodFormProvider
+import models.{PaymentMethod, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,30 +28,30 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.goods.CarrierPaymentMethodView
+import views.html.goods.PaymentMethodView
 
 import scala.concurrent.Future
 
-class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
+class PaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val carrierPaymentMethodRoute =
-    routes.CarrierPaymentMethodController.onPageLoad(NormalMode, lrn, index).url
+  lazy val paymentMethodRoute =
+    routes.PaymentMethodController.onPageLoad(NormalMode, lrn, index).url
 
-  val formProvider = new CarrierPaymentMethodFormProvider()
+  val formProvider = new PaymentMethodFormProvider()
   val form = formProvider()
 
-  "CarrierPaymentMethod Controller" - {
+  "PaymentMethod Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, carrierPaymentMethodRoute)
+        val request = FakeRequest(GET, paymentMethodRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CarrierPaymentMethodView]
+        val view = application.injector.instanceOf[PaymentMethodView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
@@ -64,22 +64,22 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(goods.CarrierPaymentMethodPage(index), CarrierPaymentMethod.values.head)
+        .set(goods.PaymentMethodPage(index), PaymentMethod.values.head)
         .success
         .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, carrierPaymentMethodRoute)
+        val request = FakeRequest(GET, paymentMethodRoute)
 
-        val view = application.injector.instanceOf[CarrierPaymentMethodView]
+        val view = application.injector.instanceOf[PaymentMethodView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          form.fill(CarrierPaymentMethod.values.head),
+          form.fill(PaymentMethod.values.head),
           NormalMode,
           lrn,
           index
@@ -100,17 +100,17 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, carrierPaymentMethodRoute)
-            .withFormUrlEncodedBody(("value", CarrierPaymentMethod.values.head.toString))
+          FakeRequest(POST, paymentMethodRoute)
+            .withFormUrlEncodedBody(("value", PaymentMethod.values.head.toString))
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(goods.CarrierPaymentMethodPage(index), CarrierPaymentMethod.values.head)
+          .set(goods.PaymentMethodPage(index), PaymentMethod.values.head)
           .success
           .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual goods.CarrierPaymentMethodPage(index)
+        redirectLocation(result).value mustEqual goods.PaymentMethodPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -123,12 +123,12 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, carrierPaymentMethodRoute)
+          FakeRequest(POST, paymentMethodRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[CarrierPaymentMethodView]
+        val view = application.injector.instanceOf[PaymentMethodView]
 
         val result = route(application, request).value
 
@@ -145,7 +145,7 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, carrierPaymentMethodRoute)
+        val request = FakeRequest(GET, paymentMethodRoute)
 
         val result = route(application, request).value
 
@@ -160,8 +160,8 @@ class CarrierPaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, carrierPaymentMethodRoute)
-            .withFormUrlEncodedBody(("value", CarrierPaymentMethod.values.head.toString))
+          FakeRequest(POST, paymentMethodRoute)
+            .withFormUrlEncodedBody(("value", PaymentMethod.values.head.toString))
 
         val result = route(application, request).value
 

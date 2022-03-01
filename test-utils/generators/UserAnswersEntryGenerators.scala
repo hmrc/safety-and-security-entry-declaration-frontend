@@ -28,12 +28,12 @@ import pages.routeDetails._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
-  implicit lazy val arbitraryCarrierPaymentMethodUserAnswersEntry
-    : Arbitrary[(CarrierPaymentMethodPage, JsValue)] =
+  implicit lazy val arbitraryPaymentMethodUserAnswersEntry
+    : Arbitrary[(PaymentMethodPage, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[CarrierPaymentMethodPage]
-        value <- arbitrary[CarrierPaymentMethod].map(Json.toJson(_))
+        page <- arbitrary[PaymentMethodPage]
+        value <- arbitrary[PaymentMethod].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -393,11 +393,11 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryCarriersEORIUserAnswersEntry
-    : Arbitrary[(CarriersEORIPage.type, JsValue)] =
+  implicit lazy val arbitraryCarrierEORIUserAnswersEntry
+    : Arbitrary[(CarrierEORIPage.type, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[CarriersEORIPage.type]
+        page <- arbitrary[CarrierEORIPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
@@ -430,11 +430,11 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     }
 
   implicit lazy val arbitraryGrossWeightUserAnswersEntry
-    : Arbitrary[(GrossWeightPage.type, JsValue)] =
+    : Arbitrary[(ProvideGrossWeightPage.type, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[GrossWeightPage.type]
-        value <- arbitrary[GrossWeight].map(Json.toJson(_))
+        page <- arbitrary[ProvideGrossWeightPage.type]
+        value <- arbitrary[ProvideGrossWeight].map(Json.toJson(_))
       } yield (page, value)
     }
 

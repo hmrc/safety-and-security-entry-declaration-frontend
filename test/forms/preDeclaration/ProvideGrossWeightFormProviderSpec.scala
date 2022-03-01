@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package forms.goods
+package forms.preDeclaration
 
 import forms.behaviours.OptionFieldBehaviours
-import models.CarrierPaymentMethod
+import models.ProvideGrossWeight
 import play.api.data.FormError
 
-class CarrierPaymentMethodFormProviderSpec extends OptionFieldBehaviours {
+class ProvideGrossWeightFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new CarrierPaymentMethodFormProvider()()
+  val form = new ProvideGrossWeightFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "carrierPaymentMethod.error.required"
+    val requiredKey = "provideGrossWeight.error.required"
 
-    behave like optionsField[CarrierPaymentMethod](
+    behave like optionsField[ProvideGrossWeight](
       form,
       fieldName,
-      validValues = CarrierPaymentMethod.values,
+      validValues = ProvideGrossWeight.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

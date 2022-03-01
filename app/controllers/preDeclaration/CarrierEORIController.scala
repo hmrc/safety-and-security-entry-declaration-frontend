@@ -17,28 +17,28 @@
 package controllers.preDeclaration
 
 import controllers.actions._
-import forms.preDeclaration.CarriersEORIFormProvider
+import forms.preDeclaration.CarrierEORIFormProvider
 import models.GbEori._
 import models.{LocalReferenceNumber, Mode}
-import pages.preDeclaration.CarriersEORIPage
+import pages.preDeclaration.CarrierEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.preDeclaration.CarriersEORIView
+import views.html.preDeclaration.CarrierEORIView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarriersEORIController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  formProvider: CarriersEORIFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: CarriersEORIView
+class CarrierEORIController @Inject()(
+                                       override val messagesApi: MessagesApi,
+                                       sessionRepository: SessionRepository,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalActionProvider,
+                                       requireData: DataRequiredAction,
+                                       formProvider: CarrierEORIFormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       view: CarrierEORIView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -48,7 +48,7 @@ class CarriersEORIController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(CarriersEORIPage) match {
+      val preparedForm = request.userAnswers.get(CarrierEORIPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class CarriersEORIController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CarriersEORIPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CarrierEORIPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(CarriersEORIPage.navigate(mode, updatedAnswers))
+            } yield Redirect(CarrierEORIPage.navigate(mode, updatedAnswers))
         )
     }
 }

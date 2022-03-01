@@ -32,7 +32,7 @@ case object OverallCrnKnownPage extends QuestionPage[Boolean] {
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(OverallCrnKnownPage) match {
       case Some(true)  => preDecRoutes.OverallCrnController.onPageLoad(NormalMode, answers.lrn)
-      case Some(false) => preDecRoutes.GrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case Some(false) => preDecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 }

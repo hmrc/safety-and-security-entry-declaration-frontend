@@ -19,35 +19,35 @@ package pages.preDeclaration
 import base.SpecBase
 import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routes
-import models.{CheckMode, GrossWeight, NormalMode}
+import models.{CheckMode, ProvideGrossWeight, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class GrossWeightPageSpec extends SpecBase with PageBehaviours {
+class ProvideGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GrossWeightPage" - {
 
-    beRetrievable[GrossWeight](GrossWeightPage)
+    beRetrievable[ProvideGrossWeight](ProvideGrossWeightPage)
 
-    beSettable[GrossWeight](GrossWeightPage)
+    beSettable[ProvideGrossWeight](ProvideGrossWeightPage)
 
-    beRemovable[GrossWeight](GrossWeightPage)
+    beRemovable[ProvideGrossWeight](ProvideGrossWeightPage)
 
     "must navigate in Normal Mode" - {
 
       "to Transport Mode when the answer is Per Item" in {
 
-        val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
+        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
 
-        GrossWeightPage
+        ProvideGrossWeightPage
           .navigate(NormalMode, answers)
           .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, answers.lrn))
       }
 
       "to Total Gross Weight when the answer is Overall" in {
 
-        val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.Overall).success.value
+        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
 
-        GrossWeightPage
+        ProvideGrossWeightPage
           .navigate(NormalMode, answers)
           .mustEqual(preDecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn))
       }
@@ -57,7 +57,7 @@ class GrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GrossWeightPage
+        ProvideGrossWeightPage
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

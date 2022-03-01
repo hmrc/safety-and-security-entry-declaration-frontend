@@ -18,9 +18,9 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, GrossWeight, Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, ProvideGrossWeight, Index, Mode, NormalMode, UserAnswers}
 import pages.Page
-import pages.preDeclaration.{GrossWeightPage, OverallCrnKnownPage}
+import pages.preDeclaration.{ProvideGrossWeightPage, OverallCrnKnownPage}
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 
@@ -36,8 +36,8 @@ case class AddPackagePage(itemIndex: Index) extends Page {
     } else {
       mode match {
         case NormalMode =>
-          (answers.get(GrossWeightPage), answers.get(OverallCrnKnownPage)) match {
-            case (Some(GrossWeight.PerItem), _) =>
+          (answers.get(ProvideGrossWeightPage), answers.get(OverallCrnKnownPage)) match {
+            case (Some(ProvideGrossWeight.PerItem), _) =>
               goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, itemIndex)
             case (_, Some(true)) =>
               goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)

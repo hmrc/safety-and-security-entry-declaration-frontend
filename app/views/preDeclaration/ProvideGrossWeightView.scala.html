@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.goods.routes
+@import controllers.preDeclaration.routes
 
 @this(
     layout: templates.Layout,
@@ -24,11 +24,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("carrierPaymentMethod.title"))) {
+@layout(pageTitle = title(form, messages("provideGrossWeight.title"))) {
 
-    @formHelper(action = routes.CarrierPaymentMethodController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.ProvideGrossWeightController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -37,8 +37,8 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("carrierPaymentMethod.heading")).asPageHeading(),
-                items  = CarrierPaymentMethod.options
+                legend = LegendViewModel(messages("provideGrossWeight.heading")).asPageHeading(),
+                items  = ProvideGrossWeight.options
             )
         )
 

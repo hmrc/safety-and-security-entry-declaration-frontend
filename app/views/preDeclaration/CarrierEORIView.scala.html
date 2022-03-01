@@ -15,31 +15,33 @@
  *@
 
 @import controllers.preDeclaration.routes
+@import viewmodels.InputWidth._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
+    govukInput: GovukInput,
     govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("grossWeight.title"))) {
+@layout(pageTitle = title(form, messages("carrierEORI.title"))) {
 
-    @formHelper(action = routes.GrossWeightController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.CarrierEORIController.onSubmit(mode, lrn)) {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(messages("grossWeight.heading")).asPageHeading(),
-                items  = GrossWeight.options
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = LabelViewModel(messages("carrierEORI.heading")).asPageHeading(),
             )
+            .withWidth(Full)
+            .withPrefix(PrefixOrSuffix(content = Text("GB")))
         )
 
         @govukButton(

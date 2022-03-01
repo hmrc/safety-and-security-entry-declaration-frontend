@@ -14,34 +14,32 @@
  * limitations under the License.
  *@
 
-@import controllers.preDeclaration.routes
-@import viewmodels.InputWidth._
+@import controllers.goods.routes
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
+    govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("carriersEORI.title"))) {
+@layout(pageTitle = title(form, messages("paymentMethod.title"))) {
 
-    @formHelper(action = routes.CarriersEORIController.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.PaymentMethodController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(messages("carriersEORI.heading")).asPageHeading(),
+        @govukRadios(
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(messages("paymentMethod.heading")).asPageHeading(),
+                items  = PaymentMethod.options
             )
-            .withWidth(Full)
-            .withPrefix(PrefixOrSuffix(content = Text("GB")))
         )
 
         @govukButton(

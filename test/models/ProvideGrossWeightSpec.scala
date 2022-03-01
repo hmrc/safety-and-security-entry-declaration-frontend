@@ -24,7 +24,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class GrossWeightSpec
+class ProvideGrossWeightSpec
   extends AnyFreeSpec
   with Matchers
   with ScalaCheckPropertyChecks
@@ -34,31 +34,31 @@ class GrossWeightSpec
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(GrossWeight.values.toSeq)
+      val gen = Gen.oneOf(ProvideGrossWeight.values.toSeq)
 
-      forAll(gen) { grossWeight =>
+      forAll(gen) { provideGrossWeight =>
 
-        JsString(grossWeight.toString).validate[GrossWeight].asOpt.value mustEqual grossWeight
+        JsString(provideGrossWeight.toString).validate[ProvideGrossWeight].asOpt.value mustEqual provideGrossWeight
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!GrossWeight.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!ProvideGrossWeight.values.map(_.toString).contains(_))
 
       forAll(gen) { invalidValue =>
 
-        JsString(invalidValue).validate[GrossWeight] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[ProvideGrossWeight] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(GrossWeight.values.toSeq)
+      val gen = Gen.oneOf(ProvideGrossWeight.values.toSeq)
 
-      forAll(gen) { grossWeight =>
+      forAll(gen) { provideGrossWeight =>
 
-        Json.toJson(grossWeight) mustEqual JsString(grossWeight.toString)
+        Json.toJson(provideGrossWeight) mustEqual JsString(provideGrossWeight.toString)
       }
     }
   }

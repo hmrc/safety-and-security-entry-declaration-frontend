@@ -30,5 +30,5 @@ case object IdentifyCarrierPage extends QuestionPage[IdentifyCarrier] {
   override def toString: String = "identifyCarrier"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    preDecRoutes.CarriersEORIController.onPageLoad(NormalMode, answers.lrn)
+    preDecRoutes.CarrierEORIController.onPageLoad(NormalMode, answers.lrn)
 }

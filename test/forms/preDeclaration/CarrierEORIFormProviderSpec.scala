@@ -19,11 +19,11 @@ package forms.preDeclaration
 import forms.behaviours.GbEoriFieldBehaviours
 import play.api.data.FormError
 
-class CarriersEORIFormProviderSpec extends GbEoriFieldBehaviours {
+class CarrierEORIFormProviderSpec extends GbEoriFieldBehaviours {
   private val fieldName = "value"
-  private val requiredKey = "carriersEORI.error.required"
+  private val requiredKey = "carrierEORI.error.required"
 
-  private val form = new CarriersEORIFormProvider()()
+  private val form = new CarrierEORIFormProvider()()
 
   ".value" - {
 

@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package forms.preDeclaration
+package forms.goods
 
 import forms.mappings.Mappings
-import models.GbEori
+import models.PaymentMethod
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class CarriersEORIFormProvider @Inject() extends Mappings {
-  def apply(): Form[GbEori] = Form("value" -> gbEori("carriersEORI.error.required"))
+class PaymentMethodFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[PaymentMethod] =
+    Form(
+      "value" -> enumerable[PaymentMethod]("paymentMethod.error.required")
+    )
 }

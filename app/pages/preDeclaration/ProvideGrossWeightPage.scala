@@ -18,22 +18,22 @@ package pages.preDeclaration
 
 import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routes
-import models.{GrossWeight, NormalMode, UserAnswers}
+import models.{ProvideGrossWeight, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object GrossWeightPage extends QuestionPage[GrossWeight] {
+case object ProvideGrossWeightPage extends QuestionPage[ProvideGrossWeight] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "grossWeight"
+  override def toString: String = "provideGrossWeight"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(GrossWeightPage) match {
-      case Some(GrossWeight.PerItem) =>
+    answers.get(ProvideGrossWeightPage) match {
+      case Some(ProvideGrossWeight.PerItem) =>
         routes.TransportModeController.onPageLoad(NormalMode, answers.lrn)
-      case Some(GrossWeight.Overall) =>
+      case Some(ProvideGrossWeight.Overall) =>
         preDecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn)
       case _ => routes.JourneyRecoveryController.onPageLoad()
     }

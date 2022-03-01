@@ -18,25 +18,25 @@ package controllers.preDeclaration
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.preDeclaration.GrossWeightFormProvider
-import models.{GrossWeight, NormalMode}
+import forms.preDeclaration.ProvideGrossWeightFormProvider
+import models.{ProvideGrossWeight, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.preDeclaration.GrossWeightPage
+import pages.preDeclaration.ProvideGrossWeightPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.preDeclaration.GrossWeightView
+import views.html.preDeclaration.ProvideGrossWeightView
 
 import scala.concurrent.Future
 
-class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
+class ProvideGrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val grossWeightRoute = routes.GrossWeightController.onPageLoad(NormalMode, lrn).url
+  lazy val provideGrossWeightRoute = routes.ProvideGrossWeightController.onPageLoad(NormalMode, lrn).url
 
-  val formProvider = new GrossWeightFormProvider()
+  val formProvider = new ProvideGrossWeightFormProvider()
   val form = formProvider()
 
   "GrossWeight Controller" - {
@@ -46,11 +46,11 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, grossWeightRoute)
+        val request = FakeRequest(GET, provideGrossWeightRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[GrossWeightView]
+        val view = application.injector.instanceOf[ProvideGrossWeightView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn)(
@@ -62,19 +62,19 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, grossWeightRoute)
+        val request = FakeRequest(GET, provideGrossWeightRoute)
 
-        val view = application.injector.instanceOf[GrossWeightView]
+        val view = application.injector.instanceOf[ProvideGrossWeightView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(GrossWeight.values.head), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill(ProvideGrossWeight.values.head), NormalMode, lrn)(
           request,
           messages(application)
         ).toString
@@ -94,15 +94,15 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, grossWeightRoute)
-            .withFormUrlEncodedBody(("value", GrossWeight.values.head.toString))
+          FakeRequest(POST, provideGrossWeightRoute)
+            .withFormUrlEncodedBody(("value", ProvideGrossWeight.values.head.toString))
 
         val result = route(application, request).value
         val expectedAnswers =
-          emptyUserAnswers.set(GrossWeightPage, GrossWeight.values.head).success.value
+          emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual GrossWeightPage
+        redirectLocation(result).value mustEqual ProvideGrossWeightPage
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -115,12 +115,12 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, grossWeightRoute)
+          FakeRequest(POST, provideGrossWeightRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[GrossWeightView]
+        val view = application.injector.instanceOf[ProvideGrossWeightView]
 
         val result = route(application, request).value
 
@@ -137,7 +137,7 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, grossWeightRoute)
+        val request = FakeRequest(GET, provideGrossWeightRoute)
 
         val result = route(application, request).value
 
@@ -152,8 +152,8 @@ class GrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, grossWeightRoute)
-            .withFormUrlEncodedBody(("value", GrossWeight.values.head.toString))
+          FakeRequest(POST, provideGrossWeightRoute)
+            .withFormUrlEncodedBody(("value", ProvideGrossWeight.values.head.toString))
 
         val result = route(application, request).value
 

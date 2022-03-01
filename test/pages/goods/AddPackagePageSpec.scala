@@ -19,9 +19,9 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, GrossWeight, Index, KindOfPackage, NormalMode}
+import models.{CheckMode, ProvideGrossWeight, Index, KindOfPackage, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.preDeclaration.{GrossWeightPage, OverallCrnKnownPage}
+import pages.preDeclaration.{ProvideGrossWeightPage, OverallCrnKnownPage}
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
@@ -53,7 +53,7 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
           "to Goods Item Gross Weight" in {
 
-            val answers = emptyUserAnswers.set(GrossWeightPage, GrossWeight.PerItem).success.value
+            val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
 
             AddPackagePage(index)
               .navigate(NormalMode, answers, index, addAnother = false)
@@ -71,7 +71,7 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
               val answers =
                 emptyUserAnswers
-                  .set(GrossWeightPage, GrossWeight.Overall).success.value
+                  .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
                   .set(OverallCrnKnownPage, true).success.value
 
               AddPackagePage(index)
@@ -88,7 +88,7 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
               val answers =
                 emptyUserAnswers
-                  .set(GrossWeightPage, GrossWeight.Overall).success.value
+                  .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
                   .set(OverallCrnKnownPage, false).success.value
 
               AddPackagePage(index)

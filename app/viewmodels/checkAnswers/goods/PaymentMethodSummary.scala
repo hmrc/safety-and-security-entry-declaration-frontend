@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Index, UserAnswers}
-import pages.goods.CarrierPaymentMethodPage
+import pages.goods.PaymentMethodPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,25 +26,25 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CarrierPaymentMethodSummary {
+object PaymentMethodSummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CarrierPaymentMethodPage(index)).map { answer =>
+    answers.get(PaymentMethodPage(index)).map { answer =>
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"carrierPaymentMethod.$answer"))
+          HtmlFormat.escape(messages(s"paymentMethod.$answer"))
         )
       )
 
       SummaryListRowViewModel(
-        key = "carrierPaymentMethod.checkYourAnswersLabel",
+        key = "paymentMethod.checkYourAnswersLabel",
         value = value,
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.CarrierPaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url
-          ).withVisuallyHiddenText(messages("carrierPaymentMethod.change.hidden"))
+            goodsRoutes.PaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url
+          ).withVisuallyHiddenText(messages("paymentMethod.change.hidden"))
         )
       )
     }

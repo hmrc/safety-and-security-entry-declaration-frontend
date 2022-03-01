@@ -18,33 +18,26 @@ package viewmodels.checkAnswers.preDeclaration
 
 import controllers.preDeclaration.{routes => preDecRoutes}
 import models.{CheckMode, UserAnswers}
-import pages.preDeclaration.GrossWeightPage
+import pages.preDeclaration.CarrierEORIPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object GrossWeightSummary {
+object CarrierEORISummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(GrossWeightPage).map { answer =>
-
-      val value = ValueViewModel(
-        HtmlContent(
-          HtmlFormat.escape(messages(s"grossWeight.$answer"))
-        )
-      )
+    answers.get(CarrierEORIPage).map { answer =>
 
       SummaryListRowViewModel(
-        key = "grossWeight.checkYourAnswersLabel",
-        value = value,
+        key = "carrierEORI.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            preDecRoutes.GrossWeightController.onPageLoad(CheckMode, answers.lrn).url
-          ).withVisuallyHiddenText(messages("grossWeight.change.hidden"))
+            preDecRoutes.CarrierEORIController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("carrierEORI.change.hidden"))
         )
       )
     }

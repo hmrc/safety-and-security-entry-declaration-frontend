@@ -20,14 +20,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait GrossWeight
+sealed trait ProvideGrossWeight
 
-object GrossWeight extends Enumerable.Implicits {
+object ProvideGrossWeight extends Enumerable.Implicits {
 
-  case object Overall extends WithName("overall") with GrossWeight
-  case object PerItem extends WithName("perItem") with GrossWeight
+  case object Overall extends WithName("overall") with ProvideGrossWeight
+  case object PerItem extends WithName("perItem") with ProvideGrossWeight
 
-  val values: Seq[GrossWeight] = Seq(
+  val values: Seq[ProvideGrossWeight] = Seq(
     Overall,
     PerItem
   )
@@ -36,12 +36,12 @@ object GrossWeight extends Enumerable.Implicits {
     values.zipWithIndex.map {
       case (value, index) =>
         RadioItem(
-          content = Text(messages(s"grossWeight.${value.toString}")),
+          content = Text(messages(s"provideGrossWeight.${value.toString}")),
           value = Some(value.toString),
           id = Some(s"value_$index")
         )
     }
 
-  implicit val enumerable: Enumerable[GrossWeight] =
+  implicit val enumerable: Enumerable[ProvideGrossWeight] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

@@ -34,11 +34,11 @@ class IdentifyCarrierPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Carriers EORI" in {
+      "to Carrier EORI" in {
 
         IdentifyCarrierPage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(preDecRoutes.CarriersEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(preDecRoutes.CarrierEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

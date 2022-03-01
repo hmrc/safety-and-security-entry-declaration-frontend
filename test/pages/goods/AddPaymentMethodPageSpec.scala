@@ -41,7 +41,7 @@ class AddPaymentMethodPageSpec extends SpecBase with PageBehaviours {
         AddPaymentMethodPage(index)
           .navigate(NormalMode, answers)
           .mustEqual(
-            goodsRoutes.CarrierPaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
+            goodsRoutes.PaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
           )
       }
 

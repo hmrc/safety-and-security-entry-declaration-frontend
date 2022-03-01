@@ -17,27 +17,27 @@
 package controllers.goods
 
 import controllers.actions._
-import forms.goods.CarrierPaymentMethodFormProvider
+import forms.goods.PaymentMethodFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.CarrierPaymentMethodPage
+import pages.goods.PaymentMethodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.goods.CarrierPaymentMethodView
+import views.html.goods.PaymentMethodView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CarrierPaymentMethodController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  formProvider: CarrierPaymentMethodFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: CarrierPaymentMethodView
+class PaymentMethodController @Inject()(
+                                         override val messagesApi: MessagesApi,
+                                         sessionRepository: SessionRepository,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalActionProvider,
+                                         requireData: DataRequiredAction,
+                                         formProvider: PaymentMethodFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: PaymentMethodView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -47,7 +47,7 @@ class CarrierPaymentMethodController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(CarrierPaymentMethodPage(index)) match {
+      val preparedForm = request.userAnswers.get(PaymentMethodPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class CarrierPaymentMethodController @Inject() (
           value =>
             for {
               updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(CarrierPaymentMethodPage(index), value))
+                Future.fromTry(request.userAnswers.set(PaymentMethodPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(CarrierPaymentMethodPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(PaymentMethodPage(index).navigate(mode, updatedAnswers))
         )
     }
 }

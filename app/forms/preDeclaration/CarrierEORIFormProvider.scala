@@ -16,30 +16,12 @@
 
 package forms.preDeclaration
 
-import forms.behaviours.OptionFieldBehaviours
-import models.GrossWeight
-import play.api.data.FormError
+import forms.mappings.Mappings
+import models.GbEori
+import play.api.data.Form
 
-class GrossWeightFormProviderSpec extends OptionFieldBehaviours {
+import javax.inject.Inject
 
-  val form = new GrossWeightFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-    val requiredKey = "grossWeight.error.required"
-
-    behave like optionsField[GrossWeight](
-      form,
-      fieldName,
-      validValues = GrossWeight.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+class CarrierEORIFormProvider @Inject() extends Mappings {
+  def apply(): Form[GbEori] = Form("value" -> gbEori("carrierEORI.error.required"))
 }
