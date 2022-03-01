@@ -18,7 +18,7 @@ package generators
 
 import models.Index
 import org.scalacheck.Arbitrary
-import pages.consignors.{ConsignorAddressPage, ConsignorEORIPage, ConsignorIdentityPage, ConsignorNamePage}
+import pages.consignors._
 import pages._
 
 trait PageGenerators {
