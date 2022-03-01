@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consignors
 
+import controllers.{routes => baseRoutes}
 import base.SpecBase
 import forms.consignors.ConsignorsIdentityFormProvider
 import models.{ConsignorsIdentity, NormalMode}
@@ -23,12 +24,11 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.consignors
-import pages.consignors.ConsignorsIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ConsignorsIdentityView
+import views.html.consignors.ConsignorsIdentityView
 
 import scala.concurrent.Future
 
@@ -150,7 +150,7 @@ class ConsignorsIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -167,7 +167,7 @@ class ConsignorsIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

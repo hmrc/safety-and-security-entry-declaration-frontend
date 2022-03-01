@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.consignors
 
+import controllers.{routes => baseRoutes}
 import base.SpecBase
 import forms.consignors.ConsignorAddressFormProvider
 import models.{Address, Country, NormalMode}
@@ -24,12 +25,11 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.consignors
-import pages.consignors.ConsignorAddressPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.ConsignorAddressView
+import views.html.consignors.ConsignorAddressView
 
 import scala.concurrent.Future
 
@@ -157,7 +157,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -178,7 +178,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

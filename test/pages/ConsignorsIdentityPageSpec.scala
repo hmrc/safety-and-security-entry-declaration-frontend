@@ -17,7 +17,8 @@
 package pages
 
 import base.SpecBase
-import controllers.routes
+import controllers.consignors.routes
+import controllers.{routes => baseRoutes}
 import models.ConsignorsIdentity.{GBEORI, NameAddress}
 import models.{CheckMode, ConsignorsIdentity, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -57,7 +58,7 @@ class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
 
         consignors.ConsignorsIdentityPage(index)
           .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

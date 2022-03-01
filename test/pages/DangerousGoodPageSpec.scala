@@ -17,7 +17,8 @@
 package pages
 
 import base.SpecBase
-import controllers.routes
+import controllers.consignors.routes
+import controllers.{routes => baseRoutes}
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
@@ -39,7 +40,7 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
         DangerousGoodPage(index)
           .navigate(NormalMode, answers)
-          .mustEqual(routes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
+          .mustEqual(baseRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to consignor identity page when answer is no" in {
@@ -58,7 +59,7 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
         DangerousGoodPage(index)
           .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

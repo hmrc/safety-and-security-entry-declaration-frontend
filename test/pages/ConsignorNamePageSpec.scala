@@ -17,7 +17,8 @@
 package pages
 
 import base.SpecBase
-import controllers.routes
+import controllers.consignors.routes
+import controllers.{routes => baseRoutes}
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 import pages.consignors.ConsignorNamePage
@@ -49,7 +50,7 @@ class ConsignorNamePageSpec extends SpecBase with PageBehaviours {
 
         consignors.ConsignorNamePage(index)
           .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }
