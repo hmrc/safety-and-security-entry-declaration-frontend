@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
+import controllers.consignors.routes
 import models.{CheckMode, Index, UserAnswers}
 import pages.consignors
-import pages.consignors.ConsignorAddressPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsignorAddressSummary {
+object ConsignorIdentitySummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(consignors.ConsignorAddressPage(index)).map { answer =>
+    answers.get(consignors.ConsignorIdentityPage(index)).map { answer =>
+
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"consignorIdentity.$answer"))
+        )
+      )
 
       SummaryListRowViewModel(
-        key = "consignorAddress.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
+        key = "consignorIdentity.checkYourAnswersLabel",
+        value = value,
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            consignorRoutes.ConsignorAddressController.onPageLoad(CheckMode, answers.lrn, index).url
-          ).withVisuallyHiddenText(messages("consignorAddress.change.hidden"))
+            routes.ConsignorIdentityController
+              .onPageLoad(CheckMode, answers.lrn, index)
+              .url
+          ).withVisuallyHiddenText(messages("consignorIdentity.change.hidden"))
         )
       )
     }

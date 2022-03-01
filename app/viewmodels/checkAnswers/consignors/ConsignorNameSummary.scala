@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
+import controllers.consignors.routes
 import models.{CheckMode, Index, UserAnswers}
 import pages.consignors
-import pages.consignors.ConsignorNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+
 
 object ConsignorNameSummary {
 
@@ -37,7 +37,7 @@ object ConsignorNameSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            consignorRoutes.ConsignorNameController.onPageLoad(CheckMode, answers.lrn, index).url
+            routes.ConsignorNameController.onPageLoad(CheckMode, answers.lrn, index).url
           ).withVisuallyHiddenText(messages("consignorName.change.hidden"))
         )
       )

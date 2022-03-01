@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
+import controllers.consignors.routes
 import models.{CheckMode, GbEori, Index, UserAnswers}
 import pages.consignors
-import pages.consignors.ConsignorEORIPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -37,7 +36,7 @@ object ConsignorEORISummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            consignorRoutes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn, index).url
+            routes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn, index).url
           ).withVisuallyHiddenText(messages("consignorEORI.change.hidden"))
         )
       )
