@@ -17,22 +17,22 @@
 package forms.consignors
 
 import forms.behaviours.OptionFieldBehaviours
-import models.ConsignorsIdentity
+import models.ConsignorIdentity
 import play.api.data.FormError
 
-class ConsignorsIdentityFormProviderSpec extends OptionFieldBehaviours {
+class ConsignorIdentityFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new ConsignorsIdentityFormProvider()()
+  val form = new ConsignorIdentityFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "consignorsIdentity.error.required"
+    val requiredKey = "consignorIdentity.error.required"
 
-    behave like optionsField[ConsignorsIdentity](
+    behave like optionsField[ConsignorIdentity](
       form,
       fieldName,
-      validValues = ConsignorsIdentity.values,
+      validValues = ConsignorIdentity.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

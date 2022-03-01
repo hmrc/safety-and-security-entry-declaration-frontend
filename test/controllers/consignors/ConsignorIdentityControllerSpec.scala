@@ -18,8 +18,8 @@ package controllers.consignors
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.consignors.ConsignorsIdentityFormProvider
-import models.{ConsignorsIdentity, NormalMode}
+import forms.consignors.ConsignorIdentityFormProvider
+import models.{ConsignorIdentity, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.consignors.ConsignorsIdentityView
+import views.html.consignors.ConsignorIdentityView
 
 import scala.concurrent.Future
 
@@ -37,7 +37,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
   lazy val consignorsIdentityRoute =
     routes.ConsignorIdentityController.onPageLoad(NormalMode, lrn, index).url
 
-  val formProvider = new ConsignorsIdentityFormProvider()
+  val formProvider = new ConsignorIdentityFormProvider()
   val form = formProvider()
 
   "ConsignorsIdentity Controller" - {
@@ -51,7 +51,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ConsignorsIdentityView]
+        val view = application.injector.instanceOf[ConsignorIdentityView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
@@ -64,7 +64,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(consignors.ConsignorsIdentityPage(index), ConsignorsIdentity.values.head)
+        .set(consignors.ConsignorIdentityPage(index), ConsignorIdentity.values.head)
         .success
         .value
 
@@ -73,13 +73,13 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request = FakeRequest(GET, consignorsIdentityRoute)
 
-        val view = application.injector.instanceOf[ConsignorsIdentityView]
+        val view = application.injector.instanceOf[ConsignorIdentityView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          form.fill(ConsignorsIdentity.values.head),
+          form.fill(ConsignorIdentity.values.head),
           NormalMode,
           lrn,
           index
@@ -101,16 +101,16 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consignorsIdentityRoute)
-            .withFormUrlEncodedBody(("value", ConsignorsIdentity.values.head.toString))
+            .withFormUrlEncodedBody(("value", ConsignorIdentity.values.head.toString))
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(consignors.ConsignorsIdentityPage(index), ConsignorsIdentity.values.head)
+          .set(consignors.ConsignorIdentityPage(index), ConsignorIdentity.values.head)
           .success
           .value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignors.ConsignorsIdentityPage(index)
+        redirectLocation(result).value mustEqual consignors.ConsignorIdentityPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -128,7 +128,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[ConsignorsIdentityView]
+        val view = application.injector.instanceOf[ConsignorIdentityView]
 
         val result = route(application, request).value
 
@@ -161,7 +161,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consignorsIdentityRoute)
-            .withFormUrlEncodedBody(("value", ConsignorsIdentity.values.head.toString))
+            .withFormUrlEncodedBody(("value", ConsignorIdentity.values.head.toString))
 
         val result = route(application, request).value
 

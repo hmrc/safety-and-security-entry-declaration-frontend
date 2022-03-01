@@ -20,14 +20,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait ConsignorsIdentity
+sealed trait ConsignorIdentity
 
-object ConsignorsIdentity extends Enumerable.Implicits {
+object ConsignorIdentity extends Enumerable.Implicits {
 
-  case object GBEORI extends WithName("gb-eori") with ConsignorsIdentity
-  case object NameAddress extends WithName("name-address") with ConsignorsIdentity
+  case object GBEORI extends WithName("gb-eori") with ConsignorIdentity
+  case object NameAddress extends WithName("name-address") with ConsignorIdentity
 
-  val values: Seq[ConsignorsIdentity] = Seq(
+  val values: Seq[ConsignorIdentity] = Seq(
     GBEORI,
     NameAddress
   )
@@ -42,6 +42,6 @@ object ConsignorsIdentity extends Enumerable.Implicits {
         )
     }
 
-  implicit val enumerable: Enumerable[ConsignorsIdentity] =
+  implicit val enumerable: Enumerable[ConsignorIdentity] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

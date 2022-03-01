@@ -19,7 +19,6 @@ package viewmodels.checkAnswers
 import controllers.consignors.{routes => consignorRoutes}
 import models.{CheckMode, Index, UserAnswers}
 import pages.consignors
-import pages.consignors.ConsignorsIdentityPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,25 +26,25 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsignorsIdentitySummary {
+object ConsignorIdentitySummary {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(consignors.ConsignorsIdentityPage(index)).map { answer =>
+    answers.get(consignors.ConsignorIdentityPage(index)).map { answer =>
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"consignorsIdentity.$answer"))
+          HtmlFormat.escape(messages(s"consignorIdentity.$answer"))
         )
       )
 
       SummaryListRowViewModel(
-        key = "consignorsIdentity.checkYourAnswersLabel",
+        key = "consignorIdentity.checkYourAnswersLabel",
         value = value,
         actions = Seq(
           ActionItemViewModel(
             "site.change",
             consignorRoutes.ConsignorIdentityController.onPageLoad(CheckMode, answers.lrn, index).url
-          ).withVisuallyHiddenText(messages("consignorsIdentity.change.hidden"))
+          ).withVisuallyHiddenText(messages("consignorIdentity.change.hidden"))
         )
       )
     }

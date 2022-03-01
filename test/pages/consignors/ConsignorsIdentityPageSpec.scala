@@ -19,34 +19,34 @@ package pages.consignors
 import base.SpecBase
 import controllers.consignors.routes
 import controllers.{routes => baseRoutes}
-import models.ConsignorsIdentity.{GBEORI, NameAddress}
-import models.{CheckMode, ConsignorsIdentity, NormalMode}
+import models.ConsignorIdentity.{GBEORI, NameAddress}
+import models.{CheckMode, ConsignorIdentity, NormalMode}
 import pages.behaviours.PageBehaviours
 import pages.consignors
 
-class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
+class ConsignorIdentitySpec extends SpecBase with PageBehaviours {
 
   "ConsignorsIdentityPage" - {
 
-    beRetrievable[ConsignorsIdentity](ConsignorsIdentityPage(index))
+    beRetrievable[ConsignorIdentity](ConsignorIdentityPage(index))
 
-    beSettable[ConsignorsIdentity](consignors.ConsignorsIdentityPage(index))
+    beSettable[ConsignorIdentity](consignors.ConsignorIdentityPage(index))
 
-    beRemovable[ConsignorsIdentity](consignors.ConsignorsIdentityPage(index))
+    beRemovable[ConsignorIdentity](consignors.ConsignorIdentityPage(index))
 
     "must navigate in Normal Mode" - {
       "to consignors EORI when answer is `I'll provide consignors EORI`" in {
-        val answers = emptyUserAnswers.set(consignors.ConsignorsIdentityPage(index), GBEORI).success.value
+        val answers = emptyUserAnswers.set(consignors.ConsignorIdentityPage(index), GBEORI).success.value
 
-        consignors.ConsignorsIdentityPage(index)
+        consignors.ConsignorIdentityPage(index)
           .navigate(NormalMode, answers)
           .mustEqual(routes.ConsignorEORIController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to consignors name when answer is `I'll provide consignors name and address`" in {
-        val answers = emptyUserAnswers.set(consignors.ConsignorsIdentityPage(index), NameAddress).success.value
+        val answers = emptyUserAnswers.set(consignors.ConsignorIdentityPage(index), NameAddress).success.value
 
-        consignors.ConsignorsIdentityPage(index)
+        consignors.ConsignorIdentityPage(index)
           .navigate(NormalMode, answers)
           .mustEqual(routes.ConsignorNameController.onPageLoad(NormalMode, answers.lrn, index))
       }
@@ -56,7 +56,7 @@ class ConsignorsIdentitySpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        consignors.ConsignorsIdentityPage(index)
+        consignors.ConsignorIdentityPage(index)
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

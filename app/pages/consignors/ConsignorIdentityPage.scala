@@ -18,20 +18,20 @@ package pages.consignors
 
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.routes
-import models.ConsignorsIdentity.{GBEORI, NameAddress}
-import models.{ConsignorsIdentity, Index, NormalMode, UserAnswers}
+import models.ConsignorIdentity.{GBEORI, NameAddress}
+import models.{ConsignorIdentity, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsignorsIdentityPage(index: Index) extends QuestionPage[ConsignorsIdentity] {
+case class ConsignorIdentityPage(index: Index) extends QuestionPage[ConsignorIdentity] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "consignorsIdentity"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(ConsignorsIdentityPage(index)) match {
+    answers.get(ConsignorIdentityPage(index)) match {
       case Some(GBEORI) => consignorRoutes.ConsignorEORIController.onPageLoad(NormalMode, answers.lrn, index)
       case Some(NameAddress) =>
         consignorRoutes.ConsignorNameController.onPageLoad(NormalMode, answers.lrn, index)

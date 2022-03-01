@@ -17,27 +17,27 @@
 package controllers.consignors
 
 import controllers.actions._
-import forms.consignors.ConsignorsIdentityFormProvider
+import forms.consignors.ConsignorIdentityFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignors
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.consignors.ConsignorsIdentityView
+import views.html.consignors.ConsignorIdentityView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorIdentityController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  formProvider: ConsignorsIdentityFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: ConsignorsIdentityView
+                                             override val messagesApi: MessagesApi,
+                                             sessionRepository: SessionRepository,
+                                             identify: IdentifierAction,
+                                             getData: DataRetrievalActionProvider,
+                                             requireData: DataRequiredAction,
+                                             formProvider: ConsignorIdentityFormProvider,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: ConsignorIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -47,7 +47,7 @@ class ConsignorIdentityController @Inject()(
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(consignors.ConsignorsIdentityPage(index)) match {
+      val preparedForm = request.userAnswers.get(consignors.ConsignorIdentityPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class ConsignorIdentityController @Inject()(
           value =>
             for {
               updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(consignors.ConsignorsIdentityPage(index), value))
+                Future.fromTry(request.userAnswers.set(consignors.ConsignorIdentityPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(consignors.ConsignorsIdentityPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(consignors.ConsignorIdentityPage(index).navigate(mode, updatedAnswers))
         )
     }
 }
