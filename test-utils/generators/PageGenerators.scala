@@ -19,7 +19,7 @@ package generators
 import models.Index
 import org.scalacheck.Arbitrary
 import pages.{consignors, _}
-import pages.consignors.{ConsignorAddressPage, ConsignorEORIPage, ConsignorNamePage, ConsignorsIdentityPage}
+import pages.consignors._
 
 trait PageGenerators {
   implicit lazy val arbitraryCarrierPaymentMethodPage: Arbitrary[CarrierPaymentMethodPage] =
