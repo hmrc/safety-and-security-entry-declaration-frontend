@@ -500,3 +500,27 @@ removeGoods.error.required = Select yes if you need to remove this good item
 
 checkGoodItem.title = Check Your Answers
 checkGoodItem.heading = Check Your Answers
+
+addConsignee.title = addConsignee
+addConsignee.heading = addConsignee
+addConsignee.checkYourAnswersLabel = addConsignee
+addConsignee.error.required = Select yes if addConsignee
+addConsignee.change.hidden = AddConsignee
+
+addNotifiedParty.title = addNotifiedParty
+addNotifiedParty.heading = addNotifiedParty
+addNotifiedParty.checkYourAnswersLabel = addNotifiedParty
+addNotifiedParty.error.required = Select yes if addNotifiedParty
+addNotifiedParty.change.hidden = AddNotifiedParty
+
+removeConsignee.title = removeConsignee
+removeConsignee.heading = removeConsignee
+removeConsignee.checkYourAnswersLabel = removeConsignee
+removeConsignee.error.required = Select yes if removeConsignee
+removeConsignee.change.hidden = RemoveConsignee
+
+removeNotifiedParty.title = removeNotifiedParty
+removeNotifiedParty.heading = removeNotifiedParty
+removeNotifiedParty.checkYourAnswersLabel = removeNotifiedParty
+removeNotifiedParty.error.required = Select yes if removeNotifiedParty
+removeNotifiedParty.change.hidden = RemoveNotifiedParty

@@ -1,6 +1,6 @@
 package pages.$package$
 
-import controller.$package$.{routes => $package$Routes}
+import controllers.$package$.{routes => $package$Routes}
 import controllers.routes
 import models.{NormalMode, UserAnswers}
 import pages.QuestionPage

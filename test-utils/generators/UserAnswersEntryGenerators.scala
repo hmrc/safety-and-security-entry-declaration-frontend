@@ -28,6 +28,38 @@ import pages.routeDetails._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryRemoveNotifiedPartyUserAnswersEntry: Arbitrary[(RemoveNotifiedPartyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RemoveNotifiedPartyPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRemoveConsigneeUserAnswersEntry: Arbitrary[(RemoveConsigneePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RemoveConsigneePage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddNotifiedPartyUserAnswersEntry: Arbitrary[(AddNotifiedPartyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddNotifiedPartyPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddConsigneeUserAnswersEntry: Arbitrary[(AddConsigneePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddConsigneePage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
   implicit lazy val arbitraryPaymentMethodUserAnswersEntry
     : Arbitrary[(PaymentMethodPage, JsValue)] =
     Arbitrary {

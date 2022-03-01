@@ -26,6 +26,18 @@ import pages.preDeclaration._
 import pages.routeDetails._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryRemoveNotifiedPartyPage: Arbitrary[RemoveNotifiedPartyPage.type] =
+    Arbitrary(RemoveNotifiedPartyPage)
+
+  implicit lazy val arbitraryRemoveConsigneePage: Arbitrary[RemoveConsigneePage.type] =
+    Arbitrary(RemoveConsigneePage)
+
+  implicit lazy val arbitraryAddNotifiedPartyPage: Arbitrary[AddNotifiedPartyPage.type] =
+    Arbitrary(AddNotifiedPartyPage)
+
+  implicit lazy val arbitraryAddConsigneePage: Arbitrary[AddConsigneePage.type] =
+    Arbitrary(AddConsigneePage)
   implicit lazy val arbitraryPaymentMethodPage: Arbitrary[PaymentMethodPage] =
     Arbitrary(goods.PaymentMethodPage(Index(0)))
 
