@@ -524,3 +524,9 @@ removeNotifiedParty.heading = removeNotifiedParty
 removeNotifiedParty.checkYourAnswersLabel = removeNotifiedParty
 removeNotifiedParty.error.required = Select yes if removeNotifiedParty
 removeNotifiedParty.change.hidden = RemoveNotifiedParty
+
+addAnyNotifiedParties.title = addAnyNotifiedParties
+addAnyNotifiedParties.heading = addAnyNotifiedParties
+addAnyNotifiedParties.checkYourAnswersLabel = addAnyNotifiedParties
+addAnyNotifiedParties.error.required = Select yes if addAnyNotifiedParties
+addAnyNotifiedParties.change.hidden = AddAnyNotifiedParties

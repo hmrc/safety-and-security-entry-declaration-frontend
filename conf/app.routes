@@ -322,3 +322,8 @@ POST       /:lrn/changeRemoveNotifiedParty/:index                  controllers.c
 GET        /:lrn/checkConsignee/:index                              controllers.consignees.CheckConsigneeController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/checkNotifiedParty/:index                          controllers.consignees.CheckNotifiedPartyController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/checkConsigneesAndNotifiedParties                  controllers.consignees.CheckConsigneesAndNotifiedPartiesController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/addAnyNotifiedParties                        controllers.consignees.AddAnyNotifiedPartiesController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addAnyNotifiedParties                        controllers.consignees.AddAnyNotifiedPartiesController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddAnyNotifiedParties                  controllers.consignees.AddAnyNotifiedPartiesController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddAnyNotifiedParties                  controllers.consignees.AddAnyNotifiedPartiesController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
