@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
   override def toString: String = "consignorEORI"
 

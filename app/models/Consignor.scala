@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package models
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{Reads, __}
 
-case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
+case class Consignor(identity: String, address: Option[Address], name: Option[String], EORI: Option[String])
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
-
-  override def toString: String = "consignorName"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+object Consignor {
+  implicit lazy val reads: Reads[Consignor] = (
+    (__ \ "consignorIdentity").read[String] and
+      (__ \ "consignorAddress").readNullable[Address] and
+      (__ \ "consignorEORI").readNullable[String] and
+      (__ \ "consignorName").readNullable[String])(Consignor(_,_,_,_))
 }
+
+

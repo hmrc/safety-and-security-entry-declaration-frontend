@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package queries
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.Consignor
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
+case class DeriveNumberOfConsignors() extends Derivable[List[Consignor], Int] {
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+  override val derive: List[Consignor] => Int = _.size
 
-  override def toString: String = "consignorName"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def path: JsPath = JsPath \ "consignors"
 }
