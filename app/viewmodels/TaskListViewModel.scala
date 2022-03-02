@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routeDetails.{routes => routeDetailRoutes}
 import controllers.routes
@@ -33,7 +34,8 @@ object TaskListViewModel {
     TaskListViewModel(
       Seq(
         Some(routeDetailsRow(answers)),
-        carrierDetailsRow(answers)
+        carrierDetailsRow(answers),
+        Some(consigneesRow(answers))
       ).flatten
     )
 
@@ -64,6 +66,14 @@ object TaskListViewModel {
 
       case None => ???
     }
+
+  private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+    TaskListRow(
+      messageKey          = messages("taskList.consignees"),
+      link                = consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn),
+      id                  = "consignees",
+      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+    )
 }
 
 final case class TaskListRow(messageKey: String, link: Call, id: String, completionStatusTag: Tag)(
