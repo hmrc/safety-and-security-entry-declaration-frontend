@@ -77,7 +77,7 @@ localReferenceNumber.change.hidden = the name of your ENS
 
 lodgingPersonType.title = Choosing the carrier
 lodgingPersonType.heading = Choosing the carrier
-lodgingPersonType.label1 = A carrier is legally required to submit an ENS. The carrier is defined as the operator of the 'active means of transport'.
+lodgingPersonType.label1 = A carrier is legally required to submit an ENS. The carrier is defined as the operator of the ’active means of transport’.
 lodgingPersonType.label2 = This means the vessel, aircraft, train or road vehicle used to bring the goods into Great Britain.
 lodgingPersonType.label3 = For example, if a freight truck is on a ferry and unaccompanied, the ferry company is the carrier.
 lodgingPersonType.label4 = If a truck is accompanied and driven on and off the ferry by its driver, the haulage company is the carrier. If a truck is accompanied and driven on and off the ferry by its driver, the haulage company is the carrier.
@@ -307,24 +307,24 @@ consigneeKnown.checkYourAnswersLabel = Consignee known
 consigneeKnown.error.required = Select yes if you know the consignee
 consigneeKnown.change.hidden = the consignee is known
 
-consignorAddress.title = What is the consignor's address?
-consignorAddress.heading = What is the consignor's address?
-consignorAddress.checkYourAnswersLabel = Consignor's address
-consignorAddress.change.hidden = the consignor's address
+consignorAddress.title = What is the consignor’s address?
+consignorAddress.heading = What is the consignor’s address?
+consignorAddress.checkYourAnswersLabel = Consignor’s address
+consignorAddress.change.hidden = the consignor’s address
 
-consignorEORI.title = What is the consignor's GB EORI number?
-consignorEORI.heading = What is the consignor's GB EORI number?
-consignorEORI.checkYourAnswersLabel = Consignor's GB EORI
-consignorEORI.error.required = nter the consignor's GB EORI number
+consignorEORI.title = What is the consignor’s GB EORI number?
+consignorEORI.heading = What is the consignor’s GB EORI number?
+consignorEORI.checkYourAnswersLabel = Consignor’s GB EORI
+consignorEORI.error.required = nter the consignor’s GB EORI number
 consignorEORI.error.length = The GB EORI number must be 35 characters or less
-consignorEORI.change.hidden = the consignor's GB EORI number
+consignorEORI.change.hidden = the consignor’s GB EORI number
 
-consignorName.title = What is the consignor's name?
-consignorName.heading = What is the consignor's name?
-consignorName.checkYourAnswersLabel = Consignor's name
-consignorName.error.required = Enter the consignor's name
+consignorName.title = What is the consignor’s name?
+consignorName.heading = What is the consignor’s name?
+consignorName.checkYourAnswersLabel = Consignor’s name
+consignorName.error.required = Enter the consignor’s name
 consignorName.error.length = The name must be 35 characters or less
-consignorName.change.hidden = the consignor's name
+consignorName.change.hidden = the consignor’s name
 
 consignorIdentity.error.required = Select how you want to identify the consignor
 consignorIdentity.change.hidden = how you want to identify the consignor
@@ -407,59 +407,59 @@ address.country.error.required = Enter the country
 address.country.error.length = Country must be 2 characters
 
 
-consigneeAddress.title = What is the consignee's address?
-consigneeAddress.heading = What is the consignee's address?
-consigneeAddress.checkYourAnswersLabel = Consignee's address
-consigneeAddress.change.hidden = the consignee's address
+consigneeAddress.title = What is the consignee’s address?
+consigneeAddress.heading = What is the consignee’s address?
+consigneeAddress.checkYourAnswersLabel = Consignee’s address
+consigneeAddress.change.hidden = the consignee’s address
 
-consigneeEORI.title = What is the consignee's GB EORI number?
-consigneeEORI.heading = What is the consignee's GB EORI number?
-consigneeEORI.checkYourAnswersLabel = Consignee's GB EORI
-consigneeEORI.error.required = Enter the consignee's GB EORI number
+consigneeEORI.title = What is the consignee’s GB EORI number?
+consigneeEORI.heading = What is the consignee’s GB EORI number?
+consigneeEORI.checkYourAnswersLabel = Consignee’s GB EORI
+consigneeEORI.error.required = Enter the consignee’s GB EORI number
 consigneeEORI.error.length = The GB EORI number must be 35 characters or less
-consigneeEORI.change.hidden = the consignee's GB EORI number
+consigneeEORI.change.hidden = the consignee’s GB EORI number
 
 consigneeIdentity.title = How do you want to identify the cosignee?
 consigneeIdentity.heading = How do you want to identify the cosignee?
-consigneeIdentity.GBEORI = I'll provide the consignee's GB EORI number
-consigneeIdentity.nameAddress = I'll provide the consignee's name and address
+consigneeIdentity.GBEORI = I’ll provide the consignee’s GB EORI number
+consigneeIdentity.nameAddress = I’ll provide the consignee’s name and address
 consigneeIdentity.checkYourAnswersLabel = How do you want to identify the cosignee?
 consigneeIdentity.error.required = Select how you want to identify the consignee
 consigneeIdentity.change.hidden = how the consignee is identified
 
-consigneeName.title = What is the consignee's name?
-consigneeName.heading = What is the consignee's name?
-consigneeName.checkYourAnswersLabel = Consingee's name
-consigneeName.error.required = Enter the consignee's name
-consigneeName.error.length = The consignee's name must be 35 characters or less
-consigneeName.change.hidden = the consignee's name
+consigneeName.title = What is the consignee’s name?
+consigneeName.heading = What is the consignee’s name?
+consigneeName.checkYourAnswersLabel = Consingee’s name
+consigneeName.error.required = Enter the consignee’s name
+consigneeName.error.length = The consignee’s name must be 35 characters or less
+consigneeName.change.hidden = the consignee’s name
 
-notifiedPartyAddress.title = What is the notified party's name?
-notifiedPartyAddress.heading = What is the notified party's name?
-notifiedPartyAddress.checkYourAnswersLabel = Notified party's address
-notifiedPartyAddress.change.hidden = the notified party's address
+notifiedPartyAddress.title = What is the notified party’s name?
+notifiedPartyAddress.heading = What is the notified party’s name?
+notifiedPartyAddress.checkYourAnswersLabel = Notified party’s address
+notifiedPartyAddress.change.hidden = the notified party’s address
 
-notifiedPartyEORI.title = What is the notified party's GB EORI number?
-notifiedPartyEORI.heading = What is the notified party's GB EORI number?
-notifiedPartyEORI.checkYourAnswersLabel = Notified party's GB EORI number
-notifiedPartyEORI.error.required = Enter the notified party's GB EORI number
-notifiedPartyEORI.error.length = The notified party's GB EORI number must be 35 characters or less
-notifiedPartyEORI.change.hidden = the notified party's GB EORI number
+notifiedPartyEORI.title = What is the notified party’s GB EORI number?
+notifiedPartyEORI.heading = What is the notified party’s GB EORI number?
+notifiedPartyEORI.checkYourAnswersLabel = Notified party’s GB EORI number
+notifiedPartyEORI.error.required = Enter the notified party’s GB EORI number
+notifiedPartyEORI.error.length = The notified party’s GB EORI number must be 35 characters or less
+notifiedPartyEORI.change.hidden = the notified party’s GB EORI number
 
 notifiedPartyIdentity.title = How do you want to identify the notified party?
 notifiedPartyIdentity.heading = How do you want to identify the notified party?
-notifiedPartyIdentity.GBEORI = I'll provide the notified party's GB EORI number
-notifiedPartyIdentity.nameAddress = I'll provide the notified party's name and address
+notifiedPartyIdentity.GBEORI = I’ll provide the notified party’s GB EORI number
+notifiedPartyIdentity.nameAddress = I’ll provide the notified party’s name and address
 notifiedPartyIdentity.checkYourAnswersLabel = How do you want to identify the notified party?
 notifiedPartyIdentity.error.required = Select notifiedPartyIdentity
 notifiedPartyIdentity.change.hidden = NotifiedPartyIdentity
 
-notifiedPartyName.title = What is the notified party's name?
-notifiedPartyName.heading = What is the notified party's name?
-notifiedPartyName.checkYourAnswersLabel = Notified party's name
-notifiedPartyName.error.required = Enter the notified party's name
-notifiedPartyName.error.length = The notified party's name must be 100 characters or less
-notifiedPartyName.change.hidden = the notified party's name
+notifiedPartyName.title = What is the notified party’s name?
+notifiedPartyName.heading = What is the notified party’s name?
+notifiedPartyName.checkYourAnswersLabel = Notified party’s name
+notifiedPartyName.error.required = Enter the notified party’s name
+notifiedPartyName.error.length = The notified party’s name must be 100 characters or less
+notifiedPartyName.change.hidden = the notified party’s name
 
 unloadingCode.title = What is the unloading code?
 unloadingCode.heading = What is the unloading code?
@@ -498,35 +498,38 @@ removeGoods.title = Do you need to remove this good item?
 removeGoods.heading = Do you need to remove this good item?
 removeGoods.error.required = Select yes if you need to remove this good item
 
-checkGoodItem.title = Check Your Answers
-checkGoodItem.heading = Check Your Answers
+checkGoodItem.title = Check your answers
+checkGoodItem.heading = Check your answers
 
-addConsignee.title = addConsignee
-addConsignee.heading = addConsignee
-addConsignee.checkYourAnswersLabel = addConsignee
-addConsignee.error.required = Select yes if addConsignee
-addConsignee.change.hidden = AddConsignee
+addConsignee.title = Consignees
+addConsignee.heading = Consignees
+addConsignee.error.required = Select yes if you need to add another consignee
+addConsignee.addAnother = Do you need to add any more consignees?
 
-addNotifiedParty.title = addNotifiedParty
-addNotifiedParty.heading = addNotifiedParty
-addNotifiedParty.checkYourAnswersLabel = addNotifiedParty
-addNotifiedParty.error.required = Select yes if addNotifiedParty
-addNotifiedParty.change.hidden = AddNotifiedParty
+addNotifiedParty.title = Notified Parties
+addNotifiedParty.heading = Notified Parties
+addNotifiedParty.error.required = Select yes if you need to add another notified party
+addNotifiedParty.addAnother = Do you need to add any more notified parties?
 
-removeConsignee.title = removeConsignee
-removeConsignee.heading = removeConsignee
-removeConsignee.checkYourAnswersLabel = removeConsignee
-removeConsignee.error.required = Select yes if removeConsignee
-removeConsignee.change.hidden = RemoveConsignee
+removeConsignee.title = Are you sure you want to remove this consignee?
+removeConsignee.heading = Are you sure you want to remove this consignee?
+removeConsignee.error.required = Select yes if you want to remove this consignee
 
-removeNotifiedParty.title = removeNotifiedParty
-removeNotifiedParty.heading = removeNotifiedParty
-removeNotifiedParty.checkYourAnswersLabel = removeNotifiedParty
-removeNotifiedParty.error.required = Select yes if removeNotifiedParty
-removeNotifiedParty.change.hidden = RemoveNotifiedParty
+removeNotifiedParty.title = Are you sure you want to remove this notified party?
+removeNotifiedParty.heading = Are you sure you want to remove this notified party?
+removeNotifiedParty.error.required = Select yes if you want to remove this notified party
 
-addAnyNotifiedParties.title = addAnyNotifiedParties
-addAnyNotifiedParties.heading = addAnyNotifiedParties
-addAnyNotifiedParties.checkYourAnswersLabel = addAnyNotifiedParties
-addAnyNotifiedParties.error.required = Select yes if addAnyNotifiedParties
-addAnyNotifiedParties.change.hidden = AddAnyNotifiedParties
+addAnyNotifiedParties.title = Do you need to add any notified parties?
+addAnyNotifiedParties.heading = Do you need to add any notified parties?
+addAnyNotifiedParties.checkYourAnswersLabel = Any notified parties
+addAnyNotifiedParties.error.required = Select yes if you need to add a notified party
+addAnyNotifiedParties.change.hidden = if there are any notified parties
+
+checkConsignee.title = Check your consignee
+checkConsignee.heading = Check your consignee
+
+checkNotifiedParty.title = Check your notified party
+checkNotifiedParty.heading = Check your notified party
+
+checkConsigneesAndNotifiedParties.title = Check your answers
+checkConsigneesAndNotifiedParties.heading = Check your answers
