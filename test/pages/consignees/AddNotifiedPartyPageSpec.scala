@@ -19,13 +19,28 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, GbEori, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "AddNotifiedPartyPage" - {
 
+    "must navigate in Normal Mode" - {
 
+      "to Notified Party Identity for the next index when the answer is yes" in {
+
+        val answers = emptyUserAnswers.set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+
+        AddNotifiedPartyPage.navigate(NormalMode, answers, addAnother = true)
+          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+      }
+
+      "to Check Consignees and Notified Parties when the answer is no" in {
+
+        AddNotifiedPartyPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
+          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(emptyUserAnswers.lrn))
+      }
+    }
   }
 }

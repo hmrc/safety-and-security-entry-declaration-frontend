@@ -22,10 +22,26 @@ import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignees.DeriveNumberOfNotifiedParties
 
 final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "removeNotifiedParty"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(DeriveNumberOfNotifiedParties) match {
+      case Some(size) if size > 0 =>
+        consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn)
+      case _ =>
+        answers.get(ConsigneeKnownPage) match {
+          case Some(true) =>
+            consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn)
+          case Some(false) =>
+            consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+          case None =>
+            routes.JourneyRecoveryController.onPageLoad()
+        }
+    }
 }

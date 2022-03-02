@@ -30,12 +30,13 @@ case object AddConsigneePage extends Page {
       answers.get(DeriveNumberOfConsignees) match {
         case Some(size) =>
           consigneesRoutes.ConsigneeIdentityController.onPageLoad(mode, answers.lrn, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
+        case None =>
+          routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
       mode match {
         case NormalMode =>
-          ???
+          consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn)
         case CheckMode =>
           routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }

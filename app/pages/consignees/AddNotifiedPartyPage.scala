@@ -21,21 +21,22 @@ import controllers.routes
 import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
-import queries.consignees.DeriveNumberOfConsignees
+import queries.consignees.DeriveNumberOfNotifiedParties
 
 case object AddNotifiedPartyPage extends Page {
 
   def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
     if (addAnother) {
-      answers.get(DeriveNumberOfConsignees) match {
+      answers.get(DeriveNumberOfNotifiedParties) match {
         case Some(size) =>
           consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(mode, answers.lrn, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
+        case None =>
+          routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
       mode match {
         case NormalMode =>
-          ???
+          consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
         case CheckMode =>
           routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }

@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
@@ -34,10 +34,33 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "when there are still notified parties in the user's answers" - {
 
-        RemoveNotifiedPartyPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        "to Add Notified Party" in {
+          val answers = emptyUserAnswers.set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+
+          RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
+            .mustEqual(consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn))
+        }
+      }
+
+      "when there are no notified parties in the user's answers" - {
+
+        "to Notified Party Identity for Index 0 when the user does not know any consignees" in {
+
+          val answers = emptyUserAnswers.set(ConsigneeKnownPage, false).success.value
+
+          RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
+            .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index))
+        }
+
+        "to Add Any Notified Parties when the user knows some consignees" in {
+
+          val answers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
+
+          RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
+            .mustEqual(consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn))
+        }
       }
     }
 

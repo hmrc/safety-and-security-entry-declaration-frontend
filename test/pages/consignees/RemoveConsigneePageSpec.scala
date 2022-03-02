@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
@@ -34,10 +34,18 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Consignee when there is still at least one consignee in the user's answers" in {
+
+        val answers = emptyUserAnswers.set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+
+        RemoveConsigneePage(index).navigate(NormalMode, answers)
+          .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Consignee Known when there are no consignees left" in {
 
         RemoveConsigneePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

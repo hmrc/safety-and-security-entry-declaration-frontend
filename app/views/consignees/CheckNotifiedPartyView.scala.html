@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import controllers.consignees.routes
+
 @this(
         layout: templates.Layout,
         govukSummaryList: GovukSummaryList
@@ -27,6 +29,6 @@
 
     @govukSummaryList(list)
 
-    <a href="@routes.TaskListController.onPageLoad(lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
+    <a href="@routes.AddNotifiedPartyController.onPageLoad(NormalMode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
 }
     

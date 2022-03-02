@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
@@ -34,10 +34,20 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Notified Party Identity when the answer is yes" in {
 
-        AddAnyNotifiedPartiesPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, true).success.value
+
+        AddAnyNotifiedPartiesPage.navigate(NormalMode, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0)))
+      }
+
+      "to Check Consignees and Notified Parties when the answer is no" in {
+
+        val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
+
+        AddAnyNotifiedPartiesPage.navigate(NormalMode, answers)
+          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn))
       }
     }
 

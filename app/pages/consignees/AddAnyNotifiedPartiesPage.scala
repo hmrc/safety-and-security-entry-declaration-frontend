@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,4 +28,14 @@ case object AddAnyNotifiedPartiesPage extends QuestionPage[Boolean] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addAnyNotifiedParties"
+
+  override def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(AddAnyNotifiedPartiesPage) match {
+      case Some(true) =>
+        consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case Some(false) =>
+        consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+      case None =>
+        routes.JourneyRecoveryController.onPageLoad()
+    }
 }
