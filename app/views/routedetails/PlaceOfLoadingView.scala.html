@@ -15,6 +15,7 @@
  *@
 
 @import controllers.routedetails.routes
+@import models.Country._
 @import viewmodels.InputWidth._
 
 @this(
@@ -22,6 +23,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
+    govukSelect: GovukSelect,
     govukButton: GovukButton
 )
 
@@ -37,12 +39,14 @@
 
         <h1 class="govuk-heading-xl">@messages("placeOfLoading.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
+        @govukSelect(
+            SelectViewModel(
                 field = form("country"),
+                items = selectItems(internationalCountries),
                 label = LabelViewModel(messages("placeOfLoading.country"))
             )
-            .withWidth(Full)
+            .withCssClass(Fixed20.toString)
+            .withCssClass("autocomplete")
         )
 
         @govukInput(
@@ -50,7 +54,7 @@
                 field = form("place"),
                 label = LabelViewModel(messages("placeOfLoading.place"))
             )
-            .withWidth(Full)
+            .withWidth(Fixed20)
         )
 
         @govukButton(

@@ -17,6 +17,8 @@
 package forms.routedetails
 
 import forms.behaviours.StringFieldBehaviours
+import models.Country
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
 class PlaceOfLoadingFormProviderSpec extends StringFieldBehaviours {
@@ -27,20 +29,11 @@ class PlaceOfLoadingFormProviderSpec extends StringFieldBehaviours {
 
     val fieldName = "country"
     val requiredKey = "placeOfLoading.error.country.required"
-    val lengthKey = "placeOfLoading.error.country.length"
-    val maxLength = 2
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      arbitrary[Country].map(_.code)
     )
 
     behave like mandatoryField(
@@ -48,6 +41,17 @@ class PlaceOfLoadingFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind any values other than valid country codes" in {
+
+      val invalidAnswers =
+        arbitrary[String].suchThat(x => !Country.internationalCountries.map(_.code).contains(x))
+
+      forAll(invalidAnswers) { answer =>
+        val result = form.bind(Map("value" -> answer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, requiredKey)
+      }
+    }
   }
 
   ".place" - {
@@ -55,7 +59,7 @@ class PlaceOfLoadingFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "place"
     val requiredKey = "placeOfLoading.error.place.required"
     val lengthKey = "placeOfLoading.error.place.length"
-    val maxLength = 33
+    val maxLength = 32
 
     behave like fieldThatBindsValidData(
       form,

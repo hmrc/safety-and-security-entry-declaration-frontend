@@ -26,13 +26,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PlaceOfLoadingSummary  {
+object PlaceOfLoadingSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PlaceOfLoadingPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.country).toString + "<br/>" + HtmlFormat.escape(answer.place).toString
+      val value = HtmlFormat.escape(answer.country.name).toString + "<br/>" + HtmlFormat.escape(answer.place).toString
 
         SummaryListRowViewModel(
           key     = "placeOfLoading.checkYourAnswersLabel",

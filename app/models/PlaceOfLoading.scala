@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json._
 
-case class PlaceOfLoading(country: String, place: String)
+case class PlaceOfLoading(country: Country, place: String)
 
 object PlaceOfLoading {
-  implicit val format = Json.format[PlaceOfLoading]
+  implicit val format: OFormat[PlaceOfLoading] = Json.format[PlaceOfLoading]
 }

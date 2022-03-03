@@ -19,9 +19,10 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.PlaceOfLoadingFormProvider
-import models.{NormalMode, UserAnswers, PlaceOfLoading}
+import models.{Country, NormalMode, PlaceOfLoading, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.routedetails.PlaceOfLoadingPage
 import play.api.inject.bind
@@ -37,6 +38,7 @@ class PlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new PlaceOfLoadingFormProvider()
   val form = formProvider()
+  val country = arbitrary[Country].sample.value
 
   lazy val placeOfLoadingRoute = routes.PlaceOfLoadingController.onPageLoad(NormalMode, lrn).url
 
@@ -45,7 +47,7 @@ class PlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
     lrn,
     Json.obj(
       PlaceOfLoadingPage.toString -> Json.obj(
-        "country" -> "XX",
+        "country" -> Json.toJson(country),
         "place" -> "value 2"
       )
     )
@@ -81,7 +83,7 @@ class PlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PlaceOfLoading("XX", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(PlaceOfLoading(country, "value 2")), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -99,10 +101,10 @@ class PlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, placeOfLoadingRoute)
-            .withFormUrlEncodedBody(("country", "XX"), ("place", "value 2"))
+            .withFormUrlEncodedBody(("country", country.code), ("place", "value 2"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(PlaceOfLoadingPage, PlaceOfLoading("XX", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(PlaceOfLoadingPage, PlaceOfLoading(country, "value 2")).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PlaceOfLoadingPage.navigate(NormalMode, expectedAnswers).url
@@ -151,7 +153,7 @@ class PlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, placeOfLoadingRoute)
-            .withFormUrlEncodedBody(("country", "XX"), ("place", "value 2"))
+            .withFormUrlEncodedBody(("country", country.code), ("place", "value 2"))
 
         val result = route(application, request).value
 

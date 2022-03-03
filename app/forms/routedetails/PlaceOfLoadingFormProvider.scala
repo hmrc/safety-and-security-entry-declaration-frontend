@@ -17,20 +17,21 @@
 package forms.routedetails
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.Country.internationalCountries
 import play.api.data.Form
 import play.api.data.Forms._
-import models.PlaceOfLoading
+import models.{Country, PlaceOfLoading}
 
 class PlaceOfLoadingFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[PlaceOfLoading] = Form(
-     mapping(
+  def apply(): Form[PlaceOfLoading] = Form(
+    mapping(
       "country" -> text("placeOfLoading.error.country.required")
-        .verifying(maxLength(2, "placeOfLoading.error.country.length")),
+        .verifying("placeOfLoading.error.country.required", x => internationalCountries.exists(_.code == x))
+        .transform[Country](x => internationalCountries.find(_.code == x).get, _.code),
       "place" -> text("placeOfLoading.error.place.required")
-        .verifying(maxLength(33, "placeOfLoading.error.place.length"))
+        .verifying(maxLength(32, "placeOfLoading.error.place.length"))
     )(PlaceOfLoading.apply)(PlaceOfLoading.unapply)
-   )
- }
+  )
+}
