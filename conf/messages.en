@@ -539,3 +539,51 @@ checkNotifiedParty.heading = Check your notified party
 
 checkConsigneesAndNotifiedParties.title = Check your answers
 checkConsigneesAndNotifiedParties.heading = Check your answers
+
+addPlaceOfLoading.title = addPlaceOfLoading
+addPlaceOfLoading.heading = addPlaceOfLoading
+addPlaceOfLoading.checkYourAnswersLabel = addPlaceOfLoading
+addPlaceOfLoading.error.required = Select yes if addPlaceOfLoading
+addPlaceOfLoading.change.hidden = AddPlaceOfLoading
+
+addPlaceOfUnloading.title = addPlaceOfUnloading
+addPlaceOfUnloading.heading = addPlaceOfUnloading
+addPlaceOfUnloading.checkYourAnswersLabel = addPlaceOfUnloading
+addPlaceOfUnloading.error.required = Select yes if addPlaceOfUnloading
+addPlaceOfUnloading.change.hidden = AddPlaceOfUnloading
+
+removePlaceOfLoading.title = removePlaceOfLoading
+removePlaceOfLoading.heading = removePlaceOfLoading
+removePlaceOfLoading.checkYourAnswersLabel = removePlaceOfLoading
+removePlaceOfLoading.error.required = Select yes if removePlaceOfLoading
+removePlaceOfLoading.change.hidden = RemovePlaceOfLoading
+
+removePlaceOfUnloading.title = removePlaceOfUnloading
+removePlaceOfUnloading.heading = removePlaceOfUnloading
+removePlaceOfUnloading.checkYourAnswersLabel = removePlaceOfUnloading
+removePlaceOfUnloading.error.required = Select yes if removePlaceOfUnloading
+removePlaceOfUnloading.change.hidden = RemovePlaceOfUnloading
+
+placeOfLoading.title = placeOfLoading
+placeOfLoading.heading = placeOfLoading
+placeOfLoading.country = country
+placeOfLoading.place = place
+placeOfLoading.checkYourAnswersLabel = PlaceOfLoading
+placeOfLoading.error.country.required = Enter country
+placeOfLoading.error.place.required = Enter place
+placeOfLoading.error.country.length = country must be 2 characters or less
+placeOfLoading.error.place.length = place must be 33 characters or less
+placeOfLoading.country.change.hidden = country
+placeOfLoading.place.change.hidden = place
+
+placeOfUnloading.title = placeOfUnloading
+placeOfUnloading.heading = placeOfUnloading
+placeOfUnloading.country = country
+placeOfUnloading.place = place
+placeOfUnloading.checkYourAnswersLabel = PlaceOfUnloading
+placeOfUnloading.error.country.required = Enter country
+placeOfUnloading.error.place.required = Enter place
+placeOfUnloading.error.country.length = country must be 2 characters or less
+placeOfUnloading.error.place.length = place must be 32 characters or less
+placeOfUnloading.country.change.hidden = country
+placeOfUnloading.place.change.hidden = place
