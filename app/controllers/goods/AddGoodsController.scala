@@ -18,6 +18,7 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddGoodsFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.goods.AddGoodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +27,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.GoodsSummary
 import views.html.goods.AddGoodsView
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddGoodsController @Inject() (

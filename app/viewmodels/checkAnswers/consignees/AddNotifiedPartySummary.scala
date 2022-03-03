@@ -20,7 +20,7 @@ import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, NormalMode, TraderWithEori, TraderWithoutEori, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.consignees.{AllConsigneesQuery, AllNotifiedPartiesQuery}
+import queries.consignees.AllNotifiedPartiesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem

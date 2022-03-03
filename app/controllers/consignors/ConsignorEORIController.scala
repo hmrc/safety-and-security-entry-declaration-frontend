@@ -18,6 +18,7 @@ package controllers.consignors
 
 import controllers.actions._
 import forms.consignors.ConsignorEORIFormProvider
+import javax.inject.Inject
 import models.{GbEori, Index, LocalReferenceNumber, Mode}
 import pages.consignors
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignors.ConsignorEORIView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorEORIController @Inject() (

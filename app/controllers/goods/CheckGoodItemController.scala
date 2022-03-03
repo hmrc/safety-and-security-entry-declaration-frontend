@@ -22,7 +22,6 @@ import models.{Index, LocalReferenceNumber, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers._
 import viewmodels.checkAnswers.preDeclaration.UnloadingCodeSummary
 import viewmodels.govuk.summarylist._
 import views.html.goods.CheckGoodItemView

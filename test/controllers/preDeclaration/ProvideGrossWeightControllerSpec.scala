@@ -19,7 +19,7 @@ package controllers.preDeclaration
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.preDeclaration.ProvideGrossWeightFormProvider
-import models.{ProvideGrossWeight, NormalMode}
+import models.{NormalMode, ProvideGrossWeight}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar

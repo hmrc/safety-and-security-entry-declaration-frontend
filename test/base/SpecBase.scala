@@ -16,6 +16,8 @@
 
 package base
 
+import java.time.{Clock, Instant, LocalDate, ZoneId}
+
 import controllers.actions._
 import generators.Generators
 import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
@@ -28,8 +30,6 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-
-import java.time.{Clock, Instant, LocalDate, ZoneId}
 
 trait SpecBase
   extends AnyFreeSpec

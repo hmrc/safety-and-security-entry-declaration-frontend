@@ -18,8 +18,8 @@ package controllers.consignors
 
 import controllers.actions._
 import forms.consignors.ConsignorIdentityFormProvider
+import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.consignors
 import pages.consignors.ConsignorIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignors.ConsignorIdentityView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorIdentityController @Inject() (

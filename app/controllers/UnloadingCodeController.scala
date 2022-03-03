@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.UnloadingCodeFormProvider
-
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.UnloadingCodePage
@@ -27,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.UnloadingCodeView
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingCodeController @Inject() (

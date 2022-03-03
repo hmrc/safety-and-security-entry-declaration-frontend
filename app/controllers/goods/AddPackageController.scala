@@ -18,6 +18,7 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddPackageFormProvider
+import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.AddPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -25,8 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.PackageSummary
 import views.html.goods.AddPackageView
-
-import javax.inject.Inject
 
 class AddPackageController @Inject() (
   override val messagesApi: MessagesApi,

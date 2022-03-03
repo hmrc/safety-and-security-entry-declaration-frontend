@@ -16,6 +16,8 @@
 
 package controllers.routeDetails
 
+import java.time.{LocalDate, LocalTime, ZoneOffset}
+
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routeDetails.ArrivalDateAndTimeFormProvider
@@ -30,7 +32,6 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.routeDetails.ArrivalDateAndTimeView
 
-import java.time.{LocalDate, LocalTime, ZoneOffset}
 import scala.concurrent.Future
 
 class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {

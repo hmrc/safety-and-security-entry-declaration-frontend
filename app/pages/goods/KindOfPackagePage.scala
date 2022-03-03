@@ -17,7 +17,6 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
 import models.KindOfPackage.{bulkKindsOfPackage, standardKindsOfPackages, unpackedKindsOfPackage}
 import models.{Index, KindOfPackage, NormalMode, UserAnswers}
 import pages.QuestionPage

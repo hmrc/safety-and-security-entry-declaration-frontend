@@ -18,7 +18,6 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.RemoveConsigneeFormProvider
-
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignees.RemoveConsigneePage

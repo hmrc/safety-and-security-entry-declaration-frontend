@@ -17,7 +17,6 @@
 package pages.preDeclaration
 
 import base.SpecBase
-import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routes
 import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours

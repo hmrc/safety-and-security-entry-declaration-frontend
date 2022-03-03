@@ -18,6 +18,7 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddMarkOrNumberFormProvider
+import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.AddMarkOrNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.AddMarkOrNumberView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddMarkOrNumberController @Inject() (

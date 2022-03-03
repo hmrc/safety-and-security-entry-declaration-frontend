@@ -18,6 +18,7 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AddConsigneeFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.consignees.AddConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -25,8 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.consignees.AddConsigneeSummary
 import views.html.consignees.AddConsigneeView
-
-import javax.inject.Inject
 
 class AddConsigneeController @Inject()(
   override val messagesApi: MessagesApi,

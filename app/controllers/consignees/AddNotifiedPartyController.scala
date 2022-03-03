@@ -18,6 +18,7 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AddNotifiedPartyFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.consignees.AddNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -25,8 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.consignees.AddNotifiedPartySummary
 import views.html.consignees.AddNotifiedPartyView
-
-import javax.inject.Inject
 
 class AddNotifiedPartyController @Inject()(
   override val messagesApi: MessagesApi,

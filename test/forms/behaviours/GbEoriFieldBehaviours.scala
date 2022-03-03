@@ -17,8 +17,8 @@
 package forms.behaviours
 
 import models.GbEori
-import play.api.data.Form
 import org.scalacheck.Gen
+import play.api.data.Form
 
 trait GbEoriFieldBehaviours extends FieldBehaviours {
   private def expectValid(value: String, form: Form[GbEori], fieldName: String): Unit = {
