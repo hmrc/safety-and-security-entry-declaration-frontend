@@ -34,10 +34,6 @@ trait UserAnswersGenerator extends TryValues {
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(PlaceOfUnloadingPage, JsValue)] ::
     arbitrary[(PlaceOfLoadingPage, JsValue)] ::
-    arbitrary[(RemovePlaceOfUnloadingPage.type, JsValue)] ::
-    arbitrary[(RemovePlaceOfLoadingPage.type, JsValue)] ::
-    arbitrary[(AddPlaceOfUnloadingPage.type, JsValue)] ::
-    arbitrary[(AddPlaceOfLoadingPage.type, JsValue)] ::
     arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] ::
     arbitrary[(PaymentMethodPage, JsValue)] ::
     arbitrary[(AddPaymentMethodPage, JsValue)] ::

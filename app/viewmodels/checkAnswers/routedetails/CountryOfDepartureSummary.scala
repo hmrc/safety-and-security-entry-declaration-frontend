@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{CheckMode, UserAnswers}
 import pages.routedetails.CountryOfDeparturePage
 import play.api.i18n.Messages
@@ -36,7 +36,7 @@ object CountryOfDepartureSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routeDetailRoutes.CountryOfDepartureController.onPageLoad(CheckMode, answers.lrn).url
+            routedetailsRoutes.CountryOfDepartureController.onPageLoad(CheckMode, answers.lrn).url
           ).withVisuallyHiddenText(messages("countryOfDeparture.change.hidden"))
         )
       )

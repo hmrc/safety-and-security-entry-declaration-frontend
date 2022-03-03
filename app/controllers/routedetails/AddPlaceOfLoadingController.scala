@@ -18,20 +18,19 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.AddPlaceOfLoadingFormProvider
-import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.routedetails.AddPlaceOfLoadingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.routedetails.PlaceOfLoadingSummary
 import views.html.routedetails.AddPlaceOfLoadingView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class AddPlaceOfLoadingController @Inject()(
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -45,26 +44,21 @@ class AddPlaceOfLoadingController @Inject()(
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddPlaceOfLoadingPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      val places = PlaceOfLoadingSummary.rows(request.userAnswers)
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(form, mode, lrn, places))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+        formWithErrors => {
+          val places = PlaceOfLoadingSummary.rows(request.userAnswers)
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPlaceOfLoadingPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddPlaceOfLoadingPage.navigate(mode, updatedAnswers))
+          BadRequest(view(formWithErrors, mode, lrn, places))
+        },
+        value => Redirect(AddPlaceOfLoadingPage.navigate(mode, request.userAnswers, value))
       )
   }
 }

@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -39,7 +39,7 @@ class CountryOfDeparturePageSpec extends SpecBase with PageBehaviours {
         CountryOfDeparturePage
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routeDetailRoutes.GoodsPassThroughOtherCountriesController
+            routedetailsRoutes.GoodsPassThroughOtherCountriesController
               .onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }

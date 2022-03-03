@@ -15,16 +15,19 @@
  *@
 
 @import controllers.routedetails.routes
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, places: Seq[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addPlaceOfUnloading.title"))) {
 
@@ -34,10 +37,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-xl">@messages("addPlaceOfUnloading.heading")</h1>
+
+        @addToList(places, Long, "addPlaceOfUnloading.change.hidden", "addPlaceOfUnloading.remove.hidden")
+
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("addPlaceOfUnloading.heading")).asPageHeading()
+                legend = LegendViewModel(messages("addPlaceOfUnloading.addAnother")).withSize(LegendSize.Medium)
             )
         )
 

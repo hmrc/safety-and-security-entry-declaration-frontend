@@ -16,7 +16,7 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{Country, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -30,5 +30,5 @@ case class CountryEnRoutePage(index: Index) extends QuestionPage[Country] {
   override def toString: String = "countriesEnRoute"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routeDetailRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
+    routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
 }

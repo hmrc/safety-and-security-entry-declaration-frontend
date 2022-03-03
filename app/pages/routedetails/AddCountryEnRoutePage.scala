@@ -16,7 +16,7 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.Page
@@ -29,13 +29,13 @@ case object AddCountryEnRoutePage extends Page {
     if (addAnother) {
       answers.get(DeriveNumberOfCountriesEnRoute) match {
         case Some(size) =>
-          routeDetailRoutes.CountryEnRouteController.onPageLoad(mode, answers.lrn, Index(size))
+          routedetailsRoutes.CountryEnRouteController.onPageLoad(mode, answers.lrn, Index(size))
         case None => routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
       mode match {
         case NormalMode =>
-          routeDetailRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+          routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
         case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }
     }

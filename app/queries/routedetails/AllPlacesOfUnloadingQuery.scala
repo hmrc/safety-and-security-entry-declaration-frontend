@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package pages.routedetails
+package queries.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CustomsOffice, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Country, PlaceOfUnloading}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Gettable
 
-case object CustomsOfficeOfFirstEntryPage extends QuestionPage[CustomsOffice] {
+case object AllPlacesOfUnloadingQuery extends Gettable[List[PlaceOfUnloading]] {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "customsOfficeOfFirstEntry"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routedetailsRoutes.ArrivalDateAndTimeController.onPageLoad(NormalMode, answers.lrn)
+  override def path: JsPath = JsPath \ "placesOfUnloading"
 }

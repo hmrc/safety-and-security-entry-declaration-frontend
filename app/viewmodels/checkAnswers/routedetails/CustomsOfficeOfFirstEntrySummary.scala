@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{CheckMode, UserAnswers}
 import pages.routedetails.CustomsOfficeOfFirstEntryPage
 import play.api.i18n.Messages
@@ -36,7 +36,7 @@ object CustomsOfficeOfFirstEntrySummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routeDetailRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(CheckMode, answers.lrn).url
+            routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(CheckMode, answers.lrn).url
           ).withVisuallyHiddenText(messages("customsOfficeOfFirstEntry.change.hidden"))
         )
       )

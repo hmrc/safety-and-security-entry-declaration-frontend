@@ -18,14 +18,27 @@ package pages.routedetails
 
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
+import queries.routedetails.DeriveNumberOfPlacesOfUnloading
 
-case object AddPlaceOfUnloadingPage extends QuestionPage[Boolean] {
+case object AddPlaceOfUnloadingPage extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "addPlaceOfUnloading"
+  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfPlacesOfUnloading) match {
+        case Some(size) =>
+          routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(mode, answers.lrn, Index(size))
+        case None =>
+          routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      mode match {
+        case NormalMode =>
+          routedetailsRoutes.CheckRouteDetailsController.onPageLoad(answers.lrn)
+        case CheckMode =>
+          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      }
+    }
 }

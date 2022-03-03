@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{ArrivalDateAndTime, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -38,7 +38,7 @@ class ArrivalDateAndTimePageSpec extends SpecBase with PageBehaviours {
 
         ArrivalDateAndTimePage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routeDetailRoutes.CheckRouteDetailsController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(routedetailsRoutes.CheckRouteDetailsController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
 

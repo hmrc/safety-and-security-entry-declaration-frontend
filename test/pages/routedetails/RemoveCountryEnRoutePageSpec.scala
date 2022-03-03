@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, Country, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,7 +39,7 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
         RemoveCountryEnRoutePage(index)
           .navigate(NormalMode, answers)
-          .mustEqual(routeDetailRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
+          .mustEqual(routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
       }
 
       "to Goods Pass Through Other Countries when there are no countries in user answers" in {
@@ -47,7 +47,7 @@ class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
         routedetails.RemoveCountryEnRoutePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routeDetailRoutes.GoodsPassThroughOtherCountriesController
+            routedetailsRoutes.GoodsPassThroughOtherCountriesController
               .onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }

@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, Country, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -37,7 +37,7 @@ class AddCountryEnRoutePageSpec extends SpecBase {
 
         AddCountryEnRoutePage
           .navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(routeDetailRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+          .mustEqual(routedetailsRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))
       }
 
       "to Customs Office of First Entry when the answer is no" in {
@@ -45,7 +45,7 @@ class AddCountryEnRoutePageSpec extends SpecBase {
         AddCountryEnRoutePage
           .navigate(NormalMode, emptyUserAnswers, addAnother = false)
           .mustEqual(
-            routeDetailRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+            routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }
     }

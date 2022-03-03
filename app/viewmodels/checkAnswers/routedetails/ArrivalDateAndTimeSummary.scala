@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{CheckMode, UserAnswers}
 import pages.routedetails.ArrivalDateAndTimePage
 import play.api.i18n.Messages
@@ -47,7 +47,7 @@ object ArrivalDateAndTimeSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routeDetailRoutes.ArrivalDateAndTimeController.onPageLoad(CheckMode, answers.lrn).url
+            routedetailsRoutes.ArrivalDateAndTimeController.onPageLoad(CheckMode, answers.lrn).url
           ).withVisuallyHiddenText(messages("arrivalDateAndTime.change.hidden"))
         )
       )

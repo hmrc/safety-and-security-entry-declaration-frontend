@@ -19,25 +19,30 @@ package pages.routedetails
 import base.SpecBase
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, PlaceOfLoading}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddPlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
   "AddPlaceOfLoadingPage" - {
 
-    beRetrievable[Boolean](AddPlaceOfLoadingPage)
-
-    beSettable[Boolean](AddPlaceOfLoadingPage)
-
-    beRemovable[Boolean](AddPlaceOfLoadingPage)
-
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Place of Loading with an index equal tot he number of places of loading we have details for when the answer is yes" in {
 
-        AddPlaceOfLoadingPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers =
+          emptyUserAnswers
+            .set(PlaceOfLoadingPage(index), arbitrary[PlaceOfLoading].sample.value).success.value
+
+        AddPlaceOfLoadingPage.navigate(NormalMode, answers, addAnother = true)
+          .mustEqual(routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+      }
+
+      "to Goods Pass Through Other Countries when the answer is no" in {
+
+        AddPlaceOfLoadingPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
+          .mustEqual(routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

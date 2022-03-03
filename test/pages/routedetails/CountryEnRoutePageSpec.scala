@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -40,7 +40,7 @@ class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
         routedetails.CountryEnRoutePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routeDetailRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+            routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }
     }

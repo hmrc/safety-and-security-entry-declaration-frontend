@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, CustomsOffice, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -39,7 +39,7 @@ class CustomsOfficeOfFirstEntryPageSpec extends SpecBase with PageBehaviours {
         CustomsOfficeOfFirstEntryPage
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routeDetailRoutes.ArrivalDateAndTimeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+            routedetailsRoutes.ArrivalDateAndTimeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }
     }

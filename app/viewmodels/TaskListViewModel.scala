@@ -18,7 +18,7 @@ package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.preDeclaration.{routes => preDecRoutes}
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{LodgingPersonType, NormalMode, UserAnswers}
 import pages.preDeclaration.LodgingPersonTypePage
@@ -42,7 +42,7 @@ object TaskListViewModel {
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey = messages("taskList.routeDetails"),
-      link = routeDetailRoutes.CountryOfDepartureController.onPageLoad(NormalMode, answers.lrn),
+      link = routedetailsRoutes.CountryOfDepartureController.onPageLoad(NormalMode, answers.lrn),
       id = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )

@@ -19,25 +19,30 @@ package pages.routedetails
 import base.SpecBase
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, PlaceOfUnloading}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddPlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
   "AddPlaceOfUnloadingPage" - {
 
-    beRetrievable[Boolean](AddPlaceOfUnloadingPage)
-
-    beSettable[Boolean](AddPlaceOfUnloadingPage)
-
-    beRemovable[Boolean](AddPlaceOfUnloadingPage)
-
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Place of Unloading with an index equal tot he number of places of loading we have details for when the answer is yes" in {
 
-        AddPlaceOfUnloadingPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers =
+          emptyUserAnswers
+            .set(PlaceOfUnloadingPage(index), arbitrary[PlaceOfUnloading].sample.value).success.value
+
+        AddPlaceOfUnloadingPage.navigate(NormalMode, answers, addAnother = true)
+          .mustEqual(routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+      }
+
+      "to Check Route Details when the answer is no" in {
+
+        AddPlaceOfUnloadingPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
+          .mustEqual(routedetailsRoutes.CheckRouteDetailsController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
 

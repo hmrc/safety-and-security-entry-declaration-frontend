@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{CheckMode, UserAnswers}
 import pages.routedetails.GoodsPassThroughOtherCountriesPage
 import play.api.i18n.Messages
@@ -37,7 +37,7 @@ object GoodsPassThroughOtherCountriesSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routeDetailRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(CheckMode, answers.lrn).url
+            routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(CheckMode, answers.lrn).url
           ).withVisuallyHiddenText(messages("goodsPassThroughOtherCountries.change.hidden"))
         )
       )

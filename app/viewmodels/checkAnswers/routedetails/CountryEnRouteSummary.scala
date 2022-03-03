@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -40,7 +40,7 @@ object CountryEnRouteSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routeDetailRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn).url
+            routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn).url
           ).withVisuallyHiddenText(messages("countryEnRoute.change.hidden"))
         )
       )
@@ -51,8 +51,8 @@ object CountryEnRouteSummary {
       case (country, index) =>
         ListItem(
           name = HtmlFormat.escape(country.name).toString,
-          changeUrl = routeDetailRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
-          removeUrl = routeDetailRoutes.RemoveCountryEnRouteController
+          changeUrl = routedetailsRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
+          removeUrl = routedetailsRoutes.RemoveCountryEnRouteController
             .onPageLoad(NormalMode, answers.lrn, Index(index))
             .url
         )

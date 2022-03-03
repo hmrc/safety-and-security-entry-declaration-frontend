@@ -16,7 +16,7 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -33,8 +33,8 @@ case class RemoveCountryEnRoutePage(index: Index) extends QuestionPage[Boolean] 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(DeriveNumberOfCountriesEnRoute) match {
       case Some(n) if n > 0 =>
-        routeDetailRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
-      case _ => routeDetailRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+        routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn)
+      case _ => routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
     }
   }
 }

@@ -17,7 +17,7 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -40,7 +40,7 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
 
         GoodsPassThroughOtherCountriesPage
           .navigate(NormalMode, answers)
-          .mustEqual(routeDetailRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0)))
+          .mustEqual(routedetailsRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0)))
       }
 
       "to Customs Office of First Entry when the answer is no" in {
@@ -49,7 +49,7 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
 
         GoodsPassThroughOtherCountriesPage
           .navigate(NormalMode, answers)
-          .mustEqual(routeDetailRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn))
+          .mustEqual(routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn))
       }
     }
 

@@ -45,38 +45,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryRemovePlaceOfUnloadingUserAnswersEntry: Arbitrary[(RemovePlaceOfUnloadingPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[RemovePlaceOfUnloadingPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryRemovePlaceOfLoadingUserAnswersEntry: Arbitrary[(RemovePlaceOfLoadingPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[RemovePlaceOfLoadingPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryAddPlaceOfUnloadingUserAnswersEntry: Arbitrary[(AddPlaceOfUnloadingPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddPlaceOfUnloadingPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryAddPlaceOfLoadingUserAnswersEntry: Arbitrary[(AddPlaceOfLoadingPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[AddPlaceOfLoadingPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryAddAnyNotifiedPartiesUserAnswersEntry: Arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] =
     Arbitrary {
       for {

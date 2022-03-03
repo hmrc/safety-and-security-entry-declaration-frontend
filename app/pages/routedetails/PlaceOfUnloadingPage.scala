@@ -27,5 +27,5 @@ final case class PlaceOfUnloadingPage(index: Index) extends QuestionPage[PlaceOf
 
   override def path: JsPath = JsPath \ toString \ index.position
 
-  override def toString: String = "placeOfUnloading"
+  override def toString: String = "placesOfUnloading"
 }

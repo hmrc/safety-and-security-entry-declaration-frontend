@@ -33,18 +33,6 @@ trait PageGenerators {
   implicit lazy val arbitraryPlaceOfLoadingPage: Arbitrary[PlaceOfLoadingPage] =
     Arbitrary(PlaceOfLoadingPage(Index(0)))
 
-  implicit lazy val arbitraryRemovePlaceOfUnloadingPage: Arbitrary[RemovePlaceOfUnloadingPage.type] =
-    Arbitrary(RemovePlaceOfUnloadingPage)
-
-  implicit lazy val arbitraryRemovePlaceOfLoadingPage: Arbitrary[RemovePlaceOfLoadingPage.type] =
-    Arbitrary(RemovePlaceOfLoadingPage)
-
-  implicit lazy val arbitraryAddPlaceOfUnloadingPage: Arbitrary[AddPlaceOfUnloadingPage.type] =
-    Arbitrary(AddPlaceOfUnloadingPage)
-
-  implicit lazy val arbitraryAddPlaceOfLoadingPage: Arbitrary[AddPlaceOfLoadingPage.type] =
-    Arbitrary(AddPlaceOfLoadingPage)
-
   implicit lazy val arbitraryAddAnyNotifiedPartiesPage: Arbitrary[AddAnyNotifiedPartiesPage.type] =
     Arbitrary(AddAnyNotifiedPartiesPage)
 

@@ -543,12 +543,10 @@ checkConsigneesAndNotifiedParties.heading = Check your answers
 addPlaceOfLoading.title = addPlaceOfLoading
 addPlaceOfLoading.heading = addPlaceOfLoading
 addPlaceOfLoading.checkYourAnswersLabel = addPlaceOfLoading
-addPlaceOfLoading.error.required = Select yes if addPlaceOfLoading
 addPlaceOfLoading.change.hidden = AddPlaceOfLoading
 
 addPlaceOfUnloading.title = addPlaceOfUnloading
 addPlaceOfUnloading.heading = addPlaceOfUnloading
-addPlaceOfUnloading.checkYourAnswersLabel = addPlaceOfUnloading
 addPlaceOfUnloading.error.required = Select yes if addPlaceOfUnloading
 addPlaceOfUnloading.change.hidden = AddPlaceOfUnloading
 

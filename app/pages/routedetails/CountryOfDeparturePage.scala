@@ -16,7 +16,7 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{Country, NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -30,5 +30,5 @@ case object CountryOfDeparturePage extends QuestionPage[Country] {
   override def toString: String = "countryOfDeparture"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routeDetailRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
+    routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
 }

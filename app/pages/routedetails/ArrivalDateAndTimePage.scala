@@ -16,7 +16,7 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{ArrivalDateAndTime, UserAnswers}
 import pages.QuestionPage
@@ -30,5 +30,5 @@ case object ArrivalDateAndTimePage extends QuestionPage[ArrivalDateAndTime] {
   override def toString: String = "arrivalDateAndTime"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routeDetailRoutes.CheckRouteDetailsController.onPageLoad(answers.lrn)
+    routedetailsRoutes.CheckRouteDetailsController.onPageLoad(answers.lrn)
 }

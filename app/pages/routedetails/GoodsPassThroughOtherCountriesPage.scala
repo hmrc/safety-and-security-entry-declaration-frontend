@@ -16,7 +16,7 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -32,9 +32,9 @@ case object GoodsPassThroughOtherCountriesPage extends QuestionPage[Boolean] {
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(GoodsPassThroughOtherCountriesPage) match {
       case Some(true) =>
-        routeDetailRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0))
+        routedetailsRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(0))
       case Some(false) =>
-        routeDetailRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
+        routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }
