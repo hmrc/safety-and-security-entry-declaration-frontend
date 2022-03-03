@@ -24,7 +24,7 @@ import play.api.libs.json._
  * A GB EORI is written as "GB" followed by 12 or 15 numeric characters. Since this models
  * a GB EORI specifically, we only record the numeric characters.
  */
-class GbEori(val value: String) extends AnyVal
+case class GbEori(value: String) extends AnyVal
 
 object GbEori {
   implicit val reads: Reads[GbEori] = Reads.StringReads.map { new GbEori(_) }

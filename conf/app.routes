@@ -166,10 +166,10 @@ POST       /:lrn/consignorIdentity/:itemIndex                       controllers.
 GET        /:lrn/changeConsignorIdentity/:itemIndex                   controllers.consignors.ConsignorIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeConsignorIdentity/:itemIndex                 controllers.consignors.ConsignorIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 
-GET        /:lrn/consigneeKnown/:itemIndex                        controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
-POST       /:lrn/consigneeKnown/:itemIndex                        controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
-GET        /:lrn/changeConsigneeKnown/:itemIndex                  controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
-POST       /:lrn/changeConsigneeKnown/:itemIndex                  controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+GET        /:lrn/consigneeKnown/                        controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/consigneeKnown/                        controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeConsigneeKnown/                  controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeConsigneeKnown/                  controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/consignorAddress/:itemIndex                        controllers.consignors.ConsignorAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/consignorAddress/:itemIndex                        controllers.consignors.ConsignorAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
@@ -298,3 +298,32 @@ POST       /:lrn/changeRemoveGoods/:goodsItemIndex                  controllers.
 
 GET        /:lrn/check-good-item/:itemIndex                         controllers.goods.CheckGoodItemController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/change-check-good-item/:itemIndex                  controllers.goods.CheckGoodItemController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
+
+GET        /:lrn/addConsignee                        controllers.consignees.AddConsigneeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addConsignee                        controllers.consignees.AddConsigneeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddConsignee                  controllers.consignees.AddConsigneeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddConsignee                  controllers.consignees.AddConsigneeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/addNotifiedParty                        controllers.consignees.AddNotifiedPartyController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addNotifiedParty                        controllers.consignees.AddNotifiedPartyController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddNotifiedParty                  controllers.consignees.AddNotifiedPartyController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddNotifiedParty                  controllers.consignees.AddNotifiedPartyController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/removeConsignee/:index                        controllers.consignees.RemoveConsigneeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/removeConsignee/:index                        controllers.consignees.RemoveConsigneeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeRemoveConsignee/:index                  controllers.consignees.RemoveConsigneeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeRemoveConsignee/:index                  controllers.consignees.RemoveConsigneeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/removeNotifiedParty/:index                        controllers.consignees.RemoveNotifiedPartyController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/removeNotifiedParty/:index                        controllers.consignees.RemoveNotifiedPartyController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeRemoveNotifiedParty/:index                  controllers.consignees.RemoveNotifiedPartyController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeRemoveNotifiedParty/:index                  controllers.consignees.RemoveNotifiedPartyController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/checkConsignee/:index                              controllers.consignees.CheckConsigneeController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/checkNotifiedParty/:index                          controllers.consignees.CheckNotifiedPartyController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/checkConsigneesAndNotifiedParties                  controllers.consignees.CheckConsigneesAndNotifiedPartiesController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/addAnyNotifiedParties                        controllers.consignees.AddAnyNotifiedPartiesController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addAnyNotifiedParties                        controllers.consignees.AddAnyNotifiedPartiesController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddAnyNotifiedParties                  controllers.consignees.AddAnyNotifiedPartiesController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddAnyNotifiedParties                  controllers.consignees.AddAnyNotifiedPartiesController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

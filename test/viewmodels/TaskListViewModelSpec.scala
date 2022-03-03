@@ -31,7 +31,7 @@ class TaskListViewModelSpec extends SpecBase {
         emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
 
       val taskListViewModel = TaskListViewModel.fromAnswers(answers)(stubMessages())
-      taskListViewModel.rows.size mustEqual 1
+      taskListViewModel.rows.size mustEqual 2
     }
   }
 
@@ -43,7 +43,7 @@ class TaskListViewModelSpec extends SpecBase {
         emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
 
       val taskListViewModel = TaskListViewModel.fromAnswers(answers)(stubMessages())
-      taskListViewModel.rows.size mustEqual 2
+      taskListViewModel.rows.size mustEqual 3
     }
   }
 }

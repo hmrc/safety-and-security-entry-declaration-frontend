@@ -16,6 +16,7 @@
 
 package pages.consignees
 
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
 import models.{GbEori, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -24,11 +25,11 @@ import play.api.mvc.Call
 
 case class ConsigneeEORIPage(index: Index) extends QuestionPage[GbEori] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
-  override def toString: String = "consigneeEORI"
+  override def toString: String = "eori"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
+    consigneesRoutes.CheckConsigneeController.onPageLoad(answers.lrn, index)
   }
 }

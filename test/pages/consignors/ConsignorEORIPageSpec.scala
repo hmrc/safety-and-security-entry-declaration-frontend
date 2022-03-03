@@ -41,7 +41,7 @@ class ConsignorEORIPageSpec extends SpecBase with PageBehaviours {
           .ConsignorEORIPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }
     }

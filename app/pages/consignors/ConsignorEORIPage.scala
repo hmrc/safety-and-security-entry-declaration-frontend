@@ -30,6 +30,6 @@ case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
   override def toString: String = "consignorEORI"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index)
+    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
   }
 }

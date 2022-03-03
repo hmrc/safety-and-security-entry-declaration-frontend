@@ -16,19 +16,20 @@
 
 package pages.consignees
 
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{GbEori, Index, NormalMode, UserAnswers}
+import models.{GbEori, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class NotifiedPartyEORIPage(index: Index) extends QuestionPage[GbEori] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
-  override def toString: String = "notifiedPartyEORI"
+  override def toString: String = "eori"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
+    consigneesRoutes.CheckNotifiedPartyController.onPageLoad(answers.lrn, index)
   }
 }

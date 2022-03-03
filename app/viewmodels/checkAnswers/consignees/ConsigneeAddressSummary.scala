@@ -21,6 +21,7 @@ import models.{CheckMode, Index, UserAnswers}
 import pages.consignees
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -30,9 +31,16 @@ object ConsigneeAddressSummary {
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeAddressPage(index)).map { answer =>
 
+      val address = Seq(
+        HtmlFormat.escape(answer.streetAndNumber).toString,
+        HtmlFormat.escape(answer.city).toString,
+        HtmlFormat.escape(answer.postCode).toString,
+        HtmlFormat.escape(answer.country.name)
+      ).mkString("<br>")
+
       SummaryListRowViewModel(
         key = "consigneeAddress.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer.toString).toString),
+        value = ValueViewModel(HtmlContent(address)),
         actions = Seq(
           ActionItemViewModel(
             "site.change",

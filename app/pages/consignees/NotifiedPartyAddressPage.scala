@@ -16,19 +16,20 @@
 
 package pages.consignees
 
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{Address, Index, NormalMode, UserAnswers}
+import models.{Address, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class NotifiedPartyAddressPage(index: Index) extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
-  override def toString: String = "notifiedPartyAddress"
+  override def toString: String = "address"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    routes.UnloadingCodeController.onPageLoad(NormalMode, answers.lrn, index)
+    consigneesRoutes.CheckNotifiedPartyController.onPageLoad(answers.lrn, index)
   }
 }

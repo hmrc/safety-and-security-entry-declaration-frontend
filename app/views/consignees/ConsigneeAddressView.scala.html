@@ -67,7 +67,7 @@
         @govukSelect(
             SelectViewModel(
                 field = form("country"),
-                items = selectItems(internationalCountries),
+                items = selectItems(allCountries),
                 label = LabelViewModel(messages("address.country")).withCssClass("govuk-fieldset__legend-m")
             )
             .withCssClass(Fixed20.toString)

@@ -17,6 +17,7 @@
 package pages.consignees
 
 import base.SpecBase
+import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
 import models.{Address, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -33,12 +34,12 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to unloading code page" in {
+      "to Check Notified Party" in {
 
         NotifiedPartyAddressPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.UnloadingCodeController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(emptyUserAnswers.lrn, index)
           )
       }
     }

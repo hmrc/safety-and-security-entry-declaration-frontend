@@ -38,7 +38,7 @@ class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
           ConsignorAddressPage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
           )
       }
     }
