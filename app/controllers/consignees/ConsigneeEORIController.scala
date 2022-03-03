@@ -18,6 +18,7 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.ConsigneeEORIFormProvider
+import javax.inject.Inject
 import models.GbEori._
 import models.{GbEori, Index, LocalReferenceNumber, Mode}
 import pages.consignees.ConsigneeEORIPage
@@ -27,7 +28,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.ConsigneeEORIView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeEORIController @Inject() (

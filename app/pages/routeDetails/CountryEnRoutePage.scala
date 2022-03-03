@@ -17,7 +17,6 @@
 package pages.routeDetails
 
 import controllers.routeDetails.{routes => routeDetailRoutes}
-import controllers.routes
 import models.{Country, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

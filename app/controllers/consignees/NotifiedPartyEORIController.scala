@@ -18,6 +18,7 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.NotifiedPartyEORIFormProvider
+import javax.inject.Inject
 import models.{GbEori, Index, LocalReferenceNumber, Mode}
 import pages.consignees.NotifiedPartyEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.NotifiedPartyEORIView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotifiedPartyEORIController @Inject() (

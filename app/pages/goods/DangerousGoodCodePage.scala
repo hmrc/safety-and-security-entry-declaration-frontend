@@ -16,7 +16,6 @@
 
 package pages.goods
 
-import controllers.routes
 import controllers.consignors.{routes => consignorRoutes}
 import models.{DangerousGood, Index, NormalMode, UserAnswers}
 import pages.QuestionPage

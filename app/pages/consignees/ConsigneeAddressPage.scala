@@ -17,7 +17,6 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
 import models.{Address, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import org.mockito.internal.matchers.GreaterThan
 import org.scalatestplus.mockito.MockitoSugar
 
 class DangerousGoodsServiceSpec extends SpecBase with MockitoSugar {

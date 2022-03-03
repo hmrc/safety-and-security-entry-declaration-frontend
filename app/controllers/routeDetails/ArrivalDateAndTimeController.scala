@@ -18,6 +18,7 @@ package controllers.routeDetails
 
 import controllers.actions._
 import forms.routeDetails.ArrivalDateAndTimeFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.routeDetails.ArrivalDateAndTimePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routeDetails.ArrivalDateAndTimeView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ArrivalDateAndTimeController @Inject() (

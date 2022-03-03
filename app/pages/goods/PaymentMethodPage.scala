@@ -17,8 +17,7 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{PaymentMethod, Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode, PaymentMethod, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

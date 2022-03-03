@@ -21,7 +21,6 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.{UnloadingCodePage, preDeclaration}
 
 class AddGoodsPageSpec extends SpecBase with PageBehaviours {
 

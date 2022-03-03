@@ -19,7 +19,7 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{PaymentMethod, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, PaymentMethod}
 import pages.behaviours.PageBehaviours
 class PaymentMethodPageSpec extends SpecBase with PageBehaviours {
 

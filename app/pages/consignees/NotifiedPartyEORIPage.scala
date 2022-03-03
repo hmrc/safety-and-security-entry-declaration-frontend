@@ -17,7 +17,6 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
 import models.{GbEori, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

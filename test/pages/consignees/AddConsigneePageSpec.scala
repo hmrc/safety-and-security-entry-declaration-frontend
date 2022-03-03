@@ -18,8 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori, Index, NormalMode}
+import models.{GbEori, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class AddConsigneePageSpec extends SpecBase with PageBehaviours {

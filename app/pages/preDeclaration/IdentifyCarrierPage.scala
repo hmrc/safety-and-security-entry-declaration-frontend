@@ -17,7 +17,6 @@
 package pages.preDeclaration
 
 import controllers.preDeclaration.{routes => preDecRoutes}
-import controllers.routes
 import models.{IdentifyCarrier, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

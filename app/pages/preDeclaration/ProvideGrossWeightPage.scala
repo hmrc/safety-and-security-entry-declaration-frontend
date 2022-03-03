@@ -18,7 +18,7 @@ package pages.preDeclaration
 
 import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routes
-import models.{ProvideGrossWeight, NormalMode, UserAnswers}
+import models.{NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

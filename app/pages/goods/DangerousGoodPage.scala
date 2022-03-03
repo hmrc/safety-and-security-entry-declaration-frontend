@@ -19,7 +19,6 @@ package pages.goods
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import controllers.consignors.{routes => consignorRoutes}
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

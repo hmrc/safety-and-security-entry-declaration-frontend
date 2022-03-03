@@ -16,12 +16,12 @@
 
 package forms.mappings
 
+import java.time.LocalTime
+
 import base.SpecBase
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
-
-import java.time.LocalTime
 
 class LocalTimeMappingSpec extends SpecBase with Mappings with ScalaCheckPropertyChecks {
 

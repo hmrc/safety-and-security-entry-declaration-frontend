@@ -18,6 +18,7 @@ package controllers.preDeclaration
 
 import controllers.actions._
 import forms.preDeclaration.CarrierEORIFormProvider
+import javax.inject.Inject
 import models.GbEori._
 import models.{LocalReferenceNumber, Mode}
 import pages.preDeclaration.CarrierEORIPage
@@ -27,7 +28,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.preDeclaration.CarrierEORIView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierEORIController @Inject() (
