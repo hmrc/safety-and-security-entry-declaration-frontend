@@ -23,7 +23,7 @@ import pages._
 import pages.consignees._
 import pages.goods._
 import pages.preDeclaration._
-import pages.routeDetails._
+import pages.routedetails._
 
 trait PageGenerators {
 
@@ -138,14 +138,14 @@ trait PageGenerators {
     Arbitrary(goods.CommodityCodePage(Index(0)))
 
   implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage] =
-    Arbitrary(routeDetails.RemoveCountryEnRoutePage(Index(0)))
+    Arbitrary(routedetails.RemoveCountryEnRoutePage(Index(0)))
 
   implicit lazy val arbitraryGoodsPassThroughOtherCountriesPage
     : Arbitrary[GoodsPassThroughOtherCountriesPage.type] =
     Arbitrary(GoodsPassThroughOtherCountriesPage)
 
   implicit lazy val arbitraryCountryEnRoutePage: Arbitrary[CountryEnRoutePage] =
-    Arbitrary(routeDetails.CountryEnRoutePage(Index(0)))
+    Arbitrary(routedetails.CountryEnRoutePage(Index(0)))
 
   implicit lazy val arbitraryAddCountryEnRoutePage: Arbitrary[AddCountryEnRoutePage.type] =
     Arbitrary(AddCountryEnRoutePage)

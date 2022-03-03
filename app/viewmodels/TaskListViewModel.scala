@@ -18,7 +18,7 @@ package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.preDeclaration.{routes => preDecRoutes}
-import controllers.routeDetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routeDetailRoutes}
 import controllers.routes
 import models.{LodgingPersonType, NormalMode, UserAnswers}
 import pages.preDeclaration.LodgingPersonTypePage

@@ -17,7 +17,7 @@
 package forms
 
 import forms.behaviours.DateBehaviours
-import forms.routeDetails.ArrivalDateAndTimeFormProvider
+import forms.routedetails.ArrivalDateAndTimeFormProvider
 import models.ArrivalDateAndTime
 import org.scalacheck.Gen
 import play.api.data.FormError
