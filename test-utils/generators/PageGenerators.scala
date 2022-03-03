@@ -154,8 +154,8 @@ trait PageGenerators {
     : Arbitrary[CustomsOfficeOfFirstEntryPage.type] =
     Arbitrary(CustomsOfficeOfFirstEntryPage)
 
-  implicit lazy val arbitraryCountryOfOriginPage: Arbitrary[CountryOfOriginPage.type] =
-    Arbitrary(CountryOfOriginPage)
+  implicit lazy val arbitraryCountryOfDeparturePage: Arbitrary[CountryOfDeparturePage.type] =
+    Arbitrary(CountryOfDeparturePage)
 
   implicit lazy val arbitraryArrivalDateAndTimePage: Arbitrary[ArrivalDateAndTimePage.type] =
     Arbitrary(ArrivalDateAndTimePage)

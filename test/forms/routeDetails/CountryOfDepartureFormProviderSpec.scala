@@ -21,11 +21,11 @@ import models.Country
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
-class CountryOfOriginFormProviderSpec extends StringFieldBehaviours {
+class CountryOfDepartureFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "countryOfOrigin.error.required"
+  val requiredKey = "countryOfDeparture.error.required"
 
-  val form = new CountryOfOriginFormProvider()()
+  val form = new CountryOfDepartureFormProvider()()
 
   ".value" - {
 

@@ -28,9 +28,9 @@
 
 @(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("countryOfOrigin.title"))) {
+@layout(pageTitle = title(form, messages("countryOfDeparture.title"))) {
 
-    @formHelper(action = routes.CountryOfOriginController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.CountryOfDepartureController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -40,7 +40,7 @@
             SelectViewModel(
                 field = form("value"),
                 items = selectItems(internationalCountries),
-                label = LabelViewModel(messages("countryOfOrigin.heading")).asPageHeading()
+                label = LabelViewModel(messages("countryOfDeparture.heading")).asPageHeading()
             )
             .withCssClass(InputWidth.Fixed20.toString)
             .withCssClass("autocomplete")

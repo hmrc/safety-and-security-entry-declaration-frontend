@@ -155,12 +155,11 @@ arrivalDateAndTime.time.error.invalid = Enter a real planned time of arrival
 arrivalDateAndTime.date.change.hidden = the planned date of arrival
 arrivalDateAndTime.time.change.hidden = the planned time of arrival
 
-countryOfOrigin.title = What is the country (or territory) of origin of the goods?
-countryOfOrigin.heading = What is the country (or territory) of origin of the goods?
-countryOfOrigin.checkYourAnswersLabel = Country of origin
-countryOfOrigin.error.required = Enter the country (or territory) of origin of the goods
-countryOfOrigin.error.length = Country must be 2 characters or less
-countryOfOrigin.change.hidden = the country (or territory) of origin of the goods
+countryOfDeparture.title = What is the country of departure?
+countryOfDeparture.heading = What is the country of departure?
+countryOfDeparture.checkYourAnswersLabel = Country of departure
+countryOfDeparture.error.required = Enter the country of departure
+countryOfDeparture.change.hidden = the country of departure
 
 customsOfficeOfFirstEntry.title = What customs office will the goods arrive in?
 customsOfficeOfFirstEntry.heading = What customs office will the goods arrive in?

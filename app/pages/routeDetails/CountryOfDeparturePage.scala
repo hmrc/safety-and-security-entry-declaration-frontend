@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package forms.routeDetails
+package pages.routeDetails
 
-import forms.mappings.Mappings
-import models.Country
-import models.Country.internationalCountries
-import play.api.data.Form
+import controllers.routeDetails.{routes => routeDetailRoutes}
+import controllers.routes
+import models.{Country, NormalMode, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object CountryOfDeparturePage extends QuestionPage[Country] {
 
-class CountryOfOriginFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[Country] =
-    Form(
-      "value" -> text("countryOfOrigin.error.required")
-        .verifying(
-          "countryOfOrigin.error.required",
-          value => internationalCountries.exists(_.code == value)
-        )
-        .transform[Country](value => internationalCountries.find(_.code == value).get, _.code)
-    )
+  override def toString: String = "countryOfDeparture"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routeDetailRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
 }

@@ -42,7 +42,7 @@ object TaskListViewModel {
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey = messages("taskList.routeDetails"),
-      link = routeDetailRoutes.CountryOfOriginController.onPageLoad(NormalMode, answers.lrn),
+      link = routeDetailRoutes.CountryOfDepartureController.onPageLoad(NormalMode, answers.lrn),
       id = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )

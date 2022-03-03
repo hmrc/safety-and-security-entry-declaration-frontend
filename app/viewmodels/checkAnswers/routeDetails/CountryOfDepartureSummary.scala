@@ -18,26 +18,26 @@ package viewmodels.checkAnswers.routeDetails
 
 import controllers.routeDetails.{routes => routeDetailRoutes}
 import models.{CheckMode, UserAnswers}
-import pages.routeDetails.CountryOfOriginPage
+import pages.routeDetails.CountryOfDeparturePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CountryOfOriginSummary {
+object CountryOfDepartureSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CountryOfOriginPage).map { answer =>
+    answers.get(CountryOfDeparturePage).map { answer =>
 
       SummaryListRowViewModel(
-        key = "countryOfOrigin.checkYourAnswersLabel",
+        key = "countryOfDeparture.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer.name).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routeDetailRoutes.CountryOfOriginController.onPageLoad(CheckMode, answers.lrn).url
-          ).withVisuallyHiddenText(messages("countryOfOrigin.change.hidden"))
+            routeDetailRoutes.CountryOfDepartureController.onPageLoad(CheckMode, answers.lrn).url
+          ).withVisuallyHiddenText(messages("countryOfDeparture.change.hidden"))
         )
       )
     }

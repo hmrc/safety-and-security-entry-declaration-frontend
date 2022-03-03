@@ -63,10 +63,10 @@ POST       /:lrn/arrivalDateAndTime                        controllers.routeDeta
 GET        /:lrn/changeArrivalDateAndTime                  controllers.routeDetails.ArrivalDateAndTimeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeArrivalDateAndTime                  controllers.routeDetails.ArrivalDateAndTimeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/countryOfOrigin                        controllers.routeDetails.CountryOfOriginController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/countryOfOrigin                        controllers.routeDetails.CountryOfOriginController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeCountryOfOrigin                  controllers.routeDetails.CountryOfOriginController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeCountryOfOrigin                  controllers.routeDetails.CountryOfOriginController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/countryOfDeparture                        controllers.routeDetails.CountryOfDepartureController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/countryOfDeparture                        controllers.routeDetails.CountryOfDepartureController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeCountryOfDeparture                  controllers.routeDetails.CountryOfDepartureController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeCountryOfDeparture                  controllers.routeDetails.CountryOfDepartureController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/customsOfficeOfFirstEntry                        controllers.routeDetails.CustomsOfficeOfFirstEntryController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/customsOfficeOfFirstEntry                        controllers.routeDetails.CustomsOfficeOfFirstEntryController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)

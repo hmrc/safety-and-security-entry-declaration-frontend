@@ -22,21 +22,21 @@ import controllers.routes
 import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
+class CountryOfDeparturePageSpec extends SpecBase with PageBehaviours {
 
-  "CountryOfOriginPage" - {
+  "CountryOfDeparturePage" - {
 
-    beRetrievable[Country](CountryOfOriginPage)
+    beRetrievable[Country](CountryOfDeparturePage)
 
-    beSettable[Country](CountryOfOriginPage)
+    beSettable[Country](CountryOfDeparturePage)
 
-    beRemovable[Country](CountryOfOriginPage)
+    beRemovable[Country](CountryOfDeparturePage)
 
     "must navigate in Normal Mode" - {
 
       "to Goods Pass Through Other Countries" in {
 
-        CountryOfOriginPage
+        CountryOfDeparturePage
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
             routeDetailRoutes.GoodsPassThroughOtherCountriesController
@@ -49,7 +49,7 @@ class CountryOfOriginPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        CountryOfOriginPage
+        CountryOfDeparturePage
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

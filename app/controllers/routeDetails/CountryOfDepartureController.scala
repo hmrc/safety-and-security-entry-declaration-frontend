@@ -17,27 +17,27 @@
 package controllers.routeDetails
 
 import controllers.actions._
-import forms.routeDetails.CountryOfOriginFormProvider
+import forms.routeDetails.CountryOfDepartureFormProvider
 import models.{LocalReferenceNumber, Mode}
-import pages.routeDetails.CountryOfOriginPage
+import pages.routeDetails.CountryOfDeparturePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.routeDetails.CountryOfOriginView
+import views.html.routeDetails.CountryOfDepartureView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfOriginController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  formProvider: CountryOfOriginFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: CountryOfOriginView
+class CountryOfDepartureController @Inject()(
+                                              override val messagesApi: MessagesApi,
+                                              sessionRepository: SessionRepository,
+                                              identify: IdentifierAction,
+                                              getData: DataRetrievalActionProvider,
+                                              requireData: DataRequiredAction,
+                                              formProvider: CountryOfDepartureFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: CountryOfDepartureView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -47,7 +47,7 @@ class CountryOfOriginController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(CountryOfOriginPage) match {
+      val preparedForm = request.userAnswers.get(CountryOfDeparturePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,9 +64,9 @@ class CountryOfOriginController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfOriginPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfDeparturePage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(CountryOfOriginPage.navigate(mode, updatedAnswers))
+            } yield Redirect(CountryOfDeparturePage.navigate(mode, updatedAnswers))
         )
     }
 }
