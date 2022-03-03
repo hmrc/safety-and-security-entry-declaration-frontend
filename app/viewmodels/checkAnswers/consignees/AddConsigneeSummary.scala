@@ -21,7 +21,11 @@ import models.{Index, NormalMode, TraderWithEori, TraderWithoutEori, UserAnswers
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllConsigneesQuery
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 
 object AddConsigneeSummary  {
 
@@ -37,6 +41,27 @@ object AddConsigneeSummary  {
           name      = name,
           changeUrl = consigneesRoutes.CheckConsigneeController.onPageLoad(answers.lrn, Index(index)).url,
           removeUrl = consigneesRoutes.RemoveConsigneeController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
+        )
+    }
+
+  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AllConsigneesQuery).map {
+      consignees =>
+
+        val value = consignees.map {
+          case c: TraderWithEori => c.eori
+          case c: TraderWithoutEori => c.name
+        }.map(HtmlFormat.escape).mkString("<br>")
+
+        SummaryListRowViewModel(
+          key = "consignees.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn).url
+            ).withVisuallyHiddenText(messages("consignees.change.hidden"))
+          )
         )
     }
 }

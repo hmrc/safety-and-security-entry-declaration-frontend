@@ -198,6 +198,7 @@ taskList.title = ENS declaration: {0}
 taskList.heading = ENS declaration: {0}
 taskList.routeDetails = Complete route details
 taskList.carrier = Complete carrier details
+taskList.consignees = Consignees and notified parties
 taskList.completed = Completed
 taskList.notStarted = Not started
 taskList.inProgress = In progress
@@ -392,16 +393,16 @@ goodsItemGrossWeight.error.precision = Enter the gross weight of the goods using
 goodsItemGrossWeight.error.outOfRange = Gross weight must be between {0} and {1}
 goodsItemGrossWeight.change.hidden = the gross weight of the goods
 
-address.streetAndNumber = Street and number:
+address.streetAndNumber = Street and number
 address.streetAndNumber.error.required = Enter the street and number
 address.streetAndNumber.error.length = Street and number must be 35 characters or less
-address.city = City:
+address.city = City
 address.city.error.required = Enter the city
 address.city.error.length = City must be 35 characters or less
-address.postCode = PostCode:
+address.postCode = Post code
 address.postCode.error.required = Enter the post code
 address.postCode.error.length = Post code must be 9 characters or less
-address.country = Country Code:
+address.country = Country
 address.country.hint = For example, ES
 address.country.error.required = Enter the country
 address.country.error.length = Country must be 2 characters
@@ -461,6 +462,9 @@ notifiedPartyName.error.required = Enter the notified party’s name
 notifiedPartyName.error.length = The notified party’s name must be 100 characters or less
 notifiedPartyName.change.hidden = the notified party’s name
 
+notifiedParties.checkYourAnswersLabel = Notified parties
+notifiedParties.change.hidden = the notified parties
+
 unloadingCode.title = What is the unloading code?
 unloadingCode.heading = What is the unloading code?
 unloadingCode.checkYourAnswersLabel = Unloading code
@@ -505,6 +509,9 @@ addConsignee.title = Consignees
 addConsignee.heading = Consignees
 addConsignee.error.required = Select yes if you need to add another consignee
 addConsignee.addAnother = Do you need to add any more consignees?
+
+consignees.checkYourAnswersLabel = Consignees
+consignees.change.hidden = the consignees
 
 addNotifiedParty.title = Notified Parties
 addNotifiedParty.heading = Notified Parties

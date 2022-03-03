@@ -17,7 +17,7 @@
 package forms.consignees
 
 import forms.mappings.Mappings
-import models.Country.internationalCountries
+import models.Country.allCountries
 import models.{Address, Country}
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -37,9 +37,9 @@ class NotifiedPartyAddressFormProvider @Inject() extends Mappings {
         "country" -> text("address.country.error.required")
           .verifying(
             "address.country.error.required",
-            value => internationalCountries.exists(_.code == value)
+            value => allCountries.exists(_.code == value)
           )
-          .transform[Country](value => internationalCountries.find(_.code == value).get, _.code)
+          .transform[Country](value => allCountries.find(_.code == value).get, _.code)
       )(Address.apply)(Address.unapply)
     )
 }

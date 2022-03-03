@@ -22,25 +22,30 @@ import models.{Index, LocalReferenceNumber}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.consignees
 import viewmodels.checkAnswers.consignees._
 import viewmodels.govuk.summarylist._
 import views.html.consignees.CheckConsigneesAndNotifiedPartiesView
 
 class CheckConsigneesAndNotifiedPartiesController @Inject() (
-                                           override val messagesApi: MessagesApi,
-                                           identify: IdentifierAction,
-                                           getData: DataRetrievalActionProvider,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: CheckConsigneesAndNotifiedPartiesView
-                                         ) extends FrontendBaseController
-  with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckConsigneesAndNotifiedPartiesView
+) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
-        rows = Seq(ConsigneeKnownSummary.row(request.userAnswers)).flatten
+        rows = Seq(
+          ConsigneeKnownSummary.row(request.userAnswers),
+          AddConsigneeSummary.checkAnswersRow(request.userAnswers),
+          AddAnyNotifiedPartiesSummary.row(request.userAnswers),
+          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers)
+        ).flatten
       )
 
       Ok(view(list, lrn))

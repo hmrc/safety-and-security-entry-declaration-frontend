@@ -20,8 +20,12 @@ import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, NormalMode, TraderWithEori, TraderWithoutEori, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.consignees.AllNotifiedPartiesQuery
+import queries.consignees.{AllConsigneesQuery, AllNotifiedPartiesQuery}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 
 object AddNotifiedPartySummary  {
 
@@ -37,6 +41,27 @@ object AddNotifiedPartySummary  {
           name      = name,
           changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(answers.lrn, Index(index)).url,
           removeUrl = consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
+        )
+    }
+
+  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AllNotifiedPartiesQuery).map {
+      notifiedParties =>
+
+        val value = notifiedParties.map {
+          case np: TraderWithEori => np.eori
+          case np: TraderWithoutEori => np.name
+        }.map(HtmlFormat.escape).mkString("<br>")
+
+        SummaryListRowViewModel(
+          key = "notifiedParties.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn).url
+            ).withVisuallyHiddenText(messages("notifiedParties.change.hidden"))
+          )
         )
     }
 }
