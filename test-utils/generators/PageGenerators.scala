@@ -27,11 +27,11 @@ import pages.routedetails._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryPlaceOfUnloadingPage: Arbitrary[PlaceOfUnloadingPage.type] =
-    Arbitrary(PlaceOfUnloadingPage)
+  implicit lazy val arbitraryPlaceOfUnloadingPage: Arbitrary[PlaceOfUnloadingPage] =
+    Arbitrary(PlaceOfUnloadingPage(Index(0)))
 
-  implicit lazy val arbitraryPlaceOfLoadingPage: Arbitrary[PlaceOfLoadingPage.type] =
-    Arbitrary(PlaceOfLoadingPage)
+  implicit lazy val arbitraryPlaceOfLoadingPage: Arbitrary[PlaceOfLoadingPage] =
+    Arbitrary(PlaceOfLoadingPage(Index(0)))
 
   implicit lazy val arbitraryRemovePlaceOfUnloadingPage: Arbitrary[RemovePlaceOfUnloadingPage.type] =
     Arbitrary(RemovePlaceOfUnloadingPage)

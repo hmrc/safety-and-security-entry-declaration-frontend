@@ -26,17 +26,17 @@ class PlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
   "PlaceOfUnloadingPage" - {
 
-    beRetrievable[PlaceOfUnloading](PlaceOfUnloadingPage)
+    beRetrievable[PlaceOfUnloading](PlaceOfUnloadingPage(index))
 
-    beSettable[PlaceOfUnloading](PlaceOfUnloadingPage)
+    beSettable[PlaceOfUnloading](PlaceOfUnloadingPage(index))
 
-    beRemovable[PlaceOfUnloading](PlaceOfUnloadingPage)
+    beRemovable[PlaceOfUnloading](PlaceOfUnloadingPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        PlaceOfUnloadingPage.navigate(NormalMode, emptyUserAnswers)
+        PlaceOfUnloadingPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class PlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        PlaceOfUnloadingPage.navigate(CheckMode, emptyUserAnswers)
+        PlaceOfUnloadingPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

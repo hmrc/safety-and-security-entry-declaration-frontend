@@ -28,19 +28,5 @@ import viewmodels.implicits._
 
 object PlaceOfUnloadingSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PlaceOfUnloadingPage).map {
-      answer =>
 
-      val value = HtmlFormat.escape(answer.country.name).toString + "<br/>" + HtmlFormat.escape(answer.place).toString
-
-        SummaryListRowViewModel(
-          key     = "placeOfUnloading.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("placeOfUnloading.change.hidden"))
-          )
-        )
-    }
 }

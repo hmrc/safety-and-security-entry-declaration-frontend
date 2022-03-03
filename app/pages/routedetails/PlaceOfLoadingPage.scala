@@ -18,14 +18,14 @@ package pages.routedetails
 
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{PlaceOfLoading, NormalMode, UserAnswers}
+import models.{Index, NormalMode, PlaceOfLoading, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PlaceOfLoadingPage extends QuestionPage[PlaceOfLoading] {
+final case class PlaceOfLoadingPage(index: Index) extends QuestionPage[PlaceOfLoading] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ toString \ index.position
 
-  override def toString: String = "placeOfLoading"
+  override def toString: String = "placesOfLoading"
 }

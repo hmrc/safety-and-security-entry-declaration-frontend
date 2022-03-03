@@ -26,17 +26,17 @@ class PlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
   "PlaceOfLoadingPage" - {
 
-    beRetrievable[PlaceOfLoading](PlaceOfLoadingPage)
+    beRetrievable[PlaceOfLoading](PlaceOfLoadingPage(index))
 
-    beSettable[PlaceOfLoading](PlaceOfLoadingPage)
+    beSettable[PlaceOfLoading](PlaceOfLoadingPage(index))
 
-    beRemovable[PlaceOfLoading](PlaceOfLoadingPage)
+    beRemovable[PlaceOfLoading](PlaceOfLoadingPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        PlaceOfLoadingPage.navigate(NormalMode, emptyUserAnswers)
+        PlaceOfLoadingPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class PlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        PlaceOfLoadingPage.navigate(CheckMode, emptyUserAnswers)
+        PlaceOfLoadingPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
