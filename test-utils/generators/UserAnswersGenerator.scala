@@ -37,7 +37,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] ::
     arbitrary[(PaymentMethodPage, JsValue)] ::
     arbitrary[(AddPaymentMethodPage, JsValue)] ::
-    arbitrary[(UnloadingCodePage, JsValue)] ::
     arbitrary[(NotifiedPartyNamePage, JsValue)] ::
     arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
     arbitrary[(NotifiedPartyEORIPage, JsValue)] ::

@@ -464,13 +464,6 @@ notifiedPartyName.change.hidden = the notified party’s name
 notifiedParties.checkYourAnswersLabel = Notified parties
 notifiedParties.change.hidden = the notified parties
 
-unloadingCode.title = What is the unloading code?
-unloadingCode.heading = What is the unloading code?
-unloadingCode.checkYourAnswersLabel = Unloading code
-unloadingCode.error.required = Enter the unloading code
-unloadingCode.error.length = The unloading code must be 10 characters or less
-unloadingCode.change.hidden = the unloading code
-
 addPaymentMethod.title = Do you want to add a payment method?
 addPaymentMethod.heading = Do you want to add a payment method?
 addPaymentMethod.checkYourAnswersLabel = Payment method added

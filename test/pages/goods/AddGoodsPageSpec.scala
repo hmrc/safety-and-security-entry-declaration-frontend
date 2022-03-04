@@ -30,8 +30,8 @@ class AddGoodsPageSpec extends SpecBase with PageBehaviours {
 
       "to Good for the next index if the answer is yes" in {
 
-        val answers = emptyUserAnswers.set(pages.UnloadingCodePage(Index(0)),"11111111").success.value
-
+        val answers = emptyUserAnswers.set(CommodityCodeKnownPage(Index(0)), true).success.value
+        
         AddGoodsPage()
           .navigate(NormalMode, answers, addAnother = true)
           .mustEqual(goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(1)))

@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-package pages
+package pages.preDeclaration
 
 import base.SpecBase
-import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
+import pages.TotalGrossWeightPage
 import pages.behaviours.PageBehaviours
 
-class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
+class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
-  "UnloadingCodePage" - {
+  "TotalGrossWeightPage" - {
 
-    beRetrievable[String](pages.UnloadingCodePage(index))
+    beRetrievable[BigDecimal](TotalGrossWeightPage)
 
-    beSettable[String](pages.UnloadingCodePage(index))
+    beSettable[BigDecimal](TotalGrossWeightPage)
 
-    beRemovable[String](pages.UnloadingCodePage(index))
+    beRemovable[BigDecimal](TotalGrossWeightPage)
 
     "must navigate in Normal Mode" - {
 
-      "to `do you want to add a payment method` page" in {
+      "to Transport Mode" in {
 
-        pages.UnloadingCodePage(index)
+        TotalGrossWeightPage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            goodsRoutes.AddPaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
-          )
+          .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
@@ -48,7 +46,7 @@ class UnloadingCodePageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        pages.UnloadingCodePage(index)
+        TotalGrossWeightPage
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

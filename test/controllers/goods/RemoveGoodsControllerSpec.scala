@@ -42,14 +42,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
   lazy val removeGoodsRoute =
     routes.RemoveGoodsController.onPageLoad(NormalMode, lrn, index).url
 
-  private val baseAnswers =
-    emptyUserAnswers
-      .set(pages.UnloadingCodePage(index), "423432")
-      .success
-      .value
-      .set(CommodityCodePage(index), "1111")
-      .success
-      .value
+  private val baseAnswers = emptyUserAnswers.set(CommodityCodePage(index), "1111").success.value
 
   "RemoveGoods Controller" - {
 

@@ -271,11 +271,6 @@ POST       /:lrn/notifiedPartyName/:itemIndex                           controll
 GET        /:lrn/changeNotifiedPartyName/:itemIndex                     controllers.consignees.NotifiedPartyNameController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeNotifiedPartyName/:itemIndex                     controllers.consignees.NotifiedPartyNameController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 
-GET        /:lrn/unloadingCode/:itemIndex                           controllers.UnloadingCodeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
-POST       /:lrn/unloadingCode/:itemIndex                           controllers.UnloadingCodeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
-GET        /:lrn/changeUnloadingCode/:itemIndex                     controllers.UnloadingCodeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
-POST       /:lrn/changeUnloadingCode/:itemIndex                     controllers.UnloadingCodeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
-
 GET        /:lrn/addPaymentMethod/:itemIndex                        controllers.goods.AddPaymentMethodController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/addPaymentMethod/:itemIndex                        controllers.goods.AddPaymentMethodController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/changeAddPaymentMethod/:itemIndex                  controllers.goods.AddPaymentMethodController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)

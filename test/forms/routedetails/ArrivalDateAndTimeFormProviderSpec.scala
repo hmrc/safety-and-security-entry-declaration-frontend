@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package forms
-
-import java.time.{LocalDate, LocalTime}
+package forms.routedetails
 
 import forms.behaviours.DateBehaviours
-import forms.routedetails.ArrivalDateAndTimeFormProvider
 import models.ArrivalDateAndTime
 import org.scalacheck.Gen
 import play.api.data.FormError
+
+import java.time.{LocalDate, LocalTime}
 
 class ArrivalDateAndTimeFormProviderSpec extends DateBehaviours {
 
