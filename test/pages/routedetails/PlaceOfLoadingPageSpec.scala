@@ -19,7 +19,7 @@ package pages.routedetails
 import base.SpecBase
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{PlaceOfLoading, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, PlaceOfLoading}
 import pages.behaviours.PageBehaviours
 
 class PlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
@@ -34,10 +34,10 @@ class PlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Add Place of Loading" in {
 
         PlaceOfLoadingPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(routedetailsRoutes.AddPlaceOfLoadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

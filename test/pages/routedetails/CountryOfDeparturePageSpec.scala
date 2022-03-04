@@ -34,13 +34,10 @@ class CountryOfDeparturePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Goods Pass Through Other Countries" in {
+      "to Place of Loading with index 0" in {
 
-        CountryOfDeparturePage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            routedetailsRoutes.GoodsPassThroughOtherCountriesController
-              .onPageLoad(NormalMode, emptyUserAnswers.lrn)
+        CountryOfDeparturePage.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }

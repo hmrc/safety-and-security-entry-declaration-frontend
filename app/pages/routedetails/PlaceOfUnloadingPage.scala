@@ -28,4 +28,7 @@ final case class PlaceOfUnloadingPage(index: Index) extends QuestionPage[PlaceOf
   override def path: JsPath = JsPath \ toString \ index.position
 
   override def toString: String = "placesOfUnloading"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn)
 }

@@ -28,4 +28,7 @@ final case class PlaceOfLoadingPage(index: Index) extends QuestionPage[PlaceOfLo
   override def path: JsPath = JsPath \ toString \ index.position
 
   override def toString: String = "placesOfLoading"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    routedetailsRoutes.AddPlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn)
 }

@@ -29,19 +29,21 @@ class AddPlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Place of Loading with an index equal tot he number of places of loading we have details for when the answer is yes" in {
+      "to Place of Loading with an index equal to the number of places of loading we have details for when the answer is yes" in {
 
         val answers =
           emptyUserAnswers
             .set(PlaceOfLoadingPage(index), arbitrary[PlaceOfLoading].sample.value).success.value
 
-        AddPlaceOfLoadingPage.navigate(NormalMode, answers, addAnother = true)
+        AddPlaceOfLoadingPage
+          .navigate(NormalMode, answers, addAnother = true)
           .mustEqual(routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn, Index(1)))
       }
 
       "to Goods Pass Through Other Countries when the answer is no" in {
 
-        AddPlaceOfLoadingPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
+        AddPlaceOfLoadingPage
+          .navigate(NormalMode, emptyUserAnswers, addAnother = false)
           .mustEqual(routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
