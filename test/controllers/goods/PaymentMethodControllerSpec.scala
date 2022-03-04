@@ -19,7 +19,7 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.PaymentMethodFormProvider
-import models.{PaymentMethod, NormalMode}
+import models.{NormalMode, PaymentMethod}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar

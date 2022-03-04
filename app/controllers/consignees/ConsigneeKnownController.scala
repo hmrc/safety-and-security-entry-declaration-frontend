@@ -18,7 +18,8 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.ConsigneeKnownFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import javax.inject.Inject
+import models.{LocalReferenceNumber, Mode}
 import pages.consignees.ConsigneeKnownPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -26,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.ConsigneeKnownView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeKnownController @Inject() (

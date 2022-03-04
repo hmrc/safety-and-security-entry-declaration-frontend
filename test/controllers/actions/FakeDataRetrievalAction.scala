@@ -16,8 +16,8 @@
 
 package controllers.actions
 
-import models.{LocalReferenceNumber, UserAnswers}
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.{LocalReferenceNumber, UserAnswers}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import repositories.SessionRepository
 

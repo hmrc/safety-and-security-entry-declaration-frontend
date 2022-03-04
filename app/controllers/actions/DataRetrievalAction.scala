@@ -16,9 +16,8 @@
 
 package controllers.actions
 
-import models.LocalReferenceNumber
-
 import javax.inject.Inject
+import models.LocalReferenceNumber
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import repositories.SessionRepository

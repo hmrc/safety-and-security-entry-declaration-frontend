@@ -18,16 +18,15 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.CountryEnRouteFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
-import pages.routedetails
 import pages.routedetails.CountryEnRoutePage
+import javax.inject.Inject
+import models.{Index, LocalReferenceNumber, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.CountryEnRouteView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryEnRouteController @Inject() (
@@ -48,7 +47,7 @@ class CountryEnRouteController @Inject() (
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(routedetails.CountryEnRoutePage(index)) match {
+      val preparedForm = request.userAnswers.get(CountryEnRoutePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +64,9 @@ class CountryEnRouteController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(routedetails.CountryEnRoutePage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryEnRoutePage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(routedetails.CountryEnRoutePage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(CountryEnRoutePage(index).navigate(mode, updatedAnswers))
         )
     }
 }

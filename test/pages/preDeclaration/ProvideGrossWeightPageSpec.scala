@@ -19,7 +19,7 @@ package pages.preDeclaration
 import base.SpecBase
 import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routes
-import models.{CheckMode, ProvideGrossWeight, NormalMode}
+import models.{CheckMode, NormalMode, ProvideGrossWeight}
 import pages.behaviours.PageBehaviours
 
 class ProvideGrossWeightPageSpec extends SpecBase with PageBehaviours {

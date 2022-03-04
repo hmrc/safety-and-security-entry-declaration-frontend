@@ -19,9 +19,9 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, ProvideGrossWeight, Index, KindOfPackage, NormalMode}
+import models.{CheckMode, Index, KindOfPackage, NormalMode, ProvideGrossWeight}
 import pages.behaviours.PageBehaviours
-import pages.preDeclaration.{ProvideGrossWeightPage, OverallCrnKnownPage}
+import pages.preDeclaration.{OverallCrnKnownPage, ProvideGrossWeightPage}
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 

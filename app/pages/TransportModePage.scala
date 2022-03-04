@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, TransportMode, UserAnswers}
+import models.{TransportMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

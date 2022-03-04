@@ -19,7 +19,6 @@ package viewmodels
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.preDeclaration.{routes => preDecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
 import models.{LodgingPersonType, NormalMode, UserAnswers}
 import pages.preDeclaration.LodgingPersonTypePage
 import play.api.i18n.Messages

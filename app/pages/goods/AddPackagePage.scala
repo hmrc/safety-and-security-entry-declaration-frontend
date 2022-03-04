@@ -18,9 +18,9 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, ProvideGrossWeight, Index, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.Page
-import pages.preDeclaration.{ProvideGrossWeightPage, OverallCrnKnownPage}
+import pages.preDeclaration.{OverallCrnKnownPage, ProvideGrossWeightPage}
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 

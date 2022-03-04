@@ -17,7 +17,6 @@
 package pages.routedetails
 
 import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
 import models.{ArrivalDateAndTime, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

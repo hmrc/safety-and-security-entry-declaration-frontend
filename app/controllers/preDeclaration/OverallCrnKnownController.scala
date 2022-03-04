@@ -18,6 +18,7 @@ package controllers.preDeclaration
 
 import controllers.actions._
 import forms.preDeclaration.OverallCrnKnownFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.preDeclaration.OverallCrnKnownPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +27,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.preDeclaration.OverallCrnKnownView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OverallCrnKnownController @Inject() (

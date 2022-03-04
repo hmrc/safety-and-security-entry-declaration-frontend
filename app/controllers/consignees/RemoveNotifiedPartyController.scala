@@ -18,7 +18,6 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.RemoveNotifiedPartyFormProvider
-
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignees.RemoveNotifiedPartyPage

@@ -23,8 +23,8 @@ import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.goods
 import pages.goods.{CommodityCodePage, RemoveGoodsPage}
-import pages.{UnloadingCodePage, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

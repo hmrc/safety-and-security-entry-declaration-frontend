@@ -18,6 +18,7 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.AddCountryEnRouteFormProvider
+import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
 import pages.routedetails.AddCountryEnRoutePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -25,8 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.routedetails.CountryEnRouteSummary
 import views.html.routedetails.AddCountryEnRouteView
-
-import javax.inject.Inject
 
 class AddCountryEnRouteController @Inject() (
   override val messagesApi: MessagesApi,

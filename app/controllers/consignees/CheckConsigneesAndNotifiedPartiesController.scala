@@ -18,11 +18,10 @@ package controllers.consignees
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
-import models.{Index, LocalReferenceNumber}
+import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.consignees
 import viewmodels.checkAnswers.consignees._
 import viewmodels.govuk.summarylist._
 import views.html.consignees.CheckConsigneesAndNotifiedPartiesView

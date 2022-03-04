@@ -18,6 +18,7 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddDocumentFormProvider
+import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.AddDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,7 +28,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.DocumentSummary
 import views.html.goods.AddDocumentView
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddDocumentController @Inject() (

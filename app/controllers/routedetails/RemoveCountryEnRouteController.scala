@@ -20,13 +20,14 @@ import controllers.actions._
 import forms.routedetails.RemoveCountryEnRouteFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.routedetails.{CountryEnRoutePage, RemoveCountryEnRoutePage}
+import javax.inject.Inject
+import models.{Index, LocalReferenceNumber, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.RemoveCountryEnRouteView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveCountryEnRouteController @Inject() (
