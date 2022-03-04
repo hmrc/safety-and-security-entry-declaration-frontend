@@ -17,18 +17,12 @@
 package pages.routedetails
 
 import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.Page
 import play.api.mvc.Call
 import queries.routedetails.DeriveNumberOfCountriesEnRoute
 
-case class RemoveCountryEnRoutePage(index: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "removeCountryEnRoute"
+case class RemoveCountryEnRoutePage(index: Index) extends Page {
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(DeriveNumberOfCountriesEnRoute) match {

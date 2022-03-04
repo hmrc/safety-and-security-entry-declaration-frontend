@@ -19,11 +19,12 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.RemovePlaceOfLoadingFormProvider
-import models.NormalMode
+import models.{NormalMode, PlaceOfLoading}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.routedetails.RemovePlaceOfLoadingPage
+import pages.routedetails.{PlaceOfLoadingPage, RemovePlaceOfLoadingPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,7 +38,10 @@ class RemovePlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new RemovePlaceOfLoadingFormProvider()
   val form = formProvider()
 
-  lazy val removePlaceOfLoadingRoute = routes.RemovePlaceOfLoadingController.onPageLoad(NormalMode, lrn).url
+  lazy val removePlaceOfLoadingRoute = routes.RemovePlaceOfLoadingController.onPageLoad(NormalMode, lrn, index).url
+
+  private val placeOfLoading = arbitrary[PlaceOfLoading].sample.value
+  private val baseAnswers = emptyUserAnswers.set(PlaceOfLoadingPage(index), placeOfLoading).success.value
 
   "RemovePlaceOfLoading Controller" - {
 
@@ -53,36 +57,18 @@ class RemovePlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemovePlaceOfLoadingView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemovePlaceOfLoadingPage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removePlaceOfLoadingRoute)
-
-        val view = application.injector.instanceOf[RemovePlaceOfLoadingView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must delete a place of loading and redirect to the next page when the user answers yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -92,11 +78,35 @@ class RemovePlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemovePlaceOfLoadingPage, true).success.value
+        val expectedAnswers = baseAnswers.remove(PlaceOfLoadingPage(index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemovePlaceOfLoadingPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemovePlaceOfLoadingPage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must not delete a place of loading and redirect to the next page when the user answers no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removePlaceOfLoadingRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemovePlaceOfLoadingPage(index).navigate(NormalMode, baseAnswers).url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 
@@ -116,7 +126,7 @@ class RemovePlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 

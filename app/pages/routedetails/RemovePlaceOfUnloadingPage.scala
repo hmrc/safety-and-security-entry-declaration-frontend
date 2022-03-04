@@ -17,15 +17,19 @@
 package pages.routedetails
 
 import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.{Index, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
+import queries.routedetails.DeriveNumberOfPlacesOfUnloading
 
-case object RemovePlaceOfUnloadingPage extends QuestionPage[Boolean] {
+final case class RemovePlaceOfUnloadingPage(index: Index) extends Page {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "removePlaceOfUnloading"
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(DeriveNumberOfPlacesOfUnloading) match {
+      case Some(n) if n > 0 =>
+        routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn)
+      case _ =>
+        routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn, Index(0))
+    }
+  }
 }

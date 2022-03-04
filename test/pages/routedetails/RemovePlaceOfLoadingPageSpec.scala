@@ -19,25 +19,29 @@ package pages.routedetails
 import base.SpecBase
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, PlaceOfLoading}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class RemovePlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
   "RemovePlaceOfLoadingPage" - {
 
-    beRetrievable[Boolean](RemovePlaceOfLoadingPage)
-
-    beSettable[Boolean](RemovePlaceOfLoadingPage)
-
-    beRemovable[Boolean](RemovePlaceOfLoadingPage)
-
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Place of Loading with index 0 when there are no places of loading left" in {
 
-        RemovePlaceOfLoadingPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        RemovePlaceOfLoadingPage(index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+      }
+
+      "to Add Place of Loading with index 0 when there is at least one place of loading left" in {
+
+        val placeOfLoading = arbitrary[PlaceOfLoading].sample.value
+        val answers = emptyUserAnswers.set(PlaceOfLoadingPage(index), placeOfLoading).success.value
+
+        RemovePlaceOfLoadingPage(index).navigate(NormalMode, answers)
+          .mustEqual(routedetailsRoutes.AddPlaceOfLoadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
@@ -45,7 +49,7 @@ class RemovePlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemovePlaceOfLoadingPage.navigate(CheckMode, emptyUserAnswers)
+        RemovePlaceOfLoadingPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

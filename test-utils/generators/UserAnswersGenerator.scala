@@ -69,7 +69,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(GoodsDescriptionPage, JsValue)] ::
     arbitrary[(CommodityCodeKnownPage, JsValue)] ::
     arbitrary[(CommodityCodePage, JsValue)] ::
-    arbitrary[(RemoveCountryEnRoutePage, JsValue)] ::
     arbitrary[(GoodsPassThroughOtherCountriesPage.type, JsValue)] ::
     arbitrary[(CountryEnRoutePage, JsValue)] ::
     arbitrary[(CustomsOfficeOfFirstEntryPage.type, JsValue)] ::

@@ -338,15 +338,15 @@ POST       /:lrn/addPlaceOfUnloading                        controllers.routedet
 GET        /:lrn/changeAddPlaceOfUnloading                  controllers.routedetails.AddPlaceOfUnloadingController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeAddPlaceOfUnloading                  controllers.routedetails.AddPlaceOfUnloadingController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/removePlaceOfLoading                        controllers.routedetails.RemovePlaceOfLoadingController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/removePlaceOfLoading                        controllers.routedetails.RemovePlaceOfLoadingController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeRemovePlaceOfLoading                  controllers.routedetails.RemovePlaceOfLoadingController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeRemovePlaceOfLoading                  controllers.routedetails.RemovePlaceOfLoadingController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/removePlaceOfLoading/:index                        controllers.routedetails.RemovePlaceOfLoadingController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/removePlaceOfLoading/:index                        controllers.routedetails.RemovePlaceOfLoadingController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeRemovePlaceOfLoading/:index                  controllers.routedetails.RemovePlaceOfLoadingController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeRemovePlaceOfLoading/:index                  controllers.routedetails.RemovePlaceOfLoadingController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/removePlaceOfUnloading                        controllers.routedetails.RemovePlaceOfUnloadingController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/removePlaceOfUnloading                        controllers.routedetails.RemovePlaceOfUnloadingController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeRemovePlaceOfUnloading                  controllers.routedetails.RemovePlaceOfUnloadingController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeRemovePlaceOfUnloading                  controllers.routedetails.RemovePlaceOfUnloadingController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/removePlaceOfUnloading/:index                        controllers.routedetails.RemovePlaceOfUnloadingController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/removePlaceOfUnloading/:index                        controllers.routedetails.RemovePlaceOfUnloadingController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeRemovePlaceOfUnloading/:index                  controllers.routedetails.RemovePlaceOfUnloadingController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeRemovePlaceOfUnloading/:index                  controllers.routedetails.RemovePlaceOfUnloadingController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
 GET        /:lrn/placeOfLoading/:index                        controllers.routedetails.PlaceOfLoadingController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/placeOfLoading/:index                        controllers.routedetails.PlaceOfLoadingController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)

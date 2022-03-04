@@ -19,7 +19,6 @@ package controllers.routedetails
 import controllers.actions._
 import forms.routedetails.RemoveCountryEnRouteFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.routedetails
 import pages.routedetails.{CountryEnRoutePage, RemoveCountryEnRoutePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -61,11 +60,11 @@ class RemoveCountryEnRouteController @Inject() (
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(routedetails.RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(routedetails.RemoveCountryEnRoutePage(index).navigate(mode, request.userAnswers))
+                Redirect(RemoveCountryEnRoutePage(index).navigate(mode, request.userAnswers))
               )
             }
         )

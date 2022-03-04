@@ -19,25 +19,29 @@ package pages.routedetails
 import base.SpecBase
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, PlaceOfUnloading}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class RemovePlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
   "RemovePlaceOfUnloadingPage" - {
 
-    beRetrievable[Boolean](RemovePlaceOfUnloadingPage)
-
-    beSettable[Boolean](RemovePlaceOfUnloadingPage)
-
-    beRemovable[Boolean](RemovePlaceOfUnloadingPage)
-
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Place of Unloading with index 0 when there are no places of loading left" in {
 
-        RemovePlaceOfUnloadingPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        RemovePlaceOfUnloadingPage(index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+      }
+
+      "to Add Place of Unloading with index 0 when there is at least one place of loading left" in {
+
+        val placeOfUnloading = arbitrary[PlaceOfUnloading].sample.value
+        val answers = emptyUserAnswers.set(PlaceOfUnloadingPage(index), placeOfUnloading).success.value
+
+        RemovePlaceOfUnloadingPage(index).navigate(NormalMode, answers)
+          .mustEqual(routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
@@ -45,7 +49,7 @@ class RemovePlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        RemovePlaceOfUnloadingPage.navigate(CheckMode, emptyUserAnswers)
+        RemovePlaceOfUnloadingPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
