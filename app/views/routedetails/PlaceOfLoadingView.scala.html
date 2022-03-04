@@ -54,7 +54,8 @@
                 field = form("place"),
                 label = LabelViewModel(messages("placeOfLoading.place"))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
+            .withHint(HintViewModel(messages("placeOfLoading.place.hint")))
         )
 
         @govukButton(
