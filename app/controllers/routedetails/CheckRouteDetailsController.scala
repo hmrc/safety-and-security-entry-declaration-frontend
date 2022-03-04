@@ -42,10 +42,12 @@ class CheckRouteDetailsController @Inject() (
       val list = SummaryListViewModel(
         rows = Seq(
           CountryOfDepartureSummary.row(request.userAnswers),
+          PlaceOfLoadingSummary.checkAnswersRow(request.userAnswers),
           GoodsPassThroughOtherCountriesSummary.row(request.userAnswers),
           CountryEnRouteSummary.checkAnswersRow(request.userAnswers),
           CustomsOfficeOfFirstEntrySummary.row(request.userAnswers),
-          ArrivalDateAndTimeSummary.row(request.userAnswers)
+          ArrivalDateAndTimeSummary.row(request.userAnswers),
+          PlaceOfUnloadingSummary.checkAnswersRow(request.userAnswers)
         ).flatten
       )
 
