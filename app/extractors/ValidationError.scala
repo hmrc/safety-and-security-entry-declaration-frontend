@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package extractors
 
-import play.api.libs.json.Json
+import pages.QuestionPage
 
-case class Address(streetAndNumber: String, city: String, postCode: String, country: Country)
+sealed trait ValidationError {
+  val message: String
 
-object Address {
-  implicit val format = Json.format[Address]
+  override def toString: String = message
+}
+
+object ValidationError {
+  case class MissingField[T](page: QuestionPage[T]) extends ValidationError {
+    override val message: String = s"Field $page is missing!"
+  }
 }

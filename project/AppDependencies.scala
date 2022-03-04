@@ -9,7 +9,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.9.0-play-28",
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.18.0",
     "uk.gov.hmrc" %% "play-language" % "5.1.0-play-28",
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28" % "0.59.0"
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28" % "0.59.0",
+    "org.typelevel" %% "cats-core" % "2.3.0"
   )
 
   val test = Seq(
@@ -23,7 +24,8 @@ object AppDependencies {
     "org.mockito" %% "mockito-scala" % "1.16.42",
     "org.scalacheck" %% "scalacheck" % "1.15.4",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-27" % "0.59.0",
-    "com.vladsch.flexmark" % "flexmark-all" % "0.62.2"
+    "com.vladsch.flexmark" % "flexmark-all" % "0.62.2",
+    "com.ironcorelabs" %% "cats-scalatest" % "3.1.1"
   ).map(_ % "test, it")
 
   def apply(): Seq[ModuleID] = compile ++ test

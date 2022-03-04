@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package models.completion.answers
 
-import play.api.libs.json.Json
+import models.{Address, GbEori}
 
-case class Address(streetAndNumber: String, city: String, postCode: String, country: Country)
+sealed trait ConsignorIdentity
 
-object Address {
-  implicit val format = Json.format[Address]
+object ConsignorIdentity {
+  case class ByEori(eori: GbEori) extends ConsignorIdentity
+  case class ByAddress(name: String, address: Address) extends ConsignorIdentity
 }
