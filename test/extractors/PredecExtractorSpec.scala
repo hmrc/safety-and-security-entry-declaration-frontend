@@ -24,7 +24,7 @@ import extractors.ValidationError._
 import models.{ProvideGrossWeight, TransportMode, UserAnswers}
 import models.completion.answers.Predec
 import pages.{TotalGrossWeightPage, TransportModePage}
-import pages.preDeclaration._
+import pages.predec._
 
 class PredecExtractorSpec extends SpecBase {
   private val location = "test-declaration-location"

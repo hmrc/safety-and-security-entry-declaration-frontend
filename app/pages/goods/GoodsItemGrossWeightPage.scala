@@ -20,7 +20,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
-import pages.preDeclaration.OverallCrnKnownPage
+import pages.predec.OverallCrnKnownPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

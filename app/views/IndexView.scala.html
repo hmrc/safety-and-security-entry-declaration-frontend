@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.preDeclaration.{routes => preDecRoutes}
+@import controllers.predec.{routes => predecRoutes}
 
 @this(
     layout: templates.Layout
@@ -29,7 +29,7 @@
 
     <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
 
-    <a href="@preDecRoutes.LocalReferenceNumberController.onPageLoad(NormalMode)" id="start-new-declaration" class="govuk-button">
+    <a href="@predecRoutes.LocalReferenceNumberController.onPageLoad(NormalMode)" id="start-new-declaration" class="govuk-button">
         @messages("site.startDeclaration")
     </a>
 }

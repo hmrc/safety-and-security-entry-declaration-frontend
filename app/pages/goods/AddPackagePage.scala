@@ -20,7 +20,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.Page
-import pages.preDeclaration.{OverallCrnKnownPage, ProvideGrossWeightPage}
+import pages.predec.{OverallCrnKnownPage, ProvideGrossWeightPage}
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 

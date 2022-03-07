@@ -17,10 +17,10 @@
 package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.preDeclaration.{routes => preDecRoutes}
+import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{LodgingPersonType, NormalMode, UserAnswers}
-import pages.preDeclaration.LodgingPersonTypePage
+import pages.predec.LodgingPersonTypePage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
@@ -54,7 +54,7 @@ object TaskListViewModel {
         Some(
           TaskListRow(
             messageKey = messages("taskList.carrier"),
-            link = preDecRoutes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn),
+            link = predecRoutes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn),
             id = "carrier-details",
             completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
           )

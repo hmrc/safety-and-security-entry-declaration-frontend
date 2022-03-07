@@ -22,7 +22,7 @@ import pages.consignors._
 import pages._
 import pages.consignees._
 import pages.goods._
-import pages.preDeclaration._
+import pages.predec._
 import pages.routedetails._
 
 trait PageGenerators {

@@ -18,13 +18,12 @@ package controllers
 
 import base.SpecBase
 import models.LodgingPersonType
-import pages.preDeclaration.LodgingPersonTypePage
+import pages.predec.LodgingPersonTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.TaskListViewModel
 import viewmodels.govuk.SummaryListFluency
 import views.html.TaskListView
-
 
 class TaskListControllerSpec extends SpecBase with SummaryListFluency {
 

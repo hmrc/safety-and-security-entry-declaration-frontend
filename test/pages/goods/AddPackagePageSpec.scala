@@ -21,7 +21,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, KindOfPackage, NormalMode, ProvideGrossWeight}
 import pages.behaviours.PageBehaviours
-import pages.preDeclaration.{OverallCrnKnownPage, ProvideGrossWeightPage}
+import pages.predec.{OverallCrnKnownPage, ProvideGrossWeightPage}
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
