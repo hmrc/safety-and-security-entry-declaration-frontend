@@ -17,6 +17,7 @@
 package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
+import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
@@ -30,9 +31,18 @@ object TaskListViewModel {
   def fromAnswers(answers: UserAnswers)(implicit messages: Messages): TaskListViewModel =
     TaskListViewModel(
       Seq(
+        predecRow(answers),
         routeDetailsRow(answers),
         consigneesRow(answers)
       )
+    )
+
+  private def predecRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+    TaskListRow(
+      messageKey          = messages("taskList.predec"),
+      link                = predecRoutes.CheckPredecController.onPageLoad(answers.lrn),
+      id                  = "predec",
+      completionStatusTag = CompletionStatus.tag(CompletionStatus.Completed)
     )
 
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
