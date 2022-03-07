@@ -15,6 +15,7 @@
  *@
 
 @import controllers.predec.routes
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
@@ -43,7 +44,7 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("lodgingPersonType.question")).asPageHeading(),
+                legend = LegendViewModel(messages("lodgingPersonType.question")).withSize(LegendSize.Medium),
                 items  = LodgingPersonType.options
             )
         )
