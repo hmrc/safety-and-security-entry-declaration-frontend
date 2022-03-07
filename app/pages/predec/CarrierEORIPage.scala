@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package pages.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import models.GbEori
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+case object CarrierEORIPage extends QuestionPage[GbEori] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "carrierEORI"
+}

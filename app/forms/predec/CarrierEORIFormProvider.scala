@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package forms.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import forms.mappings.Mappings
+import models.GbEori
+import play.api.data.Form
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+import javax.inject.Inject
+
+class CarrierEORIFormProvider @Inject() extends Mappings {
+  def apply(): Form[GbEori] = Form("value" -> gbEori("carrierEORI.error.required"))
+}

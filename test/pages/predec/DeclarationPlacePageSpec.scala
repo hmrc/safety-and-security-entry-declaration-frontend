@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.predec
 
 import base.SpecBase
-import controllers.goods.{routes => goodsRoutes}
+import controllers.predec.{routes => predecRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
+class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
-  "GoodsItemGrossWeightPage" - {
+  "DeclarationPlacePage" - {
 
-    beRetrievable[BigDecimal](GoodsItemGrossWeightPage(index))
+    beRetrievable[String](DeclarationPlacePage)
 
-    beSettable[BigDecimal](GoodsItemGrossWeightPage(index))
+    beSettable[String](DeclarationPlacePage)
 
-    beRemovable[BigDecimal](GoodsItemGrossWeightPage(index))
+    beRemovable[String](DeclarationPlacePage)
 
     "must navigate in Normal Mode" - {
 
-      "to Add Any Documents" in {
+      "to Lodging Person" in {
 
-        GoodsItemGrossWeightPage(index)
+        DeclarationPlacePage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+          .mustEqual(
+            predecRoutes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+          )
       }
     }
 
@@ -46,7 +48,7 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemGrossWeightPage(index)
+        DeclarationPlacePage
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

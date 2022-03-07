@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.predec
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import controllers.predec.{routes => predecRoutes}
+import controllers.predec.{routes => predecRoutes}
+import controllers.routes
+import models.{NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[BigDecimal] {
+case object ProvideGrossWeightPage extends QuestionPage[ProvideGrossWeight] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "grossWeight"
+  override def toString: String = "provideGrossWeight"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+    answers.get(ProvideGrossWeightPage) match {
+      case Some(ProvideGrossWeight.PerItem) =>
+        predecRoutes.CheckPredecController.onPageLoad(answers.lrn)
+      case Some(ProvideGrossWeight.Overall) =>
+        predecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case _ =>
+        routes.JourneyRecoveryController.onPageLoad()
+    }
 }

@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.predec
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import controllers.predec.{routes => predecRoutes}
+import controllers.routes
+import models.LodgingPersonType.{Carrier, Representative}
+import models.{LodgingPersonType, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[BigDecimal] {
+case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "grossWeight"
+  override def toString: String = "lodgingPersonType"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+    answers.get(LodgingPersonTypePage) match {
+      case Some(Carrier)        => predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case Some(Representative) => predecRoutes.CarrierEORIController.onPageLoad(NormalMode, answers.lrn)
+      case None                 => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package forms.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import forms.behaviours.GbEoriFieldBehaviours
+import play.api.data.FormError
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+class CarrierEORIFormProviderSpec extends GbEoriFieldBehaviours {
+  private val fieldName = "value"
+  private val requiredKey = "carrierEORI.error.required"
+
+  private val form = new CarrierEORIFormProvider()()
+
+  ".value" - {
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like gbEoriField(form, fieldName)
+  }
+}

@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package forms.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+import javax.inject.Inject
+
+class TotalGrossWeightFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> decimal(
+        requiredKey = "totalGrossWeight.error.required",
+        nonNumericKey = "totalGrossWeight.error.nonNumeric",
+        invalidPrecisionKey = "totalGrossWeight.error.precision",
+        precision = 3
+      ).verifying(
+        inRange(BigDecimal(0.001), BigDecimal(99999999.999), "totalGrossWeight.error.outOfRange")
+      )
+    )
+}

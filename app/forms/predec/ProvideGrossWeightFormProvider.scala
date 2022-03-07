@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package forms.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import forms.mappings.Mappings
+import models.ProvideGrossWeight
+import play.api.data.Form
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+import javax.inject.Inject
+
+class ProvideGrossWeightFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[ProvideGrossWeight] =
+    Form(
+      "value" -> enumerable[ProvideGrossWeight]("provideGrossWeight.error.required")
+    )
+}

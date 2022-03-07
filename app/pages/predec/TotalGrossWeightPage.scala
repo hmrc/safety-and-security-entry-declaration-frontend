@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package pages.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import controllers.predec.{routes => predecRoutes}
+import controllers.routes
+import models.{NormalMode, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+case object TotalGrossWeightPage extends QuestionPage[BigDecimal] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "totalGrossWeight"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    predecRoutes.CheckPredecController.onPageLoad(answers.lrn)
+}

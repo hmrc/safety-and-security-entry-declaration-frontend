@@ -22,7 +22,7 @@ import pages.consignors._
 import pages._
 import pages.consignees._
 import pages.goods._
-import pages.preDeclaration._
+import pages.predec._
 import pages.routedetails._
 
 trait PageGenerators {
@@ -90,12 +90,6 @@ trait PageGenerators {
   implicit lazy val arbitraryDangerousGoodPage: Arbitrary[DangerousGoodPage] =
     Arbitrary(goods.DangerousGoodPage(Index(0)))
 
-  implicit lazy val arbitraryOverallCrnKnownPage: Arbitrary[OverallCrnKnownPage.type] =
-    Arbitrary(OverallCrnKnownPage)
-
-  implicit lazy val arbitraryOverallCrnPage: Arbitrary[OverallCrnPage.type] =
-    Arbitrary(OverallCrnPage)
-
   implicit lazy val arbitraryGoodsItemCrnKnownPage: Arbitrary[GoodsItemCrnKnownPage] =
     Arbitrary(goods.GoodsItemCrnKnownPage(Index(0)))
 
@@ -160,9 +154,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryCarrierEORIPage: Arbitrary[CarrierEORIPage.type] =
     Arbitrary(CarrierEORIPage)
-
-  implicit lazy val arbitraryIdentifyCarrierPage: Arbitrary[IdentifyCarrierPage.type] =
-    Arbitrary(IdentifyCarrierPage)
 
   implicit lazy val arbitraryTransportModePage: Arbitrary[TransportModePage.type] =
     Arbitrary(TransportModePage)

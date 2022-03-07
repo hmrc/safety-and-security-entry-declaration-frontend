@@ -20,8 +20,8 @@ import cats.implicits._
 
 import models.{LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
 import models.completion.answers.Predec
-import pages.{TotalGrossWeightPage, TransportModePage}
-import pages.preDeclaration._
+import pages.TransportModePage
+import pages.predec._
 
 class PredecExtractor(
   override protected implicit val answers: UserAnswers
@@ -38,10 +38,9 @@ class PredecExtractor(
   override def extract(): ValidationResult[Predec] = {
     val lrn: ValidationResult[LocalReferenceNumber] = answers.lrn.validNec
     val location = requireAnswer(DeclarationPlacePage)
-    val crn = getAnswer(OverallCrnKnownPage, OverallCrnPage)
     val totalMass = extractTotalMass()
     val transportMode = requireAnswer(TransportModePage)
 
-    (lrn, location, crn, totalMass, transportMode).mapN(Predec)
+    (lrn, location, totalMass, transportMode).mapN(Predec)
   }
 }

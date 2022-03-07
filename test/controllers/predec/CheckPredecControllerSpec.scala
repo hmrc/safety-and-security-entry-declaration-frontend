@@ -14,41 +14,33 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.predec
 
 import base.SpecBase
-import models.LodgingPersonType
-import pages.predec.LodgingPersonTypePage
+import controllers.{routes => baseRoutes}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.TaskListViewModel
 import viewmodels.govuk.SummaryListFluency
-import views.html.TaskListView
+import views.html.predec.CheckPredecView
 
-class TaskListControllerSpec extends SpecBase with SummaryListFluency {
+class CheckPredecControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val answers =
-    emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
-
-  "Check Your Answers Controller" - {
+  "Check Predec Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.TaskListController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, routes.CheckPredecController.onPageLoad(lrn).url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TaskListView]
-        val taskList = TaskListViewModel.fromAnswers(answers)(messages(application))
+        val view = application.injector.instanceOf[CheckPredecView]
+        val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(lrn, taskList)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(list, lrn)(request, messages(application)).toString
       }
     }
 
@@ -57,12 +49,12 @@ class TaskListControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.TaskListController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, routes.CheckPredecController.onPageLoad(lrn).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

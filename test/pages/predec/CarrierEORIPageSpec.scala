@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package pages.goods
+package pages.predec
 
 import base.SpecBase
-import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
+class CarrierEORIPageSpec extends SpecBase with PageBehaviours {
 
-  "GoodsItemGrossWeightPage" - {
+  "CarrierEORIPage" - {
 
-    beRetrievable[BigDecimal](GoodsItemGrossWeightPage(index))
+    beRetrievable[GbEori](CarrierEORIPage)
 
-    beSettable[BigDecimal](GoodsItemGrossWeightPage(index))
+    beSettable[GbEori](CarrierEORIPage)
 
-    beRemovable[BigDecimal](GoodsItemGrossWeightPage(index))
+    beRemovable[GbEori](CarrierEORIPage)
 
     "must navigate in Normal Mode" - {
 
-      "to Add Any Documents" in {
+      "to Index" in {
 
-        GoodsItemGrossWeightPage(index)
+        CarrierEORIPage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+          .mustEqual(routes.IndexController.onPageLoad)
       }
     }
 
@@ -46,7 +45,7 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        GoodsItemGrossWeightPage(index)
+        CarrierEORIPage
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

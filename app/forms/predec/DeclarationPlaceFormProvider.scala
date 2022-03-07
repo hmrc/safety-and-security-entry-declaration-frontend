@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package forms.predec
 
-import models.{LocalReferenceNumber, TransportMode}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-/**
- * Models the answers given for a completed predeclaration section
- */
-case class Predec(
-  lrn: LocalReferenceNumber,
-  location: String,
-  totalMass: Option[BigDecimal],
-  transport: TransportMode
-)
+import javax.inject.Inject
+
+class DeclarationPlaceFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("declarationPlace.error.required")
+        .verifying(maxLength(35, "declarationPlace.error.length"))
+    )
+}
