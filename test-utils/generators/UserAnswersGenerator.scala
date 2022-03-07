@@ -53,8 +53,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(ConsignorIdentityPage, JsValue)] ::
     arbitrary[(DangerousGoodCodePage, JsValue)] ::
     arbitrary[(DangerousGoodPage, JsValue)] ::
-    arbitrary[(OverallCrnKnownPage.type, JsValue)] ::
-    arbitrary[(OverallCrnPage.type, JsValue)] ::
     arbitrary[(GoodsItemCrnKnownPage, JsValue)] ::
     arbitrary[(GoodsItemCrnPage, JsValue)] ::
     arbitrary[(DocumentPage, JsValue)] ::
@@ -74,7 +72,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(CountryOfDeparturePage.type, JsValue)] ::
     arbitrary[(ArrivalDateAndTimePage.type, JsValue)] ::
     arbitrary[(CarrierEORIPage.type, JsValue)] ::
-    arbitrary[(IdentifyCarrierPage.type, JsValue)] ::
     arbitrary[(TransportModePage.type, JsValue)] ::
     arbitrary[(TotalGrossWeightPage.type, JsValue)] ::
     arbitrary[(ProvideGrossWeightPage.type, JsValue)] ::

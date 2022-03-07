@@ -17,10 +17,8 @@
 package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{LodgingPersonType, NormalMode, UserAnswers}
-import pages.predec.LodgingPersonTypePage
+import models.{NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
@@ -32,10 +30,9 @@ object TaskListViewModel {
   def fromAnswers(answers: UserAnswers)(implicit messages: Messages): TaskListViewModel =
     TaskListViewModel(
       Seq(
-        Some(routeDetailsRow(answers)),
-        carrierDetailsRow(answers),
-        Some(consigneesRow(answers))
-      ).flatten
+        routeDetailsRow(answers),
+        consigneesRow(answers)
+      )
     )
 
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
@@ -45,26 +42,6 @@ object TaskListViewModel {
       id = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
-
-  private def carrierDetailsRow(
-    answers: UserAnswers
-  )(implicit messages: Messages): Option[TaskListRow] =
-    answers.get(LodgingPersonTypePage) match {
-      case Some(LodgingPersonType.Representative) =>
-        Some(
-          TaskListRow(
-            messageKey = messages("taskList.carrier"),
-            link = predecRoutes.IdentifyCarrierController.onPageLoad(NormalMode, answers.lrn),
-            id = "carrier-details",
-            completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
-          )
-        )
-
-      case Some(LodgingPersonType.Carrier) =>
-        None
-
-      case None => ???
-    }
 
   private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(

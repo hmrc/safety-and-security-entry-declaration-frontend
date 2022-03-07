@@ -32,7 +32,7 @@ class CheckPredecControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckPredecController.onPageLoad(lrn, index).url)
+        val request = FakeRequest(GET, routes.CheckPredecController.onPageLoad(lrn).url)
 
         val result = route(application, request).value
 
@@ -40,7 +40,7 @@ class CheckPredecControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list, lrn)(request, messages(application)).toString
       }
     }
 
@@ -49,7 +49,7 @@ class CheckPredecControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckPredecController.onPageLoad(lrn, index).url)
+        val request = FakeRequest(GET, routes.CheckPredecController.onPageLoad(lrn).url)
 
         val result = route(application, request).value
 

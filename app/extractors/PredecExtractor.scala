@@ -38,10 +38,9 @@ class PredecExtractor(
   override def extract(): ValidationResult[Predec] = {
     val lrn: ValidationResult[LocalReferenceNumber] = answers.lrn.validNec
     val location = requireAnswer(DeclarationPlacePage)
-    val crn = getAnswer(OverallCrnKnownPage, OverallCrnPage)
     val totalMass = extractTotalMass()
     val transportMode = requireAnswer(TransportModePage)
 
-    (lrn, location, crn, totalMass, transportMode).mapN(Predec)
+    (lrn, location, totalMass, transportMode).mapN(Predec)
   }
 }

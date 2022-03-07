@@ -24,7 +24,6 @@ import models.{LocalReferenceNumber, TransportMode}
 case class Predec(
   lrn: LocalReferenceNumber,
   location: String,
-  crn: Option[String],
   totalMass: Option[BigDecimal],
   transport: TransportMode
 )

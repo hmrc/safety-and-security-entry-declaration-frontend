@@ -123,14 +123,6 @@ transportMode.checkYourAnswersLabel = What is the mode of transport?
 transportMode.error.required = Select the mode of transport
 transportMode.change.hidden = the mode of transport
 
-identifyCarrier.title = How do you want to identify the carrier?
-identifyCarrier.heading = How do you want to identify the carrier?
-identifyCarrier.gb.eori = GB EORI
-identifyCarrier.nameAddress = Name and address
-identifyCarrier.checkYourAnswersLabel = How do you want to identify the carrier?
-identifyCarrier.error.required = Select how you want to identify the carrier
-identifyCarrier.change.hidden = how you want to identify the carrier
-
 carrierEORI.title = What is the GB EORI number of the carrier?
 carrierEORI.heading = What is the GB EORI number of the carrier?
 carrierEORI.checkYourAnswersLabel = GB EORI number
@@ -362,19 +354,6 @@ goodsItemCrnKnown.heading = Can you provide a Commercial Reference Number (CRN)?
 goodsItemCrnKnown.checkYourAnswersLabel = CRN known
 goodsItemCrnKnown.error.required = Select yes if you can provide a Commercial Reference Number (CRN)
 goodsItemCrnKnown.change.hidden = if you can provide a Commercial Reference Number
-
-overallCrn.title = What is the Commercial Reference Number (CRN) for the consignment?
-overallCrn.heading = What is the Commercial Reference Number (CRN) for the consignment?
-overallCrn.checkYourAnswersLabel = Commercial Reference Number (CRN)
-overallCrn.error.required = Enter the Commercial Reference Number (CRN) for the consignment
-overallCrn.error.length = Commercial Reference Number must be 70 characters or less
-overallCrn.change.hidden = the Commercial Reference Number (CRN) for the consignment
-
-overallCrnKnown.title = Can you provide a Commercial Reference Number (CRN) for the whole consignment?
-overallCrnKnown.heading = Can you provide a Commercial Reference Number (CRN) for the whole consignment?
-overallCrnKnown.checkYourAnswersLabel = CRN for whole consignment
-overallCrnKnown.error.required = Select yes if you can provide a Commercial Reference Number (CRN) for the whole consignment
-overallCrnKnown.change.hidden = if you can provide a Commercial Reference Number for the whole consignment
 
 removeDocument.title = Do you need to remove this document?
 removeDocument.heading = Do you need to remove this document?

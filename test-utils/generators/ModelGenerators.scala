@@ -131,11 +131,6 @@ trait ModelGenerators {
       } yield ArrivalDateAndTime(date, LocalTime.of(hour, minute))
     }
 
-  implicit lazy val arbitraryIdentifyCarrier: Arbitrary[IdentifyCarrier] =
-    Arbitrary {
-      Gen.oneOf(IdentifyCarrier.values.toSeq)
-    }
-
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {

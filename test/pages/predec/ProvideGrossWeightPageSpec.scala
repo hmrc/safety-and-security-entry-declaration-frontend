@@ -34,13 +34,13 @@ class ProvideGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Transport Mode when the answer is Per Item" in {
+      "to Check Predec when the answer is Per Item" in {
 
         val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
 
         ProvideGrossWeightPage
           .navigate(NormalMode, answers)
-          .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, answers.lrn))
+          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(answers.lrn))
       }
 
       "to Total Gross Weight when the answer is Overall" in {

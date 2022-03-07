@@ -21,7 +21,6 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
-import pages.predec.OverallCrnKnownPage
 
 class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
@@ -35,30 +34,11 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "when the user gave a CRN for the whole consignment" - {
+      "to Add Any Documents" in {
 
-        "to Add Any Documents" in {
-
-          val answers = emptyUserAnswers.set(OverallCrnKnownPage, true).success.value
-
-          GoodsItemGrossWeightPage(index)
-            .navigate(NormalMode, answers)
-            .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index))
-        }
-      }
-
-      "when the user did not give a CRN for the whole consignment" - {
-
-        "to Goods Item Crn Known" in {
-
-          val answers = emptyUserAnswers.set(OverallCrnKnownPage, false).success.value
-
-          GoodsItemGrossWeightPage(index)
-            .navigate(NormalMode, answers)
-            .mustEqual(
-              goodsRoutes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
-            )
-        }
+        GoodsItemGrossWeightPage(index)
+          .navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
       }
     }
 

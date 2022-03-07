@@ -20,7 +20,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.Page
-import pages.predec.{OverallCrnKnownPage, ProvideGrossWeightPage}
+import pages.predec.ProvideGrossWeightPage
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 
@@ -36,14 +36,13 @@ case class AddPackagePage(itemIndex: Index) extends Page {
     } else {
       mode match {
         case NormalMode =>
-          (answers.get(ProvideGrossWeightPage), answers.get(OverallCrnKnownPage)) match {
-            case (Some(ProvideGrossWeight.PerItem), _) =>
+          answers.get(ProvideGrossWeightPage) match {
+            case Some(ProvideGrossWeight.PerItem) =>
               goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case (_, Some(true)) =>
+            case Some(ProvideGrossWeight.Overall) =>
               goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case (_, Some(false)) =>
-              goodsRoutes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case _ => routes.JourneyRecoveryController.onPageLoad()
+            case _ =>
+              routes.JourneyRecoveryController.onPageLoad()
           }
 
         case CheckMode =>

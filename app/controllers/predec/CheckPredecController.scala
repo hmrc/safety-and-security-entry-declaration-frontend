@@ -18,7 +18,7 @@ package controllers.predec
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
-import models.{Index, LocalReferenceNumber}
+import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,7 +36,7 @@ class CheckPredecController @Inject() (
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
@@ -50,7 +50,7 @@ class CheckPredecController @Inject() (
         ).flatten
       )
 
-      Ok(view(list, lrn, index))
+      Ok(view(list, lrn))
     }
 }
 

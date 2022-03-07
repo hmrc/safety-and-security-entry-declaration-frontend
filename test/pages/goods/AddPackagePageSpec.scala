@@ -21,7 +21,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, KindOfPackage, NormalMode, ProvideGrossWeight}
 import pages.behaviours.PageBehaviours
-import pages.predec.{OverallCrnKnownPage, ProvideGrossWeightPage}
+import pages.predec.ProvideGrossWeightPage
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
@@ -65,42 +65,22 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
         "and the weight is being given overall" - {
 
-          "and the user gave a CRN for the entire declaration" - {
+          "to Add Any Documents" in {
 
-            "to Add Any Documents" in {
+            val answers =
+              emptyUserAnswers
+                .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
 
-              val answers =
-                emptyUserAnswers
-                  .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-                  .set(OverallCrnKnownPage, true).success.value
-
-              AddPackagePage(index)
-                .navigate(NormalMode, answers, index, addAnother = false)
-                .mustEqual(
-                  goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
-                )
-            }
-          }
-
-          "and the user did not give a CRN for the entire declaration" - {
-
-            "to Goods Item CRN Known" in {
-
-              val answers =
-                emptyUserAnswers
-                  .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-                  .set(OverallCrnKnownPage, false).success.value
-
-              AddPackagePage(index)
-                .navigate(NormalMode, answers, index, addAnother = false)
-                .mustEqual(
-                  goodsRoutes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
-                )
+            AddPackagePage(index)
+              .navigate(NormalMode, answers, index, addAnother = false)
+              .mustEqual(
+                goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+              )
             }
           }
         }
       }
-    }
+
     "must navigate in Check Mode" - {
 
       "to Check Your Answers" in {

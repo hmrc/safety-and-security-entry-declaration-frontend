@@ -16,6 +16,7 @@
 
 package pages.predec
 
+import controllers.predec.{routes => predecRoutes}
 import controllers.routes
 import models.{NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -29,5 +30,5 @@ case object TotalGrossWeightPage extends QuestionPage[BigDecimal] {
   override def toString: String = "totalGrossWeight"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.TransportModeController.onPageLoad(NormalMode, answers.lrn)
+    predecRoutes.CheckPredecController.onPageLoad(answers.lrn)
 }

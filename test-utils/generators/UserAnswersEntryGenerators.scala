@@ -206,23 +206,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryOverallCrnKnownUserAnswersEntry
-    : Arbitrary[(OverallCrnKnownPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[OverallCrnKnownPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryOverallCrnUserAnswersEntry: Arbitrary[(OverallCrnPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[OverallCrnPage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryGoodsItemCrnKnownUserAnswersEntry
     : Arbitrary[(GoodsItemCrnKnownPage, JsValue)] =
     Arbitrary {
@@ -406,15 +389,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[CarrierEORIPage.type]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryIdentifyCarrierUserAnswersEntry
-    : Arbitrary[(IdentifyCarrierPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[IdentifyCarrierPage.type]
-        value <- arbitrary[IdentifyCarrier].map(Json.toJson(_))
       } yield (page, value)
     }
 

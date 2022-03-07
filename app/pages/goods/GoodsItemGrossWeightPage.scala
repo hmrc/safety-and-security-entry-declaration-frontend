@@ -17,10 +17,8 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
-import pages.predec.OverallCrnKnownPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -31,9 +29,5 @@ final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[Big
   override def toString: String = "grossWeight"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(OverallCrnKnownPage) match {
-      case Some(true) => goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(false) => goodsRoutes.GoodsItemCrnKnownController.onPageLoad(NormalMode, answers.lrn, index)
-      case _ => routes.JourneyRecoveryController.onPageLoad()
-    }
+    goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
 }

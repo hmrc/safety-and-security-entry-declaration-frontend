@@ -17,6 +17,7 @@
 package pages.predec
 
 import base.SpecBase
+import controllers.predec.{routes => predecRoutes}
 import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
@@ -33,11 +34,11 @@ class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Transport Mode" in {
+      "to Check Predec" in {
 
         TotalGrossWeightPage
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.TransportModeController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
 

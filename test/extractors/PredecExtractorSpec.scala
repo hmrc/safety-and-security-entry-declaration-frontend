@@ -28,15 +28,12 @@ import pages.predec._
 
 class PredecExtractorSpec extends SpecBase {
   private val location = "test-declaration-location"
-  private val crn = "TEST-CRN"
   private val totalMass = 1000
   private val transportMode = TransportMode.Road
 
   private val validAnswers = {
     arbitrary[UserAnswers].sample.value
       .set(DeclarationPlacePage, location).success.value
-      .set(OverallCrnKnownPage, true).success.value
-      .set(OverallCrnPage, crn).success.value
       .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
       .set(TotalGrossWeightPage, BigDecimal.exact(totalMass)).success.value
       .set(TransportModePage, transportMode).success.value
@@ -49,7 +46,6 @@ class PredecExtractorSpec extends SpecBase {
       val expected = Predec(
         lrn = validAnswers.lrn,
         location = location,
-        crn = Some(crn),
         totalMass = Some(totalMass),
         transport = transportMode
       )
@@ -61,8 +57,6 @@ class PredecExtractorSpec extends SpecBase {
     "should correctly extract when not answering optional questions" in {
       implicit val answers = {
         validAnswers
-          .set(OverallCrnKnownPage, false).success.value
-          .remove(OverallCrnPage).success.value
           .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
           .remove(TotalGrossWeightPage).success.value
       }
@@ -70,7 +64,6 @@ class PredecExtractorSpec extends SpecBase {
       val expected = Predec(
         lrn = validAnswers.lrn,
         location = location,
-        crn = None,
         totalMass = None,
         transport = transportMode
       )
@@ -83,8 +76,6 @@ class PredecExtractorSpec extends SpecBase {
       implicit val answers = {
         validAnswers
           .remove(DeclarationPlacePage).success.value
-          .remove(OverallCrnKnownPage).success.value
-          .remove(OverallCrnPage).success.value
           .remove(ProvideGrossWeightPage).success.value
           .remove(TotalGrossWeightPage).success.value
           .remove(TransportModePage).success.value
@@ -92,19 +83,9 @@ class PredecExtractorSpec extends SpecBase {
 
       val expected = List(
         MissingField(DeclarationPlacePage),
-        MissingField(OverallCrnKnownPage),
         MissingField(ProvideGrossWeightPage),
         MissingField(TransportModePage)
       )
-      val actual = new PredecExtractor().extract().invalidValue.toList
-
-      actual must contain theSameElementsAs(expected)
-    }
-
-    "should fail if CRN known but not provided" in {
-      implicit val answers = validAnswers.remove(OverallCrnPage).success.value
-
-      val expected = List(MissingField(OverallCrnPage))
       val actual = new PredecExtractor().extract().invalidValue.toList
 
       actual must contain theSameElementsAs(expected)
@@ -118,6 +99,5 @@ class PredecExtractorSpec extends SpecBase {
 
       actual must contain theSameElementsAs(expected)
     }
-
   }
 }

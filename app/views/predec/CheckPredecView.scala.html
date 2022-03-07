@@ -21,7 +21,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkPredec.title"))) {
 

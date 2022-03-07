@@ -48,11 +48,6 @@ POST       /:lrn/transportMode                        controllers.TransportModeC
 GET        /:lrn/changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/identifyCarrier                        controllers.predec.IdentifyCarrierController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/identifyCarrier                        controllers.predec.IdentifyCarrierController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeIdentifyCarrier                  controllers.predec.IdentifyCarrierController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeIdentifyCarrier                  controllers.predec.IdentifyCarrierController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-
 GET        /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeCarrierEORI                  controllers.predec.CarrierEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
@@ -211,16 +206,6 @@ POST       /:lrn/goodsItemCrnKnown/:index                        controllers.goo
 GET        /:lrn/changeGoodsItemCrnKnown/:index                  controllers.goods.GoodsItemCrnKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeGoodsItemCrnKnown/:index                  controllers.goods.GoodsItemCrnKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/overallCrn                        controllers.predec.OverallCrnController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/overallCrn                        controllers.predec.OverallCrnController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeOverallCrn                  controllers.predec.OverallCrnController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeOverallCrn                  controllers.predec.OverallCrnController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-
-GET        /:lrn/overallCrnKnown                        controllers.predec.OverallCrnKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/overallCrnKnown                        controllers.predec.OverallCrnKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeOverallCrnKnown                  controllers.predec.OverallCrnKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeOverallCrnKnown                  controllers.predec.OverallCrnKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-
 GET        /:lrn/removeDocument/:itemIndex/:documentIndex                        controllers.goods.RemoveDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
 POST       /:lrn/removeDocument/:itemIndex/:documentIndex                        controllers.goods.RemoveDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
 GET        /:lrn/changeRemoveDocument/:itemIndex/:documentIndex                  controllers.goods.RemoveDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, documentIndex: Index)
@@ -314,7 +299,7 @@ POST       /:lrn/removeNotifiedParty/:index                        controllers.c
 GET        /:lrn/changeRemoveNotifiedParty/:index                  controllers.consignees.RemoveNotifiedPartyController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeRemoveNotifiedParty/:index                  controllers.consignees.RemoveNotifiedPartyController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/checkPredec/:index                              controllers.predec.CheckPredecController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/checkPredec                              controllers.predec.CheckPredecController.onPageLoad(lrn: LocalReferenceNumber)
 
 GET        /:lrn/checkConsignee/:index                              controllers.consignees.CheckConsigneeController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/checkNotifiedParty/:index                          controllers.consignees.CheckNotifiedPartyController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
