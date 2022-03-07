@@ -19,7 +19,6 @@ package pages.predec
 import base.SpecBase
 import controllers.routes
 import models.{CheckMode, NormalMode}
-import pages.TotalGrossWeightPage
 import pages.behaviours.PageBehaviours
 
 class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {

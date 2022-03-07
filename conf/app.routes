@@ -314,6 +314,8 @@ POST       /:lrn/removeNotifiedParty/:index                        controllers.c
 GET        /:lrn/changeRemoveNotifiedParty/:index                  controllers.consignees.RemoveNotifiedPartyController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeRemoveNotifiedParty/:index                  controllers.consignees.RemoveNotifiedPartyController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
+GET        /:lrn/checkPredec/:index                              controllers.predec.CheckPredecController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
+
 GET        /:lrn/checkConsignee/:index                              controllers.consignees.CheckConsigneeController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/checkNotifiedParty/:index                          controllers.consignees.CheckNotifiedPartyController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/checkConsigneesAndNotifiedParties                  controllers.consignees.CheckConsigneesAndNotifiedPartiesController.onPageLoad(lrn: LocalReferenceNumber)

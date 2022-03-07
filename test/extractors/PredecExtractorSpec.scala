@@ -23,7 +23,7 @@ import base.SpecBase
 import extractors.ValidationError._
 import models.{ProvideGrossWeight, TransportMode, UserAnswers}
 import models.completion.answers.Predec
-import pages.{TotalGrossWeightPage, TransportModePage}
+import pages.TransportModePage
 import pages.predec._
 
 class PredecExtractorSpec extends SpecBase {

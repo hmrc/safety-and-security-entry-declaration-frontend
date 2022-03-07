@@ -18,9 +18,10 @@ package controllers.predec
 
 import controllers.actions._
 import forms.predec.TotalGrossWeightFormProvider
+
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import pages.TotalGrossWeightPage
+import pages.predec.TotalGrossWeightPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

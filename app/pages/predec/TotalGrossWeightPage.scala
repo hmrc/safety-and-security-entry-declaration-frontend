@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.predec
 
 import controllers.routes
 import models.{NormalMode, UserAnswers}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

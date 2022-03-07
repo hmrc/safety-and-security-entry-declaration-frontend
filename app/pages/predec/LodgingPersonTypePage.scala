@@ -17,6 +17,8 @@
 package pages.predec
 
 import controllers.predec.{routes => predecRoutes}
+import controllers.routes
+import models.LodgingPersonType.{Carrier, Representative}
 import models.{LodgingPersonType, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -29,5 +31,9 @@ case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
   override def toString: String = "lodgingPersonType"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    predecRoutes.OverallCrnKnownController.onPageLoad(NormalMode, answers.lrn)
+    answers.get(LodgingPersonTypePage) match {
+      case Some(Carrier)        => predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn)
+      case Some(Representative) => predecRoutes.CarrierEORIController.onPageLoad(NormalMode, answers.lrn)
+      case None                 => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

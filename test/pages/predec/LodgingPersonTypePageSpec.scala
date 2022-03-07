@@ -34,11 +34,22 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Overall CRN Known" in {
+      "to Carrier EORI when the answer is Representative" in {
+
+        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
 
         LodgingPersonTypePage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(predecRoutes.OverallCrnKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .navigate(NormalMode, answers)
+          .mustEqual(predecRoutes.CarrierEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+      }
+
+      "to Gross Weight when the answer is Carrier" in {
+
+        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+
+        LodgingPersonTypePage
+          .navigate(NormalMode, answers)
+          .mustEqual(predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
