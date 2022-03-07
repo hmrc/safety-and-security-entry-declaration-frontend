@@ -43,7 +43,7 @@ class CheckGoodItemController @Inject() (
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
-        rows = Seq.empty
+        rows = Nil
       )
 
       Ok(view(mode, list, lrn))

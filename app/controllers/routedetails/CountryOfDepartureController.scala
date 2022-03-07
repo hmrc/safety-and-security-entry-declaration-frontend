@@ -30,14 +30,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfDepartureController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: SessionRepository,
-                                              identify: IdentifierAction,
-                                              getData: DataRetrievalActionProvider,
-                                              requireData: DataRequiredAction,
-                                              formProvider: CountryOfDepartureFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: CountryOfDepartureView
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: CountryOfDepartureFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CountryOfDepartureView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
