@@ -24,10 +24,26 @@ import pages.consignees._
 import pages.consignors._
 import pages.goods._
 import pages.preDeclaration._
-import pages.routeDetails._
+import pages.routedetails._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitraryPlaceOfUnloadingUserAnswersEntry: Arbitrary[(PlaceOfUnloadingPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[PlaceOfUnloadingPage]
+        value <- arbitrary[PlaceOfUnloading].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryPlaceOfLoadingUserAnswersEntry: Arbitrary[(PlaceOfLoadingPage, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[PlaceOfLoadingPage]
+        value <- arbitrary[PlaceOfLoading].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryAddAnyNotifiedPartiesUserAnswersEntry: Arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] =
     Arbitrary {
@@ -52,15 +68,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       for {
         page <- arbitrary[AddPaymentMethodPage]
         value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryUnloadingCodeUserAnswersEntry
-    : Arbitrary[(UnloadingCodePage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[UnloadingCodePage]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -339,15 +346,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryRemoveCountryEnRouteUserAnswersEntry
-    : Arbitrary[(RemoveCountryEnRoutePage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[RemoveCountryEnRoutePage]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryGoodsPassThroughOtherCountriesUserAnswersEntry
     : Arbitrary[(GoodsPassThroughOtherCountriesPage.type, JsValue)] =
     Arbitrary {
@@ -384,11 +382,11 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryCountryOfOriginUserAnswersEntry
-    : Arbitrary[(CountryOfOriginPage.type, JsValue)] =
+  implicit lazy val arbitraryCountryOfDepartureUserAnswersEntry
+    : Arbitrary[(CountryOfDeparturePage.type, JsValue)] =
     Arbitrary {
       for {
-        page <- arbitrary[CountryOfOriginPage.type]
+        page <- arbitrary[CountryOfDeparturePage.type]
         value <- arbitrary[Country].map(Json.toJson(_))
       } yield (page, value)
     }

@@ -18,7 +18,7 @@ package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.preDeclaration.{routes => preDecRoutes}
-import controllers.routeDetails.{routes => routeDetailRoutes}
+import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{LodgingPersonType, NormalMode, UserAnswers}
 import pages.preDeclaration.LodgingPersonTypePage
 import play.api.i18n.Messages
@@ -41,7 +41,7 @@ object TaskListViewModel {
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey = messages("taskList.routeDetails"),
-      link = routeDetailRoutes.CountryOfOriginController.onPageLoad(NormalMode, answers.lrn),
+      link = routedetailsRoutes.CountryOfDepartureController.onPageLoad(NormalMode, answers.lrn),
       id = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )

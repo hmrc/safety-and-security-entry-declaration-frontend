@@ -16,12 +16,11 @@
 
 package queries
 
-import models.{GoodItem}
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, JsValue}
 
-case class DeriveNumberOfGoods() extends Derivable[List[GoodItem], Int] {
+case class DeriveNumberOfGoods() extends Derivable[List[JsValue], Int] {
 
-  override val derive: List[GoodItem] => Int = _.size
+  override val derive: List[JsValue] => Int = _.size
 
   override def path: JsPath = JsPath \ "goodsItems"
 }

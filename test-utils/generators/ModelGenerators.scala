@@ -24,6 +24,22 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryPlaceOfUnloading: Arbitrary[PlaceOfUnloading] =
+    Arbitrary {
+      for {
+        country <- arbitrary[Country]
+        place <- arbitrary[String]
+      } yield PlaceOfUnloading(country, place)
+    }
+
+  implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
+    Arbitrary {
+      for {
+        country <- arbitrary[Country]
+        place <- arbitrary[String]
+      } yield PlaceOfLoading(country, place)
+    }
+
   implicit lazy val arbitraryPaymentMethod: Arbitrary[PaymentMethod] =
     Arbitrary {
       Gen.oneOf(PaymentMethod.values.toSeq)

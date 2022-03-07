@@ -23,23 +23,24 @@ import pages._
 import pages.consignees._
 import pages.goods._
 import pages.preDeclaration._
-import pages.routeDetails._
+import pages.routedetails._
 
 trait PageGenerators {
+
+  implicit lazy val arbitraryPlaceOfUnloadingPage: Arbitrary[PlaceOfUnloadingPage] =
+    Arbitrary(PlaceOfUnloadingPage(Index(0)))
+
+  implicit lazy val arbitraryPlaceOfLoadingPage: Arbitrary[PlaceOfLoadingPage] =
+    Arbitrary(PlaceOfLoadingPage(Index(0)))
 
   implicit lazy val arbitraryAddAnyNotifiedPartiesPage: Arbitrary[AddAnyNotifiedPartiesPage.type] =
     Arbitrary(AddAnyNotifiedPartiesPage)
 
-  implicit lazy val arbitraryAddConsigneePage: Arbitrary[AddConsigneePage.type] =
-    Arbitrary(AddConsigneePage)
   implicit lazy val arbitraryPaymentMethodPage: Arbitrary[PaymentMethodPage] =
     Arbitrary(goods.PaymentMethodPage(Index(0)))
 
   implicit lazy val arbitraryAddPaymentMethodPage: Arbitrary[AddPaymentMethodPage] =
     Arbitrary(goods.AddPaymentMethodPage(Index(0)))
-
-  implicit lazy val arbitraryUnloadingCodePage: Arbitrary[UnloadingCodePage] =
-    Arbitrary(pages.UnloadingCodePage(Index(0)))
 
   implicit lazy val arbitraryNotifiedPartyNamePage: Arbitrary[NotifiedPartyNamePage] =
     Arbitrary(consignees.NotifiedPartyNamePage(Index(0)))
@@ -137,15 +138,12 @@ trait PageGenerators {
   implicit lazy val arbitraryCommodityCodePage: Arbitrary[CommodityCodePage] =
     Arbitrary(goods.CommodityCodePage(Index(0)))
 
-  implicit lazy val arbitraryRemoveCountryEnRoutePage: Arbitrary[RemoveCountryEnRoutePage] =
-    Arbitrary(routeDetails.RemoveCountryEnRoutePage(Index(0)))
-
   implicit lazy val arbitraryGoodsPassThroughOtherCountriesPage
     : Arbitrary[GoodsPassThroughOtherCountriesPage.type] =
     Arbitrary(GoodsPassThroughOtherCountriesPage)
 
   implicit lazy val arbitraryCountryEnRoutePage: Arbitrary[CountryEnRoutePage] =
-    Arbitrary(routeDetails.CountryEnRoutePage(Index(0)))
+    Arbitrary(routedetails.CountryEnRoutePage(Index(0)))
 
   implicit lazy val arbitraryAddCountryEnRoutePage: Arbitrary[AddCountryEnRoutePage.type] =
     Arbitrary(AddCountryEnRoutePage)
@@ -154,8 +152,8 @@ trait PageGenerators {
     : Arbitrary[CustomsOfficeOfFirstEntryPage.type] =
     Arbitrary(CustomsOfficeOfFirstEntryPage)
 
-  implicit lazy val arbitraryCountryOfOriginPage: Arbitrary[CountryOfOriginPage.type] =
-    Arbitrary(CountryOfOriginPage)
+  implicit lazy val arbitraryCountryOfDeparturePage: Arbitrary[CountryOfDeparturePage.type] =
+    Arbitrary(CountryOfDeparturePage)
 
   implicit lazy val arbitraryArrivalDateAndTimePage: Arbitrary[ArrivalDateAndTimePage.type] =
     Arbitrary(ArrivalDateAndTimePage)

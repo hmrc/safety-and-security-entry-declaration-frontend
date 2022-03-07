@@ -25,17 +25,18 @@ import pages.consignees._
 import pages.consignors._
 import pages.goods._
 import pages.preDeclaration._
-import pages.routeDetails._
+import pages.routedetails._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(PlaceOfUnloadingPage, JsValue)] ::
+    arbitrary[(PlaceOfLoadingPage, JsValue)] ::
     arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] ::
     arbitrary[(PaymentMethodPage, JsValue)] ::
     arbitrary[(AddPaymentMethodPage, JsValue)] ::
-    arbitrary[(UnloadingCodePage, JsValue)] ::
     arbitrary[(NotifiedPartyNamePage, JsValue)] ::
     arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
     arbitrary[(NotifiedPartyEORIPage, JsValue)] ::
@@ -67,11 +68,10 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(GoodsDescriptionPage, JsValue)] ::
     arbitrary[(CommodityCodeKnownPage, JsValue)] ::
     arbitrary[(CommodityCodePage, JsValue)] ::
-    arbitrary[(RemoveCountryEnRoutePage, JsValue)] ::
     arbitrary[(GoodsPassThroughOtherCountriesPage.type, JsValue)] ::
     arbitrary[(CountryEnRoutePage, JsValue)] ::
     arbitrary[(CustomsOfficeOfFirstEntryPage.type, JsValue)] ::
-    arbitrary[(CountryOfOriginPage.type, JsValue)] ::
+    arbitrary[(CountryOfDeparturePage.type, JsValue)] ::
     arbitrary[(ArrivalDateAndTimePage.type, JsValue)] ::
     arbitrary[(CarrierEORIPage.type, JsValue)] ::
     arbitrary[(IdentifyCarrierPage.type, JsValue)] ::

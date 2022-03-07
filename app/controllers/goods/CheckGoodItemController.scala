@@ -22,7 +22,6 @@ import models.{Index, LocalReferenceNumber, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.preDeclaration.UnloadingCodeSummary
 import viewmodels.govuk.summarylist._
 import views.html.goods.CheckGoodItemView
 
@@ -44,9 +43,7 @@ class CheckGoodItemController @Inject() (
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
-        rows = Seq(
-          UnloadingCodeSummary.row(request.userAnswers, itemIndex)
-        ).flatten
+        rows = Nil
       )
 
       Ok(view(mode, list, lrn))
