@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package forms.consignors
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+class AddConsignorFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "consignorEORI"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
-  }
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addConsignor.error.required")
+    )
 }

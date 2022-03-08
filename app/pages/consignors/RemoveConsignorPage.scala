@@ -16,19 +16,22 @@
 
 package pages.consignors
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{GbEori, Index, NormalMode, UserAnswers}
+import controllers.consignors.{routes => consignorRoutes}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignors.DeriveNumberOfConsignors
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+final case class RemoveConsignorPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
-  override def toString: String = "consignorEORI"
+  override def toString: String = "removeConsignor"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
-  }
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(DeriveNumberOfConsignors) match {
+      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn)
+      case _                      => consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+    }
 }

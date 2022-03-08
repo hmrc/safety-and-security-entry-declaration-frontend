@@ -14,21 +14,32 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package forms.consignors
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+class AddConsignorFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+  val requiredKey = "addConsignor.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "consignorEORI"
+  val form = new AddConsignorFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

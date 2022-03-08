@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package queries.consignors
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.Consignor
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Derivable
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+case object DeriveNumberOfConsignors extends Derivable[List[Consignor], Int] {
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+  override val derive: List[Consignor] => Int = _.size
 
-  override def toString: String = "consignorEORI"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
-  }
+  override def path: JsPath = JsPath \ "consignors"
 }

@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages.consignors
+@import controllers.consignors.routes
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{GbEori, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+@this(
+        layout: templates.Layout,
+        govukSummaryList: GovukSummaryList
+)
 
-case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
+@(list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+@layout(pageTitle = titleNoForm(messages("checkConsignor.title"))) {
 
-  override def toString: String = "consignorEORI"
+    <h1 class="govuk-heading-xl">@messages("checkConsignor.heading")</h1>
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
-  }
+    @govukSummaryList(list)
+
+    <a href="@routes.AddConsignorController.onPageLoad(NormalMode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
 }

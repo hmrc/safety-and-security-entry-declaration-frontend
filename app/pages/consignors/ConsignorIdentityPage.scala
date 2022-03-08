@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class ConsignorIdentityPage(index: Index) extends QuestionPage[ConsignorIdentity] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
   override def toString: String = "consignorIdentity"
 
