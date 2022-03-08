@@ -339,3 +339,78 @@ GET        /:lrn/placeOfUnloading/:index                        controllers.rout
 POST       /:lrn/placeOfUnloading/:index                        controllers.routedetails.PlaceOfUnloadingController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changePlaceOfUnloading/:index                  controllers.routedetails.PlaceOfUnloadingController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changePlaceOfUnloading/:index                  controllers.routedetails.PlaceOfUnloadingController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/addAnySeals                        controllers.transport.AddAnySealsController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addAnySeals                        controllers.transport.AddAnySealsController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddAnySeals                  controllers.transport.AddAnySealsController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddAnySeals                  controllers.transport.AddAnySealsController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/addOverallDocument                        controllers.transport.AddOverallDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addOverallDocument                        controllers.transport.AddOverallDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddOverallDocument                  controllers.transport.AddOverallDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddOverallDocument                  controllers.transport.AddOverallDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/addSeal                        controllers.transport.AddSealController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addSeal                        controllers.transport.AddSealController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddSeal                  controllers.transport.AddSealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddSeal                  controllers.transport.AddSealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/airIdentity                        controllers.transport.AirIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/airIdentity                        controllers.transport.AirIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAirIdentity                  controllers.transport.AirIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAirIdentity                  controllers.transport.AirIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/anyOverallDocuments                        controllers.transport.AnyOverallDocumentsController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/anyOverallDocuments                        controllers.transport.AnyOverallDocumentsController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAnyOverallDocuments                  controllers.transport.AnyOverallDocumentsController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAnyOverallDocuments                  controllers.transport.AnyOverallDocumentsController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/maritimeIdentity                        controllers.transport.MaritimeIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/maritimeIdentity                        controllers.transport.MaritimeIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeMaritimeIdentity                  controllers.transport.MaritimeIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeMaritimeIdentity                  controllers.transport.MaritimeIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/nationalityOfTransport                        controllers.transport.NationalityOfTransportController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/nationalityOfTransport                        controllers.transport.NationalityOfTransportController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeNationalityOfTransport                  controllers.transport.NationalityOfTransportController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeNationalityOfTransport                  controllers.transport.NationalityOfTransportController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/overallDocument                        controllers.transport.OverallDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/overallDocument                        controllers.transport.OverallDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeOverallDocument                  controllers.transport.OverallDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeOverallDocument                  controllers.transport.OverallDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/railIdentity                        controllers.transport.RailIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/railIdentity                        controllers.transport.RailIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRailIdentity                  controllers.transport.RailIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRailIdentity                  controllers.transport.RailIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/removeOverallDocument                        controllers.transport.RemoveOverallDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/removeOverallDocument                        controllers.transport.RemoveOverallDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRemoveOverallDocument                  controllers.transport.RemoveOverallDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRemoveOverallDocument                  controllers.transport.RemoveOverallDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/removeSeal                        controllers.transport.RemoveSealController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/removeSeal                        controllers.transport.RemoveSealController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRemoveSeal                  controllers.transport.RemoveSealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRemoveSeal                  controllers.transport.RemoveSealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/roadIdentity                        controllers.transport.RoadIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/roadIdentity                        controllers.transport.RoadIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRoadIdentity                  controllers.transport.RoadIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRoadIdentity                  controllers.transport.RoadIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/roroAccompaniedIdentity                        controllers.transport.RoroAccompaniedIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/roroAccompaniedIdentity                        controllers.transport.RoroAccompaniedIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRoroAccompaniedIdentity                  controllers.transport.RoroAccompaniedIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRoroAccompaniedIdentity                  controllers.transport.RoroAccompaniedIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/roroUnaccompaniedIdentity                        controllers.transport.RoroUnaccompaniedIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/roroUnaccompaniedIdentity                        controllers.transport.RoroUnaccompaniedIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeRoroUnaccompaniedIdentity                  controllers.transport.RoroUnaccompaniedIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeRoroUnaccompaniedIdentity                  controllers.transport.RoroUnaccompaniedIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/seal                        controllers.transport.SealController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/seal                        controllers.transport.SealController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeSeal                  controllers.transport.SealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeSeal                  controllers.transport.SealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
