@@ -45,7 +45,7 @@ class RemoveConsignorPageSpec extends SpecBase with PageBehaviours {
       "to Consignor Identity when there are no consignors left" in {
 
         RemoveConsignorPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
       }
     }
 
