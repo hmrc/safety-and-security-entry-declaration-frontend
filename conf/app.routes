@@ -43,10 +43,10 @@ POST       /:lrn/totalGrossWeight                  controllers.predec.TotalGross
 GET        /:lrn/changeTotalGrossWeight                        controllers.predec.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeTotalGrossWeight                        controllers.predec.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/transportMode                        controllers.TransportModeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/transportMode                        controllers.TransportModeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeTransportMode                  controllers.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeTransportMode                  controllers.TransportModeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/transportMode                        controllers.transport.TransportModeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/transportMode                        controllers.transport.TransportModeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeTransportMode                  controllers.transport.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeTransportMode                  controllers.transport.TransportModeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)

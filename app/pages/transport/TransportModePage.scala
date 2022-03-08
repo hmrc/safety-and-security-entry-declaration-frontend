@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transport
 
 import controllers.routes
 import models.{TransportMode, UserAnswers}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

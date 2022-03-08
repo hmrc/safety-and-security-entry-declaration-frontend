@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transport
 
 import controllers.actions._
-import forms.TransportModeFormProvider
-import javax.inject.Inject
+import forms.transport.TransportModeFormProvider
 import models.{LocalReferenceNumber, Mode}
-import pages.TransportModePage
+import pages.transport.TransportModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.TransportModeView
+import views.html.transport.TransportModeView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransportModeController @Inject() (

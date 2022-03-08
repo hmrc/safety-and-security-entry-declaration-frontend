@@ -18,13 +18,12 @@ package extractors
 
 import cats.implicits._
 import org.scalacheck.Arbitrary.arbitrary
-
 import base.SpecBase
 import extractors.ValidationError._
 import models.{ProvideGrossWeight, TransportMode, UserAnswers}
 import models.completion.answers.Predec
-import pages.TransportModePage
 import pages.predec._
+import pages.transport.TransportModePage
 
 class PredecExtractorSpec extends SpecBase {
   private val location = "test-declaration-location"
