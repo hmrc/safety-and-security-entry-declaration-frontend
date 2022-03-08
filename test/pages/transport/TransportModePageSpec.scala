@@ -18,6 +18,7 @@ package pages.transport
 
 import base.SpecBase
 import controllers.routes
+import controllers.transport.{routes => transportRoutes}
 import models.{CheckMode, NormalMode, TransportMode}
 import pages.behaviours.PageBehaviours
 
@@ -33,11 +34,70 @@ class TransportModePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to the Task List" in {
+      "when the user chooses Roro accompanied" - {
 
-        TransportModePage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
+        "to nationality of transport" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, TransportMode.RoroAccompanied).success.value
+
+          TransportModePage.navigate(NormalMode, answers)
+            .mustEqual(transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn))
+        }
+      }
+
+      "when the user chooses Roro unaccompanied" - {
+
+        "to nationality of transport" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, TransportMode.RoroUnaccompanied).success.value
+
+          TransportModePage.navigate(NormalMode, answers)
+            .mustEqual(transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn))
+        }
+      }
+
+      "when the user chooses Road" - {
+
+        "to nationality of transport" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, TransportMode.Road).success.value
+
+          TransportModePage.navigate(NormalMode, answers)
+            .mustEqual(transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn))
+        }
+      }
+
+      "when the user chooses Air" - {
+
+        "to air identity" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, TransportMode.Air).success.value
+
+          TransportModePage.navigate(NormalMode, answers)
+            .mustEqual(transportRoutes.AirIdentityController.onPageLoad(NormalMode, answers.lrn))
+        }
+      }
+
+      "when the user chooses Rail" - {
+
+        "to rail identity" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, TransportMode.Rail).success.value
+
+          TransportModePage.navigate(NormalMode, answers)
+            .mustEqual(transportRoutes.RailIdentityController.onPageLoad(NormalMode, answers.lrn))
+        }
+      }
+
+      "when the user chooses Maritime" - {
+
+        "to maritime identity" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, TransportMode.Maritime).success.value
+
+          TransportModePage.navigate(NormalMode, answers)
+            .mustEqual(transportRoutes.MaritimeIdentityController.onPageLoad(NormalMode, answers.lrn))
+        }
       }
     }
 
