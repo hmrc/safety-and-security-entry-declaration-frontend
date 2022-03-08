@@ -24,8 +24,54 @@ import pages.consignees._
 import pages.goods._
 import pages.predec._
 import pages.routedetails._
+import pages.transport._
 
 trait PageGenerators {
+
+  implicit lazy val arbitrarySealPage: Arbitrary[SealPage.type] =
+    Arbitrary(SealPage)
+
+  implicit lazy val arbitraryRoroUnaccompaniedIdentityPage: Arbitrary[RoroUnaccompaniedIdentityPage.type] =
+    Arbitrary(RoroUnaccompaniedIdentityPage)
+
+  implicit lazy val arbitraryRoroAccompaniedIdentityPage: Arbitrary[RoroAccompaniedIdentityPage.type] =
+    Arbitrary(RoroAccompaniedIdentityPage)
+
+  implicit lazy val arbitraryRoadIdentityPage: Arbitrary[RoadIdentityPage.type] =
+    Arbitrary(RoadIdentityPage)
+
+  implicit lazy val arbitraryRemoveSealPage: Arbitrary[RemoveSealPage.type] =
+    Arbitrary(RemoveSealPage)
+
+  implicit lazy val arbitraryRemoveOverallDocumentPage: Arbitrary[RemoveOverallDocumentPage.type] =
+    Arbitrary(RemoveOverallDocumentPage)
+
+  implicit lazy val arbitraryRailIdentityPage: Arbitrary[RailIdentityPage.type] =
+    Arbitrary(RailIdentityPage)
+
+  implicit lazy val arbitraryOverallDocumentPage: Arbitrary[OverallDocumentPage.type] =
+    Arbitrary(OverallDocumentPage)
+
+  implicit lazy val arbitraryNationalityOfTransportPage: Arbitrary[NationalityOfTransportPage.type] =
+    Arbitrary(NationalityOfTransportPage)
+
+  implicit lazy val arbitraryMaritimeIdentityPage: Arbitrary[MaritimeIdentityPage.type] =
+    Arbitrary(MaritimeIdentityPage)
+
+  implicit lazy val arbitraryAnyOverallDocumentsPage: Arbitrary[AnyOverallDocumentsPage.type] =
+    Arbitrary(AnyOverallDocumentsPage)
+
+  implicit lazy val arbitraryAirIdentityPage: Arbitrary[AirIdentityPage.type] =
+    Arbitrary(AirIdentityPage)
+
+  implicit lazy val arbitraryAddSealPage: Arbitrary[AddSealPage.type] =
+    Arbitrary(AddSealPage)
+
+  implicit lazy val arbitraryAddOverallDocumentPage: Arbitrary[AddOverallDocumentPage.type] =
+    Arbitrary(AddOverallDocumentPage)
+
+  implicit lazy val arbitraryAddAnySealsPage: Arbitrary[AddAnySealsPage.type] =
+    Arbitrary(AddAnySealsPage)
 
   implicit lazy val arbitraryPlaceOfUnloadingPage: Arbitrary[PlaceOfUnloadingPage] =
     Arbitrary(PlaceOfUnloadingPage(Index(0)))
