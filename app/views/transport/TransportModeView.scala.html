@@ -39,7 +39,7 @@
                 field  = form("value"),
                 legend = LegendViewModel(messages("transportMode.heading")).asPageHeading(),
                 items  = TransportMode.options
-            )
+            ).withHint(HintViewModel(messages("transportMode.hint")))
         )
 
         @govukButton(
