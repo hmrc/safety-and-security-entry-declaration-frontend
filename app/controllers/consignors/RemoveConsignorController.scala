@@ -22,6 +22,7 @@ import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignors.RemoveConsignorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignors.ConsignorQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignors.RemoveConsignorView
@@ -61,10 +62,17 @@ class RemoveConsignorController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveConsignorPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveConsignorPage(index).navigate(mode, updatedAnswers))
+          if (value) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsignorQuery(index)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(RemoveConsignorPage(index).navigate(mode, updatedAnswers))
+          } else {
+            Future.successful(
+              Redirect(RemoveConsignorPage(index).navigate(mode, request.userAnswers))
+            )
+          }
+
       )
   }
 }

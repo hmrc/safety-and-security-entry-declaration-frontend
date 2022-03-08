@@ -191,6 +191,7 @@ taskList.predec = Pre-declaration
 taskList.routeDetails = Route details
 taskList.carrier = Carrier details
 taskList.consignees = Consignees and notified parties
+taskList.consignors = Consignors
 taskList.completed = Completed
 taskList.notStarted = Not started
 taskList.inProgress = In progress
