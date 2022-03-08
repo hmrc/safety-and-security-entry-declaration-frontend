@@ -21,12 +21,13 @@ import controllers.{routes => baseRoutes}
 import forms.consignors.RemoveConsignorFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignors.RemoveConsignorPage
+import pages.consignors.{ConsignorNamePage, RemoveConsignorPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignors.ConsignorQuery
 import repositories.SessionRepository
 import views.html.consignors.RemoveConsignorView
 
@@ -36,6 +37,7 @@ class RemoveConsignorControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveConsignorFormProvider()
   val form = formProvider()
+  private val baseAnswers = emptyUserAnswers.set(ConsignorNamePage(index), "1111").success.value
 
   lazy val removeConsignorRoute = routes.RemoveConsignorController.onPageLoad(NormalMode, lrn, index).url
 
@@ -75,14 +77,14 @@ class RemoveConsignorControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must remove the consignor and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -91,12 +93,41 @@ class RemoveConsignorControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, removeConsignorRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemoveConsignorPage(index), true).success.value
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers.remove(ConsignorQuery(index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveConsignorPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemoveConsignorPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must redirect to the next page without removing the consignor when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeConsignorRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveConsignorPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 
