@@ -16,8 +16,8 @@
 
 package pages.consignors
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{GbEori, Index, NormalMode, UserAnswers}
+import controllers.consignors.{routes => consignorRoutes}
+import models.{GbEori, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -26,9 +26,9 @@ case class ConsignorEORIPage(index: Index) extends QuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
-  override def toString: String = "consignorEORI"
+  override def toString: String = "eori"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
+    consignorRoutes.CheckConsignorController.onPageLoad(answers.lrn,index)
   }
 }

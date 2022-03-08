@@ -32,14 +32,14 @@ object Consignor {
   }
 }
 
-final case class ConsignorWithEori(consignorEORI: String) extends Consignor
+final case class ConsignorWithEori(eori: String) extends Consignor
 
 object ConsignorWithEori {
 
   implicit val format: OFormat[ConsignorWithEori] = Json.format[ConsignorWithEori]
 }
 
-final case class ConsignorWithoutEori(consignorName: String, consignorAddress: Address) extends Consignor
+final case class ConsignorWithoutEori(name: String, address: Address) extends Consignor
 
 object ConsignorWithoutEori {
 
