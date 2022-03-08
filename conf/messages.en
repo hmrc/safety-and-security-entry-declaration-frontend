@@ -111,14 +111,13 @@ totalGrossWeight.change.hidden = the total gross weight of the goods
 
 transportMode.title = What is the mode of transport?
 transportMode.heading = What is the mode of transport?
-
+transportMode.hint = Tell us how your goods will enter Great Britain.
 transportMode.maritime = Maritime
 transportMode.rail = Rail
-transportMode.road = Road (including Channel Tunnel shuttle service)
+transportMode.road = Road (including Channel tunnel shuttle service)
 transportMode.air = Air
-transportMode.roro.accompanied = RoRo - accompanied (self-drive)
-transportMode.roro.unaccompanied = RoRo - unaccompanied
-
+transportMode.roro.accompanied = Roll on, Roll off ferry (RoRo) - accompanied (self-drive)
+transportMode.roro.unaccompanied = Roll on, Roll off ferry (RoRo) - unaccompanied
 transportMode.checkYourAnswersLabel = What is the mode of transport?
 transportMode.error.required = Select the mode of transport
 transportMode.change.hidden = the mode of transport

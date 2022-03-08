@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.transport
 
-import controllers.routes
+import controllers.transport.routes
 import models.{CheckMode, UserAnswers}
-import pages.TransportModePage
+import pages.transport.TransportModePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

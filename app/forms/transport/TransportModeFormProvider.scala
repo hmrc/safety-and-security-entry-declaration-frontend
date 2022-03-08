@@ -14,32 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transport
 
-import forms.behaviours.OptionFieldBehaviours
+import forms.mappings.Mappings
 import models.TransportMode
-import play.api.data.FormError
+import play.api.data.Form
 
-class TransportModeFormProviderSpec extends OptionFieldBehaviours {
+import javax.inject.Inject
 
-  val form = new TransportModeFormProvider()()
+class TransportModeFormProvider @Inject() extends Mappings {
 
-  ".value" - {
-
-    val fieldName = "value"
-    val requiredKey = "transportMode.error.required"
-
-    behave like optionsField[TransportMode](
-      form,
-      fieldName,
-      validValues = TransportMode.values,
-      invalidError = FormError(fieldName, "error.invalid")
+  def apply(): Form[TransportMode] =
+    Form(
+      "value" -> enumerable[TransportMode]("transportMode.error.required")
     )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

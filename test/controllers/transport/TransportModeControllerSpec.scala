@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transport
 
 import base.SpecBase
-import forms.TransportModeFormProvider
+import controllers.{routes => baseRoutes}
+import forms.transport.TransportModeFormProvider
 import models.{NormalMode, TransportMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.TransportModePage
+import pages.transport.TransportModePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.TransportModeView
+import views.html.transport.TransportModeView
 
 import scala.concurrent.Future
 
@@ -143,7 +144,7 @@ class TransportModeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -160,7 +161,7 @@ class TransportModeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

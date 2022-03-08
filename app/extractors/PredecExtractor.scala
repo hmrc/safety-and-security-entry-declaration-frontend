@@ -17,11 +17,10 @@
 package extractors
 
 import cats.implicits._
-
 import models.{LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
 import models.completion.answers.Predec
-import pages.TransportModePage
 import pages.predec._
+import pages.transport.TransportModePage
 
 class PredecExtractor(
   override protected implicit val answers: UserAnswers
