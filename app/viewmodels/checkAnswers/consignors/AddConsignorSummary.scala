@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.consignors
 
 import controllers.consignors.{routes => consignorRoutes}
-import models.{ConsignorWithEori, ConsignorWithoutEori, Index, NormalMode, UserAnswers}
+import models.{TraderWithEori, TraderWithoutEori, Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignors.AllConsignorsQuery
@@ -33,8 +33,8 @@ object AddConsignorSummary  {
     answers.get(AllConsignorsQuery).getOrElse(List.empty).zipWithIndex.map {
       case (consignor, index) =>
         val name = consignor match {
-          case t: ConsignorWithEori    => HtmlFormat.escape(t.eori).toString
-          case t: ConsignorWithoutEori => HtmlFormat.escape(t.name).toString
+          case t: TraderWithEori    => HtmlFormat.escape(t.eori).toString
+          case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
         ListItem(
@@ -49,8 +49,8 @@ object AddConsignorSummary  {
       consignors =>
 
         val value = consignors.map {
-          case c: ConsignorWithEori => c.eori
-          case c: ConsignorWithoutEori => c.name
+          case c: TraderWithEori => c.eori
+          case c: TraderWithoutEori => c.name
         }.map(HtmlFormat.escape).mkString("<br>")
 
         SummaryListRowViewModel(

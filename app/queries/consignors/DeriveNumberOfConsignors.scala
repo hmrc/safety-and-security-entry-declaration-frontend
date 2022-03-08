@@ -16,13 +16,13 @@
 
 package queries.consignors
 
-import models.Consignor
+import models.Trader
 import play.api.libs.json.JsPath
 import queries.Derivable
 
-case object DeriveNumberOfConsignors extends Derivable[List[Consignor], Int] {
+case object DeriveNumberOfConsignors extends Derivable[List[Trader], Int] {
 
-  override val derive: List[Consignor] => Int = _.size
+  override val derive: List[Trader] => Int = _.size
 
   override def path: JsPath = JsPath \ "consignors"
 }
