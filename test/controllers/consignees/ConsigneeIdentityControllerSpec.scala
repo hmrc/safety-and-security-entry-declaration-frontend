@@ -23,10 +23,11 @@ import models.{ConsigneeIdentity, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignees
+import pages.consignees.ConsigneeIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignees.ConsigneeIdQuery
 import repositories.SessionRepository
 import views.html.consignees.ConsigneeIdentityView
 
@@ -64,9 +65,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(consignees.ConsigneeIdentityPage(index), ConsigneeIdentity.values.head)
-        .success
-        .value
+        .set(ConsigneeIdentityPage(index), ConsigneeIdentity.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -87,7 +86,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must save the answer and save the id, and redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -105,12 +104,11 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(consignees.ConsigneeIdentityPage(index), ConsigneeIdentity.values.head)
-          .success
-          .value
+          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.values.head).success.value
+          .set(ConsigneeIdQuery(index), 1).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignees.ConsigneeIdentityPage(index)
+        redirectLocation(result).value mustEqual ConsigneeIdentityPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))

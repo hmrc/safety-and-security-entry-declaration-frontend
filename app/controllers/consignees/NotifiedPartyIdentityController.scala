@@ -16,13 +16,16 @@
 
 package controllers.consignees
 
+import controllers.ByIdExtractor
 import controllers.actions._
 import forms.consignees.NotifiedPartyIdentityFormProvider
+
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignees.NotifiedPartyIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignees.{AllNotifiedPartiesQuery, NotifiedPartyIdQuery}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.NotifiedPartyIdentityView
@@ -40,7 +43,8 @@ class NotifiedPartyIdentityController @Inject() (
   view: NotifiedPartyIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
+  with I18nSupport
+  with ByIdExtractor {
 
   val form = formProvider()
 
@@ -56,17 +60,22 @@ class NotifiedPartyIdentityController @Inject() (
     }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getItemId(index, AllNotifiedPartiesQuery) {
+          notifiedPartyId =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyIdentityPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(NotifiedPartyIdentityPage(index).navigate(mode, updatedAnswers))
-        )
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                value =>
+                  for {
+                    answers <- Future.fromTry(request.userAnswers.set(NotifiedPartyIdentityPage(index), value))
+                    updatedAnswers <- Future.fromTry(answers.set(NotifiedPartyIdQuery(index), notifiedPartyId))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(NotifiedPartyIdentityPage(index).navigate(mode, updatedAnswers))
+              )
+        }
     }
 }

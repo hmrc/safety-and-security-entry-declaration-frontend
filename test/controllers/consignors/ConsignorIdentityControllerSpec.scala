@@ -23,10 +23,11 @@ import models.{ConsignorIdentity, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignors
+import pages.consignors.ConsignorIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignors.ConsignorIdQuery
 import repositories.SessionRepository
 import views.html.consignors.ConsignorIdentityView
 
@@ -64,7 +65,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(consignors.ConsignorIdentityPage(index), ConsignorIdentity.values.head)
+        .set(ConsignorIdentityPage(index), ConsignorIdentity.values.head)
         .success
         .value
 
@@ -87,7 +88,7 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must save the answer and save the id, and redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -105,15 +106,11 @@ class ConsignorIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(consignors.ConsignorIdentityPage(index), ConsignorIdentity.values.head)
-          .success
-          .value
+          .set(ConsignorIdentityPage(index), ConsignorIdentity.values.head).success.value
+          .set(ConsignorIdQuery(index), 1).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignors
-          .ConsignorIdentityPage(index)
-          .navigate(NormalMode, expectedAnswers)
-          .url
+        redirectLocation(result).value mustEqual ConsignorIdentityPage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
