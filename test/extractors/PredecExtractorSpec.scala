@@ -16,26 +16,26 @@
 
 package extractors
 
-import cats.implicits._
-import org.scalacheck.Arbitrary.arbitrary
 import base.SpecBase
+import cats.implicits._
 import extractors.ValidationError._
-import models.{ProvideGrossWeight, TransportMode, UserAnswers}
 import models.completion.answers.Predec
+import models.{GbEori, LodgingPersonType, ProvideGrossWeight, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.predec._
-import pages.transport.TransportModePage
 
 class PredecExtractorSpec extends SpecBase {
   private val location = "test-declaration-location"
   private val totalMass = 1000
-  private val transportMode = TransportMode.Road
+  private val carrierEORI = arbitrary[GbEori].sample.value
 
   private val validAnswers = {
     arbitrary[UserAnswers].sample.value
       .set(DeclarationPlacePage, location).success.value
       .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
       .set(TotalGrossWeightPage, BigDecimal.exact(totalMass)).success.value
-      .set(TransportModePage, transportMode).success.value
+      .set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+      .set(CarrierEORIPage, carrierEORI).success.value
   }
 
   "The predeclaration extractor" - {
@@ -46,7 +46,7 @@ class PredecExtractorSpec extends SpecBase {
         lrn = validAnswers.lrn,
         location = location,
         totalMass = Some(totalMass),
-        transport = transportMode
+        carrierEORI = Some(carrierEORI)
       )
       val actual = new PredecExtractor().extract().value
 
@@ -58,13 +58,15 @@ class PredecExtractorSpec extends SpecBase {
         validAnswers
           .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
           .remove(TotalGrossWeightPage).success.value
+          .set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+          .remove(CarrierEORIPage).success.value
       }
 
       val expected = Predec(
         lrn = validAnswers.lrn,
         location = location,
         totalMass = None,
-        transport = transportMode
+        carrierEORI = None
       )
       val actual = new PredecExtractor().extract().value
 
@@ -77,13 +79,13 @@ class PredecExtractorSpec extends SpecBase {
           .remove(DeclarationPlacePage).success.value
           .remove(ProvideGrossWeightPage).success.value
           .remove(TotalGrossWeightPage).success.value
-          .remove(TransportModePage).success.value
+          .remove(LodgingPersonTypePage).success.value
       }
 
       val expected = List(
         MissingField(DeclarationPlacePage),
         MissingField(ProvideGrossWeightPage),
-        MissingField(TransportModePage)
+        MissingField(LodgingPersonTypePage)
       )
       val actual = new PredecExtractor().extract().invalidValue.toList
 
@@ -97,6 +99,15 @@ class PredecExtractorSpec extends SpecBase {
       val actual = new PredecExtractor().extract().invalidValue.toList
 
       actual must contain theSameElementsAs(expected)
+    }
+
+    "should fail if carrier details are not fully provided" in {
+      implicit val answers = validAnswers.remove(CarrierEORIPage).success.value
+
+      val expected = List(MissingField(CarrierEORIPage))
+      val actual = new PredecExtractor().extract().invalidValue.toList
+
+      actual must contain theSameElementsAs expected
     }
   }
 }

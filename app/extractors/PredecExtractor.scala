@@ -17,10 +17,9 @@
 package extractors
 
 import cats.implicits._
-import models.{LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
+import models.{GbEori, LocalReferenceNumber, LodgingPersonType, ProvideGrossWeight, UserAnswers}
 import models.completion.answers.Predec
 import pages.predec._
-import pages.transport.TransportModePage
 
 class PredecExtractor(
   override protected implicit val answers: UserAnswers
@@ -34,12 +33,18 @@ class PredecExtractor(
     } getOrElse ValidationError.MissingField(ProvideGrossWeightPage).invalidNec
   }
 
+  private def extractCarrierEORI(): ValidationResult[Option[GbEori]] =
+    answers.get(LodgingPersonTypePage) map {
+      case LodgingPersonType.Carrier => None.validNec
+      case LodgingPersonType.Representative => requireAnswer(CarrierEORIPage) map { Some(_) }
+    } getOrElse ValidationError.MissingField(LodgingPersonTypePage).invalidNec
+
   override def extract(): ValidationResult[Predec] = {
     val lrn: ValidationResult[LocalReferenceNumber] = answers.lrn.validNec
     val location = requireAnswer(DeclarationPlacePage)
     val totalMass = extractTotalMass()
-    val transportMode = requireAnswer(TransportModePage)
+    val carrierEORI = extractCarrierEORI()
 
-    (lrn, location, totalMass, transportMode).mapN(Predec)
+    (lrn, location, totalMass, carrierEORI).mapN(Predec)
   }
 }

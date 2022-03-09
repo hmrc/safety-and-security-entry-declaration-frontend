@@ -41,10 +41,7 @@ case object TransportModePage extends QuestionPage[TransportMode] {
       case Some(Maritime) =>
         transportRoutes.MaritimeIdentityController.onPageLoad(NormalMode, answers.lrn)
 
-      case Some(RoroAccompanied) | Some(RoroUnaccompanied) | Some(Road) =>
+      case Some(_) =>
         transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn)
-
-      case None =>
-        routes.JourneyRecoveryController.onPageLoad()
     }
 }

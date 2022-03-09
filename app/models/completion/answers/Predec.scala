@@ -16,7 +16,7 @@
 
 package models.completion.answers
 
-import models.{LocalReferenceNumber, TransportMode}
+import models.{GbEori, LocalReferenceNumber, TransportMode}
 
 /**
  * Models the answers given for a completed predeclaration section
@@ -25,5 +25,5 @@ case class Predec(
   lrn: LocalReferenceNumber,
   location: String,
   totalMass: Option[BigDecimal],
-  transport: TransportMode
+  carrierEORI: Option[GbEori]
 )
