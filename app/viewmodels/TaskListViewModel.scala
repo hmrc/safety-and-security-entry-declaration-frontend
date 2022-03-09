@@ -17,6 +17,7 @@
 package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
+import controllers.consignors.{routes => consignorRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{NormalMode, UserAnswers}
@@ -33,6 +34,7 @@ object TaskListViewModel {
       Seq(
         predecRow(answers),
         routeDetailsRow(answers),
+        consignorsRow(answers),
         consigneesRow(answers)
       )
     )
@@ -50,6 +52,14 @@ object TaskListViewModel {
       messageKey = messages("taskList.routeDetails"),
       link = routedetailsRoutes.CountryOfDepartureController.onPageLoad(NormalMode, answers.lrn),
       id = "route-details",
+      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+    )
+
+  private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+    TaskListRow(
+      messageKey          = messages("taskList.consignors"),
+      link                = consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn),
+      id                  = "consignors",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
 

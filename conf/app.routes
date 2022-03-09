@@ -166,6 +166,22 @@ POST       /:lrn/consigneeKnown/                        controllers.consignees.C
 GET        /:lrn/changeConsigneeKnown/                  controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeConsigneeKnown/                  controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
+GET        /:lrn/checkConsignor/:index                              controllers.consignors.CheckConsignorController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
+
+
+GET        /:lrn/addConsignor                        controllers.consignors.AddConsignorController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/addConsignor                        controllers.consignors.AddConsignorController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAddConsignor                  controllers.consignors.AddConsignorController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAddConsignor                  controllers.consignors.AddConsignorController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+
+
+GET        /:lrn/removeConsignor/:index                        controllers.consignors.RemoveConsignorController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/removeConsignor/:index                        controllers.consignors.RemoveConsignorController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeRemoveConsignor/:index                  controllers.consignors.RemoveConsignorController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeRemoveConsignor/:index                  controllers.consignors.RemoveConsignorController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+
 GET        /:lrn/consignorAddress/:itemIndex                        controllers.consignors.ConsignorAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/consignorAddress/:itemIndex                        controllers.consignors.ConsignorAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 GET        /:lrn/changeConsignorAddress/:itemIndex                  controllers.consignors.ConsignorAddressController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)

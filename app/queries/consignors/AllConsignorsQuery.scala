@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package queries.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.Trader
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Gettable
 
-case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
+case object AllConsignorsQuery extends Gettable[List[Trader]] {
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
-
-  override def toString: String = "name"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def path: JsPath = JsPath \ "consignors"
 }

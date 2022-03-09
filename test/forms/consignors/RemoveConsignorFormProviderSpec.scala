@@ -14,21 +14,32 @@
  * limitations under the License.
  */
 
-package pages.consignors
+package forms.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
+class RemoveConsignorFormProviderSpec extends BooleanFieldBehaviours {
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+  val requiredKey = "removeConsignor.error.required"
+  val invalidKey = "error.boolean"
 
-  override def toString: String = "name"
+  val form = new RemoveConsignorFormProvider()()
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

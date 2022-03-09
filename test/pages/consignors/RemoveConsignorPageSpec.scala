@@ -19,35 +19,41 @@ package pages.consignors
 import base.SpecBase
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.routes
-import models.{Address, CheckMode, NormalMode}
+import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
+class RemoveConsignorPageSpec extends SpecBase with PageBehaviours {
 
-  "ConsignorAddressPage" - {
+  "RemoveConsignorPage" - {
 
-    beRetrievable[Address](ConsignorAddressPage(index))
+    beRetrievable[Boolean](RemoveConsignorPage(index))
 
-    beSettable[Address](ConsignorAddressPage(index))
+    beSettable[Boolean](RemoveConsignorPage(index))
 
-    beRemovable[Address](ConsignorAddressPage(index))
+    beRemovable[Boolean](RemoveConsignorPage(index))
 
     "must navigate in Normal Mode" - {
 
-      "to `CYA`" in {
-          ConsignorAddressPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            consignorRoutes.CheckConsignorController.onPageLoad(emptyUserAnswers.lrn, index)
-          )
+      "to Add Consignor when there is still at least one consignor in the user's answers" in {
+
+        val answers = emptyUserAnswers.set(ConsignorEORIPage(index), GbEori("123456789000")).success.value
+
+        RemoveConsignorPage(index).navigate(NormalMode, answers)
+          .mustEqual(consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Consignor Identity when there are no consignors left" in {
+
+        RemoveConsignorPage(index).navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
       }
     }
 
     "must navigate in Check Mode" - {
 
       "to Check Your Answers" in {
-          ConsignorAddressPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
+
+        RemoveConsignorPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

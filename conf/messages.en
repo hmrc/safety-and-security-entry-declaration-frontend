@@ -190,6 +190,7 @@ taskList.predec = Pre-declaration
 taskList.routeDetails = Route details
 taskList.carrier = Carrier details
 taskList.consignees = Consignees and notified parties
+taskList.consignors = Consignors
 taskList.completed = Completed
 taskList.notStarted = Not started
 taskList.inProgress = In progress
@@ -481,8 +482,16 @@ addConsignee.heading = Consignees
 addConsignee.error.required = Select yes if you need to add another consignee
 addConsignee.addAnother = Do you need to add any more consignees?
 
+addConsignor.title = Consignors
+addConsignor.heading = Consignors
+addConsignor.error.required = Select yes if you need to add another consignor
+addConsignor.addAnother = Do you need to add any more consignor?
+
 consignees.checkYourAnswersLabel = Consignees
 consignees.change.hidden = the consignees
+
+consignors.checkYourAnswersLabel = Consignors
+consignors.change.hidden = the consignors
 
 addNotifiedParty.title = Notified Parties
 addNotifiedParty.heading = Notified Parties
@@ -492,6 +501,10 @@ addNotifiedParty.addAnother = Do you need to add any more notified parties?
 removeConsignee.title = Are you sure you want to remove this consignee?
 removeConsignee.heading = Are you sure you want to remove this consignee?
 removeConsignee.error.required = Select yes if you want to remove this consignee
+
+removeConsignor.title = Are you sure you want to remove this consignor?
+removeConsignor.heading = Are you sure you want to remove this consignor?
+removeConsignor.error.required = Select yes if you want to remove this consignor
 
 removeNotifiedParty.title = Are you sure you want to remove this notified party?
 removeNotifiedParty.heading = Are you sure you want to remove this notified party?
@@ -505,6 +518,9 @@ addAnyNotifiedParties.change.hidden = if there are any notified parties
 
 checkConsignee.title = Check your consignee
 checkConsignee.heading = Check your consignee
+
+checkConsignor.title = Check your consignor
+checkConsignor.heading = Check your consignor
 
 checkNotifiedParty.title = Check your notified party
 checkNotifiedParty.heading = Check your notified party

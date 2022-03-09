@@ -16,19 +16,19 @@
 
 package pages.consignors
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{Address, Index, NormalMode, UserAnswers}
+import controllers.consignors.{routes => consignorRoutes}
+import models.{Address, Index, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class ConsignorAddressPage(index: Index) extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
-  override def toString: String = "consignorAddress"
+  override def toString: String = "address"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
+    consignorRoutes.CheckConsignorController.onPageLoad(answers.lrn, index)
   }
 }
