@@ -26,9 +26,10 @@ import scala.concurrent.Future
 
 trait ByIdExtractor {
 
-  protected def getItemId[A <: WithId](index: Index, allItemsQuery: Gettable[List[A]])
-                                      (block: Int => Future[Result])
-                                      (implicit request: DataRequest[AnyContent], ev: Reads[A]): Future[Result] =
+
+  protected def getItemId[A <: WithId, B](index: Index, allItemsQuery: Gettable[List[A]])
+                                         (block: Int => B)
+                                         (implicit request: DataRequest[AnyContent], ev: Reads[A]): B =
     request.userAnswers.get(allItemsQuery).map {
       items =>
         items

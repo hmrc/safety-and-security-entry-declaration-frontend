@@ -91,9 +91,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
     Arbitrary {
       for {
+        id <- Gen.choose(1, 100)
         country <- arbitrary[Country]
         place <- arbitrary[String]
-      } yield PlaceOfLoading(country, place)
+      } yield PlaceOfLoading(id, country, place)
     }
 
   implicit lazy val arbitraryPaymentMethod: Arbitrary[PaymentMethod] =

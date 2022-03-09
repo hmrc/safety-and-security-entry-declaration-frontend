@@ -49,10 +49,10 @@ class ByIdExtractorSpec extends SpecBase {
 
   private class TestController extends ByIdExtractor {
 
-    def get(index: Index)(implicit request: DataRequest[AnyContent]): Future[Result] =
+    def get(index: Index)(implicit request: DataRequest[AnyContent]): Int =
       getItemId(index, AllItems) {
         id =>
-          Future.successful(Ok(Json.toJson(id)))
+          id
       }
   }
 
@@ -64,7 +64,7 @@ class ByIdExtractorSpec extends SpecBase {
 
       val controller = new TestController()
 
-      controller.get(Index(0)).futureValue mustEqual Ok(Json.toJson(1))
+      controller.get(Index(0)) mustEqual 1
     }
 
     "must return the existing Id of the item if it already exists in the user's answers" in {
@@ -78,8 +78,8 @@ class ByIdExtractorSpec extends SpecBase {
 
       val controller = new TestController()
 
-      controller.get(Index(0)).futureValue mustEqual Ok(Json.toJson(1))
-      controller.get(Index(1)).futureValue mustEqual Ok(Json.toJson(2))
+      controller.get(Index(0)) mustEqual 1
+      controller.get(Index(1)) mustEqual 2
     }
 
     "must return a value 1 greater than the maximum existing Id when this item isn't already in the user's answers" in {
@@ -93,7 +93,7 @@ class ByIdExtractorSpec extends SpecBase {
 
       val controller = new TestController()
 
-      controller.get(Index(2)).futureValue mustEqual Ok(Json.toJson(3))
+      controller.get(Index(2)) mustEqual 3
     }
   }
 }

@@ -25,13 +25,13 @@ import models.{Country, PlaceOfLoading}
 
 class PlaceOfLoadingFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[PlaceOfLoading] = Form(
+  def apply(id: Int): Form[PlaceOfLoading] = Form(
     mapping(
       "country" -> text("placeOfLoading.error.country.required")
         .verifying("placeOfLoading.error.country.required", x => internationalCountries.exists(_.code == x))
         .transform[Country](x => internationalCountries.find(_.code == x).get, _.code),
       "place" -> text("placeOfLoading.error.place.required")
         .verifying(maxLength(32, "placeOfLoading.error.place.length"))
-    )(PlaceOfLoading.apply)(PlaceOfLoading.unapply)
+    )(PlaceOfLoading(id, _, _))(p => Some(p.country, p.place))
   )
 }

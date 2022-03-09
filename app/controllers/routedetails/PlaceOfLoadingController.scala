@@ -16,12 +16,14 @@
 
 package controllers.routedetails
 
+import controllers.ByIdExtractor
 import controllers.actions._
 import forms.routedetails.PlaceOfLoadingFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.routedetails.PlaceOfLoadingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.routedetails.AllPlacesOfLoadingQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.PlaceOfLoadingView
@@ -40,33 +42,45 @@ class PlaceOfLoadingController @Inject() (
   view: PlaceOfLoadingView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
-
-  private val form = formProvider()
+  with I18nSupport
+  with ByIdExtractor {
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(PlaceOfLoadingPage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        getItemId(index, AllPlacesOfLoadingQuery) {
+          placeOfLoadingId =>
 
-      Ok(view(preparedForm, mode, lrn, index))
+            val form = formProvider(placeOfLoadingId)
+
+            val preparedForm = request.userAnswers.get(PlaceOfLoadingPage(index)) match {
+              case None => form
+              case Some(value) => form.fill(value)
+            }
+
+            Ok(view(preparedForm, mode, lrn, index))
+        }
     }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getItemId(index, AllPlacesOfLoadingQuery) {
+          placeOfLoadingId =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfLoadingPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(PlaceOfLoadingPage(index).navigate(mode, updatedAnswers))
-        )
+            val form = formProvider(placeOfLoadingId)
+
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfLoadingPage(index), value))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(PlaceOfLoadingPage(index).navigate(mode, updatedAnswers))
+              )
+        }
     }
 }
