@@ -19,14 +19,15 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.RemoveConsigneeFormProvider
-import models.NormalMode
+import models.{Address, Country, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignees.RemoveConsigneePage
+import pages.consignees.{ConsigneeAddressPage, RemoveConsigneePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignees.ConsigneeQuery
 import repositories.SessionRepository
 import views.html.consignees.RemoveConsigneeView
 
@@ -36,6 +37,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveConsigneeFormProvider()
   val form = formProvider()
+  private val baseAnswers = emptyUserAnswers.set(ConsigneeAddressPage(index),Address("test","test","test",Country("test","test"))).success.value
 
   lazy val removeConsigneeRoute = routes.RemoveConsigneeController.onPageLoad(NormalMode, lrn, index).url
 
@@ -75,14 +77,14 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must remove the consignee and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -91,14 +93,44 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, removeConsigneeRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemoveConsigneePage(index), true).success.value
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers.remove(ConsigneeQuery(index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveConsigneePage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemoveConsigneePage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
+
+    "must redirect to the next page without removing the consignee when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeConsigneeRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveConsigneePage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
+        verify(mockSessionRepository, never()).set(any())
+      }
+    }
+
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 

@@ -18,11 +18,13 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.RemoveConsigneeFormProvider
+
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignees.RemoveConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignees.ConsigneeQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.RemoveConsigneeView
@@ -61,10 +63,16 @@ class RemoveConsigneeController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveConsigneePage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveConsigneePage(index).navigate(mode, updatedAnswers))
+          if (value) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsigneeQuery(index)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(RemoveConsigneePage(index).navigate(mode, updatedAnswers))
+          } else {
+            Future.successful(
+              Redirect(RemoveConsigneePage(index).navigate(mode, request.userAnswers))
+            )
+          }
       )
   }
 }

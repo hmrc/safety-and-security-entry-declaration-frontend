@@ -131,7 +131,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         verify(mockSessionRepository, never()).set(any())
       }
     }
-    
+
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
