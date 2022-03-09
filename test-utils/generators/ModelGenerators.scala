@@ -24,6 +24,62 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield RoroUnaccompaniedIdentity(field1, field2)
+    }
+
+  implicit lazy val arbitraryRoroAccompaniedIdentity: Arbitrary[RoroAccompaniedIdentity] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield RoroAccompaniedIdentity(field1, field2)
+    }
+
+  implicit lazy val arbitraryRoadIdentity: Arbitrary[RoadIdentity] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield RoadIdentity(field1, field2)
+    }
+
+  implicit lazy val arbitraryRailIdentity: Arbitrary[RailIdentity] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield RailIdentity(field1, field2)
+    }
+
+  implicit lazy val arbitraryOverallDocument: Arbitrary[OverallDocument] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield OverallDocument(field1, field2)
+    }
+
+  implicit lazy val arbitraryMaritimeIdentity: Arbitrary[MaritimeIdentity] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield MaritimeIdentity(field1, field2)
+    }
+
+  implicit lazy val arbitraryAirIdentity: Arbitrary[AirIdentity] =
+    Arbitrary {
+      for {
+        field1 <- arbitrary[String]
+        field2 <- arbitrary[String]
+      } yield AirIdentity(field1, field2)
+    }
+
   implicit lazy val arbitraryPlaceOfUnloading: Arbitrary[PlaceOfUnloading] =
     Arbitrary {
       for {

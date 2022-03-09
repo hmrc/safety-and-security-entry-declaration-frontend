@@ -26,12 +26,28 @@ import pages.consignors._
 import pages.goods._
 import pages.predec._
 import pages.routedetails._
+import pages.transport._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(SealPage.type, JsValue)] ::
+    arbitrary[(RoroUnaccompaniedIdentityPage.type, JsValue)] ::
+    arbitrary[(RoroAccompaniedIdentityPage.type, JsValue)] ::
+    arbitrary[(RoadIdentityPage.type, JsValue)] ::
+    arbitrary[(RemoveSealPage.type, JsValue)] ::
+    arbitrary[(RemoveOverallDocumentPage.type, JsValue)] ::
+    arbitrary[(RailIdentityPage.type, JsValue)] ::
+    arbitrary[(OverallDocumentPage.type, JsValue)] ::
+    arbitrary[(NationalityOfTransportPage.type, JsValue)] ::
+    arbitrary[(MaritimeIdentityPage.type, JsValue)] ::
+    arbitrary[(AnyOverallDocumentsPage.type, JsValue)] ::
+    arbitrary[(AirIdentityPage.type, JsValue)] ::
+    arbitrary[(AddSealPage.type, JsValue)] ::
+    arbitrary[(AddOverallDocumentPage.type, JsValue)] ::
+    arbitrary[(AddAnySealsPage.type, JsValue)] ::
     arbitrary[(PlaceOfUnloadingPage, JsValue)] ::
     arbitrary[(PlaceOfLoadingPage, JsValue)] ::
     arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] ::

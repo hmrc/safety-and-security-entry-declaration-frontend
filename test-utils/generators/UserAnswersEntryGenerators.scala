@@ -25,9 +25,130 @@ import pages.consignors._
 import pages.goods._
 import pages.predec._
 import pages.routedetails._
+import pages.transport._
 import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+
+  implicit lazy val arbitrarySealUserAnswersEntry: Arbitrary[(SealPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[SealPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRoroUnaccompaniedIdentityUserAnswersEntry: Arbitrary[(RoroUnaccompaniedIdentityPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RoroUnaccompaniedIdentityPage.type]
+        value <- arbitrary[RoroUnaccompaniedIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRoroAccompaniedIdentityUserAnswersEntry: Arbitrary[(RoroAccompaniedIdentityPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RoroAccompaniedIdentityPage.type]
+        value <- arbitrary[RoroAccompaniedIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRoadIdentityUserAnswersEntry: Arbitrary[(RoadIdentityPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RoadIdentityPage.type]
+        value <- arbitrary[RoadIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRemoveSealUserAnswersEntry: Arbitrary[(RemoveSealPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RemoveSealPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRemoveOverallDocumentUserAnswersEntry: Arbitrary[(RemoveOverallDocumentPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RemoveOverallDocumentPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryRailIdentityUserAnswersEntry: Arbitrary[(RailIdentityPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[RailIdentityPage.type]
+        value <- arbitrary[RailIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryOverallDocumentUserAnswersEntry: Arbitrary[(OverallDocumentPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[OverallDocumentPage.type]
+        value <- arbitrary[OverallDocument].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNationalityOfTransportUserAnswersEntry: Arbitrary[(NationalityOfTransportPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[NationalityOfTransportPage.type]
+        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryMaritimeIdentityUserAnswersEntry: Arbitrary[(MaritimeIdentityPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[MaritimeIdentityPage.type]
+        value <- arbitrary[MaritimeIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAnyOverallDocumentsUserAnswersEntry: Arbitrary[(AnyOverallDocumentsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AnyOverallDocumentsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAirIdentityUserAnswersEntry: Arbitrary[(AirIdentityPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AirIdentityPage.type]
+        value <- arbitrary[AirIdentity].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddSealUserAnswersEntry: Arbitrary[(AddSealPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddSealPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddOverallDocumentUserAnswersEntry: Arbitrary[(AddOverallDocumentPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddOverallDocumentPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryAddAnySealsUserAnswersEntry: Arbitrary[(AddAnySealsPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[AddAnySealsPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
 
   implicit lazy val arbitraryPlaceOfUnloadingUserAnswersEntry: Arbitrary[(PlaceOfUnloadingPage, JsValue)] =
     Arbitrary {

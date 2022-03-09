@@ -111,14 +111,13 @@ totalGrossWeight.change.hidden = the total gross weight of the goods
 
 transportMode.title = What is the mode of transport?
 transportMode.heading = What is the mode of transport?
-
+transportMode.hint = Tell us how your goods will enter Great Britain.
 transportMode.maritime = Maritime
 transportMode.rail = Rail
-transportMode.road = Road (including Channel Tunnel shuttle service)
+transportMode.road = Road (including Channel tunnel shuttle service)
 transportMode.air = Air
-transportMode.roro.accompanied = RoRo - accompanied (self-drive)
-transportMode.roro.unaccompanied = RoRo - unaccompanied
-
+transportMode.roro.accompanied = Roll on, Roll off ferry (RoRo) - accompanied (self-drive)
+transportMode.roro.unaccompanied = Roll on, Roll off ferry (RoRo) - unaccompanied
 transportMode.checkYourAnswersLabel = What is the mode of transport?
 transportMode.error.required = Select the mode of transport
 transportMode.change.hidden = the mode of transport
@@ -573,3 +572,137 @@ placeOfUnloading.error.place.required = Enter the place
 placeOfUnloading.error.place.length = The place must be 32 characters or less
 placeOfUnloading.country.change.hidden = the country of unloading
 placeOfUnloading.place.change.hidden = the place of unloading
+
+addAnySeals.title = addAnySeals
+addAnySeals.heading = addAnySeals
+addAnySeals.checkYourAnswersLabel = addAnySeals
+addAnySeals.error.required = Select yes if addAnySeals
+addAnySeals.change.hidden = AddAnySeals
+
+addOverallDocument.title = addOverallDocument
+addOverallDocument.heading = addOverallDocument
+addOverallDocument.checkYourAnswersLabel = addOverallDocument
+addOverallDocument.error.required = Select yes if addOverallDocument
+addOverallDocument.change.hidden = AddOverallDocument
+
+addSeal.title = addSeal
+addSeal.heading = addSeal
+addSeal.checkYourAnswersLabel = addSeal
+addSeal.error.required = Select yes if addSeal
+addSeal.change.hidden = AddSeal
+
+airIdentity.title = airIdentity
+airIdentity.heading = airIdentity
+airIdentity.field1 = field1
+airIdentity.field2 = field2
+airIdentity.checkYourAnswersLabel = AirIdentity
+airIdentity.error.field1.required = Enter field1
+airIdentity.error.field2.required = Enter field2
+airIdentity.error.field1.length = field1 must be 100 characters or less
+airIdentity.error.field2.length = field2 must be 100 characters or less
+airIdentity.field1.change.hidden = field1
+airIdentity.field2.change.hidden = field2
+
+anyOverallDocuments.title = anyOverallDocuments
+anyOverallDocuments.heading = anyOverallDocuments
+anyOverallDocuments.checkYourAnswersLabel = anyOverallDocuments
+anyOverallDocuments.error.required = Select yes if anyOverallDocuments
+anyOverallDocuments.change.hidden = AnyOverallDocuments
+
+maritimeIdentity.title = maritimeIdentity
+maritimeIdentity.heading = maritimeIdentity
+maritimeIdentity.field1 = field1
+maritimeIdentity.field2 = field2
+maritimeIdentity.checkYourAnswersLabel = MaritimeIdentity
+maritimeIdentity.error.field1.required = Enter field1
+maritimeIdentity.error.field2.required = Enter field2
+maritimeIdentity.error.field1.length = field1 must be 100 characters or less
+maritimeIdentity.error.field2.length = field2 must be 100 characters or less
+maritimeIdentity.field1.change.hidden = field1
+maritimeIdentity.field2.change.hidden = field2
+
+nationalityOfTransport.title = nationalityOfTransport
+nationalityOfTransport.heading = nationalityOfTransport
+nationalityOfTransport.checkYourAnswersLabel = nationalityOfTransport
+nationalityOfTransport.error.required = Enter nationalityOfTransport
+nationalityOfTransport.error.length = NationalityOfTransport must be 100 characters or less
+nationalityOfTransport.change.hidden = NationalityOfTransport
+
+overallDocument.title = overallDocument
+overallDocument.heading = overallDocument
+overallDocument.field1 = field1
+overallDocument.field2 = field2
+overallDocument.checkYourAnswersLabel = OverallDocument
+overallDocument.error.field1.required = Enter field1
+overallDocument.error.field2.required = Enter field2
+overallDocument.error.field1.length = field1 must be 100 characters or less
+overallDocument.error.field2.length = field2 must be 100 characters or less
+overallDocument.field1.change.hidden = field1
+overallDocument.field2.change.hidden = field2
+
+railIdentity.title = railIdentity
+railIdentity.heading = railIdentity
+railIdentity.field1 = field1
+railIdentity.field2 = field2
+railIdentity.checkYourAnswersLabel = RailIdentity
+railIdentity.error.field1.required = Enter field1
+railIdentity.error.field2.required = Enter field2
+railIdentity.error.field1.length = field1 must be 100 characters or less
+railIdentity.error.field2.length = field2 must be 100 characters or less
+railIdentity.field1.change.hidden = field1
+railIdentity.field2.change.hidden = field2
+
+removeOverallDocument.title = removeOverallDocument
+removeOverallDocument.heading = removeOverallDocument
+removeOverallDocument.checkYourAnswersLabel = removeOverallDocument
+removeOverallDocument.error.required = Select yes if removeOverallDocument
+removeOverallDocument.change.hidden = RemoveOverallDocument
+
+removeSeal.title = removeSeal
+removeSeal.heading = removeSeal
+removeSeal.checkYourAnswersLabel = removeSeal
+removeSeal.error.required = Select yes if removeSeal
+removeSeal.change.hidden = RemoveSeal
+
+roadIdentity.title = roadIdentity
+roadIdentity.heading = roadIdentity
+roadIdentity.field1 = field1
+roadIdentity.field2 = field2
+roadIdentity.checkYourAnswersLabel = RoadIdentity
+roadIdentity.error.field1.required = Enter field1
+roadIdentity.error.field2.required = Enter field2
+roadIdentity.error.field1.length = field1 must be 100 characters or less
+roadIdentity.error.field2.length = field2 must be 100 characters or less
+roadIdentity.field1.change.hidden = field1
+roadIdentity.field2.change.hidden = field2
+
+roroAccompaniedIdentity.title = roroAccompaniedIdentity
+roroAccompaniedIdentity.heading = roroAccompaniedIdentity
+roroAccompaniedIdentity.field1 = field1
+roroAccompaniedIdentity.field2 = field2
+roroAccompaniedIdentity.checkYourAnswersLabel = RoroAccompaniedIdentity
+roroAccompaniedIdentity.error.field1.required = Enter field1
+roroAccompaniedIdentity.error.field2.required = Enter field2
+roroAccompaniedIdentity.error.field1.length = field1 must be 100 characters or less
+roroAccompaniedIdentity.error.field2.length = field2 must be 100 characters or less
+roroAccompaniedIdentity.field1.change.hidden = field1
+roroAccompaniedIdentity.field2.change.hidden = field2
+
+roroUnaccompaniedIdentity.title = roroUnaccompaniedIdentity
+roroUnaccompaniedIdentity.heading = roroUnaccompaniedIdentity
+roroUnaccompaniedIdentity.field1 = field1
+roroUnaccompaniedIdentity.field2 = field2
+roroUnaccompaniedIdentity.checkYourAnswersLabel = RoroUnaccompaniedIdentity
+roroUnaccompaniedIdentity.error.field1.required = Enter field1
+roroUnaccompaniedIdentity.error.field2.required = Enter field2
+roroUnaccompaniedIdentity.error.field1.length = field1 must be 100 characters or less
+roroUnaccompaniedIdentity.error.field2.length = field2 must be 100 characters or less
+roroUnaccompaniedIdentity.field1.change.hidden = field1
+roroUnaccompaniedIdentity.field2.change.hidden = field2
+
+seal.title = seal
+seal.heading = seal
+seal.checkYourAnswersLabel = seal
+seal.error.required = Enter seal
+seal.error.length = Seal must be 20 characters or less
+seal.change.hidden = Seal
