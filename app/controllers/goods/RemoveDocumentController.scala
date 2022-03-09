@@ -18,11 +18,13 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.RemoveDocumentFormProvider
+
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.RemoveDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.DocumentQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemoveDocumentView
@@ -76,14 +78,20 @@ class RemoveDocumentController @Inject() (
             Future
               .successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, documentIndex))),
           value =>
-            for {
-              updatedAnswers <- Future.fromTry(
-                request.userAnswers.set(RemoveDocumentPage(itemIndex, documentIndex), value)
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(
+                  request.userAnswers.remove(DocumentQuery(itemIndex, documentIndex))
+                )
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(
+                RemoveDocumentPage(itemIndex, documentIndex).navigate(mode, updatedAnswers)
               )
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(
-              RemoveDocumentPage(itemIndex, documentIndex).navigate(mode, updatedAnswers)
-            )
+            } else {
+              Future.successful(
+                Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(mode, request.userAnswers))
+              )
+            }
         )
     }
 }

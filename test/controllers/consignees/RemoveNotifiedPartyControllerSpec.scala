@@ -21,12 +21,13 @@ import controllers.{routes => baseRoutes}
 import forms.consignees.RemoveNotifiedPartyFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignees.RemoveNotifiedPartyPage
+import pages.consignees.{NotifiedPartyNamePage, RemoveNotifiedPartyPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignees.NotifiedPartyQuery
 import repositories.SessionRepository
 import views.html.consignees.RemoveNotifiedPartyView
 
@@ -36,6 +37,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveNotifiedPartyFormProvider()
   val form = formProvider()
+  private val baseAnswers = emptyUserAnswers.set(NotifiedPartyNamePage(index),"Test LTD.").success.value
 
   lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(NormalMode, lrn, index).url
 
@@ -75,14 +77,15 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+
+    "must remove the notified party and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -91,12 +94,41 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, removeNotifiedPartyRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemoveNotifiedPartyPage(index), true).success.value
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers.remove(NotifiedPartyQuery(index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must redirect to the next page without removing the notified party when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeNotifiedPartyRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 

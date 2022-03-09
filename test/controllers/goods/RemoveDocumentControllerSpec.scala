@@ -19,14 +19,16 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.RemoveDocumentFormProvider
-import models.NormalMode
+import models.{Document, DocumentType, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.goods
+import pages.goods.{DocumentPage, GoodsItemGrossWeightPage, RemoveDocumentPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.DocumentQuery
 import repositories.SessionRepository
 import views.html.goods.RemoveDocumentView
 
@@ -36,6 +38,8 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveDocumentFormProvider()
   val form = formProvider()
+  private val baseAnswers = emptyUserAnswers.set(GoodsItemGrossWeightPage(index),BigDecimal(5)).success.value
+    .set(DocumentPage(index,index),Document(DocumentType("test","test"),"test")).success.value
 
   lazy val removeDocumentRoute =
     routes.RemoveDocumentController.onPageLoad(NormalMode, lrn, index, index).url
@@ -82,14 +86,14 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must remove the document and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -99,14 +103,40 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers =
-          emptyUserAnswers.set(goods.RemoveDocumentPage(index, index), true).success.value
+        val expectedAnswers = baseAnswers.remove(DocumentQuery(index,index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual goods.RemoveDocumentPage(index, index)
+        redirectLocation(result).value mustEqual RemoveDocumentPage(index,index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must redirect to the next page without removing the document when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeDocumentRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveDocumentPage(index,index)
+          .navigate(NormalMode, expectedAnswers)
+          .url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 

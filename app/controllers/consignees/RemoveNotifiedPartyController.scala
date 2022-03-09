@@ -18,11 +18,13 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.RemoveNotifiedPartyFormProvider
+
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignees.RemoveNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignees.NotifiedPartyQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.RemoveNotifiedPartyView
@@ -61,10 +63,16 @@ class RemoveNotifiedPartyController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
 
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveNotifiedPartyPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveNotifiedPartyPage(index).navigate(mode, updatedAnswers))
+          if (value) {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.remove(NotifiedPartyQuery(index)))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(RemoveNotifiedPartyPage(index).navigate(mode, updatedAnswers))
+          } else {
+            Future.successful(
+              Redirect(RemoveNotifiedPartyPage(index).navigate(mode, request.userAnswers))
+            )
+          }
       )
   }
 }
