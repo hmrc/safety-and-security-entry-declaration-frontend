@@ -16,6 +16,7 @@
 
 package controllers.routedetails
 
+import controllers.ByIdExtractor
 import controllers.actions._
 import forms.routedetails.PlaceOfUnloadingFormProvider
 
@@ -24,6 +25,7 @@ import models.{Index, LocalReferenceNumber, Mode}
 import pages.routedetails.PlaceOfUnloadingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.routedetails.AllPlacesOfUnloadingQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.PlaceOfUnloadingView
@@ -41,33 +43,44 @@ class PlaceOfUnloadingController @Inject() (
   view: PlaceOfUnloadingView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
-
-  private val form = formProvider()
+  with I18nSupport
+  with ByIdExtractor {
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        getItemId(index, AllPlacesOfUnloadingQuery) {
+          placeOfUnloadingId =>
 
-      val preparedForm = request.userAnswers.get(PlaceOfUnloadingPage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+            val form = formProvider(placeOfUnloadingId)
 
-      Ok(view(preparedForm, mode, lrn, index))
+            val preparedForm = request.userAnswers.get(PlaceOfUnloadingPage(index)) match {
+              case None => form
+              case Some(value) => form.fill(value)
+            }
+
+            Ok(view(preparedForm, mode, lrn, index))
+        }
     }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getItemId(index, AllPlacesOfUnloadingQuery) {
+          placeOfUnloadingId =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfUnloadingPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(PlaceOfUnloadingPage(index).navigate(mode, updatedAnswers))
-        )
+            val form = formProvider(placeOfUnloadingId)
+
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfUnloadingPage(index), value))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(PlaceOfUnloadingPage(index).navigate(mode, updatedAnswers))
+              )
+        }
     }
 }

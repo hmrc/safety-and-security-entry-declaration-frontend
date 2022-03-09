@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class PlaceOfUnloading(country: Country, place: String)
+case class PlaceOfUnloading(id: Int, country: Country, place: String) extends WithId
 
 object PlaceOfUnloading {
   implicit val format: OFormat[PlaceOfUnloading] = Json.format[PlaceOfUnloading]

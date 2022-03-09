@@ -83,9 +83,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryPlaceOfUnloading: Arbitrary[PlaceOfUnloading] =
     Arbitrary {
       for {
+        id <- Gen.choose(1, 100)
         country <- arbitrary[Country]
         place <- arbitrary[String]
-      } yield PlaceOfUnloading(country, place)
+      } yield PlaceOfUnloading(id, country, place)
     }
 
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
