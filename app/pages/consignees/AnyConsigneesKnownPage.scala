@@ -16,22 +16,24 @@
 
 package pages.consignees
 
-import controllers.consignees.{routes => consigneesRoutes}
+import controllers.consignees.{routes => consigneeRoutes}
+import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.consignees.DeriveNumberOfConsignees
 
-final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean] {
+case object AnyConsigneesKnownPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
+  override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "removeConsignee"
+  override def toString: String = "anyConsigneesKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(DeriveNumberOfConsignees) match {
-      case Some(size) if size > 0 => consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn)
-      case _                      => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, answers.lrn)
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(AnyConsigneesKnownPage) match {
+      case Some(true)  => consigneeRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case Some(false) => consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case None        => routes.JourneyRecoveryController.onPageLoad()
     }
+  }
 }

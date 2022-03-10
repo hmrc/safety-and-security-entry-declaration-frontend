@@ -40,7 +40,7 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
 
       val list = SummaryListViewModel(
         rows = Seq(
-          ConsigneeKnownSummary.row(request.userAnswers),
+          AnyConsigneesKnownSummary.row(request.userAnswers),
           AddConsigneeSummary.checkAnswersRow(request.userAnswers),
           AddAnyNotifiedPartiesSummary.row(request.userAnswers),
           AddNotifiedPartySummary.checkAnswersRow(request.userAnswers)

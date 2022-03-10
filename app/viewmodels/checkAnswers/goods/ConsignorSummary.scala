@@ -14,32 +14,37 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.consignees
+package viewmodels.checkAnswers.goods
 
-import controllers.consignees.{routes => consigneeRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, UserAnswers}
-import pages.consignees
+import pages.goods.ConsignorPage
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsigneeKnownSummary {
+object ConsignorSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(consignees.ConsigneeKnownPage).map { answer =>
+    answers.get(ConsignorPage).map {
+      answer =>
 
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = "consigneeKnown.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel(
-            "site.change",
-            consigneeRoutes.ConsigneeKnownController.onPageLoad(CheckMode, answers.lrn).url
-          ).withVisuallyHiddenText(messages("consigneeKnown.change.hidden"))
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"consignor.$answer"))
+          )
         )
-      )
+
+        SummaryListRowViewModel(
+          key     = "consignor.checkYourAnswersLabel",
+          value   = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", goodsRoutes.ConsignorController.onPageLoad(CheckMode, answers.lrn).url)
+              .withVisuallyHiddenText(messages("consignor.change.hidden"))
+          )
+        )
     }
 }

@@ -35,7 +35,7 @@ final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Bool
       case Some(size) if size > 0 =>
         consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn)
       case _ =>
-        answers.get(ConsigneeKnownPage) match {
+        answers.get(AnyConsigneesKnownPage) match {
           case Some(true) =>
             consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn)
           case Some(false) =>

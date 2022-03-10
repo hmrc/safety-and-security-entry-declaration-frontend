@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.consignees
+package controllers.goods
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.consignees.ConsigneeKnownFormProvider
+import forms.goods.ConsigneeKnownFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignees
+import pages.goods.ConsigneeKnownPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.consignees.ConsigneeKnownView
+import views.html.goods.ConsigneeKnownView
 
 import scala.concurrent.Future
 
@@ -37,8 +37,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new ConsigneeKnownFormProvider()
   val form = formProvider()
 
-  lazy val consigneeKnownRoute =
-    routes.ConsigneeKnownController.onPageLoad(NormalMode, lrn).url
+  lazy val consigneeKnownRoute = routes.ConsigneeKnownController.onPageLoad(NormalMode, lrn).url
 
   "ConsigneeKnown Controller" - {
 
@@ -54,16 +53,13 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ConsigneeKnownView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(consignees.ConsigneeKnownPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -75,10 +71,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -98,13 +91,11 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, consigneeKnownRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(consignees.ConsigneeKnownPage, true).success.value
+        val result          = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignees.ConsigneeKnownPage
-          .navigate(NormalMode, expectedAnswers)
-          .url
+        redirectLocation(result).value mustEqual ConsigneeKnownPage.navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -125,10 +116,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
       }
     }
 

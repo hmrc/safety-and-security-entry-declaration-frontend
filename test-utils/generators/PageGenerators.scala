@@ -28,6 +28,24 @@ import pages.transport._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryUnloadingPlacePage: Arbitrary[UnloadingPlacePage.type] =
+    Arbitrary(UnloadingPlacePage)
+
+  implicit lazy val arbitraryNotifiedPartyPage: Arbitrary[NotifiedPartyPage.type] =
+    Arbitrary(NotifiedPartyPage)
+
+  implicit lazy val arbitraryLoadingPlacePage: Arbitrary[LoadingPlacePage.type] =
+    Arbitrary(LoadingPlacePage)
+
+  implicit lazy val arbitraryConsignorPage: Arbitrary[ConsignorPage.type] =
+    Arbitrary(ConsignorPage)
+
+  implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage.type] =
+    Arbitrary(ConsigneeKnownPage)
+
+  implicit lazy val arbitraryConsigneePage: Arbitrary[ConsigneePage.type] =
+    Arbitrary(ConsigneePage)
+
   implicit lazy val arbitrarySealPage: Arbitrary[SealPage.type] =
     Arbitrary(SealPage)
 
@@ -121,8 +139,8 @@ trait PageGenerators {
   implicit lazy val arbitraryConsignorAddressPage: Arbitrary[ConsignorAddressPage] =
     Arbitrary(consignors.ConsignorAddressPage(Index(0)))
 
-  implicit lazy val arbitraryConsigneeKnownPage: Arbitrary[ConsigneeKnownPage.type] =
-    Arbitrary(consignees.ConsigneeKnownPage)
+  implicit lazy val arbitraryAnyConsigneesKnownPage: Arbitrary[AnyConsigneesKnownPage.type] =
+    Arbitrary(consignees.AnyConsigneesKnownPage)
 
   implicit lazy val arbitraryGoodsItemGrossWeightPage: Arbitrary[GoodsItemGrossWeightPage] =
     Arbitrary(goods.GoodsItemGrossWeightPage(Index(0)))

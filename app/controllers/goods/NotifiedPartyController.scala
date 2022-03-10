@@ -14,40 +14,41 @@
  * limitations under the License.
  */
 
-package controllers.consignees
+package controllers.goods
 
 import controllers.actions._
-import forms.consignees.ConsigneeKnownFormProvider
+import forms.goods.NotifiedPartyFormProvider
+
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
-import pages.consignees.ConsigneeKnownPage
+import pages.goods.NotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.consignees.ConsigneeKnownView
+import views.html.goods.NotifiedPartyView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConsigneeKnownController @Inject() (
+class NotifiedPartyController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
-  formProvider: ConsigneeKnownFormProvider,
+  formProvider: NotifiedPartyFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: ConsigneeKnownView
+  view: NotifiedPartyView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(ConsigneeKnownPage) match {
+      val preparedForm = request.userAnswers.get(NotifiedPartyPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,9 +65,9 @@ class ConsigneeKnownController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeKnownPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneeKnownPage.navigate(mode, updatedAnswers))
+            } yield Redirect(NotifiedPartyPage.navigate(mode, updatedAnswers))
         )
     }
 }

@@ -2,7 +2,7 @@ package viewmodels.checkAnswers.$package$
 
 import controllers.$package$.{routes => $package$Routes}
 import models.{CheckMode, UserAnswers}
-import pages.$className$Page
+import pages.$package$.$className$Page
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package pages.consignees
+package pages.goods
 
-import controllers.consignees.{routes => consigneeRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{NotifiedParty, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object ConsigneeKnownPage extends QuestionPage[Boolean] {
+case object NotifiedPartyPage extends QuestionPage[NotifiedParty] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "consigneeKnown"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(ConsigneeKnownPage) match {
-      case Some(true)  => consigneeRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) => consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case None        => routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override def toString: String = "notifiedParty"
 }

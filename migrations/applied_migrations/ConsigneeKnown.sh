@@ -6,11 +6,11 @@ echo "Applying migration ConsigneeKnown"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /:lrn/consigneeKnown                        controllers.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
-echo "POST       /:lrn/consigneeKnown                        controllers.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "GET        /:lrn/consigneeKnown                        controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "POST       /:lrn/consigneeKnown                        controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
 
-echo "GET        /:lrn/changeConsigneeKnown                  controllers.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
-echo "POST       /:lrn/changeConsigneeKnown                  controllers.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "GET        /:lrn/changeConsigneeKnown                  controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "POST       /:lrn/changeConsigneeKnown                  controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en

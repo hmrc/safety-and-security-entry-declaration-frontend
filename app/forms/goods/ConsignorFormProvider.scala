@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms.consignees
-
-import forms.mappings.Mappings
-import play.api.data.Form
+package forms.goods
 
 import javax.inject.Inject
 
-class ConsigneeKnownFormProvider @Inject() extends Mappings {
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.Consignor
 
-  def apply(): Form[Boolean] =
+class ConsignorFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Consignor] =
     Form(
-      "value" -> boolean("consigneeKnown.error.required")
+      "value" -> enumerable[Consignor]("consignor.error.required")
     )
 }

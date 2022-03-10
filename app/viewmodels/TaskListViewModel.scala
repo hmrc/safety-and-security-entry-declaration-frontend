@@ -66,7 +66,7 @@ object TaskListViewModel {
   private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey          = messages("taskList.consignees"),
-      link                = consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn),
+      link                = consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, answers.lrn),
       id                  = "consignees",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
