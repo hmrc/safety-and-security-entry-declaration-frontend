@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{GbEori, Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import queries.consignees.ConsigneeKeyQuery
 
 class AddConsigneePageSpec extends SpecBase with PageBehaviours {
 
@@ -29,7 +30,10 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
 
       "to Consignee Identity for the next index when the answer is yes" in {
 
-        val answers = emptyUserAnswers.set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+        val answers =
+          emptyUserAnswers
+            .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+            .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
         AddConsigneePage.navigate(NormalMode, answers, addAnother = true)
           .mustEqual(consigneesRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))

@@ -16,10 +16,6 @@
 
 package models
 
-import play.api.libs.json._
-
-case class PlaceOfLoading(key: Int, country: Country, place: String) extends WithKey
-
-object PlaceOfLoading {
-  implicit val format: OFormat[PlaceOfLoading] = Json.format[PlaceOfLoading]
+trait WithKey {
+  val key: Int
 }

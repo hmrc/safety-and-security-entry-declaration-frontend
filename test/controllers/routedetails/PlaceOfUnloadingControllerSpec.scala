@@ -19,14 +19,13 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.PlaceOfUnloadingFormProvider
-import models.{Country, NormalMode, PlaceOfUnloading, UserAnswers}
+import models.{Country, NormalMode, PlaceOfUnloading}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.routedetails.PlaceOfUnloadingPage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -36,13 +35,14 @@ import scala.concurrent.Future
 
 class PlaceOfUnloadingControllerSpec extends SpecBase with MockitoSugar {
 
+  val id = 1
   val formProvider = new PlaceOfUnloadingFormProvider()
-  val form = formProvider()
+  val form = formProvider(id)
   val country = arbitrary[Country].sample.value
 
   lazy val placeOfUnloadingRoute = routes.PlaceOfUnloadingController.onPageLoad(NormalMode, lrn, index).url
 
-  val placeOfUnloading = PlaceOfUnloading(country, "value 2")
+  val placeOfUnloading = PlaceOfUnloading(id, country, "value 2")
   val userAnswers = emptyUserAnswers.set(PlaceOfUnloadingPage(index), placeOfUnloading).success.value
 
   "PlaceOfUnloading Controller" - {

@@ -17,13 +17,30 @@
 package forms.routedetails
 
 import forms.behaviours.StringFieldBehaviours
-import models.Country
+import models.{Country, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.FormError
 
 class PlaceOfUnloadingFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new PlaceOfUnloadingFormProvider()()
+  val placeMaxLength = 32
+  val placeOfLoadingKey = 123
+  val form = new PlaceOfUnloadingFormProvider()(placeOfLoadingKey)
+
+  "must bind using the provided key" in {
+
+    val country = arbitrary[Country].sample.value
+    val place   = stringsWithMaxLength(placeMaxLength).sample.value
+
+    val data = Map(
+      "country" -> country.code,
+      "place" -> place
+    )
+
+    val result = form.bind(data)
+    result.errors mustBe empty
+    result.value.value mustEqual PlaceOfUnloading(placeOfLoadingKey, country, place)
+  }
 
   ".country" - {
 
@@ -59,19 +76,18 @@ class PlaceOfUnloadingFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "place"
     val requiredKey = "placeOfUnloading.error.place.required"
     val lengthKey = "placeOfUnloading.error.place.length"
-    val maxLength = 32
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithMaxLength(placeMaxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      maxLength = placeMaxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(placeMaxLength))
     )
 
     behave like mandatoryField(

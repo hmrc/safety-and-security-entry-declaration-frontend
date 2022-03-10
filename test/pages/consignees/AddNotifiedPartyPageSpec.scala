@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{GbEori, Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import queries.consignees.NotifiedPartyKeyQuery
 
 class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
@@ -29,7 +30,10 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
       "to Notified Party Identity for the next index when the answer is yes" in {
 
-        val answers = emptyUserAnswers.set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+        val answers =
+          emptyUserAnswers
+            .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+            .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
 
         AddNotifiedPartyPage.navigate(NormalMode, answers, addAnother = true)
           .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))

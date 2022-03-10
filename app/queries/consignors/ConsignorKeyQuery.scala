@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package queries.consignors
 
-import play.api.libs.json._
+import models.Index
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-case class PlaceOfLoading(key: Int, country: Country, place: String) extends WithKey
+final case class ConsignorKeyQuery(index: Index) extends Gettable[Int] with Settable[Int] {
 
-object PlaceOfLoading {
-  implicit val format: OFormat[PlaceOfLoading] = Json.format[PlaceOfLoading]
+  override def path: JsPath = JsPath \ "consignors" \ index.position \ "key"
 }

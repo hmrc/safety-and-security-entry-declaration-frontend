@@ -16,13 +16,16 @@
 
 package controllers.consignees
 
+import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.consignees.ConsigneeIdentityFormProvider
+
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignees.ConsigneeIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignees.{AllConsigneesQuery, ConsigneeKeyQuery}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.ConsigneeIdentityView
@@ -40,7 +43,8 @@ class ConsigneeIdentityController @Inject() (
   view: ConsigneeIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
+  with I18nSupport
+  with ByKeyExtractor {
 
   val form = formProvider()
 
@@ -56,17 +60,22 @@ class ConsigneeIdentityController @Inject() (
     }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getItemKey(index, AllConsigneesQuery) {
+          consigneeKey =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeIdentityPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneeIdentityPage(index).navigate(mode, updatedAnswers))
-        )
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                value =>
+                  for {
+                    answers <- Future.fromTry(request.userAnswers.set(ConsigneeIdentityPage(index), value))
+                    updatedAnswers <- Future.fromTry(answers.set(ConsigneeKeyQuery(index), consigneeKey))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(ConsigneeIdentityPage(index).navigate(mode, updatedAnswers))
+              )
+        }
     }
 }

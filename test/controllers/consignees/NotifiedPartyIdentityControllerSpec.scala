@@ -23,10 +23,11 @@ import models.{NormalMode, NotifiedPartyIdentity}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignees
+import pages.consignees.NotifiedPartyIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignees.NotifiedPartyKeyQuery
 import repositories.SessionRepository
 import views.html.consignees.NotifiedPartyIdentityView
 
@@ -64,7 +65,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(consignees.NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.values.head)
+        .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.values.head)
         .success
         .value
 
@@ -87,7 +88,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must save the answer and save the key, and redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -105,12 +106,11 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(consignees.NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.values.head)
-          .success
-          .value
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.values.head).success.value
+          .set(NotifiedPartyKeyQuery(index), 1).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignees.NotifiedPartyIdentityPage(index)
+        redirectLocation(result).value mustEqual NotifiedPartyIdentityPage(index)
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))

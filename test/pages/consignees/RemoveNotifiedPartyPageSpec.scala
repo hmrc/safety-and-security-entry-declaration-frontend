@@ -21,6 +21,7 @@ import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
 import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
+import queries.consignees.NotifiedPartyKeyQuery
 
 class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
@@ -37,7 +38,10 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
       "when there are still notified parties in the user's answers" - {
 
         "to Add Notified Party" in {
-          val answers = emptyUserAnswers.set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+          val answers =
+            emptyUserAnswers
+              .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+              .set(NotifiedPartyKeyQuery(index), 1).success.value
 
           RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
             .mustEqual(consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn))
