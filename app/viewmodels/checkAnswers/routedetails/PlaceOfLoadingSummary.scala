@@ -52,7 +52,7 @@ object PlaceOfLoadingSummary {
         ListItem(
           name = HtmlFormat.escape(placeOfLoading.place).toString,
           changeUrl = routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
-          removeUrl = routedetailsRoutes.RemoveCountryEnRouteController
+          removeUrl = routedetailsRoutes.RemovePlaceOfLoadingController
             .onPageLoad(NormalMode, answers.lrn, Index(index))
             .url
         )
