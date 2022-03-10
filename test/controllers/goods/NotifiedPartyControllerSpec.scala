@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class NotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val notifiedPartyRoute = routes.NotifiedPartyController.onPageLoad(NormalMode, lrn).url
+  lazy val notifiedPartyRoute = routes.NotifiedPartyController.onPageLoad(NormalMode, lrn, index).url
 
   val formProvider = new NotifiedPartyFormProvider()
   val form = formProvider()
@@ -53,13 +53,13 @@ class NotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NotifiedPartyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NotifiedPartyPage, NotifiedParty.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(NotifiedPartyPage(index), NotifiedParty.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class NotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(NotifiedParty.values.head), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(NotifiedParty.values.head), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -92,10 +92,10 @@ class NotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", NotifiedParty.values.head.toString))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyPage, NotifiedParty.values.head).success.value
+        val expectedAnswers = emptyUserAnswers.set(NotifiedPartyPage(index), NotifiedParty.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NotifiedPartyPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual NotifiedPartyPage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -116,7 +116,7 @@ class NotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 

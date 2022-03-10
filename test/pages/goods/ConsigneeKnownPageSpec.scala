@@ -26,17 +26,17 @@ class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeKnownPage" - {
 
-    beRetrievable[Boolean](ConsigneeKnownPage)
+    beRetrievable[Boolean](ConsigneeKnownPage(index))
 
-    beSettable[Boolean](ConsigneeKnownPage)
+    beSettable[Boolean](ConsigneeKnownPage(index))
 
-    beRemovable[Boolean](ConsigneeKnownPage)
+    beRemovable[Boolean](ConsigneeKnownPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        ConsigneeKnownPage.navigate(NormalMode, emptyUserAnswers)
+        ConsigneeKnownPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsigneeKnownPage.navigate(CheckMode, emptyUserAnswers)
+        ConsigneeKnownPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, UserAnswers}
 import pages.goods.ConsigneeKnownPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object ConsigneeKnownSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsigneeKnownPage).map {
+  def row(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(ConsigneeKnownPage(itemIndex)).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
@@ -36,8 +36,10 @@ object ConsigneeKnownSummary  {
           key     = "consigneeKnown.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", goodsRoutes.ConsigneeKnownController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("consigneeKnown.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              goodsRoutes.ConsigneeKnownController.onPageLoad(CheckMode, answers.lrn, itemIndex).url
+            ).withVisuallyHiddenText(messages("consigneeKnown.change.hidden"))
           )
         )
     }

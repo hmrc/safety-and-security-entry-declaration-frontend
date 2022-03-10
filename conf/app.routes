@@ -168,19 +168,15 @@ POST       /:lrn/changeAnyConsigneesKnown/                  controllers.consigne
 
 GET        /:lrn/checkConsignor/:index                              controllers.consignors.CheckConsignorController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 
-
 GET        /:lrn/addConsignor                        controllers.consignors.AddConsignorController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/addConsignor                        controllers.consignors.AddConsignorController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeAddConsignor                  controllers.consignors.AddConsignorController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeAddConsignor                  controllers.consignors.AddConsignorController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-
-
 GET        /:lrn/removeConsignor/:index                        controllers.consignors.RemoveConsignorController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/removeConsignor/:index                        controllers.consignors.RemoveConsignorController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeRemoveConsignor/:index                  controllers.consignors.RemoveConsignorController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeRemoveConsignor/:index                  controllers.consignors.RemoveConsignorController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
-
 
 GET        /:lrn/consignorAddress/:itemIndex                        controllers.consignors.ConsignorAddressController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/consignorAddress/:itemIndex                        controllers.consignors.ConsignorAddressController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index)
@@ -431,32 +427,32 @@ POST       /:lrn/seal                        controllers.transport.SealControlle
 GET        /:lrn/changeSeal                  controllers.transport.SealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeSeal                  controllers.transport.SealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/consignee                        controllers.goods.ConsigneeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/consignee                        controllers.goods.ConsigneeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeConsignee                  controllers.goods.ConsigneeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeConsignee                  controllers.goods.ConsigneeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/consignee/:index                        controllers.goods.ConsigneeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/consignee/:index                        controllers.goods.ConsigneeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeConsignee/:index                  controllers.goods.ConsigneeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeConsignee/:index                  controllers.goods.ConsigneeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/consigneeKnown                        controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/consigneeKnown                        controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeConsigneeKnown                  controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeConsigneeKnown                  controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/consigneeKnown/:index                        controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/consigneeKnown/:index                        controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeConsigneeKnown/:index                  controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeConsigneeKnown/:index                  controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/consignor                        controllers.goods.ConsignorController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/consignor                        controllers.goods.ConsignorController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeConsignor                  controllers.goods.ConsignorController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeConsignor                  controllers.goods.ConsignorController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/consignor/:index                        controllers.goods.ConsignorController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/consignor/:index                        controllers.goods.ConsignorController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeConsignor/:index                  controllers.goods.ConsignorController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeConsignor/:index                  controllers.goods.ConsignorController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/loadingPlace                        controllers.goods.LoadingPlaceController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/loadingPlace                        controllers.goods.LoadingPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeLoadingPlace                  controllers.goods.LoadingPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeLoadingPlace                  controllers.goods.LoadingPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/loadingPlace/:index                        controllers.goods.LoadingPlaceController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/loadingPlace/:index                        controllers.goods.LoadingPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeLoadingPlace/:index                  controllers.goods.LoadingPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeLoadingPlace/:index                  controllers.goods.LoadingPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/notifiedParty                        controllers.goods.NotifiedPartyController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/notifiedParty                        controllers.goods.NotifiedPartyController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeNotifiedParty                  controllers.goods.NotifiedPartyController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeNotifiedParty                  controllers.goods.NotifiedPartyController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/notifiedParty/:index                        controllers.goods.NotifiedPartyController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/notifiedParty/:index                        controllers.goods.NotifiedPartyController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeNotifiedParty/:index                  controllers.goods.NotifiedPartyController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeNotifiedParty/:index                  controllers.goods.NotifiedPartyController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/unloadingPlace                        controllers.goods.UnloadingPlaceController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/unloadingPlace                        controllers.goods.UnloadingPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeUnloadingPlace                  controllers.goods.UnloadingPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeUnloadingPlace                  controllers.goods.UnloadingPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/unloadingPlace/:index                        controllers.goods.UnloadingPlaceController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/unloadingPlace/:index                        controllers.goods.UnloadingPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeUnloadingPlace/:index                  controllers.goods.UnloadingPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeUnloadingPlace/:index                  controllers.goods.UnloadingPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
