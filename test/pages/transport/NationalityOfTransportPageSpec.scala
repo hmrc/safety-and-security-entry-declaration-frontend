@@ -19,25 +19,26 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Country, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class NationalityOfTransportPageSpec extends SpecBase with PageBehaviours {
 
   "NationalityOfTransportPage" - {
 
-    beRetrievable[String](NationalityOfTransportPage)
+    beRetrievable[Country](NationalityOfTransportPage)
 
-    beSettable[String](NationalityOfTransportPage)
+    beSettable[Country](NationalityOfTransportPage)
 
-    beRemovable[String](NationalityOfTransportPage)
+    beRemovable[Country](NationalityOfTransportPage)
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
         NationalityOfTransportPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(transportRoutes.RoroUnaccompaniedIdentityController
+            .onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

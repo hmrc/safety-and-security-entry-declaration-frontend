@@ -19,10 +19,12 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.NationalityOfTransportFormProvider
-import models.NormalMode
+import models.{Country, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transport
 import pages.transport.NationalityOfTransportPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,6 +38,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new NationalityOfTransportFormProvider()
   val form = formProvider()
+  val country = arbitrary[Country].sample.value
 
   lazy val nationalityOfTransportRoute = routes.NationalityOfTransportController.onPageLoad(NormalMode, lrn).url
 
@@ -59,7 +62,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(NationalityOfTransportPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(NationalityOfTransportPage, country).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +74,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(country), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -89,13 +92,13 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, nationalityOfTransportRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", country.code))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(NationalityOfTransportPage, "answer").success.value
+        val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(transport.NationalityOfTransportPage, country).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NationalityOfTransportPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual transport.NationalityOfTransportPage.navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -141,7 +144,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, nationalityOfTransportRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", country.code))
 
         val result = route(application, request).value
 

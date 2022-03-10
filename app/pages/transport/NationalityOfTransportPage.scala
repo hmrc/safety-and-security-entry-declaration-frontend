@@ -18,14 +18,18 @@ package pages.transport
 
 import controllers.transport.{routes => transportRotues}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Country, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object NationalityOfTransportPage extends QuestionPage[String] {
+case object NationalityOfTransportPage extends QuestionPage[Country] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "nationalityOfTransport"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRotues.RoroUnaccompaniedIdentityController.onPageLoad(NormalMode, answers.lrn)
+  }
 }

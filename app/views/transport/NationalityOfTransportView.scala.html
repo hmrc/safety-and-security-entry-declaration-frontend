@@ -37,17 +37,16 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-xl">@messages("nationalityOfTransport.heading")</h1>
-
         @govukSelect(
             SelectViewModel(
-                field = form("country"),
+                field = form("value"),
                 items = selectItems(allCountries),
-                label = LabelViewModel(messages(""))
+                label = LabelViewModel(messages("nationalityOfTransport.heading")).asPageHeading()
             )
             .withCssClass(Fixed20.toString)
             .withCssClass("autocomplete")
-            .withHint(HintViewModel(messages("nationalityOfTransport.label")))
+            .withHint(HintViewModel(messages("nationalityOfTransport.hint")))
+        )
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))

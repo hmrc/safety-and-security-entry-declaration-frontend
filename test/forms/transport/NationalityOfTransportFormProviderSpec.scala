@@ -25,20 +25,8 @@ class NationalityOfTransportFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "nationalityOfTransport.error.required"
   val lengthKey = "nationalityOfTransport.error.length"
-  val maxLength = 100
 
   val form = new NationalityOfTransportFormProvider()()
-
-  ".country" - {
-
-    val fieldName = "country"
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      arbitrary[Country].map(_.code)
-    )
-  }
 
   ".value" - {
 
@@ -47,14 +35,7 @@ class NationalityOfTransportFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      arbitrary[Country].map(_.code)
     )
 
     behave like mandatoryField(

@@ -623,10 +623,10 @@ maritimeIdentity.field2.change.hidden = field2
 
 nationalityOfTransport.title = nationalityOfTransport
 nationalityOfTransport.heading = Which country is your transport form?
-nationalityOfTransport.label = Start typing to select a country from the dropdown menu
-nationalityOfTransport.checkYourAnswersLabel = nationalityOfTransport
-nationalityOfTransport.error.required = Enter nationalityOfTransport
-nationalityOfTransport.error.length = NationalityOfTransport must be 100 characters or less
+nationalityOfTransport.hint = Start typing to select a country from the dropdown menu
+nationalityOfTransport.checkYourAnswersLabel = Nationality Of Transport
+nationalityOfTransport.error.required = Please select a Nationality
+nationalityOfTransport.error.length = The Nationality must be 100 characters or less
 nationalityOfTransport.change.hidden = NationalityOfTransport
 
 overallDocument.title = overallDocument

@@ -17,15 +17,20 @@
 package forms.transport
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.Country
+import models.Country.allCountries
+import play.api.Logging
 import play.api.data.Form
 
-class NationalityOfTransportFormProvider @Inject() extends Mappings {
+class NationalityOfTransportFormProvider @Inject() extends Mappings with Logging {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("nationalityOfTransport.error.required")
-        .verifying(maxLength(100, "nationalityOfTransport.error.length"))
-    )
+    def apply(): Form[Country] =
+      Form(
+        "value" -> text("nationalityOfTransport.error.required")
+          .verifying(
+            "nationalityOfTransport.error.required",
+            value => allCountries.exists(_.code == value)
+          ).transform[Country](x => allCountries.find(_.code == x).get, _.code)
+      )
 }
