@@ -27,9 +27,9 @@ import pages.consignors._
 
 class ConsignorIdentityExtractorSpec extends SpecBase {
   private val baseAnswers: UserAnswers = arbitrary[UserAnswers].sample.value
-  private val itemOne: Index = Index(1)
-  private val itemTwo: Index = Index(2)
-  private val itemThree: Index = Index(3)
+  private val itemOne: Index = Index(0)
+  private val itemTwo: Index = Index(1)
+  private val itemThree: Index = Index(2)
 
   private val name = "Test Name"
   private val gb = Country("GB", "United Kingdom")
