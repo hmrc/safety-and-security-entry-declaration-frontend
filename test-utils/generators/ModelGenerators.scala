@@ -17,12 +17,18 @@
 package generators
 
 import models._
+import models.completion.downstream._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
 import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
+  // The default arbitrary[Instant] provides unrealistic dates prone to overflow issues; pick a
+  // value between epoch and 2030-01-01 00:00:00 instead
+  lazy val arbitraryRecentInstant: Arbitrary[Instant] = Arbitrary {
+    Gen.choose(0, 1893456000) map { seconds => Instant.EPOCH.plusSeconds(seconds) }
+  }
 
   implicit lazy val arbitraryUnloadingPlace: Arbitrary[UnloadingPlace] =
     Arbitrary {
@@ -241,4 +247,37 @@ trait ModelGenerators {
     Arbitrary {
       Gen.listOfN(12, Gen.numChar).map { content: List[Char] => new GbEori(content.mkString) }
     }
+
+  implicit lazy val arbitraryTransportDetails: Arbitrary[TransportDetails] = Arbitrary {
+    for {
+      mode <- arbitrary[TransportMode]
+      identifier <- Gen.alphaNumStr
+      nationality <- Gen.option(arbitrary[Country])
+      paymentMethod <- Gen.option(arbitrary[PaymentMethod])
+    } yield TransportDetails(mode, identifier, nationality, paymentMethod)
+  }
+
+  implicit lazy val arbitraryPayloadHeader: Arbitrary[Header] = Arbitrary {
+    for {
+      lrn <- arbitrary[LocalReferenceNumber]
+      transportDetails <- arbitrary[TransportDetails]
+      itemCount <- Gen.choose(1, 3)
+      packageCount <- Gen.choose(1, 3)
+      grossMass <- Gen.option(Gen.choose(BigDecimal(0.001), BigDecimal(99999999.999)))
+      declarationPlace <- Gen.alphaNumStr
+      conveyanceReferenceNumber <- Gen.alphaNumStr
+      datetime <- arbitrary[Instant](arbitraryRecentInstant)
+    } yield {
+      Header(
+        lrn,
+        transportDetails,
+        itemCount,
+        packageCount,
+        grossMass,
+        declarationPlace,
+        conveyanceReferenceNumber,
+        datetime
+      )
+    }
+  }
 }

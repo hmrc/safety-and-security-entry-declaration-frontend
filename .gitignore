@@ -37,3 +37,8 @@ bin
 ## Custom
 
 .bsp
+
+# Vim
+
+*.swp
+*.swo
