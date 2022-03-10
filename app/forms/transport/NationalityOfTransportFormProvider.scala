@@ -23,7 +23,7 @@ import models.Country.allCountries
 import play.api.Logging
 import play.api.data.Form
 
-class NationalityOfTransportFormProvider @Inject() extends Mappings with Logging {
+class NationalityOfTransportFormProvider @Inject() extends Mappings {
 
     def apply(): Form[Country] =
       Form(
