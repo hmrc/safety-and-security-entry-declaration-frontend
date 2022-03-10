@@ -6,19 +6,19 @@ echo "Applying migration ConsigneeKnown"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /:lrn/anyConsigneesKnown                        controllers.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
-echo "POST       /:lrn/anyConsigneesKnown                        controllers.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "GET        /:lrn/consigneeKnown                        controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "POST       /:lrn/consigneeKnown                        controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
 
-echo "GET        /:lrn/changeConsigneeKnown                  controllers.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
-echo "POST       /:lrn/changeConsigneeKnown                  controllers.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "GET        /:lrn/changeConsigneeKnown                  controllers.goods.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
+echo "POST       /:lrn/changeConsigneeKnown                  controllers.goods.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)" >> ../conf/app.routes
 
 echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
-echo "anyConsigneesKnown.title = anyConsigneesKnown" >> ../conf/messages.en
-echo "anyConsigneesKnown.heading = anyConsigneesKnown" >> ../conf/messages.en
-echo "anyConsigneesKnown.checkYourAnswersLabel = anyConsigneesKnown" >> ../conf/messages.en
-echo "anyConsigneesKnown.error.required = Select yes if anyConsigneesKnown" >> ../conf/messages.en
-echo "anyConsigneesKnown.change.hidden = ConsigneeKnown" >> ../conf/messages.en
+echo "consigneeKnown.title = consigneeKnown" >> ../conf/messages.en
+echo "consigneeKnown.heading = consigneeKnown" >> ../conf/messages.en
+echo "consigneeKnown.checkYourAnswersLabel = consigneeKnown" >> ../conf/messages.en
+echo "consigneeKnown.error.required = Select yes if consigneeKnown" >> ../conf/messages.en
+echo "consigneeKnown.change.hidden = ConsigneeKnown" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/trait UserAnswersEntryGenerators/ {\

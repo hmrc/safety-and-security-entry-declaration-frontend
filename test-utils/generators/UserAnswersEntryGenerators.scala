@@ -30,6 +30,54 @@ import play.api.libs.json.{JsValue, Json}
 
 trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
 
+  implicit lazy val arbitraryUnloadingPlaceUserAnswersEntry: Arbitrary[(UnloadingPlacePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[UnloadingPlacePage.type]
+        value <- arbitrary[UnloadingPlace].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryNotifiedPartyUserAnswersEntry: Arbitrary[(NotifiedPartyPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[NotifiedPartyPage.type]
+        value <- arbitrary[NotifiedParty].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryLoadingPlaceUserAnswersEntry: Arbitrary[(LoadingPlacePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[LoadingPlacePage.type]
+        value <- arbitrary[LoadingPlace].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsignorUserAnswersEntry: Arbitrary[(ConsignorPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsignorPage.type]
+        value <- arbitrary[Consignor].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsigneeKnownUserAnswersEntry: Arbitrary[(ConsigneeKnownPage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneeKnownPage.type]
+        value <- arbitrary[Boolean].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
+  implicit lazy val arbitraryConsigneeUserAnswersEntry: Arbitrary[(ConsigneePage.type, JsValue)] =
+    Arbitrary {
+      for {
+        page  <- arbitrary[ConsigneePage.type]
+        value <- arbitrary[Consignee].map(Json.toJson(_))
+      } yield (page, value)
+    }
+
   implicit lazy val arbitrarySealUserAnswersEntry: Arbitrary[(SealPage.type, JsValue)] =
     Arbitrary {
       for {

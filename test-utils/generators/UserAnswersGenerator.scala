@@ -33,6 +33,12 @@ trait UserAnswersGenerator extends TryValues {
   self: Generators =>
 
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
+    arbitrary[(UnloadingPlacePage.type, JsValue)] ::
+    arbitrary[(NotifiedPartyPage.type, JsValue)] ::
+    arbitrary[(LoadingPlacePage.type, JsValue)] ::
+    arbitrary[(ConsignorPage.type, JsValue)] ::
+    arbitrary[(ConsigneeKnownPage.type, JsValue)] ::
+    arbitrary[(ConsigneePage.type, JsValue)] ::
     arbitrary[(SealPage.type, JsValue)] ::
     arbitrary[(RoroUnaccompaniedIdentityPage.type, JsValue)] ::
     arbitrary[(RoroAccompaniedIdentityPage.type, JsValue)] ::

@@ -24,6 +24,31 @@ import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryUnloadingPlace: Arbitrary[UnloadingPlace] =
+    Arbitrary {
+      Gen.oneOf(UnloadingPlace.values.toSeq)
+    }
+
+  implicit lazy val arbitraryNotifiedParty: Arbitrary[NotifiedParty] =
+    Arbitrary {
+      Gen.oneOf(NotifiedParty.values.toSeq)
+    }
+
+  implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] =
+    Arbitrary {
+      Gen.oneOf(LoadingPlace.values.toSeq)
+    }
+
+  implicit lazy val arbitraryConsignor: Arbitrary[Consignor] =
+    Arbitrary {
+      Gen.oneOf(Consignor.values.toSeq)
+    }
+
+  implicit lazy val arbitraryConsignee: Arbitrary[Consignee] =
+    Arbitrary {
+      Gen.oneOf(Consignee.values.toSeq)
+    }
+
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
     Arbitrary {
       for {
