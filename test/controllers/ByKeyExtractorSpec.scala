@@ -82,7 +82,7 @@ class ByKeyExtractorSpec extends SpecBase {
       controller.get(Index(1)) mustEqual 2
     }
 
-    "must return a value 1 greater than the maximum existing Id when this item isn't already in the user's answers" in {
+    "must return a value 1 greater than the maximum existing key when this item isn't already in the user's answers" in {
 
       val answers =
         emptyUserAnswers
