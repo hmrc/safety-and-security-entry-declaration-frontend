@@ -26,9 +26,9 @@
 
 @(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("consigneeKnown.title"))) {
+@layout(pageTitle = title(form, messages("anyConsigneesKnown.title"))) {
 
-    @formHelper(action = routes.ConsigneeKnownController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.AnyConsigneesKnownController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -37,7 +37,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(messages("consigneeKnown.heading")).asPageHeading()
+                legend = LegendViewModel(messages("anyConsigneesKnown.heading")).asPageHeading()
             )
         )
 

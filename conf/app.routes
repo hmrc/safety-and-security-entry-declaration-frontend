@@ -161,10 +161,10 @@ POST       /:lrn/consignorIdentity/:itemIndex                       controllers.
 GET        /:lrn/changeConsignorIdentity/:itemIndex                   controllers.consignors.ConsignorIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 POST       /:lrn/changeConsignorIdentity/:itemIndex                 controllers.consignors.ConsignorIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index)
 
-GET        /:lrn/consigneeKnown/                        controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/consigneeKnown/                        controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeConsigneeKnown/                  controllers.consignees.ConsigneeKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeConsigneeKnown/                  controllers.consignees.ConsigneeKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/anyConsigneesKnown/                        controllers.consignees.AnyConsigneesKnownController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/anyConsigneesKnown/                        controllers.consignees.AnyConsigneesKnownController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeAnyConsigneesKnown/                  controllers.consignees.AnyConsigneesKnownController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeAnyConsigneesKnown/                  controllers.consignees.AnyConsigneesKnownController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/checkConsignor/:index                              controllers.consignors.CheckConsignorController.onPageLoad(lrn: LocalReferenceNumber, index: Index)
 

@@ -64,7 +64,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(ConsignorNamePage, JsValue)] ::
     arbitrary[(ConsignorEORIPage, JsValue)] ::
     arbitrary[(ConsignorAddressPage, JsValue)] ::
-    arbitrary[(ConsigneeKnownPage.type, JsValue)] ::
+    arbitrary[(AnyConsigneesKnownPage.type, JsValue)] ::
     arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
     arbitrary[(ConsignorIdentityPage, JsValue)] ::
     arbitrary[(DangerousGoodCodePage, JsValue)] ::

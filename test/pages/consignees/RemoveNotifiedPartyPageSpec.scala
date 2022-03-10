@@ -52,7 +52,7 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
         "to Notified Party Identity for Index 0 when the user does not know any consignees" in {
 
-          val answers = emptyUserAnswers.set(ConsigneeKnownPage, false).success.value
+          val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
 
           RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
             .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index))
@@ -60,7 +60,7 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
         "to Add Any Notified Parties when the user knows some consignees" in {
 
-          val answers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
+          val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
 
           RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
             .mustEqual(consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn))

@@ -22,30 +22,30 @@ import controllers.routes
 import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
+class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeKnownPage" - {
 
-    beRetrievable[Boolean](ConsigneeKnownPage)
+    beRetrievable[Boolean](AnyConsigneesKnownPage)
 
-    beSettable[Boolean](ConsigneeKnownPage)
+    beSettable[Boolean](AnyConsigneesKnownPage)
 
-    beRemovable[Boolean](ConsigneeKnownPage)
+    beRemovable[Boolean](AnyConsigneesKnownPage)
 
     "must navigate in Normal Mode" - {
 
       "to `How do you want to identify the consignee` when answer is yes" in {
-        val answers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
+        val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
 
-        ConsigneeKnownPage
+        AnyConsigneesKnownPage
           .navigate(NormalMode, answers)
           .mustEqual(consigneesRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to `How do you want to identify the notified party` when answer is no" in {
-        val answers = emptyUserAnswers.set(ConsigneeKnownPage, false).success.value
+        val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
 
-        ConsigneeKnownPage
+        AnyConsigneesKnownPage
           .navigate(NormalMode, answers)
           .mustEqual(
             consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index)
@@ -57,7 +57,7 @@ class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsigneeKnownPage
+        AnyConsigneesKnownPage
           .navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

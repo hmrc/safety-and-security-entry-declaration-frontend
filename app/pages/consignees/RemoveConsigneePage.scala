@@ -32,6 +32,6 @@ final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean]
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(DeriveNumberOfConsignees) match {
       case Some(size) if size > 0 => consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn)
-      case _                      => consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn)
+      case _                      => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, answers.lrn)
     }
 }

@@ -49,7 +49,7 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
       "to Consignee Known when there are no consignees left" in {
 
         RemoveConsigneePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(consigneesRoutes.ConsigneeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+          .mustEqual(consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

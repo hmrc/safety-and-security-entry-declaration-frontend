@@ -294,11 +294,11 @@ consignorIdentity.checkYourAnswersLabel = How do you want to identify the consig
 consignorIdentity.error.required = Select consignor Identity
 consignorIdentity.change.hidden = Consignor Identity
 
-consigneeKnown.title = Do you know the consignee?
-consigneeKnown.heading = Do you know the consignee?
-consigneeKnown.checkYourAnswersLabel = Consignee known
-consigneeKnown.error.required = Select yes if you know the consignee
-consigneeKnown.change.hidden = the consignee is known
+anyConsigneesKnown.title = Do you know the consignee?
+anyConsigneesKnown.heading = Do you know the consignee?
+anyConsigneesKnown.checkYourAnswersLabel = Consignee known
+anyConsigneesKnown.error.required = Select yes if you know the consignee
+anyConsigneesKnown.change.hidden = the consignee is known
 
 consignorAddress.title = What is the consignor’s address?
 consignorAddress.heading = What is the consignor’s address?

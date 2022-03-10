@@ -18,7 +18,7 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.consignees.ConsigneeKnownFormProvider
+import forms.consignees.AnyConsigneesKnownFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
@@ -28,17 +28,17 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.consignees.ConsigneeKnownView
+import views.html.consignees.AnyConsigneesKnownView
 
 import scala.concurrent.Future
 
-class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
+class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new ConsigneeKnownFormProvider()
+  val formProvider = new AnyConsigneesKnownFormProvider()
   val form = formProvider()
 
-  lazy val consigneeKnownRoute =
-    routes.ConsigneeKnownController.onPageLoad(NormalMode, lrn).url
+  lazy val anyConsigneesKnownRoute =
+    routes.AnyConsigneesKnownController.onPageLoad(NormalMode, lrn).url
 
   "ConsigneeKnown Controller" - {
 
@@ -47,11 +47,11 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, consigneeKnownRoute)
+        val request = FakeRequest(GET, anyConsigneesKnownRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ConsigneeKnownView]
+        val view = application.injector.instanceOf[AnyConsigneesKnownView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn)(
@@ -63,14 +63,14 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(consignees.ConsigneeKnownPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(consignees.AnyConsigneesKnownPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, consigneeKnownRoute)
+        val request = FakeRequest(GET, anyConsigneesKnownRoute)
 
-        val view = application.injector.instanceOf[ConsigneeKnownView]
+        val view = application.injector.instanceOf[AnyConsigneesKnownView]
 
         val result = route(application, request).value
 
@@ -95,14 +95,14 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consigneeKnownRoute)
+          FakeRequest(POST, anyConsigneesKnownRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(consignees.ConsigneeKnownPage, true).success.value
+        val expectedAnswers = emptyUserAnswers.set(consignees.AnyConsigneesKnownPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual consignees.ConsigneeKnownPage
+        redirectLocation(result).value mustEqual consignees.AnyConsigneesKnownPage
           .navigate(NormalMode, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
@@ -115,12 +115,12 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consigneeKnownRoute)
+          FakeRequest(POST, anyConsigneesKnownRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[ConsigneeKnownView]
+        val view = application.injector.instanceOf[AnyConsigneesKnownView]
 
         val result = route(application, request).value
 
@@ -137,7 +137,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, consigneeKnownRoute)
+        val request = FakeRequest(GET, anyConsigneesKnownRoute)
 
         val result = route(application, request).value
 
@@ -152,7 +152,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, consigneeKnownRoute)
+          FakeRequest(POST, anyConsigneesKnownRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
