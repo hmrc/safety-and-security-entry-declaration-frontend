@@ -626,7 +626,6 @@ nationalityOfTransport.heading = Which country is your transport form?
 nationalityOfTransport.hint = Start typing to select a country from the dropdown menu
 nationalityOfTransport.checkYourAnswersLabel = Nationality Of Transport
 nationalityOfTransport.error.required = Please select a Nationality
-nationalityOfTransport.error.length = The Nationality must be 100 characters or less
 nationalityOfTransport.change.hidden = NationalityOfTransport
 
 overallDocument.title = overallDocument

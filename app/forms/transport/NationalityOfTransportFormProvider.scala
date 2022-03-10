@@ -19,8 +19,6 @@ package forms.transport
 import javax.inject.Inject
 import forms.mappings.Mappings
 import models.Country
-import models.Country.allCountries
-import play.api.Logging
 import play.api.data.Form
 
 class NationalityOfTransportFormProvider @Inject() extends Mappings {
@@ -30,7 +28,7 @@ class NationalityOfTransportFormProvider @Inject() extends Mappings {
         "value" -> text("nationalityOfTransport.error.required")
           .verifying(
             "nationalityOfTransport.error.required",
-            value => allCountries.exists(_.code == value)
-          ).transform[Country](x => allCountries.find(_.code == x).get, _.code)
+            value => Country.allCountries.exists(_.code == value)
+          ).transform[Country](x => Country.allCountries.find(_.code == x).get, _.code)
       )
 }

@@ -37,7 +37,8 @@ class NationalityOfTransportPageSpec extends SpecBase with PageBehaviours {
       "to Index" in {
 
         NationalityOfTransportPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.RoroUnaccompaniedIdentityController
+          .mustEqual(
+            transportRoutes.RoroUnaccompaniedIdentityController
             .onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
