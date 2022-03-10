@@ -24,10 +24,10 @@ import play.api.data.FormError
 class PlaceOfUnloadingFormProviderSpec extends StringFieldBehaviours {
 
   val placeMaxLength = 32
-  val id = 123
-  val form = new PlaceOfUnloadingFormProvider()(id)
+  val placeOfLoadingKey = 123
+  val form = new PlaceOfUnloadingFormProvider()(placeOfLoadingKey)
 
-  "must bind using the provided id" in {
+  "must bind using the provided key" in {
 
     val country = arbitrary[Country].sample.value
     val place   = stringsWithMaxLength(placeMaxLength).sample.value
@@ -39,7 +39,7 @@ class PlaceOfUnloadingFormProviderSpec extends StringFieldBehaviours {
 
     val result = form.bind(data)
     result.errors mustBe empty
-    result.value.value mustEqual PlaceOfUnloading(id, country, place)
+    result.value.value mustEqual PlaceOfUnloading(placeOfLoadingKey, country, place)
   }
 
   ".country" - {

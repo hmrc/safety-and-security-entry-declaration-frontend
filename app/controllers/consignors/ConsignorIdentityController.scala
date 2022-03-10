@@ -16,7 +16,7 @@
 
 package controllers.consignors
 
-import controllers.ByIdExtractor
+import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.consignors.ConsignorIdentityFormProvider
 
@@ -25,7 +25,7 @@ import models.{Index, LocalReferenceNumber, Mode}
 import pages.consignors.ConsignorIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.consignors.{AllConsignorsQuery, ConsignorIdQuery}
+import queries.consignors.{AllConsignorsQuery, ConsignorKeyQuery}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignors.ConsignorIdentityView
@@ -44,7 +44,7 @@ class ConsignorIdentityController @Inject() (
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport
-  with ByIdExtractor {
+  with ByKeyExtractor {
 
   val form = formProvider()
 
@@ -62,8 +62,8 @@ class ConsignorIdentityController @Inject() (
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        getItemId(index, AllConsignorsQuery) {
-          consignorId =>
+        getItemKey(index, AllConsignorsQuery) {
+          consignorKey =>
 
             form
               .bindFromRequest()
@@ -72,7 +72,7 @@ class ConsignorIdentityController @Inject() (
                 value =>
                   for {
                     answers <- Future.fromTry(request.userAnswers.set(ConsignorIdentityPage(index), value))
-                    updatedAnswers <- Future.fromTry(answers.set(ConsignorIdQuery(index), consignorId))
+                    updatedAnswers <- Future.fromTry(answers.set(ConsignorKeyQuery(index), consignorKey))
                     _ <- sessionRepository.set(updatedAnswers)
                   } yield Redirect(ConsignorIdentityPage(index).navigate(mode, updatedAnswers))
               )

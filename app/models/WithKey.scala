@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package queries.consignors
+package models
 
-import models.Index
-import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
-
-final case class ConsignorIdQuery(index: Index) extends Gettable[Int] with Settable[Int] {
-
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ "id"
+trait WithKey {
+  val key: Int
 }

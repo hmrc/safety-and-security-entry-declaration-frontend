@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package queries.consignees
 
-trait WithId {
-  val id: Int
+import models.Index
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
+
+final case class NotifiedPartyKeyQuery(index: Index) extends Gettable[Int] with Settable[Int] {
+
+  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ "key"
 }

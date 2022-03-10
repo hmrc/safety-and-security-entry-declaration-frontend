@@ -20,7 +20,7 @@ import models.Index
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
-final case class NotifiedPartyIdQuery(index: Index) extends Gettable[Int] with Settable[Int] {
+final case class ConsigneeKeyQuery(index: Index) extends Gettable[Int] with Settable[Int] {
 
-  override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ "id"
+  override def path: JsPath = JsPath \ "consignees" \ index.position \ "key"
 }

@@ -17,24 +17,23 @@
 package controllers
 
 import models.requests.DataRequest
-import models.{Index, WithId}
+import models.{Index, WithKey}
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
 import queries.Gettable
 
 import scala.concurrent.Future
 
-trait ByIdExtractor {
+trait ByKeyExtractor {
 
-
-  protected def getItemId[A <: WithId, B](index: Index, allItemsQuery: Gettable[List[A]])
-                                         (block: Int => B)
-                                         (implicit request: DataRequest[AnyContent], ev: Reads[A]): B =
+  protected def getItemKey[A <: WithKey, B](index: Index, allItemsQuery: Gettable[List[A]])
+                                           (block: Int => B)
+                                           (implicit request: DataRequest[AnyContent], ev: Reads[A]): B =
     request.userAnswers.get(allItemsQuery).map {
       items =>
         items
           .lift(index.position)
-          .map(item => block(item.id))
-          .getOrElse(block(items.maxBy(_.id).id + 1))
+          .map(item => block(item.key))
+          .getOrElse(block(items.maxBy(_.key).key + 1))
     }.getOrElse { block(1) }
 }

@@ -16,7 +16,7 @@
 
 package controllers.routedetails
 
-import controllers.ByIdExtractor
+import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.routedetails.PlaceOfLoadingFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -43,13 +43,13 @@ class PlaceOfLoadingController @Inject() (
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport
-  with ByIdExtractor {
+  with ByKeyExtractor {
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        getItemId(index, AllPlacesOfLoadingQuery) {
+        getItemKey(index, AllPlacesOfLoadingQuery) {
           placeOfLoadingId =>
 
             val form = formProvider(placeOfLoadingId)
@@ -66,10 +66,10 @@ class PlaceOfLoadingController @Inject() (
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        getItemId(index, AllPlacesOfLoadingQuery) {
-          placeOfLoadingId =>
+        getItemKey(index, AllPlacesOfLoadingQuery) {
+          placeOfLoadingKey =>
 
-            val form = formProvider(placeOfLoadingId)
+            val form = formProvider(placeOfLoadingKey)
 
             form
               .bindFromRequest()

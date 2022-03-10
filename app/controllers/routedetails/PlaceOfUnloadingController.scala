@@ -16,7 +16,7 @@
 
 package controllers.routedetails
 
-import controllers.ByIdExtractor
+import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.routedetails.PlaceOfUnloadingFormProvider
 
@@ -44,12 +44,12 @@ class PlaceOfUnloadingController @Inject() (
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport
-  with ByIdExtractor {
+  with ByKeyExtractor {
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-        getItemId(index, AllPlacesOfUnloadingQuery) {
+        getItemKey(index, AllPlacesOfUnloadingQuery) {
           placeOfUnloadingId =>
 
             val form = formProvider(placeOfUnloadingId)
@@ -66,10 +66,10 @@ class PlaceOfUnloadingController @Inject() (
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
-        getItemId(index, AllPlacesOfUnloadingQuery) {
-          placeOfUnloadingId =>
+        getItemKey(index, AllPlacesOfUnloadingQuery) {
+          placeOfUnloadingKey =>
 
-            val form = formProvider(placeOfUnloadingId)
+            val form = formProvider(placeOfUnloadingKey)
 
             form
               .bindFromRequest()

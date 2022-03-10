@@ -21,6 +21,7 @@ import controllers.consignors.{routes => consignorRoutes}
 import controllers.routes
 import models.{GbEori, Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import queries.consignors.ConsignorKeyQuery
 
 class AddConsignorPageSpec extends SpecBase with PageBehaviours {
 
@@ -30,7 +31,10 @@ class AddConsignorPageSpec extends SpecBase with PageBehaviours {
 
       "to Consignor Identity for the next index when the answer is yes" in {
 
-        val answers = emptyUserAnswers.set(ConsignorEORIPage(Index(0)), GbEori("123456789000")).success.value
+        val answers =
+          emptyUserAnswers
+            .set(ConsignorEORIPage(Index(0)), GbEori("123456789000")).success.value
+            .set(ConsignorKeyQuery(Index(0)), 1).success.value
 
         AddConsignorPage.navigate(NormalMode, answers, addAnother = true)
           .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))

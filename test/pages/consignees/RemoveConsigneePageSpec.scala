@@ -19,8 +19,9 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import models.{CheckMode, GbEori, Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import queries.consignees.ConsigneeKeyQuery
 
 class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
@@ -36,7 +37,10 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
       "to Add Consignee when there is still at least one consignee in the user's answers" in {
 
-        val answers = emptyUserAnswers.set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+        val answers =
+          emptyUserAnswers
+            .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+            .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
         RemoveConsigneePage(index).navigate(NormalMode, answers)
           .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn))

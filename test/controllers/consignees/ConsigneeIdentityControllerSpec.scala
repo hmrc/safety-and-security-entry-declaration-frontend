@@ -27,7 +27,7 @@ import pages.consignees.ConsigneeIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.consignees.ConsigneeIdQuery
+import queries.consignees.ConsigneeKeyQuery
 import repositories.SessionRepository
 import views.html.consignees.ConsigneeIdentityView
 
@@ -86,7 +86,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and save the id, and redirect to the next page when valid data is submitted" in {
+    "must save the answer and save the key, and redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -105,7 +105,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
           .set(ConsigneeIdentityPage(index), ConsigneeIdentity.values.head).success.value
-          .set(ConsigneeIdQuery(index), 1).success.value
+          .set(ConsigneeKeyQuery(index), 1).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ConsigneeIdentityPage(index)

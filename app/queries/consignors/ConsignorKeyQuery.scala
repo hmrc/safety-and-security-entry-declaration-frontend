@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package queries.consignees
+package queries.consignors
 
 import models.Index
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
-final case class ConsigneeIdQuery(index: Index) extends Gettable[Int] with Settable[Int] {
+final case class ConsignorKeyQuery(index: Index) extends Gettable[Int] with Settable[Int] {
 
-  override def path: JsPath = JsPath \ "consignees" \ index.position \ "id"
+  override def path: JsPath = JsPath \ "consignors" \ index.position \ "key"
 }

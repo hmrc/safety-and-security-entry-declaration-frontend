@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import models.requests.DataRequest
-import models.{Index, UserAnswers, WithId}
+import models.{Index, UserAnswers, WithKey}
 import pages.QuestionPage
 import play.api.libs.json.{JsPath, Json, OFormat}
 import play.api.mvc.Results.Ok
@@ -28,9 +28,9 @@ import queries.Gettable
 
 import scala.concurrent.Future
 
-class ByIdExtractorSpec extends SpecBase {
+class ByKeyExtractorSpec extends SpecBase {
 
-  private case class Item(id: Int) extends WithId
+  private case class Item(key: Int) extends WithKey
 
   private object Item {
     implicit val format: OFormat[Item] = Json.format[Item]
@@ -47,16 +47,16 @@ class ByIdExtractorSpec extends SpecBase {
   private def getRequest(answers: UserAnswers): DataRequest[AnyContent] =
     DataRequest(FakeRequest(), answers.id, answers)
 
-  private class TestController extends ByIdExtractor {
+  private class TestController extends ByKeyExtractor {
 
     def get(index: Index)(implicit request: DataRequest[AnyContent]): Int =
-      getItemId(index, AllItems) {
+      getItemKey(index, AllItems) {
         id =>
           id
       }
   }
 
-  "getItemId" - {
+  "getItemKey" - {
 
     "must return 1 when there are no items in the user's answers" in {
 

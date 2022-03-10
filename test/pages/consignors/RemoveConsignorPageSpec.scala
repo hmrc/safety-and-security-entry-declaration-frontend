@@ -21,6 +21,7 @@ import controllers.consignors.{routes => consignorRoutes}
 import controllers.routes
 import models.{CheckMode, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
+import queries.consignors.ConsignorKeyQuery
 
 class RemoveConsignorPageSpec extends SpecBase with PageBehaviours {
 
@@ -36,7 +37,10 @@ class RemoveConsignorPageSpec extends SpecBase with PageBehaviours {
 
       "to Add Consignor when there is still at least one consignor in the user's answers" in {
 
-        val answers = emptyUserAnswers.set(ConsignorEORIPage(index), GbEori("123456789000")).success.value
+        val answers =
+          emptyUserAnswers
+            .set(ConsignorEORIPage(index), GbEori("123456789000")).success.value
+            .set(ConsignorKeyQuery(index), 1).success.value
 
         RemoveConsignorPage(index).navigate(NormalMode, answers)
           .mustEqual(consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn))
