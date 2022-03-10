@@ -16,13 +16,12 @@
 
 package pages.transport
 
-import models.RoadIdentity
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object RoadIdentityPage extends QuestionPage[RoadIdentity] {
+case object TransportCountryOriginPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "roadIdentity"
+  override def toString: String = "transportCountryOrigin"
 }

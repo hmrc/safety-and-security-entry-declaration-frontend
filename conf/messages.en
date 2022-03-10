@@ -706,3 +706,10 @@ seal.checkYourAnswersLabel = seal
 seal.error.required = Enter seal
 seal.error.length = Seal must be 20 characters or less
 seal.change.hidden = Seal
+
+transportCountryOrigin.title = transportCountryOrigin
+transportCountryOrigin.heading = transportCountryOrigin
+transportCountryOrigin.checkYourAnswersLabel = transportCountryOrigin
+transportCountryOrigin.error.required = Enter transportCountryOrigin
+transportCountryOrigin.error.length = TransportCountryOrigin must be 100 characters or less
+transportCountryOrigin.change.hidden = TransportCountryOrigin

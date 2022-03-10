@@ -16,7 +16,6 @@
 
 package pages.transport
 
-import controllers.routes
 import controllers.transport.{routes => transportRoutes}
 import models.{NormalMode, TransportMode, UserAnswers}
 import models.TransportMode._

@@ -16,12 +16,9 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{AirIdentity, NormalMode, UserAnswers}
+import models.{AirIdentity}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 case object AirIdentityPage extends QuestionPage[AirIdentity] {
 

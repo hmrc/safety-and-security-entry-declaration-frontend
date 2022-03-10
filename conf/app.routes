@@ -430,3 +430,8 @@ GET        /:lrn/seal                        controllers.transport.SealControlle
 POST       /:lrn/seal                        controllers.transport.SealController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeSeal                  controllers.transport.SealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeSeal                  controllers.transport.SealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+
+GET        /:lrn/transportCountryOrigin                        controllers.transport.TransportCountryOriginController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/transportCountryOrigin                        controllers.transport.TransportCountryOriginController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeTransportCountryOrigin                  controllers.transport.TransportCountryOriginController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeTransportCountryOrigin                  controllers.transport.TransportCountryOriginController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

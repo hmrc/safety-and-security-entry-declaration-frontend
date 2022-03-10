@@ -16,7 +16,7 @@
 
 package models.completion.answers
 
-import models.{GbEori, LocalReferenceNumber, TransportMode}
+import models.{GbEori, LocalReferenceNumber}
 
 /**
  * Models the answers given for a completed predeclaration section

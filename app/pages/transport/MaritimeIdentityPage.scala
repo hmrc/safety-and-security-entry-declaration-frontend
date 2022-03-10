@@ -16,12 +16,9 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{MaritimeIdentity, NormalMode, UserAnswers}
+import models.{MaritimeIdentity}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 case object MaritimeIdentityPage extends QuestionPage[MaritimeIdentity] {
 

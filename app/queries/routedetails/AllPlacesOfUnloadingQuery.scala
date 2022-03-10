@@ -16,7 +16,7 @@
 
 package queries.routedetails
 
-import models.{Country, PlaceOfUnloading}
+import models.PlaceOfUnloading
 import play.api.libs.json.JsPath
 import queries.Gettable
 

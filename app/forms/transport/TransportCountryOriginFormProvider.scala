@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages.transport
+package forms.transport
 
-import models.RoadIdentity
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-case object RoadIdentityPage extends QuestionPage[RoadIdentity] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class TransportCountryOriginFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "roadIdentity"
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("transportCountryOrigin.error.required")
+        .verifying(maxLength(100, "transportCountryOrigin.error.length"))
+    )
 }

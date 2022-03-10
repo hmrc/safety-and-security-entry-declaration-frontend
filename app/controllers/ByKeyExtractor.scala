@@ -19,10 +19,8 @@ package controllers
 import models.requests.DataRequest
 import models.{Index, WithKey}
 import play.api.libs.json.Reads
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.AnyContent
 import queries.Gettable
-
-import scala.concurrent.Future
 
 trait ByKeyExtractor {
 

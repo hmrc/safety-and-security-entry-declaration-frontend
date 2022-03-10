@@ -16,12 +16,9 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{OverallDocument, NormalMode, UserAnswers}
+import models.OverallDocument
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 case object OverallDocumentPage extends QuestionPage[OverallDocument] {
 

@@ -28,6 +28,9 @@ import pages.transport._
 
 trait PageGenerators {
 
+  implicit lazy val arbitraryTransportCountryOriginPage: Arbitrary[TransportCountryOriginPage.type] =
+    Arbitrary(TransportCountryOriginPage)
+
   implicit lazy val arbitrarySealPage: Arbitrary[SealPage.type] =
     Arbitrary(SealPage)
 
