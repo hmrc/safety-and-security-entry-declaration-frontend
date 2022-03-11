@@ -33,7 +33,7 @@ object NationalityOfTransportSummary  {
 
         SummaryListRowViewModel(
           key     = "nationalityOfTransport.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(HtmlFormat.escape(answer.name).toString),
           actions = Seq(
             ActionItemViewModel("site.change", transportRoutes.NationalityOfTransportController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("nationalityOfTransport.change.hidden"))

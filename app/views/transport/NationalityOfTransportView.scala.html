@@ -15,6 +15,7 @@
  *@
 
 @import controllers.transport.routes
+@import models.Country
 @import viewmodels.InputWidth._
 
 @this(
@@ -22,6 +23,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
+    govukSelect: GovukSelect,
     govukButton: GovukButton
 )
 
@@ -29,18 +31,21 @@
 
 @layout(pageTitle = title(form, messages("nationalityOfTransport.title"))) {
 
-    @formHelper(action = routes.NationalityOfTransportController.onSubmit(mode, lrn)) {
+    @formHelper(action = routes.NationalityOfTransportController.onSubmit(mode, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukInput(
-            InputViewModel(
+        @govukSelect(
+            SelectViewModel(
                 field = form("value"),
+                items = Country.selectItems(Country.allCountries),
                 label = LabelViewModel(messages("nationalityOfTransport.heading")).asPageHeading()
             )
-            .withWidth(Full)
+            .withCssClass(Fixed20.toString)
+            .withCssClass("autocomplete")
+            .withHint(HintViewModel(messages("nationalityOfTransport.hint")))
         )
 
         @govukButton(

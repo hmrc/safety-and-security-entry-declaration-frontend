@@ -18,12 +18,13 @@ package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import models.Country
+import org.scalacheck.Arbitrary.arbitrary
 
 class NationalityOfTransportFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "nationalityOfTransport.error.required"
   val lengthKey = "nationalityOfTransport.error.length"
-  val maxLength = 100
 
   val form = new NationalityOfTransportFormProvider()()
 
@@ -34,14 +35,7 @@ class NationalityOfTransportFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      arbitrary[Country].map(_.code)
     )
 
     behave like mandatoryField(
