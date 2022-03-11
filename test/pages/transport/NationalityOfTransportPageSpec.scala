@@ -39,7 +39,7 @@ class NationalityOfTransportPageSpec extends SpecBase with PageBehaviours {
         NationalityOfTransportPage.navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
             transportRoutes.RoroUnaccompaniedIdentityController
-            .onPageLoad(NormalMode, emptyUserAnswers.lrn))
+              .onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 
