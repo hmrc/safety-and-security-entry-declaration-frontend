@@ -15,7 +15,7 @@
  *@
 
 @import controllers.transport.routes
-@import models.Country._
+@import models.Country
 @import viewmodels.InputWidth._
 
 @this(
@@ -40,7 +40,7 @@
         @govukSelect(
             SelectViewModel(
                 field = form("value"),
-                items = selectItems(allCountries),
+                items = Country.selectItems(Country.allCountries),
                 label = LabelViewModel(messages("nationalityOfTransport.heading")).asPageHeading()
             )
             .withCssClass(Fixed20.toString)
