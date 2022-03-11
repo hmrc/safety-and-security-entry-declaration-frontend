@@ -19,7 +19,6 @@ package generators
 import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
-import pages._
 import pages.consignees._
 import pages.consignors._
 import pages.goods._
@@ -58,7 +57,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page  <- arbitrary[ConsignorPage]
-        value <- arbitrary[Consignor].map(Json.toJson(_))
+        value <- arbitrary[Int].map(Json.toJson(_))
       } yield (page, value)
     }
 

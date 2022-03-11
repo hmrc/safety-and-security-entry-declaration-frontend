@@ -17,20 +17,19 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Consignor, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class ConsignorSpec extends SpecBase with PageBehaviours {
 
   "ConsignorPage" - {
 
-    beRetrievable[Consignor](ConsignorPage(index))
+    beRetrievable[Int](ConsignorPage(index))
 
-    beSettable[Consignor](ConsignorPage(index))
+    beSettable[Int](ConsignorPage(index))
 
-    beRemovable[Consignor](ConsignorPage(index))
+    beRemovable[Int](ConsignorPage(index))
 
     "must navigate in Normal Mode" - {
 

@@ -85,4 +85,12 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[String] = Seq.empty
   ): FieldMapping[LocalTime] =
     of(new LocalTimeFormatter(invalidKey, allRequiredKey, requiredKey, args))
+
+  protected def inList[A](
+    allowedValues: List[A],
+    allowedValuesAsString: A => String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[A] =
+    of(inListFormatter[A](allowedValues, allowedValuesAsString, requiredKey, args))
 }

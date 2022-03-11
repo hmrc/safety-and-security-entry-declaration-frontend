@@ -18,7 +18,9 @@ package models
 
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
 
-trait Trader extends WithKey
+trait Trader extends WithKey {
+  val displayName: String
+}
 
 object Trader {
 
@@ -32,14 +34,18 @@ object Trader {
   }
 }
 
-final case class TraderWithEori(key: Int, eori: String) extends Trader
+final case class TraderWithEori(key: Int, eori: String) extends Trader {
+  override val displayName: String = eori
+}
 
 object TraderWithEori {
 
   implicit val format: OFormat[TraderWithEori] = Json.format[TraderWithEori]
 }
 
-final case class TraderWithoutEori(key: Int, name: String, address: Address) extends Trader
+final case class TraderWithoutEori(key: Int, name: String, address: Address) extends Trader {
+  override val displayName: String = name
+}
 
 object TraderWithoutEori {
 
