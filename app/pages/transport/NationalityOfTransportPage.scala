@@ -16,7 +16,7 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRotues}
+import controllers.transport.{routes => transportRoutes}
 import controllers.routes
 import models.{Country, NormalMode, UserAnswers}
 import pages.QuestionPage
@@ -30,6 +30,6 @@ case object NationalityOfTransportPage extends QuestionPage[Country] {
   override def toString: String = "nationalityOfTransport"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    transportRotues.RoroUnaccompaniedIdentityController.onPageLoad(NormalMode, answers.lrn)
+    transportRoutes.RoroUnaccompaniedIdentityController.onPageLoad(NormalMode, answers.lrn)
   }
 }
