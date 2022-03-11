@@ -26,7 +26,7 @@ import models.completion.answers.ConsignorIdentity
 import pages.consignors._
 
 class ConsignorIdentityExtractorSpec extends SpecBase {
-  private val baseAnswers: UserAnswers = arbitrary[UserAnswers].sample.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers
   private val itemOne: Index = Index(0)
   private val itemTwo: Index = Index(1)
   private val itemThree: Index = Index(2)
