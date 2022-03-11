@@ -26,17 +26,17 @@ class ConsignorSpec extends SpecBase with PageBehaviours {
 
   "ConsignorPage" - {
 
-    beRetrievable[Consignor](ConsignorPage)
+    beRetrievable[Consignor](ConsignorPage(index))
 
-    beSettable[Consignor](ConsignorPage)
+    beSettable[Consignor](ConsignorPage(index))
 
-    beRemovable[Consignor](ConsignorPage)
+    beRemovable[Consignor](ConsignorPage(index))
 
     "must navigate in Normal Mode" - {
 
       "to Index" in {
 
-        ConsignorPage.navigate(NormalMode, emptyUserAnswers)
+        ConsignorPage(index).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(routes.IndexController.onPageLoad)
       }
     }
@@ -45,7 +45,7 @@ class ConsignorSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ConsignorPage.navigate(CheckMode, emptyUserAnswers)
+        ConsignorPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

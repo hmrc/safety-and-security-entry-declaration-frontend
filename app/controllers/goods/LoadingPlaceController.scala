@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.goods.LoadingPlaceFormProvider
 
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.LoadingPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,29 +45,29 @@ class LoadingPlaceController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(LoadingPlacePage) match {
+      val preparedForm = request.userAnswers.get(LoadingPlacePage(itemIndex)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, mode, lrn, itemIndex))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(LoadingPlacePage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(LoadingPlacePage(itemIndex), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(LoadingPlacePage.navigate(mode, updatedAnswers))
+            } yield Redirect(LoadingPlacePage(itemIndex).navigate(mode, updatedAnswers))
         )
     }
 }

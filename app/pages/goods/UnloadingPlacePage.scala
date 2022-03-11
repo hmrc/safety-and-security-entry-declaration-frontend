@@ -18,14 +18,14 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{UnloadingPlace, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UnloadingPlace, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnloadingPlacePage extends QuestionPage[UnloadingPlace] {
+final case class UnloadingPlacePage(itemIndex: Index) extends QuestionPage[UnloadingPlace] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "unloadingPlace"
 }

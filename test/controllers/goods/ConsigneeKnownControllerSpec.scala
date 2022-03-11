@@ -37,7 +37,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new ConsigneeKnownFormProvider()
   val form = formProvider()
 
-  lazy val consigneeKnownRoute = routes.ConsigneeKnownController.onPageLoad(NormalMode, lrn).url
+  lazy val consigneeKnownRoute = routes.ConsigneeKnownController.onPageLoad(NormalMode, lrn, index).url
 
   "ConsigneeKnown Controller" - {
 
@@ -53,13 +53,13 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ConsigneeKnownView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(ConsigneeKnownPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -92,10 +92,10 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ConsigneeKnownPage, true).success.value
+        val expectedAnswers = emptyUserAnswers.set(ConsigneeKnownPage(index), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ConsigneeKnownPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual ConsigneeKnownPage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -116,7 +116,7 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 

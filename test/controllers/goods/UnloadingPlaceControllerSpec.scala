@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val unloadingPlaceRoute = routes.UnloadingPlaceController.onPageLoad(NormalMode, lrn).url
+  lazy val unloadingPlaceRoute = routes.UnloadingPlaceController.onPageLoad(NormalMode, lrn, index).url
 
   val formProvider = new UnloadingPlaceFormProvider()
   val form = formProvider()
@@ -53,13 +53,13 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[UnloadingPlaceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(UnloadingPlacePage, UnloadingPlace.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(UnloadingPlacePage(index), UnloadingPlace.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(UnloadingPlace.values.head), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(UnloadingPlace.values.head), NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -92,10 +92,10 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", UnloadingPlace.values.head.toString))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(UnloadingPlacePage, UnloadingPlace.values.head).success.value
+        val expectedAnswers = emptyUserAnswers.set(UnloadingPlacePage(index), UnloadingPlace.values.head).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnloadingPlacePage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual UnloadingPlacePage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -116,7 +116,7 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
       }
     }
 
