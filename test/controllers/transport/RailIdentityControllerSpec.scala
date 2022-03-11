@@ -35,8 +35,9 @@ import scala.concurrent.Future
 
 class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new RailIdentityFormProvider()
-  val form = formProvider()
+  private val formProvider = new RailIdentityFormProvider()
+  private val form = formProvider()
+  private val wagonNumber = "testWagonNumber"
 
   lazy val railIdentityRoute = routes.RailIdentityController.onPageLoad(NormalMode, lrn).url
 
@@ -45,8 +46,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
     lrn,
     Json.obj(
       RailIdentityPage.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
+        "wagonNumber" -> wagonNumber
       )
     )
   )
@@ -81,7 +81,9 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(RailIdentity("value 1", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual {
+          view(form.fill(RailIdentity(wagonNumber)), NormalMode, lrn)(request, messages(application)).toString
+        }
       }
     }
 
@@ -99,10 +101,10 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, railIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(("value", wagonNumber))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RailIdentityPage, RailIdentity("value 1", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(RailIdentityPage, RailIdentity(wagonNumber)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RailIdentityPage.navigate(NormalMode, expectedAnswers).url
@@ -151,7 +153,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, railIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(("value", wagonNumber))
 
         val result = route(application, request).value
 

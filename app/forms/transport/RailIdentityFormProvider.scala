@@ -25,12 +25,18 @@ import models.RailIdentity
 
 class RailIdentityFormProvider @Inject() extends Mappings {
 
+  private val validData = "[A-Za-z0-9]+"
+
    def apply(): Form[RailIdentity] = Form(
      mapping(
-      "field1" -> text("railIdentity.error.field1.required")
-        .verifying(maxLength(100, "railIdentity.error.field1.length")),
-      "field2" -> text("railIdentity.error.field2.required")
-        .verifying(maxLength(100, "railIdentity.error.field2.length"))
+      "value" -> text("railIdentity.error.required")
+        .verifying(
+          firstError(
+            maxLength(27, "railIdentity.error.length"),
+            regexp(validData, "railIdentity.error.invalid")
+          )
+        )
+
     )(RailIdentity.apply)(RailIdentity.unapply)
    )
  }

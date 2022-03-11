@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class RailIdentity(field1: String, field2: String)
+case class RailIdentity(wagonNumber: String)
 
 object RailIdentity {
   implicit val format = Json.format[RailIdentity]

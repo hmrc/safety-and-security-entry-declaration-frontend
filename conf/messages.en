@@ -641,16 +641,14 @@ overallDocument.field1.change.hidden = field1
 overallDocument.field2.change.hidden = field2
 
 railIdentity.title = railIdentity
-railIdentity.heading = railIdentity
-railIdentity.field1 = field1
-railIdentity.field2 = field2
+railIdentity.heading = Rail
+railIdentity.label = Give the details of the train carrying your goods into the UK  - this will help Border Force officials identify the consignment.
+railIdentity.value = Enter the Wagon Number
 railIdentity.checkYourAnswersLabel = RailIdentity
-railIdentity.error.field1.required = Enter field1
-railIdentity.error.field2.required = Enter field2
-railIdentity.error.field1.length = field1 must be 100 characters or less
-railIdentity.error.field2.length = field2 must be 100 characters or less
-railIdentity.field1.change.hidden = field1
-railIdentity.field2.change.hidden = field2
+railIdentity.error.required = Enter the Wagon Number
+railIdentity.error.length = Wagon Number must be 27 characters or less
+railIdentity.error.invalid = Wagon Number can only contain letters and numbers
+railIdentity.field1.change.hidden = railIdentity
 
 removeOverallDocument.title = removeOverallDocument
 removeOverallDocument.heading = removeOverallDocument

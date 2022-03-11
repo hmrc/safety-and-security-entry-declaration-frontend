@@ -32,7 +32,7 @@ object RailIdentitySummary {
     answers.get(RailIdentityPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.field1).toString + "<br/>" + HtmlFormat.escape(answer.field2).toString
+      val value = HtmlFormat.escape(answer.wagonNumber).toString
 
         SummaryListRowViewModel(
           key     = "railIdentity.checkYourAnswersLabel",

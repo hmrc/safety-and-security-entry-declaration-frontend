@@ -81,10 +81,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryRailIdentity: Arbitrary[RailIdentity] =
     Arbitrary {
-      for {
-        field1 <- arbitrary[String]
-        field2 <- arbitrary[String]
-      } yield RailIdentity(field1, field2)
+      arbitrary[String] map { RailIdentity(_) }
     }
 
   implicit lazy val arbitraryOverallDocument: Arbitrary[OverallDocument] =
