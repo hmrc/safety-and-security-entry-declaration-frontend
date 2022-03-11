@@ -36,19 +36,12 @@
         }
 
         <h1 class="govuk-heading-xl">@messages("railIdentity.heading")</h1>
+        <p class="govuk-body">@messages("railIdentity.label")</p>
 
         @govukInput(
             InputViewModel(
-                field = form("field1"),
-                label = LabelViewModel(messages("railIdentity.field1"))
-            )
-            .withWidth(Full)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("field2"),
-                label = LabelViewModel(messages("railIdentity.field2"))
+                field = form("value"),
+                label = LabelViewModel(messages("railIdentity.value"))
             )
             .withWidth(Full)
         )

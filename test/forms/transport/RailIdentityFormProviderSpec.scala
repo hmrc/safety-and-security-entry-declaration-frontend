@@ -17,45 +17,20 @@
 package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class RailIdentityFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new RailIdentityFormProvider()()
+  private val form = new RailIdentityFormProvider()()
+  private val invalidKey = "railIdentity.error.invalid"
 
-  ".field1" - {
+  ".value" - {
 
-    val fieldName = "field1"
-    val requiredKey = "railIdentity.error.field1.required"
-    val lengthKey = "railIdentity.error.field1.length"
-    val maxLength = 100
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
-
-  ".field2" - {
-
-    val fieldName = "field2"
-    val requiredKey = "railIdentity.error.field2.required"
-    val lengthKey = "railIdentity.error.field2.length"
-    val maxLength = 100
+    val fieldName = "value"
+    val requiredKey = "railIdentity.error.required"
+    val lengthKey = "railIdentity.error.length"
+    val maxLength = 27
 
     behave like fieldThatBindsValidData(
       form,
@@ -75,5 +50,19 @@ class RailIdentityFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind invalid data" in {
+
+      val invalidData = for {
+        noValidChars <- Gen.choose(0, 26)
+        validChars <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
+        invalidChar <- Gen.oneOf('?', '.', ',')
+      } yield (validChars :+ invalidChar).mkString
+
+      forAll(invalidData) { invalidAnswer =>
+        val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, invalidKey, Seq("[A-Za-z0-9]+"))
+      }
+    }
   }
 }

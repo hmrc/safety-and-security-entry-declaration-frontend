@@ -28,4 +28,8 @@ case object RailIdentityPage extends QuestionPage[RailIdentity] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "railIdentity"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
+  }
 }
