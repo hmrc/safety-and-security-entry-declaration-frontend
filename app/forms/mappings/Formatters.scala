@@ -154,6 +154,28 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def inListFormatter[A](
+    allowedValues: List[A],
+    allowedValueAsString: A => String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
+  ): Formatter[A] =
+    new Formatter[A] {
+
+      private val baseFormatter = stringFormatter(requiredKey, args)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
+        baseFormatter.bind(key, data).right.flatMap { str =>
+          allowedValues
+            .find(allowedValueAsString(_) == str)
+            .map(Right(_))
+            .getOrElse(Left(Seq(FormError(key, requiredKey, args))))
+        }
+
+      override def unbind(key: String, value: A): Map[String, String] =
+        baseFormatter.unbind(key, allowedValueAsString(value))
+    }
+
   private[mappings] def gbEoriFormatter(
     requiredKey: String,
     lengthKey: String = "error.eori.length",

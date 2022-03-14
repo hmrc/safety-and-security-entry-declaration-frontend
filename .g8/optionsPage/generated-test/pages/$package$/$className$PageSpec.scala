@@ -6,7 +6,7 @@ import controllers.routes
 import models.{$className$, CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class $className$Spec extends SpecBase with PageBehaviours {
+class $className$PageSpec extends SpecBase with PageBehaviours {
 
   "$className$Page" - {
 

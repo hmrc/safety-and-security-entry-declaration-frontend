@@ -24,7 +24,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, radioOptions: Seq[RadioItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("consignor.title"))) {
 
@@ -38,7 +38,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(messages("consignor.heading")).asPageHeading(),
-                items  = Consignor.options
+                items  = radioOptions
             )
         )
 

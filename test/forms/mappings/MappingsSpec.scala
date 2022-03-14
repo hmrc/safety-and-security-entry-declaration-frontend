@@ -246,4 +246,44 @@ class MappingsSpec
       result.apply("value").value.value mustEqual "1.23"
     }
   }
+
+  "inList" - {
+
+    val allowedValues = Gen.nonEmptyListOf(arbitrary[String]).sample.value
+
+    val testForm: Form[String] = Form(
+      "fieldName" -> inList[String](
+        allowedValues = allowedValues,
+        allowedValuesAsString = s => s,
+        requiredKey = "error.required"
+      )
+    )
+
+    "must bind all allowed values" in {
+
+      for (allowedValue <- allowedValues) {
+        val result = testForm.bind(Map("fieldName" -> allowedValue))
+        result.apply("fieldName").value.value mustEqual allowedValue
+      }
+    }
+
+    "must not bind any other values" in {
+
+      forAll(arbitrary[String] suchThat (!allowedValues.contains(_))) {
+        invalidValue =>
+          val result = testForm.bind(Map("fieldName" -> invalidValue))
+          result.apply("fieldName").errors must contain only FormError("fieldName", "error.required")
+      }
+    }
+
+    "must not bind an empty value" in {
+      val result = testForm.bind(Map("fieldName" -> ""))
+      result.apply("fieldName").errors must contain only FormError("fieldName", "error.required")
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.apply("fieldName").errors must contain only FormError("fieldName", "error.required")
+    }
+  }
 }

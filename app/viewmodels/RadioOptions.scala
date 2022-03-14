@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package forms.goods
+package viewmodels
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-import javax.inject.Inject
+object RadioOptions {
 
-class ConsignorFormProvider @Inject() extends Mappings {
-
-  def apply(consignorKeys: List[Int]): Form[Int] =
-    Form(
-      "value" ->
-        inList[Int](
-          allowedValues = consignorKeys,
-          allowedValuesAsString = _.toString,
-          requiredKey = "consignor.error.required"
+  def apply(items: Map[String, String])(implicit messages: Messages): Seq[RadioItem] =
+    items.zipWithIndex.map {
+      case ((key, value), index) =>
+        RadioItem(
+          content = Text(messages(key)),
+          value = Some(value),
+          id = Some(s"value_$index")
         )
-    )
+    }.toSeq
 }

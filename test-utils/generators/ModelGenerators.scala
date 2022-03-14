@@ -24,6 +24,30 @@ import org.scalacheck.{Arbitrary, Gen}
 import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryTraderWithEori: Arbitrary[TraderWithEori] =
+    Arbitrary {
+      for {
+        key <- arbitrary[Int]
+        eori <- arbitrary[GbEori]
+      } yield TraderWithEori(key, eori.value)
+    }
+
+  implicit lazy val arbitraryTraderWithoutEori: Arbitrary[TraderWithoutEori] =
+    Arbitrary {
+      for {
+        key <- arbitrary[Int]
+        name <- arbitrary[String]
+        address <- arbitrary[Address]
+      } yield TraderWithoutEori(key, name, address)
+    }
+
+  implicit lazy val arbitraryTrader: Arbitrary[Trader] = {
+    Arbitrary {
+      Gen.oneOf[Trader](arbitrary[TraderWithEori], arbitrary[TraderWithoutEori])
+    }
+  }
+
   // The default arbitrary[Instant] provides unrealistic dates prone to overflow issues; pick a
   // value between epoch and 2030-01-01 00:00:00 instead
   lazy val arbitraryRecentInstant: Arbitrary[Instant] = Arbitrary {
@@ -43,11 +67,6 @@ trait ModelGenerators {
   implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] =
     Arbitrary {
       Gen.oneOf(LoadingPlace.values.toSeq)
-    }
-
-  implicit lazy val arbitraryConsignor: Arbitrary[Consignor] =
-    Arbitrary {
-      Gen.oneOf(Consignor.values.toSeq)
     }
 
   implicit lazy val arbitraryConsignee: Arbitrary[Consignee] =

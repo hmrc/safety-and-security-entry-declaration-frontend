@@ -18,14 +18,28 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Consignor, Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 
-final case class ConsignorPage(itemIndex: Index) extends QuestionPage[Consignor] {
+final case class ConsignorPage(itemIndex: Index) extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
-  override def toString: String = "consignor"
+  override def toString: String = "consignorKey"
+
+  override def navigateInNormalMode(answers: UserAnswers): Call = {
+
+    val c = answers.get(DeriveNumberOfConsignees).getOrElse(0)
+    val n = answers.get(DeriveNumberOfNotifiedParties).getOrElse(0)
+
+    if (c > 0 && n > 0) { goodsRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
+    else if (c > 1)     { goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
+    else if (n > 1)     { goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
+    else if (c == 1)    { ConsigneePage(itemIndex).navigate(NormalMode, answers) }
+    else if (n == 1)    { NotifiedPartyPage(itemIndex).navigate(NormalMode, answers) }
+    else                { routes.JourneyRecoveryController.onPageLoad() }
+  }
 }

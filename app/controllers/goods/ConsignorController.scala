@@ -16,18 +16,20 @@
 
 package controllers.goods
 
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.ConsignorFormProvider
-
-import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.ConsignorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignors.AllConsignorsQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.RadioOptions
 import views.html.goods.ConsignorView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorController @Inject() (
@@ -41,33 +43,48 @@ class ConsignorController @Inject() (
   view: ConsignorView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
-
-  private val form = formProvider()
+  with I18nSupport
+  with AnswerExtractor {
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        getAnswer(AllConsignorsQuery) {
+          consignors =>
 
-      val preparedForm = request.userAnswers.get(ConsignorPage(itemIndex)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+            val form = formProvider(consignors.map(_.key))
+            val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
 
-      Ok(view(preparedForm, mode, lrn, itemIndex))
+            val preparedForm = request.userAnswers.get(ConsignorPage(itemIndex)) match {
+              case None => form
+              case Some(value) => form.fill(value)
+            }
+
+            Ok(view(preparedForm, mode, lrn, itemIndex, radioOptions))
+          }
     }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getAnswerAsync(AllConsignorsQuery) {
+          consignors =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorPage(itemIndex), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsignorPage(itemIndex).navigate(mode, updatedAnswers))
-        )
+            val form = formProvider(consignors.map(_.key))
+
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+                  val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
+                  Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, radioOptions)))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorPage(itemIndex), value))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(ConsignorPage(itemIndex).navigate(mode, updatedAnswers))
+              )
+          }
     }
 }
