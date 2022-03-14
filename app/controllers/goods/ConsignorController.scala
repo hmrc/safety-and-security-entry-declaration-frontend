@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.consignors.AllConsignorsQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.{KeyValue, RadioOptions}
+import viewmodels.RadioOptions
 import views.html.goods.ConsignorView
 
 import javax.inject.Inject
@@ -53,7 +53,7 @@ class ConsignorController @Inject() (
           consignors =>
 
             val form = formProvider(consignors.map(_.key))
-            val radioOptions = RadioOptions(consignors.map(c => KeyValue(c.key.toString, c.displayName)))
+            val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
 
             val preparedForm = request.userAnswers.get(ConsignorPage(itemIndex)) match {
               case None => form
@@ -76,7 +76,7 @@ class ConsignorController @Inject() (
               .bindFromRequest()
               .fold(
                 formWithErrors => {
-                  val radioOptions = RadioOptions(consignors.map(c => KeyValue(c.key.toString, c.displayName)))
+                  val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
                   Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, radioOptions)))
                 },
                 value =>

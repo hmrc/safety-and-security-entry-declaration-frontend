@@ -20,17 +20,15 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-case class KeyValue(key: String, value: String)
-
 object RadioOptions {
 
-  def apply(items: List[KeyValue])(implicit messages: Messages): Seq[RadioItem] =
+  def apply(items: Map[String, String])(implicit messages: Messages): Seq[RadioItem] =
     items.zipWithIndex.map {
-      case (item, index) =>
+      case ((key, value), index) =>
         RadioItem(
-          content = Text(messages(item.value)),
-          value = Some(item.value),
+          content = Text(messages(key)),
+          value = Some(value),
           id = Some(s"value_$index")
         )
-    }
+    }.toSeq
 }

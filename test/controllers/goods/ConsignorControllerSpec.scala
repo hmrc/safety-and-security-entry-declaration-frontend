@@ -22,7 +22,6 @@ import forms.goods.ConsignorFormProvider
 import models.{GbEori, Index, NormalMode, TraderWithEori}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.consignors.ConsignorEORIPage
 import pages.goods.ConsignorPage
@@ -32,7 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.consignors.ConsignorKeyQuery
 import repositories.SessionRepository
-import viewmodels.{KeyValue, RadioOptions}
+import viewmodels.RadioOptions
 import views.html.goods.ConsignorView
 
 import scala.concurrent.Future
@@ -73,7 +72,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[ConsignorView]
         implicit val msgs: Messages = messages(application)
-        val radioOptions = RadioOptions(consignors.map(c => KeyValue(c.key.toString, c.displayName)))
+        val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index, radioOptions)(request, implicitly).toString
@@ -91,7 +90,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[ConsignorView]
         implicit val msgs: Messages = messages(application)
-        val radioOptions = RadioOptions(consignors.map(c => KeyValue(c.key.toString, c.displayName)))
+        val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
 
         val result = route(application, request).value
 
@@ -144,7 +143,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
 
         val view = application.injector.instanceOf[ConsignorView]
         implicit val msgs: Messages = messages(application)
-        val radioOptions = RadioOptions(consignors.map(c => KeyValue(c.key.toString, c.displayName)))
+        val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
 
         val result = route(application, request).value
 
