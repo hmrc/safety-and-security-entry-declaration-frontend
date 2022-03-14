@@ -19,25 +19,21 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.AddOverallDocumentFormProvider
-import models.NormalMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import models.{Document, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport.AddOverallDocumentPage
-import play.api.inject.bind
+import pages.transport.{AddOverallDocumentPage, OverallDocumentPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.transport.AddOverallDocumentView
 
-import scala.concurrent.Future
-
 class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
+  private val formProvider = new AddOverallDocumentFormProvider()
+  private val form = formProvider()
 
-  val formProvider = new AddOverallDocumentFormProvider()
-  val form = formProvider()
-
-  lazy val addOverallDocumentRoute = routes.AddOverallDocumentController.onPageLoad(NormalMode, lrn).url
+  private lazy val addOverallDocumentRoute = {
+    routes.AddOverallDocumentController.onPageLoad(NormalMode, lrn).url
+  }
 
   "AddOverallDocument Controller" - {
 
@@ -53,7 +49,7 @@ class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddOverallDocumentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, Nil)(request, messages(application)).toString
       }
     }
 
@@ -71,32 +67,51 @@ class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, Nil)(request, messages(application)).toString
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+    "must redirect to the OverallDocument page with the correct next index if yes is selected" in {
+      val doc = arbitrary[Document].sample.value
+      val answers = emptyUserAnswers.set(OverallDocumentPage(index), doc).success.value
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, addOverallDocumentRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = {
+          FakeRequest(POST, addOverallDocumentRoute).withFormUrlEncodedBody(("value", "true"))
+        }
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AddOverallDocumentPage, true).success.value
+        val result = route(application, request).value
+        val expectedRedirect = {
+          routes.OverallDocumentController.onPageLoad(
+            NormalMode,
+            answers.lrn,
+            index + 1
+          ).url
+        }
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddOverallDocumentPage.navigate(NormalMode, expectedAnswers).url
-        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+        redirectLocation(result).value mustEqual expectedRedirect
+      }
+    }
+
+    "must redirect to the AddAnySeals page if no is selected" in {
+      val doc = arbitrary[Document].sample.value
+      val answers = emptyUserAnswers.set(OverallDocumentPage(index), doc).success.value
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      running(application) {
+        val request = {
+          FakeRequest(POST, addOverallDocumentRoute).withFormUrlEncodedBody(("value", "false"))
+        }
+
+        val result = route(application, request).value
+        val expectedRedirect = {
+          routes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn).url
+        }
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual expectedRedirect
       }
     }
 
@@ -116,7 +131,7 @@ class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, Nil)(request, messages(application)).toString
       }
     }
 

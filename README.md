@@ -1,7 +1,7 @@
 
 # safety-and-security-entry-declaration-frontend
 
-This is a placeholder README.md for a new repository
+Safety and Security frontend, for submitting ENS declarations.
 
 ## Creating new pages
 

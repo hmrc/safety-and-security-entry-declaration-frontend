@@ -46,7 +46,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(RemoveSealPage.type, JsValue)] ::
     arbitrary[(RemoveOverallDocumentPage.type, JsValue)] ::
     arbitrary[(RailIdentityPage.type, JsValue)] ::
-    arbitrary[(OverallDocumentPage.type, JsValue)] ::
+    arbitrary[(OverallDocumentPage, JsValue)] ::
     arbitrary[(NationalityOfTransportPage.type, JsValue)] ::
     arbitrary[(MaritimeIdentityPage.type, JsValue)] ::
     arbitrary[(AnyOverallDocumentsPage.type, JsValue)] ::

@@ -387,10 +387,10 @@ POST       /:lrn/nationalityOfTransport                        controllers.trans
 GET        /:lrn/changeNationalityOfTransport                  controllers.transport.NationalityOfTransportController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeNationalityOfTransport                  controllers.transport.NationalityOfTransportController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/overallDocument                        controllers.transport.OverallDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/overallDocument                        controllers.transport.OverallDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeOverallDocument                  controllers.transport.OverallDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeOverallDocument                  controllers.transport.OverallDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/overallDocument/:index                        controllers.transport.OverallDocumentController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/overallDocument/:index                        controllers.transport.OverallDocumentController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeOverallDocument/:index                  controllers.transport.OverallDocumentController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeOverallDocument/:index                  controllers.transport.OverallDocumentController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
 GET        /:lrn/railIdentity                        controllers.transport.RailIdentityController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/railIdentity                        controllers.transport.RailIdentityController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)

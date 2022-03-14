@@ -21,16 +21,26 @@ import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms._
-import models.OverallDocument
+import models.{Document, DocumentType}
 
 class OverallDocumentFormProvider @Inject() extends Mappings {
-
-   def apply(): Form[OverallDocument] = Form(
-     mapping(
-      "field1" -> text("overallDocument.error.field1.required")
-        .verifying(maxLength(100, "overallDocument.error.field1.length")),
-      "field2" -> text("overallDocument.error.field2.required")
-        .verifying(maxLength(100, "overallDocument.error.field2.length"))
-    )(OverallDocument.apply)(OverallDocument.unapply)
-   )
- }
+  def apply(): Form[Document] = Form(
+    mapping(
+      "type" -> {
+        text("overallDocument.error.type.required")
+          .verifying(
+            "overallDocument.error.type.required",
+            value => DocumentType.allDocumentTypes.exists(_.code == value)
+          )
+          .transform[DocumentType](
+            value => DocumentType.allDocumentTypes.find(_.code == value).get,
+            _.code
+          )
+      },
+      "reference" -> {
+        text("overallDocument.error.reference.required")
+          .verifying(maxLength(35, "overallDocument.error.reference.length"))
+      }
+    )(Document.apply)(Document.unapply)
+  )
+}

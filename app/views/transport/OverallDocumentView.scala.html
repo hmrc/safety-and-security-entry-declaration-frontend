@@ -15,21 +15,23 @@
  *@
 
 @import controllers.transport.routes
+@import models.DocumentType._
 @import viewmodels.InputWidth._
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
+    govukSelect: GovukSelect,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("overallDocument.title"))) {
 
-    @formHelper(action = routes.OverallDocumentController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.OverallDocumentController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -37,18 +39,20 @@
 
         <h1 class="govuk-heading-xl">@messages("overallDocument.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
-                field = form("field1"),
-                label = LabelViewModel(messages("overallDocument.field1"))
+        @govukSelect(
+            SelectViewModel(
+                field = form("type"),
+                items = selectItems(allDocumentTypes),
+                label = LabelViewModel(messages("overallDocument.type"))
             )
-            .withWidth(Full)
+            .withCssClass(Fixed20.toString)
+            .withCssClass("autocomplete")
         )
 
         @govukInput(
             InputViewModel(
-                field = form("field2"),
-                label = LabelViewModel(messages("overallDocument.field2"))
+                field = form("reference"),
+                label = LabelViewModel(messages("overallDocument.reference"))
             )
             .withWidth(Full)
         )

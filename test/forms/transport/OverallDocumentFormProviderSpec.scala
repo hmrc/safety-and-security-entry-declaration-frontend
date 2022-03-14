@@ -17,30 +17,23 @@
 package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
+import models.DocumentType
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class OverallDocumentFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new OverallDocumentFormProvider()()
+  private val form = new OverallDocumentFormProvider()()
 
-  ".field1" - {
+  ".type" - {
 
-    val fieldName = "field1"
-    val requiredKey = "overallDocument.error.field1.required"
-    val lengthKey = "overallDocument.error.field1.length"
-    val maxLength = 100
+    val fieldName = "type"
+    val requiredKey = "overallDocument.error.type.required"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      Gen.oneOf(DocumentType.allDocumentTypes) map { _.code }
     )
 
     behave like mandatoryField(
@@ -50,12 +43,12 @@ class OverallDocumentFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  ".field2" - {
+  ".reference" - {
 
-    val fieldName = "field2"
-    val requiredKey = "overallDocument.error.field2.required"
-    val lengthKey = "overallDocument.error.field2.length"
-    val maxLength = 100
+    val fieldName = "reference"
+    val requiredKey = "overallDocument.error.reference.required"
+    val lengthKey = "overallDocument.error.reference.length"
+    val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,

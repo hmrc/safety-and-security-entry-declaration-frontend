@@ -14,17 +14,20 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.routes
+@import controllers.transport.{OverallDocumentController, routes}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, documents: List[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addOverallDocument.title"))) {
 
@@ -34,12 +37,22 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages("addOverallDocument.heading")).asPageHeading()
-            )
-        )
+        <h1 class="govuk-heading-xl">@messages("addOverallDocument.heading")</h1>
+        <p class="govuk-body">@messages("addOverallDocument.label")</p>
+
+        @addToList(documents, Long, "addOverallDocument.change.hidden", "addOverallDocument.remove.hidden")
+
+        @if(documents.length < OverallDocumentController.MaxDocuments) {
+          @govukRadios(
+              RadiosViewModel.yesNo(
+                  field = form("value"),
+                  legend = LegendViewModel(messages("addOverallDocument.addAnother")).withSize(LegendSize.Medium)
+              )
+          )
+        } else {
+          <p class="govuk-body">@messages("addOverallDocument.maximumReached")</p>
+          <input type="hidden" name="value" id="value" value="false"/>
+        }
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
