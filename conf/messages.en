@@ -713,19 +713,17 @@ consignee.checkYourAnswersLabel = Your consignees
 consignee.error.required = Select consignee
 consignee.change.hidden = Consignee
 
-consigneeKnown.title = consigneeKnown
-consigneeKnown.heading = consigneeKnown
-consigneeKnown.checkYourAnswersLabel = consigneeKnown
-consigneeKnown.error.required = Select yes if consigneeKnown
-consigneeKnown.change.hidden = ConsigneeKnown
+consigneeKnown.title = Do you know the consignee?
+consigneeKnown.heading = Do you know the consignee?
+consigneeKnown.checkYourAnswersLabel = Consignee known
+consigneeKnown.error.required = Select yes if you know the consignee
+consigneeKnown.change.hidden = if you know the consignee
 
 consignor.title = Your consignors
 consignor.heading = Your consignors
-consignor.option1 = Option 1
-consignor.option2 = Option 2
-consignor.checkYourAnswersLabel = Your consignors
-consignor.error.required = Select consignor
-consignor.change.hidden = Consignor
+consignor.checkYourAnswersLabel = Consignor
+consignor.error.required = Select the consignor
+consignor.change.hidden = the consignor
 
 loadingPlace.title = Your loading places
 loadingPlace.heading = Your loading places

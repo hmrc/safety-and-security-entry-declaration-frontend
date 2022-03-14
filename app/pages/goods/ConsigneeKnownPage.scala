@@ -28,4 +28,10 @@ final case class ConsigneeKnownPage(itemIndex: Index) extends QuestionPage[Boole
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "consigneeKnown"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(ConsigneeKnownPage(itemIndex)).map {
+      case true  => goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+      case false => goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
 }
