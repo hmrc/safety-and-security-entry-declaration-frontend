@@ -17,9 +17,12 @@
 package pages.goods
 
 import base.SpecBase
+import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, PlaceOfLoading}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.routedetails.PlaceOfLoadingPage
 
 class NotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
@@ -31,12 +34,30 @@ class NotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
     beRemovable[Int](NotifiedPartyPage(index))
 
+    val placeOfLoading1 = arbitrary[PlaceOfLoading].sample.value
+    val placeOfLoading2 = arbitrary[PlaceOfLoading].sample.value
+
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to place of loading when there is more than one place of loading" in {
 
-        NotifiedPartyPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers =
+          emptyUserAnswers
+            .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
+            .set(PlaceOfLoadingPage(Index(1)), placeOfLoading2).success.value
+
+        NotifiedPartyPage(index).navigate(NormalMode, answers)
+          .mustEqual(goodsRoutes.LoadingPlaceController.onPageLoad(NormalMode, answers.lrn, index))
+      }
+
+      "to wherever loading place navigates to when there is one place of loading" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
+
+        NotifiedPartyPage(index).navigate(NormalMode, answers)
+          .mustEqual(LoadingPlacePage(Index(0)).navigate(NormalMode, answers))
       }
     }
 
