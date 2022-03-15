@@ -18,14 +18,22 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Consignee, Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.routedetails.DeriveNumberOfPlacesOfLoading
 
-final case class ConsigneePage(itemIndex: Index) extends QuestionPage[Consignee] {
+final case class ConsigneePage(itemIndex: Index) extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
-  override def toString: String = "consignee"
+  override def toString: String = "consigneeKey"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(DeriveNumberOfPlacesOfLoading).map {
+      n =>
+        if (n > 1) { goodsRoutes.LoadingPlaceController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
+        else       { LoadingPlacePage(itemIndex).navigate(NormalMode, answers) }
+    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
 }

@@ -26,8 +26,8 @@ object RadioOptions {
     items.zipWithIndex.map {
       case ((key, value), index) =>
         RadioItem(
-          content = Text(messages(key)),
-          value = Some(value),
+          content = Text(messages(value)),
+          value = Some(key),
           id = Some(s"value_$index")
         )
     }.toSeq

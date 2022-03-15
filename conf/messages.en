@@ -707,11 +707,9 @@ seal.change.hidden = Seal
 
 consignee.title = Your consignees
 consignee.heading = Your consignees
-consignee.option1 = Option 1
-consignee.option2 = Option 2
 consignee.checkYourAnswersLabel = Your consignees
-consignee.error.required = Select consignee
-consignee.change.hidden = Consignee
+consignee.error.required = Select the consignee
+consignee.change.hidden = the consignee
 
 consigneeKnown.title = Do you know the consignee?
 consigneeKnown.heading = Do you know the consignee?

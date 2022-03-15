@@ -17,27 +17,50 @@
 package forms.goods
 
 import forms.behaviours.OptionFieldBehaviours
-import models.Consignee
+import models.Trader
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class ConsigneeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new ConsigneeFormProvider()()
+  val formProvider = new ConsigneeFormProvider()
 
   ".value" - {
 
     val fieldName = "value"
     val requiredKey = "consignee.error.required"
 
-    behave like optionsField[Consignee](
-      form,
-      fieldName,
-      validValues  = Consignee.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    "must bind any values passed to the form" in {
+
+      forAll(Gen.nonEmptyListOf(arbitrary[Trader])) {
+        consignees =>
+
+          val form = formProvider(consignees.map(_.key))
+          consignees.map {
+            consignee =>
+              val result = form.bind(Map("value" -> consignee.key.toString))(fieldName)
+              result.value.value mustEqual consignee.key.toString
+              result.errors mustBe empty
+          }
+      }
+    }
+
+    "must not bind any values not passed to the form" in {
+
+      forAll(arbitrary[String], Gen.nonEmptyListOf(arbitrary[Trader])) {
+        case (invalidValue, consignees) =>
+
+          whenever(!consignees.map(_.key.toString).contains(invalidValue)) {
+            val form = formProvider(consignees.map(_.key))
+            val result = form.bind(Map("value" -> invalidValue))(fieldName)
+            result.errors must contain only FormError(fieldName, requiredKey)
+          }
+      }
+    }
 
     behave like mandatoryField(
-      form,
+      formProvider(List(1, 2, 3)),
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
