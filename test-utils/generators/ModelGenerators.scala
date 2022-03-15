@@ -179,6 +179,13 @@ trait ModelGenerators {
       } yield Document(documentType, reference)
     }
 
+  implicit lazy val arbitraryContainer: Arbitrary[Container] =
+    Arbitrary {
+      for {
+        itemContainerNumber <- arbitrary[String]
+      } yield Container(itemContainerNumber)
+    }
+
   implicit lazy val arbitraryGoodItem: Arbitrary[GoodItem] =
     Arbitrary {
       for {

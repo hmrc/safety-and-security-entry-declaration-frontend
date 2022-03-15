@@ -28,8 +28,8 @@ import pages.transport._
 
 trait PageGenerators {
 
-  implicit lazy val arbitraryItemContainerNumberPage: Arbitrary[ItemContainerNumberPage.type] =
-    Arbitrary(ItemContainerNumberPage)
+  implicit lazy val arbitraryItemContainerNumberPage: Arbitrary[ItemContainerNumberPage] =
+    Arbitrary(ItemContainerNumberPage(Index(0),Index(0)))
 
   implicit lazy val arbitraryUnloadingPlacePage: Arbitrary[UnloadingPlacePage] =
     Arbitrary(UnloadingPlacePage(Index(0)))
