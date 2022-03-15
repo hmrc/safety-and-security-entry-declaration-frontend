@@ -19,15 +19,19 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.ConsigneeFormProvider
-import models.{NormalMode, Consignee}
+import models.{GbEori, Index, NormalMode, TraderWithEori}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.consignees.ConsigneeEORIPage
 import pages.goods.ConsigneePage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.consignees.ConsigneeKeyQuery
 import repositories.SessionRepository
+import viewmodels.RadioOptions
 import views.html.goods.ConsigneeView
 
 import scala.concurrent.Future
@@ -36,14 +40,30 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val consigneeRoute = routes.ConsigneeController.onPageLoad(NormalMode, lrn, index).url
 
+  val key1 = 1
+  val key2 = 2
+  val eori1 = GbEori("123456789000")
+  val eori2 = GbEori("123456789001")
+  val consignees = List(
+    TraderWithEori(key1, eori1.value),
+    TraderWithEori(key2, eori2.value)
+  )
+
+  val baseAnswers =
+    emptyUserAnswers
+      .set(ConsigneeKeyQuery(Index(0)), key1).success.value
+      .set(ConsigneeEORIPage(Index(0)), eori1).success.value
+      .set(ConsigneeKeyQuery(Index(1)), key2).success.value
+      .set(ConsigneeEORIPage(Index(1)), eori2).success.value
+
   val formProvider = new ConsigneeFormProvider()
-  val form = formProvider()
+  val form = formProvider(consignees.map(_.key))
 
   "Consignee Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, consigneeRoute)
@@ -51,15 +71,17 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[ConsigneeView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(consignees.map(c => c.key.toString -> c.displayName).toMap)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, radioOptions)(request, implicitly).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ConsigneePage(index), Consignee.values.head).success.value
+      val userAnswers = baseAnswers.set(ConsigneePage(index), key1).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -67,11 +89,19 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, consigneeRoute)
 
         val view = application.injector.instanceOf[ConsigneeView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(consignees.map(c => c.key.toString -> c.displayName).toMap)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(Consignee.values.head), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(key1),
+          NormalMode,
+          lrn,
+          index,
+          radioOptions
+        )(request, implicitly).toString
       }
     }
 
@@ -82,17 +112,17 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, consigneeRoute)
-            .withFormUrlEncodedBody(("value", Consignee.values.head.toString))
+            .withFormUrlEncodedBody(("value", key1.toString))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ConsigneePage(index), Consignee.values.head).success.value
+        val expectedAnswers = baseAnswers.set(ConsigneePage(index), key1).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ConsigneePage(index).navigate(NormalMode, expectedAnswers).url
@@ -102,7 +132,7 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request =
@@ -112,11 +142,19 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[ConsigneeView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(consignees.map(c => c.key.toString -> c.displayName).toMap)
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          boundForm,
+          NormalMode,
+          lrn,
+          index,
+          radioOptions
+        )(request, implicitly).toString
       }
     }
 
@@ -141,7 +179,7 @@ class ConsigneeControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consigneeRoute)
-            .withFormUrlEncodedBody(("value", Consignee.values.head.toString))
+            .withFormUrlEncodedBody(("value", key1.toString))
 
         val result = route(application, request).value
 
