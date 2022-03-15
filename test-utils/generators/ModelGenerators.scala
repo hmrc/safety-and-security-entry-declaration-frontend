@@ -56,22 +56,17 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryUnloadingPlace: Arbitrary[UnloadingPlace] =
     Arbitrary {
-      Gen.oneOf(UnloadingPlace.values.toSeq)
+      Gen.oneOf(UnloadingPlace.values)
     }
 
   implicit lazy val arbitraryNotifiedParty: Arbitrary[NotifiedParty] =
     Arbitrary {
-      Gen.oneOf(NotifiedParty.values.toSeq)
+      Gen.oneOf(NotifiedParty.values)
     }
 
   implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] =
     Arbitrary {
-      Gen.oneOf(LoadingPlace.values.toSeq)
-    }
-
-  implicit lazy val arbitraryConsignee: Arbitrary[Consignee] =
-    Arbitrary {
-      Gen.oneOf(Consignee.values.toSeq)
+      Gen.oneOf(LoadingPlace.values)
     }
 
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =

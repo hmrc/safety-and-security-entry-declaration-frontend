@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.ConsigneeFormProvider
 
@@ -24,8 +25,10 @@ import models.{Index, LocalReferenceNumber, Mode}
 import pages.goods.ConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.consignees.AllConsigneesQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.RadioOptions
 import views.html.goods.ConsigneeView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,33 +44,48 @@ class ConsigneeController @Inject() (
   view: ConsigneeView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
-
-  private val form = formProvider()
+    with I18nSupport
+    with AnswerExtractor {
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        getAnswer(AllConsigneesQuery) {
+          consignees =>
 
-      val preparedForm = request.userAnswers.get(ConsigneePage(itemIndex)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+            val form = formProvider(consignees.map(_.key))
+            val radioOptions = RadioOptions(consignees.map(c => c.key.toString -> c.displayName).toMap)
 
-      Ok(view(preparedForm, mode, lrn, itemIndex))
+            val preparedForm = request.userAnswers.get(ConsigneePage(itemIndex)) match {
+              case None => form
+              case Some(value) => form.fill(value)
+            }
+
+            Ok(view(preparedForm, mode, lrn, itemIndex, radioOptions))
+        }
     }
 
   def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getAnswerAsync(AllConsigneesQuery) {
+          consignees =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneePage(itemIndex), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneePage(itemIndex).navigate(mode, updatedAnswers))
-        )
+            val form = formProvider(consignees.map(_.key))
+
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+                  val radioOptions = RadioOptions(consignees.map(c => c.key.toString -> c.displayName).toMap)
+                  Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, radioOptions)))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneePage(itemIndex), value))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(ConsigneePage(itemIndex).navigate(mode, updatedAnswers))
+              )
+          }
     }
 }

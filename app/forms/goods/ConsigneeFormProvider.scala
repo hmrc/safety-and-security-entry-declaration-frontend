@@ -16,16 +16,20 @@
 
 package forms.goods
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.Consignee
+
+import javax.inject.Inject
 
 class ConsigneeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Consignee] =
+  def apply(consigneeKeys: List[Int]): Form[Int] =
     Form(
-      "value" -> enumerable[Consignee]("consignee.error.required")
+      "value" ->
+        inList[Int](
+          allowedValues = consigneeKeys,
+          allowedValuesAsString = _.toString,
+          requiredKey = "consignee.error.required"
+        )
     )
 }
