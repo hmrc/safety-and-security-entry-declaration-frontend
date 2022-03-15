@@ -59,11 +59,6 @@ trait ModelGenerators {
       Gen.oneOf(UnloadingPlace.values)
     }
 
-  implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] =
-    Arbitrary {
-      Gen.oneOf(LoadingPlace.values)
-    }
-
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
     Arbitrary {
       for {

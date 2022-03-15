@@ -19,8 +19,11 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, GbEori, Index, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.consignors.ConsignorEORIPage
+import queries.consignors.ConsignorKeyQuery
 
 class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
@@ -32,16 +35,35 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
     beRemovable[String](CommodityCodePage(index))
 
+    val consignor1Eori = arbitrary[GbEori].sample.value
+    val consignor2Eori = arbitrary[GbEori].sample.value
+    val consignor1Key = 1
+    val consignor2Key = 2
+
     "must navigate in Normal Mode" - {
 
-      "to Kind of Package for the first index" in {
+      "to Consignor when there is more than one consignor" in {
 
-        CommodityCodePage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            goodsRoutes.KindOfPackageController
-              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
-          )
+        val answers =
+          emptyUserAnswers
+            .set(ConsignorKeyQuery(Index(0)), consignor1Key).success.value
+            .set(ConsignorEORIPage(Index(0)), consignor1Eori).success.value
+            .set(ConsignorKeyQuery(Index(1)), consignor2Key).success.value
+            .set(ConsignorEORIPage(Index(1)), consignor2Eori).success.value
+
+        CommodityCodePage(Index(0)).navigate(NormalMode, answers)
+          .mustEqual(goodsRoutes.ConsignorController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+      }
+
+      "to wherever Consignor navigates to when there is only one consignor" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(ConsignorKeyQuery(Index(0)), consignor1Key).success.value
+            .set(ConsignorEORIPage(Index(0)), consignor1Eori).success.value
+
+        CommodityCodePage(Index(0)).navigate(NormalMode, answers)
+          .mustEqual(ConsignorPage(Index(0)).navigate(NormalMode, answers))
       }
     }
 
