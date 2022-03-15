@@ -20,12 +20,16 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.LoadingPlace
 
 class LoadingPlaceFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[LoadingPlace] =
+  def apply(placeOfLoadingKeys: List[Int]): Form[Int] =
     Form(
-      "value" -> enumerable[LoadingPlace]("loadingPlace.error.required")
+      "value" ->
+        inList[Int](
+          allowedValues = placeOfLoadingKeys,
+          allowedValuesAsString = _.toString,
+          requiredKey = "loadingPlace.error.required"
+        )
     )
 }

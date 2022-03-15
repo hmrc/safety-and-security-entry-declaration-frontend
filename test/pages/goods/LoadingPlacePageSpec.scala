@@ -19,25 +19,43 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{LoadingPlace, CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode, PlaceOfUnloading}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.routedetails.PlaceOfUnloadingPage
 
-class LoadingPlaceSpec extends SpecBase with PageBehaviours {
+class LoadingPlacePageSpec extends SpecBase with PageBehaviours {
 
   "LoadingPlacePage" - {
 
-    beRetrievable[LoadingPlace](LoadingPlacePage(index))
+    beRetrievable[Int](LoadingPlacePage(index))
 
-    beSettable[LoadingPlace](LoadingPlacePage(index))
+    beSettable[Int](LoadingPlacePage(index))
 
-    beRemovable[LoadingPlace](LoadingPlacePage(index))
+    beRemovable[Int](LoadingPlacePage(index))
+
+    val placeOfUnloading1 = arbitrary[PlaceOfUnloading].sample.value
+    val placeOfUnloading2 = arbitrary[PlaceOfUnloading].sample.value
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Unloading Place when there are more than one places of unloading" - {
 
-        LoadingPlacePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        val answers =
+          emptyUserAnswers
+            .set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading1).success.value
+            .set(PlaceOfUnloadingPage(Index(1)), placeOfUnloading2).success.value
+
+        LoadingPlacePage(index).navigate(NormalMode, answers)
+          .mustEqual(goodsRoutes.UnloadingPlaceController.onPageLoad(NormalMode, answers.lrn, index))
+      }
+
+      "to wherever Unloading Place navigates to when there is one place of unloading" in {
+
+        val answers = emptyUserAnswers.set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading1).success.value
+
+        LoadingPlacePage(index).navigate(NormalMode, answers)
+          .mustEqual(UnloadingPlacePage(index).navigate(NormalMode, answers))
       }
     }
 
