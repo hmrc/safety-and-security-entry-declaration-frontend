@@ -748,3 +748,10 @@ unloadingPlace.option2 = Option 2
 unloadingPlace.checkYourAnswersLabel = Your unloading places
 unloadingPlace.error.required = Select unloadingPlace
 unloadingPlace.change.hidden = UnloadingPlace
+
+itemContainerNumber.title = itemContainerNumber
+itemContainerNumber.heading = itemContainerNumber
+itemContainerNumber.checkYourAnswersLabel = itemContainerNumber
+itemContainerNumber.error.required = Enter itemContainerNumber
+itemContainerNumber.error.length = ItemContainerNumber must be 20 characters or less
+itemContainerNumber.change.hidden = ItemContainerNumber

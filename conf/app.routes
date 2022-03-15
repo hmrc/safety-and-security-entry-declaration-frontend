@@ -456,3 +456,8 @@ GET        /:lrn/unloadingPlace/:index                        controllers.goods.
 POST       /:lrn/unloadingPlace/:index                        controllers.goods.UnloadingPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeUnloadingPlace/:index                  controllers.goods.UnloadingPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeUnloadingPlace/:index                  controllers.goods.UnloadingPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/itemContainerNumber                        controllers.goods.ItemContainerNumberController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+POST       /:lrn/itemContainerNumber                        controllers.goods.ItemContainerNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
+GET        /:lrn/changeItemContainerNumber                  controllers.goods.ItemContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+POST       /:lrn/changeItemContainerNumber                  controllers.goods.ItemContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
