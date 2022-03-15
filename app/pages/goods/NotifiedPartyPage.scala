@@ -16,16 +16,13 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, NotifiedParty, UserAnswers}
+import models.Index
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-final case class NotifiedPartyPage(itemIndex: Index) extends QuestionPage[NotifiedParty] {
+final case class NotifiedPartyPage(itemIndex: Index) extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
-  override def toString: String = "notifiedParty"
+  override def toString: String = "notifiedPartyKey"
 }

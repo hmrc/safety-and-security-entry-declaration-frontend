@@ -17,20 +17,19 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{NotifiedParty, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
 
-class NotifiedPartySpec extends SpecBase with PageBehaviours {
+class NotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyPage" - {
 
-    beRetrievable[NotifiedParty](NotifiedPartyPage(index))
+    beRetrievable[Int](NotifiedPartyPage(index))
 
-    beSettable[NotifiedParty](NotifiedPartyPage(index))
+    beSettable[Int](NotifiedPartyPage(index))
 
-    beRemovable[NotifiedParty](NotifiedPartyPage(index))
+    beRemovable[Int](NotifiedPartyPage(index))
 
     "must navigate in Normal Mode" - {
 
