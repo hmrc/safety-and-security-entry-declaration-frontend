@@ -733,11 +733,9 @@ loadingPlace.change.hidden = LoadingPlace
 
 notifiedParty.title = Your notified parties
 notifiedParty.heading = Your notified parties
-notifiedParty.option1 = Option 1
-notifiedParty.option2 = Option 2
 notifiedParty.checkYourAnswersLabel = Your notified parties
-notifiedParty.error.required = Select notifiedParty
-notifiedParty.change.hidden = NotifiedParty
+notifiedParty.error.required = Select the notified party
+notifiedParty.change.hidden = the notified party
 
 unloadingPlace.title = Your unloading places
 unloadingPlace.heading = Your unloading places

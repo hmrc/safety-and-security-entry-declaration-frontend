@@ -20,12 +20,16 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.NotifiedParty
 
 class NotifiedPartyFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[NotifiedParty] =
+  def apply(notifiedPartyKeys: List[Int]): Form[Int] =
     Form(
-      "value" -> enumerable[NotifiedParty]("notifiedParty.error.required")
+      "value" ->
+        inList[Int](
+          allowedValues = notifiedPartyKeys,
+          allowedValuesAsString = _.toString,
+          requiredKey = "notifiedParty.error.required"
+        )
     )
 }
