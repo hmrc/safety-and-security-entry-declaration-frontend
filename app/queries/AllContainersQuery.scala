@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package pages.goods
+package queries
 
-import models.{Index}
-import pages.QuestionPage
+import models.{Container, Index}
 import play.api.libs.json.JsPath
 
-case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[String] {
+final case class AllContainersQuery(index: Index) extends Gettable[List[Container]] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers" \ containerIndex.position
-
-  override def toString: String = "itemContainerNumber"
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ "containers"
 }

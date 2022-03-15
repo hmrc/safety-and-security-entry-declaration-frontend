@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package pages.goods
+package models
 
-import models.{Index}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, OFormat}
 
-case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[String] {
+case class Container(itemContainerNumber: String)
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers" \ containerIndex.position
-
-  override def toString: String = "itemContainerNumber"
+object Container {
+  implicit val format: OFormat[Container] = Json.format[Container]
 }
+
+

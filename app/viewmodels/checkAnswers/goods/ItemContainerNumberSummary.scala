@@ -17,27 +17,25 @@
 package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, UserAnswers}
-import pages.goods.ItemContainerNumberPage
+import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import queries.{AllContainersQuery}
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object ItemContainerNumberSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ItemContainerNumberPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "itemContainerNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", goodsRoutes.ItemContainerNumberController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("itemContainerNumber.change.hidden"))
-          )
+  def row(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): List[ListItem] =
+    answers.get(AllContainersQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
+      case (container, index) =>
+        ListItem(
+          name = HtmlFormat.escape(container.itemContainerNumber).toString,
+          changeUrl = goodsRoutes.ItemContainerNumberController
+            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .url,
+          removeUrl = goodsRoutes.RemoveDocumentController
+            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .url
         )
     }
 }
