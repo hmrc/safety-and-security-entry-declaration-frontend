@@ -17,27 +17,50 @@
 package forms.goods
 
 import forms.behaviours.OptionFieldBehaviours
-import models.NotifiedParty
+import models.Trader
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class NotifiedPartyFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new NotifiedPartyFormProvider()()
+  val formProvider = new NotifiedPartyFormProvider()
 
   ".value" - {
 
     val fieldName = "value"
     val requiredKey = "notifiedParty.error.required"
 
-    behave like optionsField[NotifiedParty](
-      form,
-      fieldName,
-      validValues  = NotifiedParty.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    "must bind any values passed to the form" in {
+
+      forAll(Gen.nonEmptyListOf(arbitrary[Trader])) {
+        notifiedParties =>
+
+          val form = formProvider(notifiedParties.map(_.key))
+          notifiedParties.map {
+            notifiedParty =>
+              val result = form.bind(Map("value" -> notifiedParty.key.toString))(fieldName)
+              result.value.value mustEqual notifiedParty.key.toString
+              result.errors mustBe empty
+          }
+      }
+    }
+
+    "must not bind any values not passed to the form" in {
+
+      forAll(arbitrary[String], Gen.nonEmptyListOf(arbitrary[Trader])) {
+        case (invalidValue, notifiedParties) =>
+
+          whenever(!notifiedParties.map(_.key.toString).contains(invalidValue)) {
+            val form = formProvider(notifiedParties.map(_.key))
+            val result = form.bind(Map("value" -> invalidValue))(fieldName)
+            result.errors must contain only FormError(fieldName, requiredKey)
+          }
+      }
+    }
 
     behave like mandatoryField(
-      form,
+      formProvider(List(1, 2, 3)),
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )

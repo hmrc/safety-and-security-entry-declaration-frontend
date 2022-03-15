@@ -59,11 +59,6 @@ trait ModelGenerators {
       Gen.oneOf(UnloadingPlace.values)
     }
 
-  implicit lazy val arbitraryNotifiedParty: Arbitrary[NotifiedParty] =
-    Arbitrary {
-      Gen.oneOf(NotifiedParty.values)
-    }
-
   implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] =
     Arbitrary {
       Gen.oneOf(LoadingPlace.values)
