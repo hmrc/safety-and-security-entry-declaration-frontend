@@ -17,10 +17,12 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
+import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignors.DeriveNumberOfConsignors
 
 case class CommodityCodePage(index: Index) extends QuestionPage[String] {
 
@@ -29,5 +31,9 @@ case class CommodityCodePage(index: Index) extends QuestionPage[String] {
   override def toString: String = "commodityCode"
 
   override def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+    answers.get(DeriveNumberOfConsignors).map {
+      n =>
+        if (n > 1) { goodsRoutes.ConsignorController.onPageLoad(NormalMode, answers.lrn, index) }
+        else       { ConsignorPage(index).navigate(NormalMode, answers) }
+    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
 }
