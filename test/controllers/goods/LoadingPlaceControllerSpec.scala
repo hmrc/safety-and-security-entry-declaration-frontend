@@ -19,15 +19,19 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.LoadingPlaceFormProvider
-import models.{NormalMode, LoadingPlace}
+import models.{Index, NormalMode, PlaceOfLoading}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.goods.LoadingPlacePage
+import pages.routedetails.PlaceOfLoadingPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import viewmodels.RadioOptions
 import views.html.goods.LoadingPlaceView
 
 import scala.concurrent.Future
@@ -36,14 +40,23 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val loadingPlaceRoute = routes.LoadingPlaceController.onPageLoad(NormalMode, lrn, index).url
 
+  val placeOfLoading1 = arbitrary[PlaceOfLoading].sample.value
+  val placeOfLoading2 = arbitrary[PlaceOfLoading].sample.value
+  val placesOfLoading = List(placeOfLoading1, placeOfLoading2)
+
+  val baseAnswers =
+    emptyUserAnswers
+      .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
+      .set(PlaceOfLoadingPage(Index(1)), placeOfLoading2).success.value
+
   val formProvider = new LoadingPlaceFormProvider()
-  val form = formProvider()
+  val form = formProvider(placesOfLoading.map(_.key))
 
   "LoadingPlace Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, loadingPlaceRoute)
@@ -51,15 +64,17 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[LoadingPlaceView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(placesOfLoading.map(l => l.key.toString -> l.place).toMap)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, radioOptions)(request, implicitly).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(LoadingPlacePage(index), LoadingPlace.values.head).success.value
+      val userAnswers = baseAnswers.set(LoadingPlacePage(index), placeOfLoading1.key).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -67,11 +82,19 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, loadingPlaceRoute)
 
         val view = application.injector.instanceOf[LoadingPlaceView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(placesOfLoading.map(l => l.key.toString -> l.place).toMap)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(LoadingPlace.values.head), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(placeOfLoading1.key),
+          NormalMode,
+          lrn,
+          index,
+          radioOptions
+        )(request, implicitly).toString
       }
     }
 
@@ -82,17 +105,17 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, loadingPlaceRoute)
-            .withFormUrlEncodedBody(("value", LoadingPlace.values.head.toString))
+            .withFormUrlEncodedBody(("value", placeOfLoading1.key.toString))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(LoadingPlacePage(index), LoadingPlace.values.head).success.value
+        val result = route(application, request).value
+        val expectedAnswers = baseAnswers.set(LoadingPlacePage(index), placeOfLoading1.key).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual LoadingPlacePage(index).navigate(NormalMode, expectedAnswers).url
@@ -102,7 +125,7 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request =
@@ -112,11 +135,20 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[LoadingPlaceView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(placesOfLoading.map(l => l.key.toString -> l.place).toMap)
+
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          boundForm,
+          NormalMode,
+          lrn,
+          index,
+          radioOptions
+        )(request, implicitly).toString
       }
     }
 
@@ -141,7 +173,7 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, loadingPlaceRoute)
-            .withFormUrlEncodedBody(("value", LoadingPlace.values.head.toString))
+            .withFormUrlEncodedBody(("value", placeOfLoading1.key.toString))
 
         val result = route(application, request).value
 
