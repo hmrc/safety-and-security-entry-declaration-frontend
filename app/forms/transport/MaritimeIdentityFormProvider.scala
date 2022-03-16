@@ -46,4 +46,4 @@ class MaritimeIdentityFormProvider @Inject() extends Mappings {
         )
     )(MaritimeIdentity.apply)(MaritimeIdentity.unapply)
   )
- }
+}
