@@ -18,14 +18,37 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.QuestionPage
+import pages.predec.ProvideGrossWeightPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.DeriveNumberOfContainers
 
 case class ShippingContainersPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "shippingContainers"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(ShippingContainersPage(itemIndex)).map{
+      case true => {
+        answers.get(DeriveNumberOfContainers(itemIndex)) match {
+          case Some(size) =>
+            goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+          case None =>  goodsRoutes.ItemContainerNumberController.onPageLoad(NormalMode,answers.lrn,itemIndex,Index(0))
+        }
+      }
+      case false => {
+        answers.get(ProvideGrossWeightPage) match {
+          case Some(ProvideGrossWeight.PerItem) =>
+            goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn,itemIndex)
+          case Some(ProvideGrossWeight.Overall) =>
+            goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn,itemIndex)
+          case _ =>
+            routes.JourneyRecoveryController.onPageLoad()
+        }
+      }
+    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
 }
