@@ -32,7 +32,7 @@ object MaritimeIdentitySummary {
     answers.get(MaritimeIdentityPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.field1).toString + "<br/>" + HtmlFormat.escape(answer.field2).toString
+      val value = HtmlFormat.escape(answer.imo).toString + "<br/>" + HtmlFormat.escape(answer.conveyanceRefNum).toString
 
         SummaryListRowViewModel(
           key     = "maritimeIdentity.checkYourAnswersLabel",

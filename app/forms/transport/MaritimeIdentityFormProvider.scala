@@ -30,20 +30,20 @@ class MaritimeIdentityFormProvider @Inject() extends Mappings {
 
    def apply(): Form[MaritimeIdentity] = Form(
      mapping(
-      "field1" -> text("maritimeIdentity.error.field1.required")
+      "imo" -> text("maritimeIdentity.error.imo.required")
         .verifying(
           firstError(
-            maxLength(8, "maritimeIdentity.error.field1.length"),
-            regexp(validNumber, "maritimeIdentity.error.field1.invalid")
+            maxLength(8, "maritimeIdentity.error.imo.length"),
+            regexp(validNumber, "maritimeIdentity.error.imo.invalid")
           )
         ),
-      "field2" -> text("maritimeIdentity.error.field2.required")
+      "conveyanceRefNum" -> text("maritimeIdentity.error.conveyanceRefNum.required")
         .verifying(
           firstError(
-            maxLength(35, "maritimeIdentity.error.field2.length"),
-            regexp(validAlphaNumeric, "maritimeIdentity.error.field2.invalid")
+            maxLength(35, "maritimeIdentity.error.conveyanceRefNum.length"),
+            regexp(validAlphaNumeric, "maritimeIdentity.error.conveyanceRefNum.invalid")
           )
         )
-    )(MaritimeIdentity.apply)(MaritimeIdentity.unapply)
+      )(MaritimeIdentity.apply)(MaritimeIdentity.unapply)
    )
  }

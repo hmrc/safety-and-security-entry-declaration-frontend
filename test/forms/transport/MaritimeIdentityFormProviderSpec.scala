@@ -17,8 +17,6 @@
 package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
-import org.scalacheck.Arbitrary.arbitrary
-import models.MaritimeIdentity
 import org.scalacheck.Gen
 import play.api.data.FormError
 
@@ -26,12 +24,12 @@ class MaritimeIdentityFormProviderSpec extends StringFieldBehaviours {
 
   val form = new MaritimeIdentityFormProvider()()
 
-  ".field1" - {
+  ".imo" - {
 
-    val fieldName = "field1"
-    val requiredKey = "maritimeIdentity.error.field1.required"
-    val lengthKey = "maritimeIdentity.error.field1.length"
-    val invalidKey = "maritimeIdentity.error.field1.invalid"
+    val fieldName = "imo"
+    val requiredKey = "maritimeIdentity.error.imo.required"
+    val lengthKey = "maritimeIdentity.error.imo.length"
+    val invalidKey = "maritimeIdentity.error.imo.invalid"
     val maxLength = 8
 
     val validBinding = for {
@@ -58,10 +56,10 @@ class MaritimeIdentityFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
 
-    "must not bind invalid characters data" in {
+    "must not bind invalid (alphabetical characters) characters data" in {
 
       val invalidData = for {
-        noValidChars <- Gen.choose(0, maxLength-1)
+        noValidChars <- Gen.choose(0, maxLength - 1)
         validChars <- Gen.listOfN(noValidChars, Gen.numChar)
         invalidChar <- Gen.alphaChar
       } yield (validChars :+ invalidChar).mkString
@@ -72,10 +70,10 @@ class MaritimeIdentityFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
-    "must not bind invalid symbols data" in {
+    "must not bind invalid (symbol characters) data" in {
 
       val invalidData = for {
-        noValidChars <- Gen.choose(0, maxLength-1)
+        noValidChars <- Gen.choose(0, maxLength - 1)
         validChars <- Gen.listOfN(noValidChars, Gen.numChar)
         invalidChar <- Gen.oneOf('?', '.', ',')
       } yield (validChars :+ invalidChar).mkString
@@ -87,12 +85,12 @@ class MaritimeIdentityFormProviderSpec extends StringFieldBehaviours {
     }
   }
 
-  ".field2" - {
+  ".conveyanceRefNum" - {
 
-    val fieldName = "field2"
-    val requiredKey = "maritimeIdentity.error.field2.required"
-    val lengthKey = "maritimeIdentity.error.field2.length"
-    val invalidKey = "maritimeIdentity.error.field2.invalid"
+    val fieldName = "conveyanceRefNum"
+    val requiredKey = "maritimeIdentity.error.conveyanceRefNum.required"
+    val lengthKey = "maritimeIdentity.error.conveyanceRefNum.length"
+    val invalidKey = "maritimeIdentity.error.conveyanceRefNum.invalid"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
@@ -117,7 +115,7 @@ class MaritimeIdentityFormProviderSpec extends StringFieldBehaviours {
     "must not bind invalid data" in {
 
       val invalidData = for {
-        noValidChars <- Gen.choose(0, maxLength-1)
+        noValidChars <- Gen.choose(0, maxLength - 1)
         validChars <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
         invalidChar <- Gen.oneOf('?', '.', ',')
       } yield (validChars :+ invalidChar).mkString

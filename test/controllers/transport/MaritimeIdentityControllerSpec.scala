@@ -46,8 +46,8 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
     lrn,
     Json.obj(
       MaritimeIdentityPage.toString -> Json.obj(
-        "field1" -> "123",
-        "field2" -> "value2"
+        "imo" -> "123",
+        "conveyanceRefNum" -> "value2"
       )
     )
   )
@@ -100,7 +100,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, maritimeIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "123"), ("field2", "value2"))
+            .withFormUrlEncodedBody(("imo", "123"), ("conveyanceRefNum", "value2"))
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers.set(MaritimeIdentityPage, MaritimeIdentity("123", "value2")).success.value
@@ -152,7 +152,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, maritimeIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "123"), ("field2", "value2"))
+            .withFormUrlEncodedBody(("imo", "123"), ("conveyanceRefNum", "value2"))
 
         val result = route(application, request).value
 
