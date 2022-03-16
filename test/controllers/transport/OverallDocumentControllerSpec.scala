@@ -19,13 +19,16 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.OverallDocumentFormProvider
-import models.{NormalMode, UserAnswers, OverallDocument}
+import models._
+import models.Document._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transport.OverallDocumentPage
 import play.api.inject.bind
-import play.api.libs.json.Json
+import play.api.libs.json.{JsPath, JsSuccess, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -35,21 +38,30 @@ import scala.concurrent.Future
 
 class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new OverallDocumentFormProvider()
-  val form = formProvider()
+  private val formProvider = new OverallDocumentFormProvider()
+  private val form = formProvider()
 
-  lazy val overallDocumentRoute = routes.OverallDocumentController.onPageLoad(NormalMode, lrn).url
+  private lazy val overallDocumentRoute = {
+    routes.OverallDocumentController.onPageLoad(NormalMode, lrn, index).url
+  }
+  private val page = OverallDocumentPage(index)
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    lrn,
-    Json.obj(
-      OverallDocumentPage.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
-      )
-    )
-  )
+  private val documentType = DocumentType.allDocumentTypes.head
+  private val document = Document(documentType, "reference")
+
+  private val userAnswers = {
+    emptyUserAnswers.set(OverallDocumentPage(index), document).success.value
+  }
+
+  private def userAnswersWithDocs(num: Int): UserAnswers = {
+    val docs = Gen.listOfN(num, arbitrary[Document]).sample.value
+    val updatedJson = emptyUserAnswers.data.setObject(JsPath \ "overallDocuments", Json.toJson(docs)) match {
+      case JsSuccess(jsValue, _) => jsValue
+      case _ => throw new IllegalStateException("Failed to set JSON")
+    }
+    emptyUserAnswers.copy(data = updatedJson)
+  }
+
 
   "OverallDocument Controller" - {
 
@@ -65,7 +77,12 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form,
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -81,7 +98,12 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(OverallDocument("value 1", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(document),
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -99,13 +121,13 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, overallDocumentRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody("type" -> documentType.code, "reference" -> document.reference)
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(OverallDocumentPage, OverallDocument("value 1", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(page, document).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OverallDocumentPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual page.navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -126,7 +148,12 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          boundForm,
+          NormalMode,
+          lrn,
+          index
+        )(request, messages(application)).toString
       }
     }
 
@@ -144,19 +171,96 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
+    "must return OK and the correct view for a GET if index is below max document limit" in {
+      val numDocs = OverallDocumentController.MaxDocuments - 1
+      val currentIndex = Index(numDocs)
+      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val answers = userAnswersWithDocs(numDocs)
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, overallDocumentRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+        val request = FakeRequest(GET, url)
+
+        val view = application.injector.instanceOf[OverallDocumentView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(
+          form,
+          NormalMode,
+          lrn,
+          currentIndex
+        )(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if index is above max document limit" in {
+      val numDocs = OverallDocumentController.MaxDocuments
+      val currentIndex = Index(numDocs)
+      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val answers = userAnswersWithDocs(numDocs)
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must return OK and navigate to the next page for a POST if index is below max document limit" in {
+      val numDocs = OverallDocumentController.MaxDocuments - 1
+      val currentIndex = Index(numDocs)
+      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val answers = userAnswersWithDocs(numDocs)
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, url)
+            .withFormUrlEncodedBody("type" -> documentType.code, "reference" -> document.reference)
+
+        val result = route(application, request).value
+        val expectedAnswers = answers.set(OverallDocumentPage(currentIndex), document).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual page.navigate(NormalMode, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if index is above max document limit" in {
+      val numDocs = OverallDocumentController.MaxDocuments
+      val currentIndex = Index(numDocs)
+      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val answers = userAnswersWithDocs(numDocs)
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, url)
+            .withFormUrlEncodedBody("type" -> documentType.code, "reference" -> document.reference)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
   }

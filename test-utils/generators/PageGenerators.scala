@@ -67,8 +67,8 @@ trait PageGenerators {
   implicit lazy val arbitraryRailIdentityPage: Arbitrary[RailIdentityPage.type] =
     Arbitrary(RailIdentityPage)
 
-  implicit lazy val arbitraryOverallDocumentPage: Arbitrary[OverallDocumentPage.type] =
-    Arbitrary(OverallDocumentPage)
+  implicit lazy val arbitraryOverallDocumentPage: Arbitrary[OverallDocumentPage] =
+    Arbitrary(OverallDocumentPage(Index(0)))
 
   implicit lazy val arbitraryNationalityOfTransportPage: Arbitrary[NationalityOfTransportPage.type] =
     Arbitrary(NationalityOfTransportPage)

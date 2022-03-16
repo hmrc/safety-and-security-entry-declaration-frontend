@@ -34,10 +34,24 @@ class AnyOverallDocumentsPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to OverallDocument if answer is yes" in {
+        val userAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, true).success.value
 
-        AnyOverallDocumentsPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        AnyOverallDocumentsPage.navigate(NormalMode, userAnswers)
+          .mustEqual(
+            transportRoutes.OverallDocumentController.onPageLoad(
+              NormalMode,
+              userAnswers.lrn,
+              index
+            )
+          )
+      }
+
+      "to AddSeal if answer is no" in {
+        val userAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, false).success.value
+
+        AnyOverallDocumentsPage.navigate(NormalMode, userAnswers)
+          .mustEqual(transportRoutes.AddAnySealsController.onPageLoad(NormalMode, userAnswers.lrn))
       }
     }
 

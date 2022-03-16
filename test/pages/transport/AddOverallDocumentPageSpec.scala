@@ -19,25 +19,49 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Document, Index, NormalMode}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddOverallDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "AddOverallDocumentPage" - {
 
-    beRetrievable[Boolean](AddOverallDocumentPage)
-
-    beSettable[Boolean](AddOverallDocumentPage)
-
-    beRemovable[Boolean](AddOverallDocumentPage)
-
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to OverallDocument with (index + 1) if yes is selected" in {
+        // Add a document and check redirect multiple times to check it works for each index
+        (0 to 2).foldLeft(emptyUserAnswers) {
+          case (prevAnswers, idx) =>
+            val currIndex = Index(idx)
+            val answers = prevAnswers.set(
+              OverallDocumentPage(currIndex),
+              arbitrary[Document].sample.value
+            ).success.value
 
-        AddOverallDocumentPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+            AddOverallDocumentPage.navigate(NormalMode, answers, addAnother = true)
+              .mustEqual(
+                transportRoutes.OverallDocumentController.onPageLoad(
+                  NormalMode,
+                  answers.lrn,
+                  currIndex + 1
+                )
+              )
+
+            answers
+        }
+      }
+
+      "to AddAnySeals if no is selected" in {
+        val answers = emptyUserAnswers.set(
+          OverallDocumentPage(index),
+          arbitrary[Document].sample.value
+        ).success.value
+
+        AddOverallDocumentPage.navigate(NormalMode, answers, addAnother = false)
+          .mustEqual(
+            transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
+          )
       }
     }
 

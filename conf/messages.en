@@ -580,10 +580,23 @@ addAnySeals.error.required = Select yes if addAnySeals
 addAnySeals.change.hidden = AddAnySeals
 
 addOverallDocument.title = addOverallDocument
-addOverallDocument.heading = addOverallDocument
-addOverallDocument.checkYourAnswersLabel = addOverallDocument
-addOverallDocument.error.required = Select yes if addOverallDocument
-addOverallDocument.change.hidden = AddOverallDocument
+addOverallDocument.heading = Documents
+addOverallDocument.label = Add, remove or change a document relating to your consignment
+addOverallDocument.addAnother = Do you need to add another document?
+addOverallDocument.maximumReached = You cannot add more than 99 documents.
+addOverallDocument.error.required = Select yes if you want to add another document
+
+overallDocument.title = addOverallDocument
+overallDocument.heading = Transport contract reference numbers
+overallDocument.type = Enter the type of document
+overallDocument.reference = Enter the document reference or identification number
+overallDocument.error.type.required = Select the document type
+overallDocument.error.reference.required = Provide a document reference
+overallDocument.error.reference.length = Reference must be 35 characters or less
+overallDocument.checkYourAnswersLabel = addOverallDocument
+overallDocument.type.change.hidden = type
+overallDocument.reference.change.hidden = reference
+overallDocument.checkYourAnswersLabel = OverallDocument
 
 addSeal.title = addSeal
 addSeal.heading = addSeal
@@ -604,10 +617,8 @@ airIdentity.field1.change.hidden = field1
 airIdentity.field2.change.hidden = field2
 
 anyOverallDocuments.title = anyOverallDocuments
-anyOverallDocuments.heading = anyOverallDocuments
-anyOverallDocuments.checkYourAnswersLabel = anyOverallDocuments
-anyOverallDocuments.error.required = Select yes if anyOverallDocuments
-anyOverallDocuments.change.hidden = AnyOverallDocuments
+anyOverallDocuments.heading = Do you have more documents for the whole consignment?
+anyOverallDocuments.error.required = Select yes if you have documents to add
 
 maritimeIdentity.title = maritimeIdentity
 maritimeIdentity.heading = Maritime
@@ -630,18 +641,6 @@ nationalityOfTransport.hint = Start typing to select a country from the dropdown
 nationalityOfTransport.checkYourAnswersLabel = Nationality Of Transport
 nationalityOfTransport.error.required = Please select a Nationality
 nationalityOfTransport.change.hidden = NationalityOfTransport
-
-overallDocument.title = overallDocument
-overallDocument.heading = overallDocument
-overallDocument.field1 = field1
-overallDocument.field2 = field2
-overallDocument.checkYourAnswersLabel = OverallDocument
-overallDocument.error.field1.required = Enter field1
-overallDocument.error.field2.required = Enter field2
-overallDocument.error.field1.length = field1 must be 100 characters or less
-overallDocument.error.field2.length = field2 must be 100 characters or less
-overallDocument.field1.change.hidden = field1
-overallDocument.field2.change.hidden = field2
 
 railIdentity.title = railIdentity
 railIdentity.heading = Rail
