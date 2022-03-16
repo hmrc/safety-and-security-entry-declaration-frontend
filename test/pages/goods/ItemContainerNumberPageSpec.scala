@@ -34,10 +34,10 @@ class ItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to AddItem list" in {
 
         ItemContainerNumberPage(index,index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 

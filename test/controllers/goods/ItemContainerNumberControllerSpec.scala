@@ -91,7 +91,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, itemContainerNumberRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", container.itemContainerNumber))
 
         val result          = route(application, request).value
         val expectedAnswers = emptyUserAnswers.set(ItemContainerNumberPage(index,index), container).success.value

@@ -34,7 +34,7 @@ class ItemContainerNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsWithExactLength(maxLength)
     )
 
     behave like fieldWithMaxLength(

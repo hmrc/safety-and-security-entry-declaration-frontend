@@ -16,13 +16,17 @@
 
 package pages.goods
 
-import models.{Container, Index}
+import controllers.goods.{routes => goodsRoutes}
+import models.{Container, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[Container] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers" \ containerIndex.position
 
   override def toString: String = "itemContainerNumber"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex)
 }
