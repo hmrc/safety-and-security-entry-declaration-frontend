@@ -28,4 +28,8 @@ case object AirIdentityPage extends QuestionPage[AirIdentity] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "airIdentity"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
+  }
 }

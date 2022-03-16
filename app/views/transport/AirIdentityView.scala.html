@@ -36,21 +36,14 @@
         }
 
         <h1 class="govuk-heading-xl">@messages("airIdentity.heading")</h1>
+        <p class="govuk-body">@messages("airIdentity.label")</p>
 
         @govukInput(
             InputViewModel(
-                field = form("field1"),
-                label = LabelViewModel(messages("airIdentity.field1"))
+                field = form("flightNumber"),
+                label = LabelViewModel(messages("airIdentity.flightNumber"))
             )
-            .withWidth(Full)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("field2"),
-                label = LabelViewModel(messages("airIdentity.field2"))
-            )
-            .withWidth(Full)
+            .withWidth(Fixed10)
         )
 
         @govukButton(

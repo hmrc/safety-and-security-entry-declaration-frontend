@@ -32,7 +32,7 @@ object AirIdentitySummary {
     answers.get(AirIdentityPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.field1).toString + "<br/>" + HtmlFormat.escape(answer.field2).toString
+      val value = HtmlFormat.escape(answer.flightNumber).toString
 
         SummaryListRowViewModel(
           key     = "airIdentity.checkYourAnswersLabel",

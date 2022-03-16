@@ -24,13 +24,13 @@ import play.api.data.Forms._
 import models.AirIdentity
 
 class AirIdentityFormProvider @Inject() extends Mappings {
+  // IATA format is 3 alphanumeric + 4 numeric + optional single letter suffix
+  private val expectedPattern = "^[A-Za-z0-9]{3}[0-9]{4}[A-za-z]?$"
 
-   def apply(): Form[AirIdentity] = Form(
-     mapping(
-      "field1" -> text("airIdentity.error.field1.required")
-        .verifying(maxLength(100, "airIdentity.error.field1.length")),
-      "field2" -> text("airIdentity.error.field2.required")
-        .verifying(maxLength(100, "airIdentity.error.field2.length"))
+  def apply(): Form[AirIdentity] = Form(
+    mapping(
+     "flightNumber" -> text("airIdentity.error.flightNumber.required")
+       .verifying(regexp(expectedPattern, "airIdentity.error.flightNumber.format"))
     )(AirIdentity.apply)(AirIdentity.unapply)
-   )
- }
+  )
+}

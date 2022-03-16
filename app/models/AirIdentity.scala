@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class AirIdentity(field1: String, field2: String)
+case class AirIdentity(flightNumber: String)
 
 object AirIdentity {
   implicit val format = Json.format[AirIdentity]
