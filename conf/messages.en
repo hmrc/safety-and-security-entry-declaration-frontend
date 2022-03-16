@@ -333,9 +333,9 @@ addDocument.heading = Documents
 addDocument.addAnother = Do you need to add another document?
 addDocument.error.required = Select yes if you need to add another document
 
-addContainer.title = Containers
-addContainer.heading = Containers
-addContainer.addAnother = Do you need to add another container?
+addContainer.title = Your container numbers
+addContainer.heading = Your container numbers
+addContainer.addAnother = Do you need to add another container number?
 addContainer.error.required = Select yes if you need to add another container
 
 document.title = What document do you need to add?
@@ -754,15 +754,15 @@ unloadingPlace.checkYourAnswersLabel = Your unloading places
 unloadingPlace.error.required = Select unloadingPlace
 unloadingPlace.change.hidden = UnloadingPlace
 
-itemContainerNumber.title = itemContainerNumber
-itemContainerNumber.heading = itemContainerNumber
-itemContainerNumber.checkYourAnswersLabel = itemContainerNumber
-itemContainerNumber.error.required = Enter itemContainerNumber
-itemContainerNumber.error.length = ItemContainerNumber must be 20 characters
-itemContainerNumber.change.hidden = ItemContainerNumber
+itemContainerNumber.title = What is the container/trailer number?
+itemContainerNumber.heading = What is the container/trailer number?
+itemContainerNumber.checkYourAnswersLabel = Container/Trailer number
+itemContainerNumber.error.required = The container/trailer number is required
+itemContainerNumber.error.length = The container/trailer number must be 20 characters long
+itemContainerNumber.change.hidden = the container/trailer number
 
-shippingContainers.title = shippingContainers
-shippingContainers.heading = shippingContainers
-shippingContainers.checkYourAnswersLabel = shippingContainers
-shippingContainers.error.required = Select yes if shippingContainers
-shippingContainers.change.hidden = ShippingContainers
+shippingContainers.title = Are the goods in shipping containers or trailer?
+shippingContainers.heading = Are the goods in shipping containers or trailer?
+shippingContainers.checkYourAnswersLabel = Shipping container
+shippingContainers.error.required = Select yes if you are using a shipping container
+shippingContainers.change.hidden = the shipping container
