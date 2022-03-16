@@ -25,7 +25,7 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object ItemContainerNumberSummary  {
 
-  def row(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): List[ListItem] =
+  def rows(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): List[ListItem] =
     answers.get(AllContainersQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
       case (container, index) =>
         ListItem(
@@ -33,7 +33,7 @@ object ItemContainerNumberSummary  {
           changeUrl = goodsRoutes.ItemContainerNumberController
             .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
             .url,
-          removeUrl = goodsRoutes.RemoveDocumentController
+          removeUrl = goodsRoutes.RemoveItemContainerNumberController
             .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
             .url
         )

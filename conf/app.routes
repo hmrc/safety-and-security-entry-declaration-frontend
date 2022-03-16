@@ -462,3 +462,12 @@ POST       /:lrn/itemContainerNumber/:itemIndex/:containerIndex                 
 GET        /:lrn/changeItemContainerNumber/:itemIndex/:containerIndex                 controllers.goods.ItemContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)
 POST       /:lrn/changeItemContainerNumber/:itemIndex/:containerIndex                  controllers.goods.ItemContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)
 
+GET        /:lrn/removeContainer/:itemIndex/:containerIndex                        controllers.goods.RemoveItemContainerNumberController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)
+POST       /:lrn/removeContainer/:itemIndex/:containerIndex                        controllers.goods.RemoveItemContainerNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)
+GET        /:lrn/removeContainer/:itemIndex/:containerIndex                  controllers.goods.RemoveItemContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)
+POST       /:lrn/removeContainer/:itemIndex/:containerIndex                  controllers.goods.RemoveItemContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)
+
+GET        /:lrn/addContainer/:index                        controllers.goods.AddItemContainerNumberController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/addContainer/:index                        controllers.goods.AddItemContainerNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeAddContainer/:index                  controllers.goods.AddItemContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeAddContainer/:index                  controllers.goods.AddItemContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
