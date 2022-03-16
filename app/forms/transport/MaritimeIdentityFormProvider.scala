@@ -28,8 +28,8 @@ class MaritimeIdentityFormProvider @Inject() extends Mappings {
   private val validAlphaNumeric = "[A-Za-z0-9]+"
   private val validNumber = "[0-9]+"
 
-   def apply(): Form[MaritimeIdentity] = Form(
-     mapping(
+  def apply(): Form[MaritimeIdentity] = Form(
+    mapping(
       "imo" -> text("maritimeIdentity.error.imo.required")
         .verifying(
           firstError(
@@ -44,6 +44,6 @@ class MaritimeIdentityFormProvider @Inject() extends Mappings {
             regexp(validAlphaNumeric, "maritimeIdentity.error.conveyanceRefNum.invalid")
           )
         )
-      )(MaritimeIdentity.apply)(MaritimeIdentity.unapply)
-   )
+    )(MaritimeIdentity.apply)(MaritimeIdentity.unapply)
+  )
  }
