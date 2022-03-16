@@ -760,3 +760,9 @@ itemContainerNumber.checkYourAnswersLabel = itemContainerNumber
 itemContainerNumber.error.required = Enter itemContainerNumber
 itemContainerNumber.error.length = ItemContainerNumber must be 20 characters
 itemContainerNumber.change.hidden = ItemContainerNumber
+
+shippingContainers.title = shippingContainers
+shippingContainers.heading = shippingContainers
+shippingContainers.checkYourAnswersLabel = shippingContainers
+shippingContainers.error.required = Select yes if shippingContainers
+shippingContainers.change.hidden = ShippingContainers

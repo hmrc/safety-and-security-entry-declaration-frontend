@@ -471,3 +471,8 @@ GET        /:lrn/addContainer/:index                        controllers.goods.Ad
 POST       /:lrn/addContainer/:index                        controllers.goods.AddItemContainerNumberController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeAddContainer/:index                  controllers.goods.AddItemContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeAddContainer/:index                  controllers.goods.AddItemContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/shippingContainers/:index                        controllers.goods.ShippingContainersController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/shippingContainers/:index                        controllers.goods.ShippingContainersController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeShippingContainers/:index                  controllers.goods.ShippingContainersController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeShippingContainers/:index                  controllers.goods.ShippingContainersController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
