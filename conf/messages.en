@@ -610,16 +610,19 @@ anyOverallDocuments.error.required = Select yes if anyOverallDocuments
 anyOverallDocuments.change.hidden = AnyOverallDocuments
 
 maritimeIdentity.title = maritimeIdentity
-maritimeIdentity.heading = maritimeIdentity
-maritimeIdentity.field1 = field1
-maritimeIdentity.field2 = field2
+maritimeIdentity.heading = Maritime
+maritimeIdentity.label = Give the details of the ship or ferry carrying your goods into the UK - this will help Border Force officials identify the consignment.
+maritimeIdentity.imo = Enter IMO ship identification number
+maritimeIdentity.conveyanceRefNum = Enter conveyance reference number
 maritimeIdentity.checkYourAnswersLabel = MaritimeIdentity
-maritimeIdentity.error.field1.required = Enter field1
-maritimeIdentity.error.field2.required = Enter field2
-maritimeIdentity.error.field1.length = field1 must be 100 characters or less
-maritimeIdentity.error.field2.length = field2 must be 100 characters or less
-maritimeIdentity.field1.change.hidden = field1
-maritimeIdentity.field2.change.hidden = field2
+maritimeIdentity.error.imo.invalid = The IMO ship identification number must be a number
+maritimeIdentity.error.conveyanceRefNum.invalid = A conveyance reference number must be letters or numbers
+maritimeIdentity.error.imo.required = Please Enter a IMO ship identification number
+maritimeIdentity.error.conveyanceRefNum.required = Please Enter a conveyance reference number
+maritimeIdentity.error.imo.length = A IMO ship identification number must be 8 characters or less
+maritimeIdentity.error.conveyanceRefNum.length = A conveyance reference number must be 35 characters or less
+maritimeIdentity.imo.change.hidden = imo
+maritimeIdentity.conveyanceRefNum.change.hidden = conveyanceRefNum
 
 nationalityOfTransport.title = nationalityOfTransport
 nationalityOfTransport.heading = Which country is your transport form?
@@ -642,7 +645,7 @@ overallDocument.field2.change.hidden = field2
 
 railIdentity.title = railIdentity
 railIdentity.heading = Rail
-railIdentity.label = Give the details of the train carrying your goods into the UK  - this will help Border Force officials identify the consignment.
+railIdentity.label = Give the details of the train carrying your goods into the UK - this will help Border Force officials identify the consignment.
 railIdentity.value = Enter the Wagon Number
 railIdentity.checkYourAnswersLabel = RailIdentity
 railIdentity.error.required = Enter the Wagon Number

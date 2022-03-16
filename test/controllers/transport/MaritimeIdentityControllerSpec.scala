@@ -19,10 +19,11 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.MaritimeIdentityFormProvider
-import models.{NormalMode, UserAnswers, MaritimeIdentity}
+import models.{MaritimeIdentity, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transport
 import pages.transport.MaritimeIdentityPage
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -45,8 +46,8 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
     lrn,
     Json.obj(
       MaritimeIdentityPage.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
+        "imo" -> "123",
+        "conveyanceRefNum" -> "value2"
       )
     )
   )
@@ -81,7 +82,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(MaritimeIdentity("value 1", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(MaritimeIdentity("123", "value2")), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -99,13 +100,13 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, maritimeIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(("imo", "123"), ("conveyanceRefNum", "value2"))
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(MaritimeIdentityPage, MaritimeIdentity("value 1", "value 2")).success.value
+        val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(MaritimeIdentityPage, MaritimeIdentity("123", "value2")).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MaritimeIdentityPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual transport.MaritimeIdentityPage.navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -151,7 +152,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, maritimeIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(("imo", "123"), ("conveyanceRefNum", "value2"))
 
         val result = route(application, request).value
 

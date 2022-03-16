@@ -37,7 +37,7 @@ class MaritimeIdentityPageSpec extends SpecBase with PageBehaviours {
       "to Index" in {
 
         MaritimeIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

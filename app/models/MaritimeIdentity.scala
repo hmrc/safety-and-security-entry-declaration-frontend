@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class MaritimeIdentity(field1: String, field2: String)
+case class MaritimeIdentity(imo: String, conveyanceRefNum: String)
 
 object MaritimeIdentity {
   implicit val format = Json.format[MaritimeIdentity]
