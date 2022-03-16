@@ -19,9 +19,10 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.ItemContainerNumberFormProvider
-import models.NormalMode
+import models.{Container, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.goods.ItemContainerNumberPage
 import play.api.inject.bind
@@ -36,6 +37,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new ItemContainerNumberFormProvider()
   val form = formProvider()
+  val container = arbitrary[Container].sample.value
 
   lazy val itemContainerNumberRoute = routes.ItemContainerNumberController.onPageLoad(NormalMode, lrn, index, index).url
 
@@ -59,7 +61,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ItemContainerNumberPage(index,index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(ItemContainerNumberPage(index,index), container).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +73,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(container), NormalMode, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -92,7 +94,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ItemContainerNumberPage(index,index), "answer").success.value
+        val expectedAnswers = emptyUserAnswers.set(ItemContainerNumberPage(index,index), container).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ItemContainerNumberPage(index,index).navigate(NormalMode, expectedAnswers).url

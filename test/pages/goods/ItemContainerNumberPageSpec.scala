@@ -19,18 +19,18 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Container, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class ItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
   "ItemContainerNumberPage" - {
 
-    beRetrievable[String](ItemContainerNumberPage(index,index))
+    beRetrievable[Container](ItemContainerNumberPage(index,index))
 
-    beSettable[String](ItemContainerNumberPage(index, index))
+    beSettable[Container](ItemContainerNumberPage(index, index))
 
-    beRemovable[String](ItemContainerNumberPage(index, index))
+    beRemovable[Container](ItemContainerNumberPage(index, index))
 
     "must navigate in Normal Mode" - {
 

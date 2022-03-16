@@ -34,7 +34,7 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
         val container = arbitrary[Container].sample.value
 
-        val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, Index(0)), container.itemContainerNumber).success.value
+        val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, Index(0)), container).success.value
 
         AddItemContainerNumberPage(index)
           .navigate(NormalMode, answers, index, addAnother = true)
@@ -46,7 +46,7 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
         val container = arbitrary[Container].sample.value
 
         val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-          .set(ItemContainerNumberPage(index, Index(0)), container.itemContainerNumber).success.value
+          .set(ItemContainerNumberPage(index, Index(0)), container).success.value
 
         AddItemContainerNumberPage(index)
           .navigate(NormalMode, answers, index, addAnother = false)
@@ -58,7 +58,7 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
         val container = arbitrary[Container].sample.value
 
         val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-          .set(ItemContainerNumberPage(index, Index(0)), container.itemContainerNumber).success.value
+          .set(ItemContainerNumberPage(index, Index(0)), container).success.value
 
         AddItemContainerNumberPage(index)
           .navigate(NormalMode, answers, index, addAnother = false)

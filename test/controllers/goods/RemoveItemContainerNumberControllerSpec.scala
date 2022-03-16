@@ -42,7 +42,7 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
   val formProvider = new RemoveItemContainerNumberFormProvider()
   val form = formProvider()
   private val baseAnswers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-    .set(ItemContainerNumberPage(index, Index(0)), container.itemContainerNumber).success.value
+    .set(ItemContainerNumberPage(index, Index(0)), container).success.value
 
   lazy val removeContainerRoute =
     routes.RemoveItemContainerNumberController.onPageLoad(NormalMode, lrn, index, index).url

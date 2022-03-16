@@ -16,11 +16,11 @@
 
 package pages.goods
 
-import models.{Index}
+import models.{Container, Index}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[String] {
+case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[Container] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers" \ containerIndex.position
 

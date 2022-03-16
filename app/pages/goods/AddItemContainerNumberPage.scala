@@ -26,7 +26,7 @@ import queries.DeriveNumberOfContainers
 
 final case class AddItemContainerNumberPage(index: Index) extends Page {
 
-  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
+  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call = {
     if (addAnother) {
       answers.get(DeriveNumberOfContainers(itemIndex)) match {
         case Some(size) =>
@@ -43,4 +43,5 @@ final case class AddItemContainerNumberPage(index: Index) extends Page {
           routes.JourneyRecoveryController.onPageLoad()
       }
     }
+  }
 }

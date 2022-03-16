@@ -17,15 +17,19 @@
 package forms.goods
 
 import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.Container
 import play.api.data.Form
+import play.api.data.Forms._
+
 
 class ItemContainerNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[Container] =
     Form(
-      "value" -> text("itemContainerNumber.error.required")
-        .verifying(maxLength(20, "itemContainerNumber.error.length"))
+      mapping(
+        "value" -> text("itemContainerNumber.error.required")
+          .verifying(exactLength(20, "itemContainerNumber.error.length"))
+      )(Container.apply)(Container.unapply)
     )
 }

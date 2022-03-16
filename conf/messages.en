@@ -758,5 +758,5 @@ itemContainerNumber.title = itemContainerNumber
 itemContainerNumber.heading = itemContainerNumber
 itemContainerNumber.checkYourAnswersLabel = itemContainerNumber
 itemContainerNumber.error.required = Enter itemContainerNumber
-itemContainerNumber.error.length = ItemContainerNumber must be 20 characters or less
+itemContainerNumber.error.length = ItemContainerNumber must be 20 characters
 itemContainerNumber.change.hidden = ItemContainerNumber
