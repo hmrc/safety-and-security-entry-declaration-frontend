@@ -25,12 +25,28 @@ import models.RoroUnaccompaniedIdentity
 
 class RoroUnaccompaniedIdentityFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[RoroUnaccompaniedIdentity] = Form(
-     mapping(
-      "field1" -> text("roroUnaccompaniedIdentity.error.field1.required")
-        .verifying(maxLength(100, "roroUnaccompaniedIdentity.error.field1.length")),
-      "field2" -> text("roroUnaccompaniedIdentity.error.field2.required")
-        .verifying(maxLength(100, "roroUnaccompaniedIdentity.error.field2.length"))
+  private val validAlphaNumeric = "[A-Za-z0-9]+"
+  private val validNumber = "[0-9]+"
+
+  def apply(): Form[RoroUnaccompaniedIdentity] = Form(
+    mapping(
+      "trailerNumber" -> text("roroUnaccompaniedIdentity.error.trailerNumber.required")
+        .verifying(
+          firstError(
+            maxLength(17, "roroUnaccompaniedIdentity.error.trailerNumber.length"),
+            regexp(validAlphaNumeric, "roroUnaccompaniedIdentity.error.trailerNumber.invalid")
+          )
+        ),
+      "imo" -> text("roroUnaccompaniedIdentity.error.imo.required")
+        .verifying(
+         firstError(
+           maxLength(8, "roroUnaccompaniedIdentity.error.imo.length"),
+           regexp(validNumber, "roroUnaccompaniedIdentity.error.imo.invalid")
+         )
+        ),
+      "ferryCompany" -> optional(nonEmptyText)
+        .verifying("roroUnaccompaniedIdentity.error.ferryCompany.length", _.forall(_.length <= 35))
+        .transform[Option[String]](v => v.filterNot { _ == "" }, identity)
     )(RoroUnaccompaniedIdentity.apply)(RoroUnaccompaniedIdentity.unapply)
-   )
- }
+  )
+}

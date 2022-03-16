@@ -62,9 +62,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
     Arbitrary {
       for {
-        field1 <- arbitrary[String]
-        field2 <- arbitrary[String]
-      } yield RoroUnaccompaniedIdentity(field1, field2)
+        trailerNumber <- Gen.alphaNumStr map { _.take(12) }
+        imo <- Gen.listOfN(8, Gen.numChar)
+        ferryCompany <- Gen.option(Gen.alphaNumStr map { _.take(12) })
+      } yield RoroUnaccompaniedIdentity(trailerNumber, imo.mkString, ferryCompany)
     }
 
   implicit lazy val arbitraryRoroAccompaniedIdentity: Arbitrary[RoroAccompaniedIdentity] =

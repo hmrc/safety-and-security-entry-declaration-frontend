@@ -32,7 +32,10 @@ object RoroUnaccompaniedIdentitySummary {
     answers.get(RoroUnaccompaniedIdentityPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.field1).toString + "<br/>" + HtmlFormat.escape(answer.field2).toString
+        val value = {
+          HtmlFormat.escape(answer.trailerNumber).toString + "<br/>" +
+            HtmlFormat.escape(answer.imo).toString
+        }
 
         SummaryListRowViewModel(
           key     = "roroUnaccompaniedIdentity.checkYourAnswersLabel",
