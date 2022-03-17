@@ -23,7 +23,7 @@ class ItemContainerNumberFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "itemContainerNumber.error.required"
   val lengthKey = "itemContainerNumber.error.length"
-  val maxLength = 20
+  val maxLength = 17
 
   val form = new ItemContainerNumberFormProvider()()
 
@@ -34,7 +34,7 @@ class ItemContainerNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithExactLength(maxLength)
+      stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(

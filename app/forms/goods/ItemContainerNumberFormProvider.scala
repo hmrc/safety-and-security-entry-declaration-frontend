@@ -29,7 +29,7 @@ class ItemContainerNumberFormProvider @Inject() extends Mappings {
     Form(
       mapping(
         "value" -> text("itemContainerNumber.error.required")
-          .verifying(exactLength(20, "itemContainerNumber.error.length"))
+          .verifying(maxLength(17, "itemContainerNumber.error.length"))
       )(Container.apply)(Container.unapply)
     )
 }

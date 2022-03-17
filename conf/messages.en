@@ -758,7 +758,7 @@ itemContainerNumber.title = What is the container/trailer number?
 itemContainerNumber.heading = What is the container/trailer number?
 itemContainerNumber.checkYourAnswersLabel = Container/Trailer number
 itemContainerNumber.error.required = The container/trailer number is required
-itemContainerNumber.error.length = The container/trailer number must be 20 characters long
+itemContainerNumber.error.length = The container/trailer number must be 17 characters or less
 itemContainerNumber.change.hidden = the container/trailer number
 
 shippingContainers.title = Are the goods in shipping containers or trailer?

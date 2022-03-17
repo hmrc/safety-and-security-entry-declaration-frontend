@@ -172,7 +172,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryContainer: Arbitrary[Container] =
     Arbitrary {
       for {
-        length <- Gen.choose(20, 20)
+        length <- Gen.choose(1, 17)
         chars <- Gen.listOfN(length, Gen.alphaNumChar)
       } yield Container(chars.mkString)
     }
