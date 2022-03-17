@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package queries
 
-import play.api.libs.json._
+import models.{Document, Index}
+import play.api.libs.json.JsPath
 
-case class OverallDocument(field1: String, field2: String)
+case object AllOverallDocumentsQuery extends Gettable[List[Document]] {
 
-object OverallDocument {
-  implicit val format = Json.format[OverallDocument]
+  override def path: JsPath = JsPath \ "overallDocuments"
 }

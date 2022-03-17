@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package queries
 
-import play.api.libs.json._
+import models.Document
+import play.api.libs.json.JsPath
 
-case class AirIdentity(flightNumber: String)
+case object DeriveNumberOfOverallDocuments extends Derivable[List[Document], Int] {
 
-object AirIdentity {
-  implicit val format = Json.format[AirIdentity]
+  override val derive: List[Document] => Int = _.size
+
+  override def path: JsPath = JsPath \ "overallDocuments"
 }

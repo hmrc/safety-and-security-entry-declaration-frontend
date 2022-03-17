@@ -17,15 +17,18 @@
 package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{OverallDocument, NormalMode, UserAnswers}
+import models.{Document, Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object OverallDocumentPage extends QuestionPage[OverallDocument] {
+case class OverallDocumentPage(index: Index) extends QuestionPage[Document] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "overallDocuments" \ index.position
 
   override def toString: String = "overallDocument"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn)
+  }
 }

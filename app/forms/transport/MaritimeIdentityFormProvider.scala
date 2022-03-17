@@ -25,12 +25,25 @@ import models.MaritimeIdentity
 
 class MaritimeIdentityFormProvider @Inject() extends Mappings {
 
-   def apply(): Form[MaritimeIdentity] = Form(
-     mapping(
-      "field1" -> text("maritimeIdentity.error.field1.required")
-        .verifying(maxLength(100, "maritimeIdentity.error.field1.length")),
-      "field2" -> text("maritimeIdentity.error.field2.required")
-        .verifying(maxLength(100, "maritimeIdentity.error.field2.length"))
+  private val validAlphaNumeric = "[A-Za-z0-9]+"
+  private val validNumber = "[0-9]+"
+
+  def apply(): Form[MaritimeIdentity] = Form(
+    mapping(
+      "imo" -> text("maritimeIdentity.error.imo.required")
+        .verifying(
+          firstError(
+            maxLength(8, "maritimeIdentity.error.imo.length"),
+            regexp(validNumber, "maritimeIdentity.error.imo.invalid")
+          )
+        ),
+      "conveyanceRefNum" -> text("maritimeIdentity.error.conveyanceRefNum.required")
+        .verifying(
+          firstError(
+            maxLength(35, "maritimeIdentity.error.conveyanceRefNum.length"),
+            regexp(validAlphaNumeric, "maritimeIdentity.error.conveyanceRefNum.invalid")
+          )
+        )
     )(MaritimeIdentity.apply)(MaritimeIdentity.unapply)
-   )
- }
+  )
+}

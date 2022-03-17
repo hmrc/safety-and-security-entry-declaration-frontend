@@ -19,25 +19,26 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{OverallDocument, CheckMode, NormalMode}
+import models.{CheckMode, Document, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class OverallDocumentPageSpec extends SpecBase with PageBehaviours {
+  private val page = OverallDocumentPage(index)
 
   "OverallDocumentPage" - {
 
-    beRetrievable[OverallDocument](OverallDocumentPage)
+    beRetrievable[Document](page)
 
-    beSettable[OverallDocument](OverallDocumentPage)
+    beSettable[Document](page)
 
-    beRemovable[OverallDocument](OverallDocumentPage)
+    beRemovable[Document](page)
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to AddOverallDocument" in {
 
-        OverallDocumentPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        page.navigate(NormalMode, emptyUserAnswers)
+          .mustEqual(transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, lrn))
       }
     }
 
@@ -45,7 +46,7 @@ class OverallDocumentPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        OverallDocumentPage.navigate(CheckMode, emptyUserAnswers)
+        page.navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }

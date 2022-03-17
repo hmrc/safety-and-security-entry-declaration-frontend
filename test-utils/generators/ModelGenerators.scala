@@ -88,14 +88,6 @@ trait ModelGenerators {
       arbitrary[String] map { RailIdentity(_) }
     }
 
-  implicit lazy val arbitraryOverallDocument: Arbitrary[OverallDocument] =
-    Arbitrary {
-      for {
-        field1 <- arbitrary[String]
-        field2 <- arbitrary[String]
-      } yield OverallDocument(field1, field2)
-    }
-
   implicit lazy val arbitraryMaritimeIdentity: Arbitrary[MaritimeIdentity] =
     Arbitrary {
       for {
@@ -104,13 +96,15 @@ trait ModelGenerators {
       } yield MaritimeIdentity(field1, field2)
     }
 
-  implicit lazy val arbitraryAirIdentity: Arbitrary[AirIdentity] =
-    Arbitrary {
-      for {
-        field1 <- arbitrary[String]
-        field2 <- arbitrary[String]
-      } yield AirIdentity(field1, field2)
+  implicit lazy val arbitraryAirIdentity: Arbitrary[AirIdentity] = Arbitrary {
+    for {
+      carrierCode <- Gen.listOfN(3, Gen.alphaNumChar)
+      flightNumber <- Gen.listOfN(4, Gen.numChar)
+      suffix <- Gen.option(Gen.alphaChar)
+    } yield {
+      AirIdentity((carrierCode ++ flightNumber ++ suffix).mkString)
     }
+  }
 
   implicit lazy val arbitraryPlaceOfUnloading: Arbitrary[PlaceOfUnloading] =
     Arbitrary {

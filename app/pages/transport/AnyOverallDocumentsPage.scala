@@ -16,9 +16,9 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import controllers.transport.{routes => transportRoutes}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,4 +28,15 @@ case object AnyOverallDocumentsPage extends QuestionPage[Boolean] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "anyOverallDocuments"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    answers.get(AnyOverallDocumentsPage) map {
+      case true =>
+        transportRoutes.OverallDocumentController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case _ =>
+        transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
+    } getOrElse {
+      routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

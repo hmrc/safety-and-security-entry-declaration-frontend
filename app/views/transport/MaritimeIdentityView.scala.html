@@ -36,19 +36,20 @@
         }
 
         <h1 class="govuk-heading-xl">@messages("maritimeIdentity.heading")</h1>
+        <p class="govuk-body">@messages("maritimeIdentity.label")</p>
 
         @govukInput(
             InputViewModel(
-                field = form("field1"),
-                label = LabelViewModel(messages("maritimeIdentity.field1"))
+                field = form("imo"),
+                label = LabelViewModel(messages("maritimeIdentity.imo"))
             )
             .withWidth(Full)
         )
 
         @govukInput(
             InputViewModel(
-                field = form("field2"),
-                label = LabelViewModel(messages("maritimeIdentity.field2"))
+                field = form("conveyanceRefNum"),
+                label = LabelViewModel(messages("maritimeIdentity.conveyanceRefNum"))
             )
             .withWidth(Full)
         )

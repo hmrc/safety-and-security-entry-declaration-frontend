@@ -17,10 +17,11 @@
 package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Index, NormalMode, UserAnswers}
 import pages.transport.OverallDocumentPage
-import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import queries.AllOverallDocumentsQuery
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -28,19 +29,17 @@ import viewmodels.implicits._
 
 object OverallDocumentSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverallDocumentPage).map {
-      answer =>
-
-      val value = HtmlFormat.escape(answer.field1).toString + "<br/>" + HtmlFormat.escape(answer.field2).toString
-
-        SummaryListRowViewModel(
-          key     = "overallDocument.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.OverallDocumentController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("overallDocument.change.hidden"))
-          )
+  def rows(answers: UserAnswers): List[ListItem] =
+    answers.get(AllOverallDocumentsQuery).getOrElse(Nil).zipWithIndex.map {
+      case (document, index) =>
+        ListItem(
+          name = HtmlFormat.escape(document.documentType.name).toString,
+          changeUrl = transportRoutes.OverallDocumentController
+            .onPageLoad(NormalMode, answers.lrn, Index(index))
+            .url,
+          removeUrl = transportRoutes.RemoveOverallDocumentController
+            .onPageLoad(NormalMode, answers.lrn)
+            .url
         )
-    }
+    }.toList
 }

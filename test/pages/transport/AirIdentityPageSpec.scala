@@ -34,10 +34,14 @@ class AirIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
-
+      "to AnyOverallDocuments" in {
         AirIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(
+            transportRoutes.AnyOverallDocumentsController.onPageLoad(
+              NormalMode,
+              emptyUserAnswers.lrn
+            )
+          )
       }
     }
 

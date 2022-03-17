@@ -17,9 +17,10 @@
 package controllers.transport
 
 import controllers.actions._
+import controllers.{routes => baseRoutes}
 import forms.transport.OverallDocumentFormProvider
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import pages.transport.OverallDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,29 +45,42 @@ class OverallDocumentController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(OverallDocumentPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      if (index.position >= OverallDocumentController.MaxDocuments) {
+        Redirect(baseRoutes.JourneyRecoveryController.onPageLoad())
+      } else {
+        val preparedForm = request.userAnswers.get(OverallDocumentPage(index)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, mode, lrn, index))
       }
-
-      Ok(view(preparedForm, mode, lrn))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+      val page = OverallDocumentPage(index)
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(OverallDocumentPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(OverallDocumentPage.navigate(mode, updatedAnswers))
-        )
+      if (index.position >= OverallDocumentController.MaxDocuments) {
+        Future.successful(Redirect(baseRoutes.JourneyRecoveryController.onPageLoad()))
+      } else {
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(page.navigate(mode, updatedAnswers))
+          )
+      }
     }
+}
+
+object OverallDocumentController {
+  val MaxDocuments = 99
 }

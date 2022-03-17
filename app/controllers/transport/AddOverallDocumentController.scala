@@ -25,9 +25,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.transport.OverallDocumentSummary
 import views.html.transport.AddOverallDocumentView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AddOverallDocumentController @Inject()(
   override val messagesApi: MessagesApi,
@@ -44,27 +45,26 @@ class AddOverallDocumentController @Inject()(
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
+      val documents = OverallDocumentSummary.rows(request.userAnswers)
 
       val preparedForm = request.userAnswers.get(AddOverallDocumentPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, mode, lrn, documents))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-
+        formWithErrors => {
+          val documents = OverallDocumentSummary.rows(request.userAnswers)
+          BadRequest(view(formWithErrors, mode, lrn, documents))
+        },
         value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddOverallDocumentPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddOverallDocumentPage.navigate(mode, updatedAnswers))
+          Redirect(AddOverallDocumentPage.navigate(mode, request.userAnswers, value))
       )
   }
 }
