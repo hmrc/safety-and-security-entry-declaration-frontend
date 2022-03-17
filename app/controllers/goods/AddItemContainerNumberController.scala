@@ -31,14 +31,14 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddItemContainerNumberController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  sessionRepository: SessionRepository,
-                                                  identify: IdentifierAction,
-                                                  getData: DataRetrievalActionProvider,
-                                                  requireData: DataRequiredAction,
-                                                  formProvider: AddItemContainerNumberFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: AddItemContainerNumberView
+      override val messagesApi: MessagesApi,
+      sessionRepository: SessionRepository,
+      identify: IdentifierAction,
+      getData: DataRetrievalActionProvider,
+      requireData: DataRequiredAction,
+      formProvider: AddItemContainerNumberFormProvider,
+      val controllerComponents: MessagesControllerComponents,
+      view: AddItemContainerNumberView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
