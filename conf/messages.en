@@ -605,16 +605,12 @@ addSeal.error.required = Select yes if addSeal
 addSeal.change.hidden = AddSeal
 
 airIdentity.title = airIdentity
-airIdentity.heading = airIdentity
-airIdentity.field1 = field1
-airIdentity.field2 = field2
-airIdentity.checkYourAnswersLabel = AirIdentity
-airIdentity.error.field1.required = Enter field1
-airIdentity.error.field2.required = Enter field2
-airIdentity.error.field1.length = field1 must be 100 characters or less
-airIdentity.error.field2.length = field2 must be 100 characters or less
-airIdentity.field1.change.hidden = field1
-airIdentity.field2.change.hidden = field2
+airIdentity.heading = Air
+airIdentity.label = Give the flight details of the airplane carrying your goods - this will help UK Border Force identify your consignment.
+airIdentity.flightNumber = Enter IATA flight number
+airIdentity.checkYourAnswersLabel = IATA number
+airIdentity.error.flightNumber.required = Enter IATA flight number
+airIdentity.error.flightNumber.format = The IATA number must consist of the carrier code as three letters or digits, the flight number as four digits, and an optional single-letter suffix, with no separators.
 
 anyOverallDocuments.title = anyOverallDocuments
 anyOverallDocuments.heading = Do you have more documents for the whole consignment?

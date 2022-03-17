@@ -17,63 +17,74 @@
 package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class AirIdentityFormProviderSpec extends StringFieldBehaviours {
+  private val form = new AirIdentityFormProvider()()
 
-  val form = new AirIdentityFormProvider()()
-
-  ".field1" - {
-
-    val fieldName = "field1"
-    val requiredKey = "airIdentity.error.field1.required"
-    val lengthKey = "airIdentity.error.field1.length"
-    val maxLength = 100
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+  private val validValues: Gen[String] = {
+    for {
+      carrierCode <- Gen.listOfN(3, Gen.alphaNumChar)
+      flightNumber <- Gen.listOfN(4, Gen.numChar)
+      suffix <- Gen.option(Gen.alphaChar)
+    } yield {
+      (carrierCode ++ flightNumber ++ suffix).mkString
+    }
   }
 
-  ".field2" - {
+  private def requireError(answer: String, fieldName: String): Unit = {
+    val result = form.bind(Map(fieldName -> answer)).apply(fieldName)
+    result.errors must not have length(0)
+  }
 
-    val fieldName = "field2"
-    val requiredKey = "airIdentity.error.field2.required"
-    val lengthKey = "airIdentity.error.field2.length"
-    val maxLength = 100
+  ".flightNumber" - {
+    val fieldName = "flightNumber"
+    val requiredKey = "airIdentity.error.flightNumber.required"
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    behave like fieldThatBindsValidData(form, fieldName, validValues)
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "should not allow alphabetical characters in the flight number" in {
+      val values = for {
+        carrierCode <- Gen.listOfN(3, Gen.alphaNumChar)
+        flightNumber <- Gen.listOfN(4, Gen.alphaChar)
+        suffix <- Gen.option(Gen.alphaChar)
+      } yield {
+        (carrierCode ++ flightNumber ++ suffix).mkString
+      }
+
+      forAll(values) { v => requireError(v, fieldName) }
+    }
+
+    "should not allow digits in the optional suffix" in {
+      val values = for {
+        carrierCode <- Gen.listOfN(3, Gen.alphaNumChar)
+        flightNumber <- Gen.listOfN(4, Gen.numChar)
+        suffix <- Gen.numChar
+      } yield {
+        (carrierCode ++ flightNumber :+ suffix).mkString
+      }
+
+      forAll(values) { v => requireError(v, fieldName) }
+    }
+
+    "should only allow one character after the flight number" in {
+      val values = for {
+        carrierCode <- Gen.listOfN(3, Gen.alphaNumChar)
+        flightNumber <- Gen.listOfN(4, Gen.numChar)
+        suffixLen <- Gen.choose(2, 10)
+        suffix <- Gen.listOfN(suffixLen, Gen.alphaChar)
+      } yield {
+        (carrierCode ++ flightNumber ++ suffix).mkString
+      }
+
+      forAll(values) { v => requireError(v, fieldName) }
+    }
   }
 }

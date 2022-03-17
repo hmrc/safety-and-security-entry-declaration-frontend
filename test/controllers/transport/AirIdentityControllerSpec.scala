@@ -19,13 +19,13 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.AirIdentityFormProvider
-import models.{NormalMode, UserAnswers, AirIdentity}
+import models.{NormalMode, AirIdentity}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transport.AirIdentityPage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -35,21 +35,14 @@ import scala.concurrent.Future
 
 class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new AirIdentityFormProvider()
-  val form = formProvider()
+  private val formProvider = new AirIdentityFormProvider()
+  private val form = formProvider()
 
-  lazy val airIdentityRoute = routes.AirIdentityController.onPageLoad(NormalMode, lrn).url
+  private lazy val airIdentityRoute = routes.AirIdentityController.onPageLoad(NormalMode, lrn).url
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    lrn,
-    Json.obj(
-      AirIdentityPage.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
-      )
-    )
-  )
+  private val id: AirIdentity = AirIdentity("AAA0000A")
+
+  private val userAnswers = emptyUserAnswers.set(AirIdentityPage, id).success.value
 
   "AirIdentity Controller" - {
 
@@ -81,7 +74,7 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(AirIdentity("value 1", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(id), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -99,10 +92,10 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, airIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody("flightNumber" -> id.flightNumber)
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AirIdentityPage, AirIdentity("value 1", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(AirIdentityPage, id).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AirIdentityPage.navigate(NormalMode, expectedAnswers).url
@@ -151,7 +144,7 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, airIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody("flightNumber" -> id.flightNumber)
 
         val result = route(application, request).value
 
