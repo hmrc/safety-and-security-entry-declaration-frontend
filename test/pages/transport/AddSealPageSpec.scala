@@ -34,17 +34,27 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to SealController when answer is yes" in {
+        val answers = emptyUserAnswers.set(AddSealPage, true).success.value
 
-        AddSealPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        AddSealPage
+          .navigate(NormalMode, answers)
+          .mustEqual(transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn))
+      }
+
+      "to Check Your Answers when answer is no" in {
+        val answers = emptyUserAnswers.set(AddSealPage, false).success.value
+
+        AddSealPage
+          .navigate(NormalMode, answers)
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn)
+          )
       }
     }
 
     "must navigate in Check Mode" - {
 
       "to Check Your Answers" in {
-
         AddSealPage.navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }

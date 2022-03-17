@@ -574,9 +574,9 @@ placeOfUnloading.country.change.hidden = the country of unloading
 placeOfUnloading.place.change.hidden = the place of unloading
 
 addAnySeals.title = addAnySeals
-addAnySeals.heading = addAnySeals
-addAnySeals.checkYourAnswersLabel = addAnySeals
-addAnySeals.error.required = Select yes if addAnySeals
+addAnySeals.heading = Do you want to add a security seal?
+addAnySeals.checkYourAnswersLabel = Add Any Seals
+addAnySeals.error.required = Please select yes if you wish to add a Seal
 addAnySeals.change.hidden = AddAnySeals
 
 addOverallDocument.title = addOverallDocument
@@ -599,7 +599,9 @@ overallDocument.reference.change.hidden = reference
 overallDocument.checkYourAnswersLabel = OverallDocument
 
 addSeal.title = addSeal
-addSeal.heading = addSeal
+addSeal.heading = Security seals
+addSeal.label = Add, change, or remove details of any security seals attached to your consignment.
+addSeal.heading2 = Do you need to add another security seal?
 addSeal.checkYourAnswersLabel = addSeal
 addSeal.error.required = Select yes if addSeal
 addSeal.change.hidden = AddSeal
@@ -697,10 +699,12 @@ roroUnaccompaniedIdentity.field1.change.hidden = field1
 roroUnaccompaniedIdentity.field2.change.hidden = field2
 
 seal.title = seal
-seal.heading = seal
-seal.checkYourAnswersLabel = seal
-seal.error.required = Enter seal
-seal.error.length = Seal must be 20 characters or less
+seal.heading = What is the security seal number?
+seal.hint = Enter the seal number, a maximum of 20 characters.
+seal.checkYourAnswersLabel = Seal
+seal.error.required = Please enter a security seal number
+seal.error.length = A security seal number must be 20 characters or less
+seal.error.invalid = A security seal number must be letters or numbers
 seal.change.hidden = Seal
 
 consignee.title = Your consignees

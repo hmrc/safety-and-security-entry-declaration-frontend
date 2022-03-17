@@ -17,12 +17,14 @@
 package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class SealFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "seal.error.required"
   val lengthKey = "seal.error.length"
+  val invalidKey = "seal.error.invalid"
   val maxLength = 20
 
   val form = new SealFormProvider()()
@@ -49,5 +51,19 @@ class SealFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind invalid data" in {
+
+      val invalidData = for {
+        noValidChars <- Gen.choose(0, maxLength - 1)
+        validChars <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
+        invalidChar <- Gen.oneOf('?', '.', ',')
+      } yield (validChars :+ invalidChar).mkString
+
+      forAll(invalidData) { invalidAnswer =>
+        val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, invalidKey, Seq("[A-Za-z0-9]+"))
+      }
+    }
   }
 }

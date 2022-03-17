@@ -34,10 +34,10 @@ class SealPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to AddSealController" in {
 
         SealPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(transportRoutes.AddSealController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

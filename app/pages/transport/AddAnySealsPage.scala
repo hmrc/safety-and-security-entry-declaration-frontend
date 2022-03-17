@@ -28,4 +28,11 @@ case object AddAnySealsPage extends QuestionPage[Boolean] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addAnySeals"
+
+  override def navigateInNormalMode(answers: UserAnswers): Call =
+    answers.get(AddAnySealsPage) match {
+      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn)
+      case Some(false) => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      case None => routes.JourneyRecoveryController.onPageLoad()
+    }
 }
