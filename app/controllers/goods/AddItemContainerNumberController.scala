@@ -19,7 +19,7 @@ package controllers.goods
 import controllers.actions._
 import forms.goods.AddItemContainerNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.{AddDocumentPage, AddItemContainerNumberPage}
+import pages.goods.AddItemContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -60,9 +60,9 @@ class AddItemContainerNumberController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val documents = ItemContainerNumberSummary.rows(request.userAnswers, index)
+            val containers = ItemContainerNumberSummary.rows(request.userAnswers, index)
 
-            BadRequest(view(formWithErrors, mode, lrn, index, documents))
+            BadRequest(view(formWithErrors, mode, lrn, index, containers))
           },
           value => Redirect(AddItemContainerNumberPage(index).navigate(mode, request.userAnswers, index, value))
         )
