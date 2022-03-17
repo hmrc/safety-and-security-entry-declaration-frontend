@@ -16,15 +16,30 @@
 
 package forms.goods
 
-import javax.inject.Inject
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-import forms.mappings.Mappings
-import play.api.data.Form
+class AnyShippingContainersFormProviderSpec extends BooleanFieldBehaviours {
 
-class ShippingContainersFormProvider @Inject() extends Mappings {
+  val requiredKey = "shippingContainers.error.required"
+  val invalidKey = "error.boolean"
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("shippingContainers.error.required")
+  val form = new AnyShippingContainersFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

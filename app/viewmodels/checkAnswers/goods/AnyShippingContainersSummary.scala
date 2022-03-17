@@ -18,16 +18,16 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Index, UserAnswers}
-import pages.goods.ShippingContainersPage
+import pages.goods.AnyShippingContainersPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ShippingContainersSummary  {
+object AnyShippingContainersSummary  {
 
   def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ShippingContainersPage(index)).map {
+    answers.get(AnyShippingContainersPage(index)).map {
       answer =>
 
         val value = if (answer) "site.yes" else "site.no"
@@ -36,7 +36,7 @@ object ShippingContainersSummary  {
           key     = "shippingContainers.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", goodsRoutes.ShippingContainersController.onPageLoad(CheckMode, answers.lrn, index).url)
+            ActionItemViewModel("site.change", goodsRoutes.AnyShippingContainersController.onPageLoad(CheckMode, answers.lrn, index).url)
               .withVisuallyHiddenText(messages("shippingContainers.change.hidden"))
           )
         )

@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("shippingContainers.title"))) {
 
-    @formHelper(action = routes.ShippingContainersController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.AnyShippingContainersController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -18,26 +18,26 @@ package controllers.goods
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import forms.goods.ShippingContainersFormProvider
+import forms.goods.AnyShippingContainersFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods.ShippingContainersPage
+import pages.goods.AnyShippingContainersPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.goods.ShippingContainersView
+import views.html.goods.AnyShippingContainersView
 
 import scala.concurrent.Future
 
-class ShippingContainersControllerSpec extends SpecBase with MockitoSugar {
+class AnyShippingContainersControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new ShippingContainersFormProvider()
+  val formProvider = new AnyShippingContainersFormProvider()
   val form = formProvider()
 
-  lazy val shippingContainersRoute = routes.ShippingContainersController.onPageLoad(NormalMode, lrn, index).url
+  lazy val shippingContainersRoute = routes.AnyShippingContainersController.onPageLoad(NormalMode, lrn, index).url
 
   "ShippingContainers Controller" - {
 
@@ -50,7 +50,7 @@ class ShippingContainersControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ShippingContainersView]
+        val view = application.injector.instanceOf[AnyShippingContainersView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
@@ -59,14 +59,14 @@ class ShippingContainersControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ShippingContainersPage(index), true).success.value
+      val userAnswers = emptyUserAnswers.set(AnyShippingContainersPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, shippingContainersRoute)
 
-        val view = application.injector.instanceOf[ShippingContainersView]
+        val view = application.injector.instanceOf[AnyShippingContainersView]
 
         val result = route(application, request).value
 
@@ -92,10 +92,10 @@ class ShippingContainersControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(ShippingContainersPage(index), true).success.value
+        val expectedAnswers = emptyUserAnswers.set(AnyShippingContainersPage(index), true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ShippingContainersPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual AnyShippingContainersPage(index).navigate(NormalMode, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -111,7 +111,7 @@ class ShippingContainersControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[ShippingContainersView]
+        val view = application.injector.instanceOf[AnyShippingContainersView]
 
         val result = route(application, request).value
 

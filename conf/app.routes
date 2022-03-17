@@ -472,7 +472,7 @@ POST       /:lrn/addContainer/:index                        controllers.goods.Ad
 GET        /:lrn/changeAddContainer/:index                  controllers.goods.AddItemContainerNumberController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeAddContainer/:index                  controllers.goods.AddItemContainerNumberController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/shippingContainers/:index                        controllers.goods.ShippingContainersController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
-POST       /:lrn/shippingContainers/:index                        controllers.goods.ShippingContainersController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
-GET        /:lrn/changeShippingContainers/:index                  controllers.goods.ShippingContainersController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
-POST       /:lrn/changeShippingContainers/:index                  controllers.goods.ShippingContainersController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/anyShippingContainers/:index                        controllers.goods.AnyShippingContainersController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/anyShippingContainers/:index                        controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)

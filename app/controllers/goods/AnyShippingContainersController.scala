@@ -17,28 +17,28 @@
 package controllers.goods
 
 import controllers.actions._
-import forms.goods.ShippingContainersFormProvider
+import forms.goods.AnyShippingContainersFormProvider
 
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.ShippingContainersPage
+import pages.goods.AnyShippingContainersPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.goods.ShippingContainersView
+import views.html.goods.AnyShippingContainersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ShippingContainersController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  formProvider: ShippingContainersFormProvider,
-  val controllerComponents: MessagesControllerComponents,
-  view: ShippingContainersView
+class AnyShippingContainersController @Inject()(
+                                                 override val messagesApi: MessagesApi,
+                                                 sessionRepository: SessionRepository,
+                                                 identify: IdentifierAction,
+                                                 getData: DataRetrievalActionProvider,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: AnyShippingContainersFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 view: AnyShippingContainersView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
@@ -46,7 +46,7 @@ class ShippingContainersController @Inject()(
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(ShippingContainersPage(index)) match {
+      val preparedForm = request.userAnswers.get(AnyShippingContainersPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -63,9 +63,9 @@ class ShippingContainersController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShippingContainersPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyShippingContainersPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(ShippingContainersPage(index).navigate(mode, updatedAnswers))
+          } yield Redirect(AnyShippingContainersPage(index).navigate(mode, updatedAnswers))
       )
   }
 }

@@ -25,14 +25,14 @@ import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfContainers
 
-case class ShippingContainersPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AnyShippingContainersPage(itemIndex: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "shippingContainers"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(ShippingContainersPage(itemIndex)).map{
+    answers.get(AnyShippingContainersPage(itemIndex)).map{
       case true => {
         answers.get(DeriveNumberOfContainers(itemIndex)) match {
           case Some(size) =>

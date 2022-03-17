@@ -24,50 +24,50 @@ import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.predec.ProvideGrossWeightPage
 
-class ShippingContainersPageSpec extends SpecBase with PageBehaviours {
+class AnyShippingContainersPageSpec extends SpecBase with PageBehaviours {
 
   "ShippingContainersPage" - {
     val container = arbitrary[Container].sample.value
 
 
-    beRetrievable[Boolean](ShippingContainersPage(index))
+    beRetrievable[Boolean](AnyShippingContainersPage(index))
 
-    beSettable[Boolean](ShippingContainersPage(index))
+    beSettable[Boolean](AnyShippingContainersPage(index))
 
-    beRemovable[Boolean](ShippingContainersPage(index))
+    beRemovable[Boolean](AnyShippingContainersPage(index))
 
     "must navigate in Normal Mode" - {
       "When we are in a container" - {
         "To container trailer number when we have not entered any containers" in {
-          val answers = emptyUserAnswers.set(ShippingContainersPage(index),true).success.value
+          val answers = emptyUserAnswers.set(AnyShippingContainersPage(index),true).success.value
 
-          ShippingContainersPage(index).navigate(NormalMode, answers)
+          AnyShippingContainersPage(index).navigate(NormalMode, answers)
             .mustEqual(goodsRoutes.ItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, index, Index(0)))
         }
 
         "To add containers when we have entered some containers" in {
-          val answers = emptyUserAnswers.set(ShippingContainersPage(index),true).success.value
+          val answers = emptyUserAnswers.set(AnyShippingContainersPage(index),true).success.value
             .set(ItemContainerNumberPage(index,index),container).success.value
 
-          ShippingContainersPage(index).navigate(NormalMode, answers)
+          AnyShippingContainersPage(index).navigate(NormalMode, answers)
             .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, index))
         }
       }
       "When we are in a trailer" - {
         "to item packaging weight if we have selected weight overall " in {
           val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-            .set(ShippingContainersPage(index),false).success.value
+            .set(AnyShippingContainersPage(index),false).success.value
 
-          ShippingContainersPage(index).navigate(NormalMode, answers)
+          AnyShippingContainersPage(index).navigate(NormalMode, answers)
             .mustEqual(goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn, index))
         }
 
 
         "to item gross weight if we have selected weight per item " in {
           val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-            .set(ShippingContainersPage(index),false).success.value
+            .set(AnyShippingContainersPage(index),false).success.value
 
-          ShippingContainersPage(index).navigate(NormalMode, answers)
+          AnyShippingContainersPage(index).navigate(NormalMode, answers)
             .mustEqual(goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, index))
         }
       }
@@ -77,7 +77,7 @@ class ShippingContainersPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        ShippingContainersPage(index).navigate(CheckMode, emptyUserAnswers)
+        AnyShippingContainersPage(index).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
