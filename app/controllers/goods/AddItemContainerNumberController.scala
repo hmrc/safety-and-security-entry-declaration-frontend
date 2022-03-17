@@ -19,7 +19,7 @@ package controllers.goods
 import controllers.actions._
 import forms.goods.AddItemContainerNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.AddDocumentPage
+import pages.goods.{AddDocumentPage, AddItemContainerNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -64,7 +64,7 @@ class AddItemContainerNumberController @Inject()(
 
             BadRequest(view(formWithErrors, mode, lrn, index, documents))
           },
-          value => Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
+          value => Redirect(AddItemContainerNumberPage(index).navigate(mode, request.userAnswers, index, value))
         )
     }
 }
