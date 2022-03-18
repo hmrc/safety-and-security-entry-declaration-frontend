@@ -18,7 +18,11 @@ package models
 
 import play.api.libs.json._
 
-case class RoroAccompaniedIdentity(field1: String, field2: String)
+case class RoroAccompaniedIdentity(
+  vehicleRegistrationNumber: String,
+  trailerNumber: String,
+  ferryCompany: Option[String]
+)
 
 object RoroAccompaniedIdentity {
   implicit val format = Json.format[RoroAccompaniedIdentity]

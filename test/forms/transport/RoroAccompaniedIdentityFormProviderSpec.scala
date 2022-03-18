@@ -23,12 +23,12 @@ class RoroAccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
 
   val form = new RoroAccompaniedIdentityFormProvider()()
 
-  ".field1" - {
+  ".vehicleRegistrationNumber" - {
 
-    val fieldName = "field1"
-    val requiredKey = "roroAccompaniedIdentity.error.field1.required"
-    val lengthKey = "roroAccompaniedIdentity.error.field1.length"
-    val maxLength = 100
+    val fieldName = "vehicleRegistrationNumber"
+    val requiredKey = "roroAccompaniedIdentity.error.vehicleRegistrationNumber.required"
+    val lengthKey = "roroAccompaniedIdentity.error.vehicleRegistrationNumber.length"
+    val maxLength = 13
 
     behave like fieldThatBindsValidData(
       form,
@@ -50,12 +50,12 @@ class RoroAccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  ".field2" - {
+  ".trailerNumber" - {
 
-    val fieldName = "field2"
-    val requiredKey = "roroAccompaniedIdentity.error.field2.required"
-    val lengthKey = "roroAccompaniedIdentity.error.field2.length"
-    val maxLength = 100
+    val fieldName = "trailerNumber"
+    val requiredKey = "roroAccompaniedIdentity.error.trailerNumber.required"
+    val lengthKey = "roroAccompaniedIdentity.error.trailerNumber.length"
+    val maxLength = 13
 
     behave like fieldThatBindsValidData(
       form,
@@ -74,6 +74,25 @@ class RoroAccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+  }
+
+  ".ferryCompany" - {
+    val fieldName = "ferryCompany"
+    val lengthKey = "roroAccompaniedIdentity.error.ferryCompany.length"
+    val maxLength = 35
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Nil)
     )
   }
 }
