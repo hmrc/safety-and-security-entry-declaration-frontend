@@ -44,11 +44,10 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
       }
 
       "to Check Your Answers when add another answer is no" in {
-        val addAnotherSeal = false
-        val answers = emptyUserAnswers.set(AddSealPage, addAnotherSeal).success.value
+        val answers = emptyUserAnswers.set(AddSealPage, false).success.value
 
         AddSealPage
-          .navigate(NormalMode, answers, false)
+          .navigate(NormalMode, answers, addAnother = false)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
 
