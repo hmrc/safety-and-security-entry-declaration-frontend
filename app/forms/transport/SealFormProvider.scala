@@ -24,13 +24,12 @@ import play.api.data.Form
 class SealFormProvider @Inject() extends Mappings {
 
   private val validAlphaNumeric = "[A-Za-z0-9]+"
-  private val maxLength = 20
 
   def apply(): Form[String] =
     Form(
       "value" -> text("seal.error.required")
         .verifying(
-          maxLength(maxLength, "seal.error.length"),
+          maxLength(20, "seal.error.length"),
           regexp(validAlphaNumeric, "seal.error.invalid")
         )
     )

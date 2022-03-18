@@ -35,7 +35,7 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to JourneyRecoveryController when add another answer is yes but DeriveNumberOfSealsNot Set" in {
+      "to JourneyRecoveryController when add another answer is yes but DeriveNumberOfSeals not Set" in {
         val answers = emptyUserAnswers.set(AddSealPage, true).success.value
 
         AddSealPage
@@ -44,12 +44,12 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
       }
 
       "to Check Your Answers when add another answer is no" in {
-        val answers = emptyUserAnswers.set(AddSealPage, false).success.value
+        val addAnotherSeal = false
+        val answers = emptyUserAnswers.set(AddSealPage, addAnotherSeal).success.value
 
         AddSealPage
           .navigate(NormalMode, answers, false)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn)
-          )
+          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
 
       "to Seal with (index + 1) if yes is selected" in {
