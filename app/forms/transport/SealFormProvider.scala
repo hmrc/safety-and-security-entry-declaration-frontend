@@ -30,7 +30,7 @@ class SealFormProvider @Inject() extends Mappings {
     Form(
       "value" -> text("seal.error.required")
         .verifying(
-          maxLength(maxLength,"seal.error.length"),
+          maxLength(maxLength, "seal.error.length"),
           regexp(validAlphaNumeric, "seal.error.invalid")
         )
     )
