@@ -29,12 +29,11 @@ object AddSealSummary  {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AddSealPage).map {
       answer =>
-
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "addSeal.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key = "addSeal.checkYourAnswersLabel",
+          value = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", transportRoutes.AddSealController.onPageLoad(CheckMode, answers.lrn).url)
               .withVisuallyHiddenText(messages("addSeal.change.hidden"))

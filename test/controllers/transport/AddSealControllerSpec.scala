@@ -20,17 +20,12 @@ import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.AddSealFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport.AddSealPage
-import play.api.inject.bind
+import pages.transport.{AddSealPage, SealPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.transport.AddSealView
-
-import scala.concurrent.Future
 
 class AddSealControllerSpec extends SpecBase with MockitoSugar {
 
@@ -53,7 +48,7 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddSealView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, lrn, Nil)(request, messages(application)).toString
       }
     }
 
@@ -71,32 +66,31 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, Nil)(request, messages(application)).toString
       }
     }
 
-    "must save the answer and redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+    "must redirect to the Seal page with the correct next index if yes is selected" in {
+      val content = arbitrary[String].sample.value
+      val answers = emptyUserAnswers.set(SealPage(index), content).success.value
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, addSealRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = {
+          FakeRequest(POST, addSealRoute).withFormUrlEncodedBody(("value", "true"))
+        }
 
-        val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AddSealPage, true).success.value
+        val result = route(application, request).value
+        val expectedRedirect = {
+          routes.SealController.onPageLoad(
+            NormalMode,
+            answers.lrn,
+            index + 1
+          ).url
+        }
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddSealPage.navigate(NormalMode, expectedAnswers).url
-        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+        redirectLocation(result).value mustEqual expectedRedirect
       }
     }
 
@@ -116,7 +110,7 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, Nil)(request, messages(application)).toString
       }
     }
 

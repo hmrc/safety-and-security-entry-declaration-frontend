@@ -77,11 +77,11 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitrarySealUserAnswersEntry: Arbitrary[(SealPage.type, JsValue)] =
+  implicit lazy val arbitrarySealUserAnswersEntry: Arbitrary[(SealPage, JsValue)] =
     Arbitrary {
       for {
-        page  <- arbitrary[SealPage.type]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
+        page  <- arbitrary[SealPage]
+        value <- arbitrary[String].map(Json.toJson(_))
       } yield (page, value)
     }
 

@@ -18,7 +18,7 @@ package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -31,7 +31,7 @@ case object AddAnySealsPage extends QuestionPage[Boolean] {
 
   override def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(AddAnySealsPage) match {
-      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn)
+      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, Index(0))
       case Some(false) => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       case None => routes.JourneyRecoveryController.onPageLoad()
     }

@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package pages.transport
+package queries
 
-import controllers.transport.{routes => transportRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
-case class SealPage(index: Index) extends QuestionPage[String] {
+case object DeriveNumberOfSeals extends Derivable[List[String], Int] {
 
-  override def path: JsPath = JsPath \ "seals" \ index.position
+  override val derive: List[String] => Int = _.size
 
-  override def toString: String = "seal"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    transportRoutes.AddSealController.onPageLoad(NormalMode, answers.lrn)
-  }
+  override def path: JsPath = JsPath \ "seals"
 }

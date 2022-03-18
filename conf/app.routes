@@ -422,10 +422,10 @@ POST       /:lrn/roroUnaccompaniedIdentity                        controllers.tr
 GET        /:lrn/changeRoroUnaccompaniedIdentity                  controllers.transport.RoroUnaccompaniedIdentityController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeRoroUnaccompaniedIdentity                  controllers.transport.RoroUnaccompaniedIdentityController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
-GET        /:lrn/seal                        controllers.transport.SealController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/seal                        controllers.transport.SealController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeSeal                  controllers.transport.SealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeSeal                  controllers.transport.SealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/seal/:index                        controllers.transport.SealController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/seal/:index                        controllers.transport.SealController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
+GET        /:lrn/changeSeal/:index                  controllers.transport.SealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+POST       /:lrn/changeSeal/:index                  controllers.transport.SealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
 GET        /:lrn/consignee/:index                        controllers.goods.ConsigneeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/consignee/:index                        controllers.goods.ConsigneeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)

@@ -39,7 +39,7 @@ class AddAnySealsPageSpec extends SpecBase with PageBehaviours {
 
         AddAnySealsPage
           .navigate(NormalMode, answers)
-          .mustEqual(transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn))
+          .mustEqual(transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
       "to Check Your Answers when answer is no" in {

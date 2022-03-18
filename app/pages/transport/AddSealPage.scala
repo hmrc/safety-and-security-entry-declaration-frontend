@@ -18,10 +18,11 @@ package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.DeriveNumberOfSeals
 
 case object AddSealPage extends QuestionPage[Boolean] {
 
@@ -29,11 +30,16 @@ case object AddSealPage extends QuestionPage[Boolean] {
 
   override def toString: String = "addSeal"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(AddSealPage) match {
-      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn)
-      case Some(false) => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      case None => routes.JourneyRecoveryController.onPageLoad()
+  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+    if (addAnother) {
+      answers.get(DeriveNumberOfSeals) match {
+        case Some(size) => transportRoutes.SealController.onPageLoad(mode, answers.lrn, Index(size))
+        case None => routes.JourneyRecoveryController.onPageLoad()
+      }
+    } else {
+      mode match {
+        case NormalMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+      }
     }
-  }
 }

@@ -17,27 +17,24 @@
 package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
-import pages.transport.SealPage
-import play.api.i18n.Messages
+import models.{Index, NormalMode, UserAnswers}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import queries.AllSealsQuery
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object SealSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SealPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "seal.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.SealController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("seal.change.hidden"))
-          )
+  def rows(answers: UserAnswers): List[ListItem] =
+    answers.get(AllSealsQuery).getOrElse(Nil).zipWithIndex.map {
+      case (seal, index) =>
+        ListItem(
+          name = HtmlFormat.escape(seal).toString,
+          changeUrl = transportRoutes.SealController
+            .onPageLoad(NormalMode, answers.lrn, Index(index))
+            .url,
+          removeUrl = transportRoutes.RemoveSealController
+            .onPageLoad(NormalMode, answers.lrn)
+            .url
         )
-    }
+    }.toList
 }

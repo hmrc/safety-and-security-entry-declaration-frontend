@@ -19,24 +19,24 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class SealPageSpec extends SpecBase with PageBehaviours {
 
   "SealPage" - {
 
-    beRetrievable[String](SealPage)
+    beRetrievable[String](SealPage(Index(0)))
 
-    beSettable[String](SealPage)
+    beSettable[String](SealPage(Index(0)))
 
-    beRemovable[String](SealPage)
+    beRemovable[String](SealPage(Index(0)))
 
     "must navigate in Normal Mode" - {
 
       "to AddSealController" in {
 
-        SealPage.navigate(NormalMode, emptyUserAnswers)
+        SealPage(Index(0)).navigate(NormalMode, emptyUserAnswers)
           .mustEqual(transportRoutes.AddSealController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
@@ -45,7 +45,7 @@ class SealPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
 
-        SealPage.navigate(CheckMode, emptyUserAnswers)
+        SealPage(Index(0)).navigate(CheckMode, emptyUserAnswers)
           .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
