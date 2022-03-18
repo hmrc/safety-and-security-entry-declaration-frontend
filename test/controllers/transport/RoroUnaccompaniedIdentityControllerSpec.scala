@@ -38,8 +38,6 @@ class RoroUnaccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar
 
   private val formProvider = new RoroUnaccompaniedIdentityFormProvider()
   private val form = formProvider()
-  private val alphaNum = "foobar123"
-  private val varChar = "f%%b&r.123"
 
   private lazy val roroUnaccompaniedIdentityRoute = routes.RoroUnaccompaniedIdentityController.onPageLoad(NormalMode, lrn).url
 
