@@ -163,6 +163,14 @@ trait ModelGenerators {
       } yield Document(documentType, reference)
     }
 
+  implicit lazy val arbitraryContainer: Arbitrary[Container] =
+    Arbitrary {
+      for {
+        length <- Gen.choose(1, 17)
+        chars <- Gen.listOfN(length, Gen.alphaNumChar)
+      } yield Container(chars.mkString)
+    }
+
   implicit lazy val arbitraryGoodItem: Arbitrary[GoodItem] =
     Arbitrary {
       for {
