@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package forms.transport
+package queries
 
-import javax.inject.Inject
+import play.api.libs.json.JsPath
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case object DeriveNumberOfSeals extends Derivable[List[String], Int] {
 
-class SealFormProvider @Inject() extends Mappings {
+  override val derive: List[String] => Int = _.size
 
-  private val validAlphaNumeric = "[A-Za-z0-9]+"
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("seal.error.required")
-        .verifying(
-          maxLength(20, "seal.error.length"),
-          regexp(validAlphaNumeric, "seal.error.invalid")
-        )
-    )
+  override def path: JsPath = JsPath \ "seals"
 }

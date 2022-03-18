@@ -34,7 +34,7 @@ class MaritimeIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to AnyOverallDocumentsController" in {
 
         MaritimeIdentityPage.navigate(NormalMode, emptyUserAnswers)
           .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))

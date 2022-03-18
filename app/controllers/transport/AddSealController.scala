@@ -25,6 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.transport.SealSummary
 import views.html.transport.AddSealView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,29 +43,28 @@ class AddSealController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        val documents = SealSummary.rows(request.userAnswers)
 
-      val preparedForm = request.userAnswers.get(AddSealPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        val preparedForm = request.userAnswers.get(AddSealPage) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, mode, lrn, documents))
+    }
 
-      Ok(view(preparedForm, mode, lrn))
-  }
+  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSealPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddSealPage.navigate(mode, updatedAnswers))
-      )
-  }
+      implicit request =>
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val documents = SealSummary.rows(request.userAnswers)
+            BadRequest(view(formWithErrors, mode, lrn, documents))
+          },
+          value => Redirect(AddSealPage.navigate(mode, request.userAnswers, value))
+        )
+    }
 }

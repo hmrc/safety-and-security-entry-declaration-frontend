@@ -14,17 +14,19 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.routes
+@import controllers.transport.{SealController, routes}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, documents: List[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addSeal.title"))) {
 
@@ -34,12 +36,22 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages("addSeal.heading")).asPageHeading()
+        <h1 class="govuk-heading-xl">@messages("addSeal.heading")</h1>
+        <p class="govuk-body">@messages("addSeal.label")</p>
+
+        @addToList(documents, Long, "addSeal.change.hidden", "addSeal.remove.hidden")
+
+        @if(documents.length < SealController.MaxDocuments) {
+            @govukRadios(
+                RadiosViewModel.yesNo(
+                    field = form("value"),
+                    legend = LegendViewModel(messages("addSeal.heading2")).asPageHeading()
+                )
             )
-        )
+        } else {
+            <p class="govuk-body">@messages("addSeal.maximumReached")</p>
+            <input type="hidden" name="value" id="value" value="false"/>
+        }
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))

@@ -17,15 +17,18 @@
 package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SealPage extends QuestionPage[String] {
+case class SealPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "seals" \ index.position
 
   override def toString: String = "seal"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRoutes.AddSealController.onPageLoad(NormalMode, answers.lrn)
+  }
 }

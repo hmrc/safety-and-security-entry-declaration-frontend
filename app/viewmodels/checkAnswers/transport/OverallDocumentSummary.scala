@@ -17,15 +17,10 @@
 package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, Index, NormalMode, UserAnswers}
-import pages.transport.OverallDocumentPage
+import models.{Index, NormalMode, UserAnswers}
 import play.twirl.api.HtmlFormat
 import queries.AllOverallDocumentsQuery
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object OverallDocumentSummary {
 

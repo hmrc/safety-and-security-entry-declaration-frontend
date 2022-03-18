@@ -41,7 +41,7 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(ConsignorPage, JsValue)] ::
     arbitrary[(ConsigneeKnownPage, JsValue)] ::
     arbitrary[(ConsigneePage, JsValue)] ::
-    arbitrary[(SealPage.type, JsValue)] ::
+    arbitrary[(SealPage, JsValue)] ::
     arbitrary[(RoroUnaccompaniedIdentityPage.type, JsValue)] ::
     arbitrary[(RoroAccompaniedIdentityPage.type, JsValue)] ::
     arbitrary[(RoadIdentityPage.type, JsValue)] ::

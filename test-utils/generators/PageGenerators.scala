@@ -52,8 +52,8 @@ trait PageGenerators {
   implicit lazy val arbitraryConsigneePage: Arbitrary[ConsigneePage] =
     Arbitrary(ConsigneePage(Index(0)))
 
-  implicit lazy val arbitrarySealPage: Arbitrary[SealPage.type] =
-    Arbitrary(SealPage)
+  implicit lazy val arbitrarySealPage: Arbitrary[SealPage] =
+    Arbitrary(SealPage(Index(0)))
 
   implicit lazy val arbitraryRoroUnaccompaniedIdentityPage: Arbitrary[RoroUnaccompaniedIdentityPage.type] =
     Arbitrary(RoroUnaccompaniedIdentityPage)
