@@ -17,9 +17,9 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{RoroAccompaniedIdentity, CheckMode, NormalMode}
+import controllers.transport.{routes => transportRoutes}
+import models.{CheckMode, NormalMode, RoroAccompaniedIdentity}
 import pages.behaviours.PageBehaviours
 
 class RoroAccompaniedIdentityPageSpec extends SpecBase with PageBehaviours {
@@ -34,10 +34,10 @@ class RoroAccompaniedIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to AnyOverallDocuments" in {
 
         RoroAccompaniedIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
       }
     }
 

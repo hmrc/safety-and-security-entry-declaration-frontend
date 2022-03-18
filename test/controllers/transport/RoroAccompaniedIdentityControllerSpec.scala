@@ -19,13 +19,13 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoroAccompaniedIdentityFormProvider
-import models.{NormalMode, UserAnswers, RoroAccompaniedIdentity}
+import models.{NormalMode, RoroAccompaniedIdentity}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transport.RoroAccompaniedIdentityPage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -35,21 +35,18 @@ import scala.concurrent.Future
 
 class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new RoroAccompaniedIdentityFormProvider()
-  val form = formProvider()
+  private val formProvider = new RoroAccompaniedIdentityFormProvider()
+  private val form = formProvider()
 
-  lazy val roroAccompaniedIdentityRoute = routes.RoroAccompaniedIdentityController.onPageLoad(NormalMode, lrn).url
+  private lazy val roroAccompaniedIdentityRoute = routes.RoroAccompaniedIdentityController.onPageLoad(NormalMode, lrn).url
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    lrn,
-    Json.obj(
-      RoroAccompaniedIdentityPage.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
-      )
-    )
-  )
+  private val id = arbitrary[RoroAccompaniedIdentity].sample.value
+  private val formData: List[(String, String)] = List(
+    "vehicleRegistrationNumber" -> id.vehicleRegistrationNumber,
+    "trailerNumber" -> id.trailerNumber
+  ) ++ id.ferryCompany.map { fc => "ferryCompany" -> fc }
+
+  private val userAnswers = emptyUserAnswers.set(RoroAccompaniedIdentityPage, id).success.value
 
   "RoroAccompaniedIdentity Controller" - {
 
@@ -81,7 +78,7 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(RoroAccompaniedIdentity("value 1", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(id), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -99,10 +96,10 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, roroAccompaniedIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(formData: _*)
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RoroAccompaniedIdentityPage, RoroAccompaniedIdentity("value 1", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(RoroAccompaniedIdentityPage, id).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RoroAccompaniedIdentityPage.navigate(NormalMode, expectedAnswers).url
@@ -151,7 +148,7 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, roroAccompaniedIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(formData: _*)
 
         val result = route(application, request).value
 

@@ -24,13 +24,27 @@ import play.api.data.Forms._
 import models.RoroAccompaniedIdentity
 
 class RoroAccompaniedIdentityFormProvider @Inject() extends Mappings {
+  private val alphanumericPattern = "[A-Za-z0-9]+"
 
-   def apply(): Form[RoroAccompaniedIdentity] = Form(
-     mapping(
-      "field1" -> text("roroAccompaniedIdentity.error.field1.required")
-        .verifying(maxLength(100, "roroAccompaniedIdentity.error.field1.length")),
-      "field2" -> text("roroAccompaniedIdentity.error.field2.required")
-        .verifying(maxLength(100, "roroAccompaniedIdentity.error.field2.length"))
+  def apply(): Form[RoroAccompaniedIdentity] = Form(
+    mapping(
+      "vehicleRegistrationNumber" -> text("roroAccompaniedIdentity.error.vehicleRegistrationNumber.required")
+        .verifying(
+          firstError(
+            maxLength(13, "roroAccompaniedIdentity.error.vehicleRegistrationNumber.length"),
+            regexp(alphanumericPattern, "roroAccompaniedIdentity.error.vehicleRegistrationNumber.invalid")
+          )
+        ),
+      "trailerNumber" -> text("roroAccompaniedIdentity.error.trailerNumber.required")
+        .verifying(
+          firstError(
+            maxLength(13, "roroAccompaniedIdentity.error.trailerNumber.length"),
+            regexp(alphanumericPattern, "roroAccompaniedIdentity.error.trailerNumber.invalid")
+          )
+        ),
+      "ferryCompany" -> optional(nonEmptyText)
+        .verifying("roroAccompaniedIdentity.error.ferryCompany.length", _.forall(_.length <= 35))
+        .transform[Option[String]](v => v.filterNot { _ == "" }, identity)
     )(RoroAccompaniedIdentity.apply)(RoroAccompaniedIdentity.unapply)
-   )
- }
+  )
+}
