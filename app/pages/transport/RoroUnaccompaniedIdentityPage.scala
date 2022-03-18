@@ -28,4 +28,8 @@ case object RoroUnaccompaniedIdentityPage extends QuestionPage[RoroUnaccompanied
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "roroUnaccompaniedIdentity"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
+  }
 }

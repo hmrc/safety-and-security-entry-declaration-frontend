@@ -36,21 +36,32 @@
         }
 
         <h1 class="govuk-heading-xl">@messages("roroUnaccompaniedIdentity.heading")</h1>
+        <p class="govuk-body">@messages("roroUnaccompaniedIdentity.trailerNumber.label")</p>
 
         @govukInput(
             InputViewModel(
-                field = form("field1"),
-                label = LabelViewModel(messages("roroUnaccompaniedIdentity.field1"))
+                field = form("trailerNumber"),
+                label = LabelViewModel(messages("roroUnaccompaniedIdentity.trailerNumber"))
             )
-            .withWidth(Full)
+            .withWidth(Fixed10)
         )
 
         @govukInput(
             InputViewModel(
-                field = form("field2"),
-                label = LabelViewModel(messages("roroUnaccompaniedIdentity.field2"))
+                field = form("imo"),
+                label = LabelViewModel(messages("roroUnaccompaniedIdentity.imo"))
             )
-            .withWidth(Full)
+            .withWidth(Fixed10)
+        )
+
+        <p class="govuk-body">@messages("roroUnaccompaniedIdentity.ferryCompany.label")</p>
+
+        @govukInput(
+            InputViewModel(
+                field = form("ferryCompany"),
+                label = LabelViewModel(messages("roroUnaccompaniedIdentity.ferryCompany"))
+            )
+            .withWidth(Fixed20)
         )
 
         @govukButton(

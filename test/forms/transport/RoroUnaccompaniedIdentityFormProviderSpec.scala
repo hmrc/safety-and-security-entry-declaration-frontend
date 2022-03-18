@@ -17,18 +17,20 @@
 package forms.transport
 
 import forms.behaviours.StringFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
 
 class RoroUnaccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
 
   val form = new RoroUnaccompaniedIdentityFormProvider()()
 
-  ".field1" - {
+  ".trailerNumber" - {
 
-    val fieldName = "field1"
-    val requiredKey = "roroUnaccompaniedIdentity.error.field1.required"
-    val lengthKey = "roroUnaccompaniedIdentity.error.field1.length"
-    val maxLength = 100
+    val fieldName = "trailerNumber"
+    val requiredKey = "roroUnaccompaniedIdentity.error.trailerNumber.required"
+    val lengthKey = "roroUnaccompaniedIdentity.error.trailerNumber.length"
+    val invalidKey = "roroUnaccompaniedIdentity.error.trailerNumber.invalid"
+    val maxLength = 17
 
     behave like fieldThatBindsValidData(
       form,
@@ -48,19 +50,39 @@ class RoroUnaccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must not bind symbol characters" in {
+
+      val invalidData = for {
+        noValidChars <- Gen.choose(0, maxLength - 1)
+        validChars <- Gen.listOfN(noValidChars, Gen.alphaNumChar)
+        invalidChar <- Gen.oneOf('?', '.', ',')
+      } yield (validChars :+ invalidChar).mkString
+
+      forAll(invalidData) { invalidAnswer =>
+        val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, invalidKey, Seq("[A-Za-z0-9]+"))
+      }
+    }
   }
 
-  ".field2" - {
+  ".imo" - {
 
-    val fieldName = "field2"
-    val requiredKey = "roroUnaccompaniedIdentity.error.field2.required"
-    val lengthKey = "roroUnaccompaniedIdentity.error.field2.length"
-    val maxLength = 100
+    val fieldName = "imo"
+    val requiredKey = "roroUnaccompaniedIdentity.error.imo.required"
+    val lengthKey = "roroUnaccompaniedIdentity.error.imo.length"
+    val invalidKey = "roroUnaccompaniedIdentity.error.imo.invalid"
+    val maxLength = 8
+
+    val validBinding = for {
+      len <- Gen.choose(1, maxLength)
+      value <- Gen.listOfN(len, Gen.numChar)
+    } yield value.mkString
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      validBinding
     )
 
     behave like fieldWithMaxLength(
@@ -74,6 +96,60 @@ class RoroUnaccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    "must not bind alphabetical characters" in {
+
+      val invalidData = for {
+        noValidChars <- Gen.choose(0, maxLength - 1)
+        validChars <- Gen.listOfN(noValidChars, Gen.numChar)
+        invalidChar <- Gen.alphaChar
+      } yield (validChars :+ invalidChar).mkString
+
+      forAll(invalidData) { invalidAnswer =>
+        val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, invalidKey, Seq("[0-9]+"))
+      }
+    }
+
+    "must not bind symbol characters" in {
+
+      val invalidData = for {
+        noValidChars <- Gen.choose(0, maxLength - 1)
+        validChars <- Gen.listOfN(noValidChars, Gen.numChar)
+        invalidChar <- Gen.oneOf('?', '.', ',')
+      } yield (validChars :+ invalidChar).mkString
+
+      forAll(invalidData) { invalidAnswer =>
+        val result = form.bind(Map(fieldName -> invalidAnswer)).apply(fieldName)
+        result.errors must contain only FormError(fieldName, invalidKey, Seq("[0-9]+"))
+      }
+    }
+  }
+
+  ".ferryCompany" - {
+
+    val fieldName = "ferryCompany"
+    val requiredKey = "roroUnaccompaniedIdentity.error.ferryCompany.required"
+    val lengthKey = "roroUnaccompaniedIdentity.error.ferryCompany.length"
+    val maxLength = 35
+
+    val validBinding = for {
+      len <- Gen.choose(1, maxLength)
+      value <- Gen.listOfN(len, Gen.numChar)
+    } yield value.mkString
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      validBinding
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Nil)
     )
   }
 }
