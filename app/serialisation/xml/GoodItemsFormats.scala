@@ -18,16 +18,13 @@ package serialisation.xml
 
 import models.Container
 import scala.xml.NodeSeq
-import serialisation.xml.XmlImplicits._
 
 trait GoodItemsFormats extends CommonFormats {
 
   implicit val containerFmt = new Format[Container] {
     override def encode(container: Container): NodeSeq = {
-      <CONNR2><ConNumNR21>{container.itemContainerNumber}</ConNumNR21></CONNR2>
+      <ConNumNR21>{container.itemContainerNumber}</ConNumNR21>
     }
     override def decode(data: NodeSeq): Container = Container(data.text)
   }
 }
-
-
