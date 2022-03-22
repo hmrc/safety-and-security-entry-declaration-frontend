@@ -21,9 +21,10 @@ import controllers.consignors.{routes => consignorRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.transport.{routes => transportRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import queries.consignors.DeriveNumberOfConsignors
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 final case class TaskListViewModel(rows: Seq[TaskListRow])(implicit messages: Messages)
@@ -65,13 +66,19 @@ object TaskListViewModel {
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
 
-  private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+  private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
+    val consignorUrl = answers.get(DeriveNumberOfConsignors) match {
+      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn)
+      case _ => consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+    }
+
     TaskListRow(
       messageKey          = messages("taskList.consignors"),
-      link                = consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn),
+      link                = consignorUrl,
       id                  = "consignors",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
+  }
 
   private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
