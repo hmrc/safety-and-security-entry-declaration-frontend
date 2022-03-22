@@ -21,7 +21,7 @@ import models.Container
 
 class GoodItemsFormatsSpec extends SpecBase with GoodItemsFormats with XmlImplicits {
 
-  "The good items format" - {
+  "The container format" - {
     "should parse one container" in {
       val container = Container("0103")
       container.toXml.parseXml[Container] must be(container)
