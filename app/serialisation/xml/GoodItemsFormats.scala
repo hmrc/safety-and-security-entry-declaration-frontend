@@ -17,9 +17,8 @@
 package serialisation.xml
 
 import models.{Container, Document, DocumentType}
-import serialisation.xml.XmlImplicits._
-
 import scala.xml.NodeSeq
+import serialisation.xml.XmlImplicits._
 
 trait GoodItemsFormats extends CommonFormats {
 
