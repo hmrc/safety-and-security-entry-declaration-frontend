@@ -18,12 +18,14 @@ package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.consignors.{routes => consignorRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.transport.{routes => transportRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import queries.DeriveNumberOfGoods
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 import queries.consignors.DeriveNumberOfConsignors
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
@@ -39,7 +41,8 @@ object TaskListViewModel {
         transportRow(answers),
         routeDetailsRow(answers),
         consignorsRow(answers),
-        consigneesRow(answers)
+        consigneesRow(answers),
+        goodsRow(answers)
       )
     )
 
@@ -94,6 +97,20 @@ object TaskListViewModel {
       messageKey          = messages("taskList.consignees"),
       link                = url,
       id                  = "consignees",
+      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+    )
+  }
+
+  private def goodsRow(answers: UserAnswers)(implicit messages: Messages) : TaskListRow = {
+    val url = answers.get(DeriveNumberOfGoods()) match {
+      case Some(size) if size > 0 => goodsRoutes.AddGoodsController.onPageLoad(NormalMode, answers.lrn)
+      case _ => goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(0))
+    }
+
+    TaskListRow(
+      messageKey = messages("taskList.goods"),
+      link = url,
+      id = "goods-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
   }

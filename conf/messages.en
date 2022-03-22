@@ -187,6 +187,7 @@ checkRouteDetails.heading = Check route details
 taskList.title = ENS declaration: {0}
 taskList.heading = ENS declaration: {0}
 taskList.predec = Pre-declaration
+taskList.goods = Goods
 taskList.transport = Transport details
 taskList.routeDetails = Route details
 taskList.carrier = Carrier details
