@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.completion.downstream._
+import models.completion.downstream.{Header, TransportDetails}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
