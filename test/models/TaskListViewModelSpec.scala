@@ -19,12 +19,14 @@ package models
 import base.SpecBase
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.consignees.{routes => consigneeRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import pages.consignors.ConsignorEORIPage
+import pages.goods.CommodityCodeKnownPage
 import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 import queries.consignors.ConsignorKeyQuery
 import viewmodels.TaskListViewModel
@@ -40,6 +42,7 @@ class TaskListViewModelSpec
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
     val consignorsIdx = 3
     val consigneesIdx = 4
+    val goodsIdx = 5
 
     "For the consignors section" - {
       "When we already have some" - {
@@ -97,6 +100,27 @@ class TaskListViewModelSpec
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
           result.rows(consigneesIdx).link mustEqual consigneeRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode,emptyUserAnswers.lrn)
+        }
+      }
+    }
+
+    "For the goods section" - {
+      "When we already have some" - {
+        "we go to the goods listing page" in {
+          val answers =
+            emptyUserAnswers
+              .set(CommodityCodeKnownPage(Index(0)), true).success.value
+
+          val result = TaskListViewModel.fromAnswers(answers)(messages(application))
+
+          result.rows(goodsIdx).link mustEqual goodsRoutes.AddGoodsController.onPageLoad(NormalMode,answers.lrn)
+        }
+      }
+      "When have don't have any" - {
+        "we go to the first good input" in {
+          val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
+
+          result.rows(goodsIdx).link mustEqual goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode,emptyUserAnswers.lrn,Index(0))
         }
       }
     }
