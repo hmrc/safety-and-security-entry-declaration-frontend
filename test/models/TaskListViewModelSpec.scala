@@ -18,12 +18,14 @@ package models
 
 import base.SpecBase
 import controllers.consignors.{routes => consignorRoutes}
-
+import controllers.consignees.{routes => consigneeRoutes}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import pages.consignors.ConsignorEORIPage
+import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 import queries.consignors.ConsignorKeyQuery
 import viewmodels.TaskListViewModel
 
@@ -36,6 +38,9 @@ class TaskListViewModelSpec
 
   "On the task list" - {
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+    val consignorsIdx = 3
+    val consigneesIdx = 4
+
     "For the consignors section" - {
       "When we already have some" - {
         "we go to the consignors listing page" in {
@@ -46,14 +51,52 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(3).link mustEqual consignorRoutes.AddConsignorController.onPageLoad(NormalMode,answers.lrn)
+          result.rows(consignorsIdx).link mustEqual consignorRoutes.AddConsignorController.onPageLoad(NormalMode,answers.lrn)
         }
       }
       "When have don't have any" - {
         "we go to the first consignor input" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(3).link mustEqual consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode,emptyUserAnswers.lrn,Index(0))
+          result.rows(consignorsIdx).link mustEqual consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode,emptyUserAnswers.lrn,Index(0))
+        }
+      }
+    }
+
+    "For the consignees and notified parties section" - {
+      "When we already have some consignees" - {
+        "we go to the consignees and notified parties check page" in {
+          val answers =
+            emptyUserAnswers
+              .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+              .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+
+          val result = TaskListViewModel.fromAnswers(answers)(messages(application))
+
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+        }
+      }
+
+      "When we already have some notified parties and no consignees" - {
+        "we go to the consignees and notified parties check page" in {
+          val answers =
+            emptyUserAnswers
+              .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+              .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
+
+
+          val result = TaskListViewModel.fromAnswers(answers)(messages(application))
+
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+        }
+      }
+
+      "When we don't have any" - {
+        "we go to the beginning of the journey for consignees and notified parties" in {
+          val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
+
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode,emptyUserAnswers.lrn)
         }
       }
     }
