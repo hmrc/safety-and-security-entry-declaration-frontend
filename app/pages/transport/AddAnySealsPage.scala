@@ -33,6 +33,6 @@ case object AddAnySealsPage extends QuestionPage[Boolean] {
     answers.get(AddAnySealsPage) match {
       case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, Index(0))
       case Some(false) => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
-      case None => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
+      case None => routes.JourneyRecoveryController.onPageLoad()
     }
 }
