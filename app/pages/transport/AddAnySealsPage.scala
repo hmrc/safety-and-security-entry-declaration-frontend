@@ -32,7 +32,7 @@ case object AddAnySealsPage extends QuestionPage[Boolean] {
   override def navigateInNormalMode(answers: UserAnswers): Call =
     answers.get(AddAnySealsPage) match {
       case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      case None => routes.JourneyRecoveryController.onPageLoad()
+      case Some(false) => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
+      case None => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
     }
 }

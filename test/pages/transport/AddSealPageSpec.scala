@@ -48,7 +48,7 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
 
         AddSealPage
           .navigate(NormalMode, answers, addAnother = false)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
       }
 
       "to Seal with (index + 1) if yes is selected" in {

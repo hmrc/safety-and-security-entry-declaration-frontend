@@ -38,8 +38,8 @@ case object AddSealPage extends QuestionPage[Boolean] {
       }
     } else {
       mode match {
-        case NormalMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+        case NormalMode => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
+        case CheckMode => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
       }
     }
 }
