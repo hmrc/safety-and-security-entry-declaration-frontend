@@ -47,7 +47,7 @@ object SealSummary  {
   def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllSealsQuery).map {
       seals =>
-        val value = seals.map(c=>c).mkString("<br>")
+        val value = seals.mkString("<br>")
 
         SummaryListRowViewModel(
           key = "addAnySeals.checkYourAnswersLabel",
