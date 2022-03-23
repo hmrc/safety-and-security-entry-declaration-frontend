@@ -17,11 +17,13 @@
 package base
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
+import java.time.temporal.ChronoUnit
 
 import cats.scalatest.ValidatedValues
 import controllers.actions._
 import generators.Generators
 import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -52,6 +54,11 @@ trait SpecBase
     arbitraryDate.atStartOfDay(ZoneId.systemDefault).toInstant
   protected val stubClockAtArbitraryDate: Clock =
     Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
+
+  // For fields which write minute-precision datetimes
+  protected val minutePrecisionInstants = arbitrary[Instant](arbitraryRecentInstant) map {
+    _.truncatedTo(ChronoUnit.MINUTES)
+  }
 
   protected def emptyUserAnswers: UserAnswers =
     UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)

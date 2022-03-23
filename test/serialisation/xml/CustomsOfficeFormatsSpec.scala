@@ -16,9 +16,6 @@
 
 package serialisation.xml
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,16 +28,11 @@ class CustomsOfficeFormatsSpec
   with ScalaCheckPropertyChecks
   with XmlImplicits {
 
-  // The customs office writes datetime with minute precision
-  private val instantGen = arbitrary[Instant](arbitraryRecentInstant) map {
-    _.truncatedTo(ChronoUnit.MINUTES)
-  }
-
   "The customs office format" - {
     "should work symmetrically" in {
       val sampleData = for {
         office <- arbitrary[JourneyCustomsOffice]
-        datetime <- instantGen
+        datetime <- minutePrecisionInstants
       } yield CustomsOffice(office.code, datetime)
 
       forAll(sampleData) { c =>
