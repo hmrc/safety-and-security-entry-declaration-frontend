@@ -17,14 +17,50 @@
 package serialisation.xml
 
 import base.SpecBase
-import models.Container
+import models.{Container, Document, DocumentType}
+import org.scalacheck.Arbitrary
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class GoodItemsFormatsSpec extends SpecBase with GoodItemsFormats with XmlImplicits {
+class GoodItemsFormatsSpec extends SpecBase
+  with GoodItemsFormats
+  with XmlImplicits
+  with ScalaCheckPropertyChecks {
+
+  override implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] = {
+    Arbitrary {
+      Gen.oneOf(DocumentType.allDocumentTypes)
+    }
+  }
+
+  private val document: Gen[Document] = {
+    for {
+      docType <- arbitrary[DocumentType]
+      ref <- Gen.alphaNumStr
+    } yield Document(docType, ref)
+  }
 
   "The container format" - {
     "should parse one container" in {
       val container = Container("0103")
       container.toXml.parseXml[Container] must be(container)
+    }
+  }
+
+  "The DocumentType Format" - {
+    "should parse one documentType" in {
+      forAll(arbitrary[DocumentType]) { c =>
+        c.toXmlString.parseXmlString[DocumentType] must be(c)
+      }
+    }
+  }
+
+  "The Document Format" - {
+    "should parse one doucment" in {
+      forAll(arbitrary[Document]) { c =>
+        c.toXml.parseXml[Document] must be(c)
+      }
     }
   }
 }

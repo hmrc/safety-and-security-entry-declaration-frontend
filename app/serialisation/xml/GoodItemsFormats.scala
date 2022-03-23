@@ -16,8 +16,9 @@
 
 package serialisation.xml
 
-import models.Container
+import models.{Container, Document, DocumentType}
 import scala.xml.NodeSeq
+import serialisation.xml.XmlImplicits._
 
 trait GoodItemsFormats extends CommonFormats {
 
@@ -26,5 +27,27 @@ trait GoodItemsFormats extends CommonFormats {
       <ConNumNR21>{container.itemContainerNumber}</ConNumNR21>
     }
     override def decode(data: NodeSeq): Container = Container(data.text)
+  }
+
+  implicit val documentTypeFormat = new StringFormat[DocumentType] {
+    override def encode(docType: DocumentType): String = docType.code
+    override def decode(s: String): DocumentType = {
+      DocumentType.allDocumentTypes.find { _.code == s}.getOrElse{
+        throw new XmlDecodingException(s"Bad Document code: $s")
+      }
+    }
+  }
+
+  implicit val documentFormat = new Format[Document] {
+    override def encode(doc: Document): NodeSeq = {
+      <DocTypDC21>{doc.documentType.toXmlString}</DocTypDC21>
+      <DocRefDC23>{doc.reference}</DocRefDC23>
+    }
+    override def decode(data: NodeSeq): Document = {
+      Document(
+        documentType = (data \\ "DocTypDC21").text.parseXmlString[DocumentType],
+        reference = (data \\ "DocRefDC23").text
+      )
+    }
   }
 }
