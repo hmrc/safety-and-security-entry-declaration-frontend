@@ -78,7 +78,7 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
 
       "to Check Your Answers" in {
         AddSealPage.navigate(CheckMode, emptyUserAnswers, false)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }
