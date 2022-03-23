@@ -542,6 +542,9 @@ checkConsigneesAndNotifiedParties.heading = Check your answers
 checkPredec.title = Check your answers
 checkPredec.heading = Check your answers
 
+checkTransport.title = Check your answers
+checkTransport.heading = Check your answers
+
 addPlaceOfLoading.title = Places of loading
 addPlaceOfLoading.heading = Places of loading
 addPlaceOfLoading.addAnother = Do you want to add another place of loading?

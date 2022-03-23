@@ -427,6 +427,8 @@ POST       /:lrn/seal/:index                        controllers.transport.SealCo
 GET        /:lrn/changeSeal/:index                  controllers.transport.SealController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeSeal/:index                  controllers.transport.SealController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
+GET        /:lrn/checkTransport                              controllers.transport.CheckTransportController.onPageLoad(lrn: LocalReferenceNumber)
+
 GET        /:lrn/consignee/:index                        controllers.goods.ConsigneeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/consignee/:index                        controllers.goods.ConsigneeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeConsignee/:index                  controllers.goods.ConsigneeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
