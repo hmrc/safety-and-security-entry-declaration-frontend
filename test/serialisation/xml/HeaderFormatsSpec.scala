@@ -16,9 +16,6 @@
 
 package serialisation.xml
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -33,11 +30,6 @@ class HeaderFormatsSpec
   with HeaderFormats
   with XmlImplicits {
 
-  // The header writes datetime with minute precision
-  private val instantGen = arbitrary[Instant](arbitraryRecentInstant) map {
-    _.truncatedTo(ChronoUnit.MINUTES)
-  }
-
   private val headerGen: Gen[Header] = {
     for {
       lrn <- arbitrary[LocalReferenceNumber]
@@ -47,7 +39,7 @@ class HeaderFormatsSpec
       grossMass <- Gen.option(Gen.choose(BigDecimal(0.001), BigDecimal(99999999.999)))
       declarationPlace <- Gen.alphaNumStr
       conveyanceReferenceNumber <- Gen.alphaNumStr
-      datetime <- instantGen
+      datetime <- minutePrecisionInstants
     } yield {
       Header(
         lrn,
