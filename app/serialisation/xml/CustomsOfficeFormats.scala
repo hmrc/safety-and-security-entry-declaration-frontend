@@ -31,7 +31,6 @@ trait CustomsOfficeFormats extends CommonFormats with TimeFormats {
       <ExpDatOfArrFIRENT733>{customsOff.datetimeArrival.toXmlString}</ExpDatOfArrFIRENT733>
     }
 
-
     override def decode(data: NodeSeq): CustomsOffice = CustomsOffice(
       code = (data \\ "RefNumCUSOFFFENT731").text,
       datetimeArrival = (data \\ "ExpDatOfArrFIRENT733").text.parseXmlString[Instant]
