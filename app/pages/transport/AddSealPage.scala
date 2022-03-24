@@ -37,9 +37,6 @@ case object AddSealPage extends QuestionPage[Boolean] {
         case None => routes.JourneyRecoveryController.onPageLoad()
       }
     } else {
-      mode match {
-        case NormalMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
+      transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
     }
 }

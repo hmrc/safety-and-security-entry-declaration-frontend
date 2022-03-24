@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.completion.downstream.{Header, TransportDetails}
+import models.completion.downstream.{Header, MessageSender, MessageType, TransportDetails}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -284,5 +284,16 @@ trait ModelGenerators {
         datetime
       )
     }
+  }
+
+  implicit lazy val arbitraryMessageSender: Arbitrary[MessageSender] = Arbitrary {
+    for {
+      eori <- Gen.numStr map { _.take(15) }
+      vatNumber <- Gen.numStr map { _.take(7) }
+    } yield MessageSender("GB" + eori, s"GB${vatNumber}000")
+  }
+
+  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] = Arbitrary {
+    Gen.oneOf(MessageType.Submission, MessageType.Amendment)
   }
 }

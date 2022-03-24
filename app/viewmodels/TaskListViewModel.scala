@@ -18,11 +18,16 @@ package viewmodels
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.consignors.{routes => consignorRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
+import controllers.transport.{routes => transportRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import queries.DeriveNumberOfGoods
+import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
+import queries.consignors.DeriveNumberOfConsignors
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 final case class TaskListViewModel(rows: Seq[TaskListRow])(implicit messages: Messages)
@@ -33,9 +38,11 @@ object TaskListViewModel {
     TaskListViewModel(
       Seq(
         predecRow(answers),
+        transportRow(answers),
         routeDetailsRow(answers),
         consignorsRow(answers),
-        consigneesRow(answers)
+        consigneesRow(answers),
+        goodsRow(answers)
       )
     )
 
@@ -47,6 +54,14 @@ object TaskListViewModel {
       completionStatusTag = CompletionStatus.tag(CompletionStatus.Completed)
     )
 
+  private def transportRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+    TaskListRow(
+      messageKey = messages("taskList.transport"),
+      link = transportRoutes.TransportModeController.onPageLoad(NormalMode, answers.lrn),
+      id = "transport-details",
+      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+    )
+
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey = messages("taskList.routeDetails"),
@@ -55,21 +70,50 @@ object TaskListViewModel {
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
 
-  private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+  private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
+    val url = answers.get(DeriveNumberOfConsignors) match {
+      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn)
+      case _ => consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+    }
+
     TaskListRow(
       messageKey          = messages("taskList.consignors"),
-      link                = consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn),
+      link                = url,
       id                  = "consignors",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
+  }
 
-  private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+  private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
+    val url = answers.get(DeriveNumberOfConsignees) match {
+      case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+      case _ => answers.get(DeriveNumberOfNotifiedParties) match {
+          case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+          case _ => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode,answers.lrn)
+        }
+    }
+
     TaskListRow(
       messageKey          = messages("taskList.consignees"),
-      link                = consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, answers.lrn),
+      link                = url,
       id                  = "consignees",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
+  }
+
+  private def goodsRow(answers: UserAnswers)(implicit messages: Messages) : TaskListRow = {
+    val url = answers.get(DeriveNumberOfGoods()) match {
+      case Some(size) if size > 0 => goodsRoutes.AddGoodsController.onPageLoad(NormalMode, answers.lrn)
+      case _ => goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(0))
+    }
+
+    TaskListRow(
+      messageKey = messages("taskList.goods"),
+      link = url,
+      id = "goods-details",
+      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+    )
+  }
 }
 
 final case class TaskListRow(messageKey: String, link: Call, id: String, completionStatusTag: Tag)(

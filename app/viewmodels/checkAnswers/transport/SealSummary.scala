@@ -18,9 +18,15 @@ package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
 import models.{Index, NormalMode, UserAnswers}
+import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.AllSealsQuery
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
+
 
 object SealSummary  {
 
@@ -36,5 +42,22 @@ object SealSummary  {
             .onPageLoad(NormalMode, answers.lrn)
             .url
         )
-    }.toList
+    }
+
+  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AllSealsQuery).map {
+      seals =>
+        val value = seals.mkString("<br>")
+
+        SummaryListRowViewModel(
+          key = "addAnySeals.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              transportRoutes.AddSealController.onPageLoad(NormalMode, answers.lrn).url
+            ).withVisuallyHiddenText(messages("addAnySeals.change.hidden"))
+          )
+        )
+    }
 }
