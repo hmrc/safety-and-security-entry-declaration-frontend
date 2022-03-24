@@ -16,8 +16,6 @@
 
 package serialisation.xml
 
-
-
 import base.SpecBase
 import models.completion.downstream.Packages
 import models.KindOfPackage
@@ -42,6 +40,15 @@ class PackagesFormatsSpec
 
       forAll(packagesGen) { p =>
         p.toXml.parseXml[Packages] must be(p)
+      }
+    }
+  }
+
+  "The kind of package Format" - {
+    "should serialise symmetrically" in {
+      val packages = Gen.oneOf(KindOfPackage.standardKindsOfPackages)
+      forAll(packages) { p =>
+        p.toXmlString.parseXmlString[KindOfPackage] must be(p)
       }
     }
   }

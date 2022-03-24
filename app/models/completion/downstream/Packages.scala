@@ -23,10 +23,10 @@ import models.KindOfPackage
  * Represents the packages fields in the XML payload, i.e. the "Packages" section in GoodItems
  */
 case class Packages(
-   kindPackage: KindOfPackage,
-   numPackages: Option[Int],
-   numPieces: Option[Int],
-   itemMark: String
+  kindPackage: KindOfPackage,
+  numPackages: Option[Int],
+  numPieces: Option[Int],
+  itemMark: String
 )
 
 object Packages {
