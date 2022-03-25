@@ -27,7 +27,7 @@ trait PackagesFormats extends CommonFormats {
   implicit val packageKindFormat = new StringFormat[KindOfPackage] {
     override def encode(packageKind: KindOfPackage): String = packageKind.code
     override def decode(s: String): KindOfPackage = {
-      KindOfPackage.standardKindsOfPackages.find { _.code == s }.getOrElse {
+      KindOfPackage.allKindsOfPackage.find { _.code == s }.getOrElse {
         throw new XmlDecodingException(s"Bad Package code: $s")
       }
     }
