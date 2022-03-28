@@ -80,9 +80,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryRoadIdentity: Arbitrary[RoadIdentity] =
     Arbitrary {
       for {
-        field1 <- arbitrary[String]
-        field2 <- arbitrary[String]
-      } yield RoadIdentity(field1, field2)
+        vehicleReg <- Gen.listOfN(12, Gen.alphaNumChar)
+        trailer <- Gen.listOfN(12, Gen.alphaNumChar)
+        ferry <- Gen.option(Gen.listOfN(12, Gen.alphaNumChar) map { _.mkString })
+      } yield RoadIdentity(vehicleReg.mkString, trailer.mkString, ferry)
     }
 
   implicit lazy val arbitraryRailIdentity: Arbitrary[RailIdentity] =

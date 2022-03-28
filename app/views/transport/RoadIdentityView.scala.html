@@ -37,18 +37,30 @@
 
         <h1 class="govuk-heading-xl">@messages("roadIdentity.heading")</h1>
 
+        <p class="govuk-body">@messages("roadIdentity.label")</p>
+
         @govukInput(
             InputViewModel(
-                field = form("field1"),
-                label = LabelViewModel(messages("roadIdentity.field1"))
+                field = form("vehicleRegistrationNumber"),
+                label = LabelViewModel(messages("roadIdentity.vehicleRegistrationNumber"))
             )
-            .withWidth(Full)
+            .withWidth(Fixed20)
         )
 
         @govukInput(
             InputViewModel(
-                field = form("field2"),
-                label = LabelViewModel(messages("roadIdentity.field2"))
+                field = form("trailerNumber"),
+                label = LabelViewModel(messages("roadIdentity.trailerNumber"))
+            )
+            .withWidth(Fixed20)
+        )
+
+        <p class="govuk-body">@messages("roadIdentity.ferryCompany.label")</p>
+
+        @govukInput(
+            InputViewModel(
+                field = form("ferryCompany"),
+                label = LabelViewModel(messages("roadIdentity.ferryCompany"))
             )
             .withWidth(Full)
         )

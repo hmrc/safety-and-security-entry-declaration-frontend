@@ -17,7 +17,6 @@
 package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
-import controllers.routes
 import models.{RoadIdentity, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -28,4 +27,8 @@ case object RoadIdentityPage extends QuestionPage[RoadIdentity] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "roadIdentity"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
+  }
 }

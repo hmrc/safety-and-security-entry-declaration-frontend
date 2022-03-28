@@ -32,7 +32,10 @@ object RoadIdentitySummary {
     answers.get(RoadIdentityPage).map {
       answer =>
 
-      val value = HtmlFormat.escape(answer.field1).toString + "<br/>" + HtmlFormat.escape(answer.field2).toString
+        val value = {
+          HtmlFormat.escape(answer.vehicleRegistrationNumber).toString + "<br/>" +
+            HtmlFormat.escape(answer.trailerNumber).toString
+        }
 
         SummaryListRowViewModel(
           key     = "roadIdentity.checkYourAnswersLabel",

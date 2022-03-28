@@ -19,13 +19,13 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoadIdentityFormProvider
-import models.{NormalMode, UserAnswers, RoadIdentity}
+import models.{NormalMode, RoadIdentity}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transport.RoadIdentityPage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -35,21 +35,18 @@ import scala.concurrent.Future
 
 class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new RoadIdentityFormProvider()
-  val form = formProvider()
+  private val formProvider = new RoadIdentityFormProvider()
+  private val form = formProvider()
 
-  lazy val roadIdentityRoute = routes.RoadIdentityController.onPageLoad(NormalMode, lrn).url
+  private lazy val roadIdentityRoute = routes.RoadIdentityController.onPageLoad(NormalMode, lrn).url
 
-  val userAnswers = UserAnswers(
-    userAnswersId,
-    lrn,
-    Json.obj(
-      RoadIdentityPage.toString -> Json.obj(
-        "field1" -> "value 1",
-        "field2" -> "value 2"
-      )
-    )
-  )
+  private val id = arbitrary[RoadIdentity].sample.value
+  private val formData: List[(String, String)] = List(
+    "vehicleRegistrationNumber" -> id.vehicleRegistrationNumber,
+    "trailerNumber" -> id.trailerNumber
+  ) ++ id.ferryCompany.map { fc => "ferryCompany" -> fc }
+
+  private val userAnswers = emptyUserAnswers.set(RoadIdentityPage, id).success.value
 
   "RoadIdentity Controller" - {
 
@@ -81,7 +78,7 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(RoadIdentity("value 1", "value 2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(id), NormalMode, lrn)(request, messages(application)).toString
       }
     }
 
@@ -99,10 +96,10 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, roadIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(formData: _*)
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RoadIdentityPage, RoadIdentity("value 1", "value 2")).success.value
+        val expectedAnswers = emptyUserAnswers.set(RoadIdentityPage, id).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RoadIdentityPage.navigate(NormalMode, expectedAnswers).url
@@ -151,7 +148,7 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, roadIdentityRoute)
-            .withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
+            .withFormUrlEncodedBody(formData: _*)
 
         val result = route(application, request).value
 
