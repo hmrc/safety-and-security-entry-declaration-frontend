@@ -17,7 +17,7 @@
 package serialisation.xml
 
 import base.SpecBase
-import models.completion.downstream.Packages
+import models.completion.downstream.Package
 import models.KindOfPackage
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -29,26 +29,27 @@ class PackagesFormatsSpec
   with ScalaCheckPropertyChecks
   with XmlImplicits {
 
-  "The packages format" - {
+  "The package format" - {
     "should serialise symmetrically" in {
       val packagesGen = for {
         kindPackage <- arbitrary[KindOfPackage]
         numPackages <- Gen.option(Gen.choose(0, 99999))
         numPieces <- Gen.option(Gen.choose(0, 99999))
-        itemMark <- Gen.alphaStr.map { _.take(2) }
-      } yield Packages(kindPackage, numPackages, numPieces, itemMark)
+        mark <- Gen.option(Gen.alphaStr.map { _.take(2) })
+      } yield Package(kindPackage, numPackages, numPieces, mark)
 
       forAll(packagesGen) { p =>
-        p.toXml.parseXml[Packages] must be(p)
+        p.toXml.parseXml[Package] must be(p)
       }
     }
   }
 
   "The kind of package Format" - {
     "should serialise symmetrically" in {
-      val packages = Gen.oneOf(KindOfPackage.standardKindsOfPackages)
-      forAll(packages) { p =>
-        p.toXmlString.parseXmlString[KindOfPackage] must be(p)
+      val kinds = Gen.oneOf(KindOfPackage.standardKindsOfPackages)
+
+      forAll(kinds) { k =>
+        k.toXmlString.parseXmlString[KindOfPackage] must be(k)
       }
     }
   }

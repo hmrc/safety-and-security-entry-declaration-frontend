@@ -16,19 +16,12 @@
 
 package models.completion.downstream
 
-import play.api.libs.json._
-
-import models.KindOfPackage
 /**
- * Represents the packages fields in the XML payload, i.e. the "Packages" section in GoodItems
+ * A 5-digit "special mention" code needed to indicate specific scenarios in the declaration
+ *
+ * e.g. when a notified party is provided for a goods item, we use code 10600
+ *
+ * TODO: When we have a code list this model may change to be more in line with similar enums
+ * like Country or PaymentMethod.
  */
-case class Packages(
-  kindPackage: KindOfPackage,
-  numPackages: Option[Int],
-  numPieces: Option[Int],
-  itemMark: String
-)
-
-object Packages {
-  implicit val format: OFormat[Packages] = Json.format[Packages]
-}
+case class SpecialMention(code: String)
