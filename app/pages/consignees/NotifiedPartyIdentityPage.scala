@@ -24,6 +24,8 @@ import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case class NotifiedPartyIdentityPage(index: Index) extends DataPage[NotifiedPartyIdentity] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
@@ -51,4 +53,17 @@ case class NotifiedPartyIdentityPage(index: Index) extends DataPage[NotifiedPart
           .map(_ => CheckNotifiedPartyPage(index))
           .getOrElse(NotifiedPartyNamePage(index))
     }.orRecover
+
+
+  override def cleanup(value: Option[NotifiedPartyIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value.map {
+      case GBEORI =>
+        userAnswers
+          .remove(NotifiedPartyNamePage(index))
+          .flatMap(_.remove(NotifiedPartyAddressPage(index)))
+
+      case NameAddress =>
+        userAnswers.remove(NotifiedPartyEORIPage(index))
+    }.getOrElse(super.cleanup(value, userAnswers))
+  }
 }

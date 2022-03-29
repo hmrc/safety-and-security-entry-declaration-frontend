@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.GbEori
+import models.{Address, Country, GbEori, NotifiedPartyIdentity}
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
@@ -130,6 +130,34 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
           }
         }
       }
+    }
+
+    "must remove Notified Party EORI when the answer is Name and Address" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.NameAddress).success.value
+          .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+
+      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NotifiedPartyIdentity.NameAddress), answers).success.value
+
+      result mustEqual answers.remove(NotifiedPartyEORIPage(index)).success.value
+    }
+
+    "must remove Notified Party Name and Notified Party Address when the answer is EORI" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyNamePage(index), "name").success.value
+          .set(NotifiedPartyAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom"))).success.value
+
+      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NotifiedPartyIdentity.GBEORI), answers).success.value
+
+      result.mustEqual(
+        answers
+          .remove(NotifiedPartyNamePage(index)).success.value
+          .remove(NotifiedPartyAddressPage(index)).success.value)
     }
   }
 }

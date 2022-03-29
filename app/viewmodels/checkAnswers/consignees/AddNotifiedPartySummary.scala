@@ -18,7 +18,8 @@ package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
-import pages.Breadcrumbs
+import pages.consignees.AddAnyNotifiedPartiesPage
+import pages.{Breadcrumbs, CheckAnswersPage}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllNotifiedPartiesQuery
@@ -45,7 +46,8 @@ object AddNotifiedPartySummary  {
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllNotifiedPartiesQuery).map {
       notifiedParties =>
 
@@ -60,7 +62,7 @@ object AddNotifiedPartySummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn).url
+              AddAnyNotifiedPartiesPage.route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
             ).withVisuallyHiddenText(messages("notifiedParties.change.hidden"))
           )
         )

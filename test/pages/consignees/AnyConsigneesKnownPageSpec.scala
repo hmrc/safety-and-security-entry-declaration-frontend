@@ -21,7 +21,7 @@ import controllers.consignees.routes
 import models.{ConsigneeIdentity, GbEori, Index, NotifiedPartyIdentity}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
-import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
+import queries.consignees.{AllConsigneesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
 class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
@@ -113,6 +113,34 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           }
         }
       }
+    }
+
+    "must not alter the user's answers when the answer is yes" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(AnyConsigneesKnownPage, true).success.value
+          .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+          .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+      val result = AnyConsigneesKnownPage.cleanup(Some(true), answers).success.value
+
+      result mustEqual answers
+    }
+
+    "must remove any consignees when the answer is no" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(AnyConsigneesKnownPage, false).success.value
+          .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+          .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+      val result = AnyConsigneesKnownPage.cleanup(Some(false), answers).success.value
+
+      result mustEqual answers.remove(AllConsigneesQuery).success.value
     }
   }
 }

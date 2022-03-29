@@ -55,7 +55,6 @@ class CheckNotifiedPartyController @Inject() (
       Ok(view(breadcrumbs, list, lrn, index))
     }
 
-
   def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>

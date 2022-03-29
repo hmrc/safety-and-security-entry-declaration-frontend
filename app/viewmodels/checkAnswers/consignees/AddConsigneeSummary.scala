@@ -18,7 +18,8 @@ package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
-import pages.Breadcrumbs
+import pages.consignees.AddConsigneePage
+import pages.{Breadcrumbs, CheckAnswersPage}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllConsigneesQuery
@@ -45,7 +46,8 @@ object AddConsigneeSummary  {
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllConsigneesQuery).map {
       consignees =>
 
@@ -60,7 +62,7 @@ object AddConsigneeSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, answers.lrn).url
+              AddConsigneePage.route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
             ).withVisuallyHiddenText(messages("consignees.change.hidden"))
           )
         )

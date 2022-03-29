@@ -17,12 +17,13 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{ConsigneeIdentity, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import models.{ConsigneeIdentity, Index, LocalReferenceNumber, UserAnswers}
 import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class ConsigneeIdentityPage(index: Index) extends DataPage[ConsigneeIdentity] {
 
@@ -51,4 +52,16 @@ case class ConsigneeIdentityPage(index: Index) extends DataPage[ConsigneeIdentit
         .map (_ => CheckConsigneePage(index))
         .getOrElse(ConsigneeNamePage(index))
     }.orRecover
+
+  override def cleanup(value: Option[ConsigneeIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value.map {
+      case GBEORI =>
+        userAnswers
+          .remove(ConsigneeNamePage(index))
+          .flatMap(_.remove(ConsigneeAddressPage(index)))
+
+      case NameAddress =>
+        userAnswers.remove(ConsigneeEORIPage(index))
+    }.getOrElse(super.cleanup(value, userAnswers))
+  }
 }

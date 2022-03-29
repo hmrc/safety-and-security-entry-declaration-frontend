@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{ConsigneeIdentity, GbEori}
+import models.{Address, ConsigneeIdentity, Country, GbEori}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -128,6 +128,34 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
           }
         }
       }
+    }
+
+    "must remove Consignee EORI when the answer is Name and Address" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+          .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+
+      val result = ConsigneeIdentityPage(index).cleanup(Some(ConsigneeIdentity.NameAddress), answers).success.value
+
+      result mustEqual answers.remove(ConsigneeEORIPage(index)).success.value
+    }
+
+    "must remove Consignee Name and Consignee Address when the answer is EORI" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeNamePage(index), "name").success.value
+          .set(ConsigneeAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom"))).success.value
+
+      val result = ConsigneeIdentityPage(index).cleanup(Some(ConsigneeIdentity.GBEORI), answers).success.value
+
+      result.mustEqual(
+        answers
+          .remove(ConsigneeNamePage(index)).success.value
+          .remove(ConsigneeAddressPage(index)).success.value)
     }
   }
 }

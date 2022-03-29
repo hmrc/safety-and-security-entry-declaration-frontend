@@ -45,9 +45,9 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
       val list = SummaryListViewModel(
         rows = Seq(
           AnyConsigneesKnownSummary.row(request.userAnswers, breadcrumbs, thisPage),
-          AddConsigneeSummary.checkAnswersRow(request.userAnswers, breadcrumbs),
+          AddConsigneeSummary.checkAnswersRow(request.userAnswers, breadcrumbs, thisPage),
           AddAnyNotifiedPartiesSummary.row(request.userAnswers, breadcrumbs, thisPage),
-          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, breadcrumbs)
+          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, breadcrumbs, thisPage)
         ).flatten
       )
 

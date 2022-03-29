@@ -21,7 +21,7 @@ import controllers.consignees.routes
 import models.{ConsigneeIdentity, GbEori, Index, NotifiedPartyIdentity}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
-import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
+import queries.consignees.{AllNotifiedPartiesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
 class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
@@ -113,6 +113,34 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
           }
         }
       }
+    }
+
+    "must not alter the user's answers when the answer is yes" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+          .set(NotifiedPartyKeyQuery(index), 1).success.value
+          .set(AddAnyNotifiedPartiesPage, true).success.value
+
+      val result = AddAnyNotifiedPartiesPage.cleanup(Some(true), answers).success.value
+
+      result mustEqual answers
+    }
+
+    "must remove all notified parties when the answer is no" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+          .set(NotifiedPartyKeyQuery(index), 1).success.value
+          .set(AddAnyNotifiedPartiesPage, false).success.value
+
+      val result = AddAnyNotifiedPartiesPage.cleanup(Some(false), answers).success.value
+
+      result mustEqual answers.remove(AllNotifiedPartiesQuery).success.value
     }
   }
 }

@@ -21,7 +21,9 @@ import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
+import queries.consignees.{AllConsigneesQuery, DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
+
+import scala.util.Try
 
 case object AnyConsigneesKnownPage extends DataPage[Boolean] {
 
@@ -52,4 +54,11 @@ case object AnyConsigneesKnownPage extends DataPage[Boolean] {
           case _ => NotifiedPartyIdentityPage(Index(0))
         }.getOrElse(NotifiedPartyIdentityPage(Index(0)))
     }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value.map {
+      case false => userAnswers.remove(AllConsigneesQuery)
+      case true => super.cleanup(value, userAnswers)
+    }.getOrElse(super.cleanup(value, userAnswers))
+  }
 }
