@@ -34,7 +34,7 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Item Packagint" in {
+      "to Item Packaging" in {
 
         GoodsItemGrossWeightPage(index)
           .navigate(NormalMode, emptyUserAnswers)
