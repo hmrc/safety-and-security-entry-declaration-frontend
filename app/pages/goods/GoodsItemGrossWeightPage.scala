@@ -17,10 +17,12 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
+import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.DeriveNumberOfPackages
 
 final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[BigDecimal] {
 
@@ -29,5 +31,5 @@ final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[Big
   override def toString: String = "grossWeight"
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+    goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
 }
