@@ -22,7 +22,7 @@ import models.{Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.Page
 import pages.predec.ProvideGrossWeightPage
 import play.api.mvc.Call
-import queries.DeriveNumberOfContainers
+import queries.{DeriveNumberOfContainers, DeriveNumberOfPackages}
 
 final case class AddItemContainerNumberPage(index: Index) extends Page {
 
@@ -37,8 +37,7 @@ final case class AddItemContainerNumberPage(index: Index) extends Page {
       answers.get(ProvideGrossWeightPage) match {
         case Some(ProvideGrossWeight.PerItem) =>
           goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-        case Some(ProvideGrossWeight.Overall) =>
-          goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn,itemIndex)
+        case Some(ProvideGrossWeight.Overall) => goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
         case _ =>
           routes.JourneyRecoveryController.onPageLoad()
       }

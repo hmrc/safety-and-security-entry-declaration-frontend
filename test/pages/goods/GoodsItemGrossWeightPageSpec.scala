@@ -19,7 +19,7 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Index, NormalMode}
 import pages.behaviours.PageBehaviours
 
 class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
@@ -34,11 +34,11 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Add Any Documents" in {
+      "to Item Packaging" in {
 
         GoodsItemGrossWeightPage(index)
           .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+          .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, Index(0)))
       }
     }
 

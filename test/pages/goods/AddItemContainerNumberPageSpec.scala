@@ -50,7 +50,7 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
         AddItemContainerNumberPage(index)
           .navigate(NormalMode, answers, index, addAnother = false)
-          .mustEqual(goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn, index))
+          .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0)))
       }
 
       "to item gross weight when weight is per item" in {
