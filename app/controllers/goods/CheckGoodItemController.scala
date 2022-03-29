@@ -19,9 +19,11 @@ package controllers.goods
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.goods.CommodityCodeKnownPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.goods._
 import viewmodels.govuk.summarylist._
 import views.html.goods.CheckGoodItemView
 
@@ -43,7 +45,25 @@ class CheckGoodItemController @Inject() (
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
-        rows = Nil
+        rows = Seq(
+          CommodityCodeKnownSummary.row(request.userAnswers, itemIndex),
+          CommodityCodeSummary.row(request.userAnswers, itemIndex),
+          GoodsDescriptionSummary.row(request.userAnswers, itemIndex),
+          ConsignorSummary.row(request.userAnswers,itemIndex),
+          ConsigneeSummary.row(request.userAnswers,itemIndex),
+          NotifiedPartySummary.row(request.userAnswers,itemIndex),
+          LoadingPlaceSummary.row(request.userAnswers,itemIndex),
+          UnloadingPlaceSummary.row(request.userAnswers,itemIndex),
+          AnyShippingContainersSummary.row(request.userAnswers,itemIndex),
+          //ItemContainerNumberSummary.rows(request.userAnswers,itemIndex),
+          GoodsItemGrossWeightSummary.row(request.userAnswers,itemIndex),
+          //PackageSummary.rows(request.userAnswers, itemIndex),
+          AddAnyDocumentsSummary.row(request.userAnswers,itemIndex),
+          //DocumentSummary.rows(request.userAnswers,itemIndex),
+          DangerousGoodCodeSummary.row(request.userAnswers,itemIndex),
+          DangerousGoodSummary.row(request.userAnswers,itemIndex),
+          PaymentMethodSummary.row(request.userAnswers,itemIndex)
+        ).flatten
       )
 
       Ok(view(mode, list, lrn))
