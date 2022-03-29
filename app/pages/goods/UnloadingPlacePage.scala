@@ -28,4 +28,8 @@ final case class UnloadingPlacePage(itemIndex: Index) extends QuestionPage[Unloa
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "unloadingPlace"
+
+  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+    goodsRoutes.AnyShippingContainersController.onPageLoad(NormalMode,answers.lrn,itemIndex)
+  }
 }
