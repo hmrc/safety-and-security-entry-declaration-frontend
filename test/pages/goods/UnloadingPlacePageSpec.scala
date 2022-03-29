@@ -34,10 +34,10 @@ class UnloadingPlaceSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Index" in {
+      "to Any Shipping Containers" in {
 
         UnloadingPlacePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+          .mustEqual(goodsRoutes.AnyShippingContainersController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
       }
     }
 
