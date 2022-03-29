@@ -24,13 +24,27 @@ import play.api.data.Forms._
 import models.RoadIdentity
 
 class RoadIdentityFormProvider @Inject() extends Mappings {
+  private val alphanumericPattern = "[A-Za-z0-9]+"
 
-   def apply(): Form[RoadIdentity] = Form(
-     mapping(
-      "field1" -> text("roadIdentity.error.field1.required")
-        .verifying(maxLength(100, "roadIdentity.error.field1.length")),
-      "field2" -> text("roadIdentity.error.field2.required")
-        .verifying(maxLength(100, "roadIdentity.error.field2.length"))
+  def apply(): Form[RoadIdentity] = Form(
+    mapping(
+      "vehicleRegistrationNumber" -> text("roadIdentity.error.vehicleRegistrationNumber.required")
+        .verifying(
+          firstError(
+            maxLength(13, "roadIdentity.error.vehicleRegistrationNumber.length"),
+            regexp(alphanumericPattern, "roadIdentity.error.vehicleRegistrationNumber.invalid")
+          )
+        ),
+      "trailerNumber" -> text("roadIdentity.error.trailerNumber.required")
+        .verifying(
+          firstError(
+            maxLength(13, "roadIdentity.error.trailerNumber.length"),
+            regexp(alphanumericPattern, "roadIdentity.error.trailerNumber.invalid")
+          )
+        ),
+      "ferryCompany" -> optional(nonEmptyText)
+        .verifying("roadIdentity.error.ferryCompany.length", _.forall(_.length <= 35))
+        .transform[Option[String]](v => v.filterNot { _ == "" }, identity)
     )(RoadIdentity.apply)(RoadIdentity.unapply)
-   )
- }
+  )
+}
