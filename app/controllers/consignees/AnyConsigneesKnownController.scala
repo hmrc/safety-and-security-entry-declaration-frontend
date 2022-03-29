@@ -18,8 +18,10 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AnyConsigneesKnownFormProvider
+
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import pages.Breadcrumbs
 import pages.consignees.AnyConsigneesKnownPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,7 +46,7 @@ class AnyConsigneesKnownController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(AnyConsigneesKnownPage) match {
@@ -52,21 +54,21 @@ class AnyConsigneesKnownController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, breadcrumbs, lrn))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyConsigneesKnownPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(AnyConsigneesKnownPage.navigate(mode, updatedAnswers))
+            } yield Redirect(AnyConsigneesKnownPage.navigate(breadcrumbs, updatedAnswers))
         )
     }
 }

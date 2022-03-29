@@ -17,21 +17,26 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.DataPage
+import pages.Breadcrumbs
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
 
-final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean] {
+
+final case class RemoveConsigneePage(index: Index) extends DataPage[Boolean] {
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
   override def toString: String = "removeConsignee"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(DeriveNumberOfConsignees) match {
-      case Some(size) if size > 0 => consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn)
-      case _                      => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, answers.lrn)
-    }
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.RemoveConsigneeController.onPageLoad(breadcrumbs, lrn, index)
+
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(DeriveNumberOfConsignees).map {
+      case n if n > 0 => AddConsigneePage
+      case _ => AnyConsigneesKnownPage
+    }.getOrElse(AnyConsigneesKnownPage)
 }

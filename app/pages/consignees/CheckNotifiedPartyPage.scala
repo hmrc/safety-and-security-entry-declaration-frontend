@@ -18,28 +18,35 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, CheckAnswersPage, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.consignees.DeriveNumberOfConsignees
 
-case object AddConsigneePage extends AddItemPage {
+final case class CheckNotifiedPartyPage(index: Index) extends CheckAnswersPage {
 
-  override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    answers.get(AddConsigneePage).map {
-      case true =>
-        answers.get(DeriveNumberOfConsignees)
-          .map(n => ConsigneeIdentityPage(Index(n)))
-          .orRecover
+  override val urlFragment: String = s"check-notified-party-${index.display}"
 
-      case false =>
-        AddAnyNotifiedPartiesPage
-    }.orRecover
-
-  override val urlFragment: String = "add-consignee"
-
-  override def path: JsPath = JsPath \ "addConsignee"
+  override def path: JsPath = JsPath
 
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, lrn)
+    consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index)
+
+  override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    AddNotifiedPartyPage
+}
+
+object CheckNotifiedPartyPage {
+
+  def fromString(s: String): Option[CheckNotifiedPartyPage] = {
+
+    val pattern = """check-notified-party-(\d{1,3})""".r.anchored
+
+    s match {
+      case pattern(indexDisplay) =>
+        Some(CheckNotifiedPartyPage(Index(indexDisplay.toInt - 1)))
+
+      case _ =>
+        None
+    }
+  }
 }

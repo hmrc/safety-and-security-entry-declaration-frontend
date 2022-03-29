@@ -18,8 +18,8 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AddAnyNotifiedPartiesFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Breadcrumbs
 import pages.consignees.AddAnyNotifiedPartiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.AddAnyNotifiedPartiesView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnyNotifiedPartiesController @Inject()(
@@ -42,7 +43,7 @@ class AddAnyNotifiedPartiesController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AddAnyNotifiedPartiesPage) match {
@@ -50,21 +51,22 @@ class AddAnyNotifiedPartiesController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, breadcrumbs, lrn))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn))),
 
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyNotifiedPartiesPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AddAnyNotifiedPartiesPage.navigate(mode, updatedAnswers))
-      )
-  }
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyNotifiedPartiesPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddAnyNotifiedPartiesPage.navigate(breadcrumbs, updatedAnswers))
+        )
+    }
 }

@@ -17,29 +17,16 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, DataPage}
+import models.LocalReferenceNumber
+import pages.{Breadcrumb, Breadcrumbs, CheckAnswersPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.consignees.DeriveNumberOfConsignees
 
-case object AddConsigneePage extends AddItemPage {
+object CheckConsigneesAndNotifiedPartiesPage extends CheckAnswersPage {
+  override val urlFragment: String = "check-consignees-notified-parties"
 
-  override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    answers.get(AddConsigneePage).map {
-      case true =>
-        answers.get(DeriveNumberOfConsignees)
-          .map(n => ConsigneeIdentityPage(Index(n)))
-          .orRecover
-
-      case false =>
-        AddAnyNotifiedPartiesPage
-    }.orRecover
-
-  override val urlFragment: String = "add-consignee"
-
-  override def path: JsPath = JsPath \ "addConsignee"
+  override def path: JsPath = JsPath
 
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, lrn)
+    consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
 }

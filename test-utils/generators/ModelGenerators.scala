@@ -21,12 +21,47 @@ import java.time.temporal.ChronoUnit
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import pages.{AddItemPage, Breadcrumb, Breadcrumbs, CheckAnswersPage}
+import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage, CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
 
 import models._
 import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryBreadcrumbs: Arbitrary[Breadcrumbs] =
+    Arbitrary {
+      Gen.choose(1, 5).flatMap {
+        num =>
+          Gen.oneOf(
+            Gen.listOfN(num, arbitrary[Breadcrumb[_]]).map(Breadcrumbs(_)),
+            Gen.const(Breadcrumbs(Nil))
+          )
+      }
+    }
+
+  implicit lazy val arbitraryBreadcrumb: Arbitrary[Breadcrumb[_]] =
+    Arbitrary {
+      Gen.oneOf(arbitrary[CheckAnswersPage], arbitrary[AddItemPage])
+    }
+
+  implicit lazy val arbitraryAddItemPage: Arbitrary[AddItemPage] =
+    Arbitrary {
+      Gen.oneOf(
+        AddConsigneePage,
+        AddNotifiedPartyPage
+      )
+    }
+
+  implicit lazy val arbitraryCheckAnswersPage: Arbitrary[CheckAnswersPage] =
+    Arbitrary {
+      Gen.oneOf(
+        CheckConsigneePage(Index(0)),
+        CheckNotifiedPartyPage(Index(0)),
+        CheckConsigneesAndNotifiedPartiesPage
+      )
+    }
 
   implicit lazy val arbitraryTraderWithEori: Arbitrary[TraderWithEori] =
     Arbitrary {

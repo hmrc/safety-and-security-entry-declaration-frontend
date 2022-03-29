@@ -17,25 +17,23 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnyNotifiedPartiesPage extends QuestionPage[Boolean] {
+case object AddAnyNotifiedPartiesPage extends DataPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addAnyNotifiedParties"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(AddAnyNotifiedPartiesPage) match {
-      case Some(true) =>
-        consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) =>
-        consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
-      case None =>
-        routes.JourneyRecoveryController.onPageLoad()
-    }
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
+
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(AddAnyNotifiedPartiesPage).map {
+      case true  => NotifiedPartyIdentityPage(Index(0))
+      case false => CheckConsigneesAndNotifiedPartiesPage
+    }.orRecover
 }

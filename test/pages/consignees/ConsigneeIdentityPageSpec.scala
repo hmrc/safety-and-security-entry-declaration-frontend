@@ -19,36 +19,54 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
+import models.CheckMode
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{CheckMode, ConsigneeIdentity, NormalMode}
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeIdentityPage" - {
 
-    beRetrievable[ConsigneeIdentity](ConsigneeIdentityPage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[ConsigneeIdentity](ConsigneeIdentityPage(index))
+      val breadcrumbs = Breadcrumbs.empty
 
-    beRemovable[ConsigneeIdentity](ConsigneeIdentityPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to `consignee EORI page` when answered `gb eori`" in {
+      "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.ConsigneeEORIController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
-      "to `consignee name` when answered `name & address`" in {
+      "to Consignee Name when answered `name & address`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.ConsigneeNameController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+      }
+    }
+
+    "must navigate when the current breadcrumb is AddConsignee" - {
+
+      val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+
+      "to Consignee EORI when answered `gb eori`" in {
+        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
+
+        ConsigneeIdentityPage(index)
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+      }
+
+      "to Consignee Name when answered `name & address`" in {
+        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
+
+        ConsigneeIdentityPage(index)
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
     }
 

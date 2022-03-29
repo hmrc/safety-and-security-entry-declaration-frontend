@@ -19,7 +19,8 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, Index, NormalMode}
+import models.{CheckMode, GbEori, Index}
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 import queries.consignees.ConsigneeKeyQuery
 
@@ -27,13 +28,9 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
   "RemoveConsigneePage" - {
 
-    beRetrievable[Boolean](RemoveConsigneePage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[Boolean](RemoveConsigneePage(index))
-
-    beRemovable[Boolean](RemoveConsigneePage(index))
-
-    "must navigate in Normal Mode" - {
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Add Consignee when there is still at least one consignee in the user's answers" in {
 
@@ -42,14 +39,14 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
             .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
             .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
-        RemoveConsigneePage(index).navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn))
+        RemoveConsigneePage(index).navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, answers.lrn))
       }
 
       "to Consignee Known when there are no consignees left" in {
 
-        RemoveConsigneePage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        RemoveConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(consigneesRoutes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
       }
     }
 

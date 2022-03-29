@@ -19,27 +19,38 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import models.CheckMode
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeEORIPage" - {
 
-    beRetrievable[GbEori](ConsigneeEORIPage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[GbEori](ConsigneeEORIPage(index))
-
-    beRemovable[GbEori](ConsigneeEORIPage(index))
-
-    "must navigate in Normal Mode" - {
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Check Consignee Details" in {
 
         ConsigneeEORIPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckConsigneeController.onPageLoad(emptyUserAnswers.lrn, index)
+            consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current breadcrumb is AddConsignee" - {
+
+      val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+
+      "to Check Consignee Details" in {
+
+        ConsigneeEORIPage(index)
+          .navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(
+            consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }

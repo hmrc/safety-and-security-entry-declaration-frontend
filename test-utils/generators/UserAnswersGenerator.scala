@@ -45,8 +45,6 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(RoroUnaccompaniedIdentityPage.type, JsValue)] ::
     arbitrary[(RoroAccompaniedIdentityPage.type, JsValue)] ::
     arbitrary[(RoadIdentityPage.type, JsValue)] ::
-    arbitrary[(RemoveSealPage.type, JsValue)] ::
-    arbitrary[(RemoveOverallDocumentPage.type, JsValue)] ::
     arbitrary[(RailIdentityPage.type, JsValue)] ::
     arbitrary[(OverallDocumentPage, JsValue)] ::
     arbitrary[(NationalityOfTransportPage.type, JsValue)] ::
@@ -58,21 +56,20 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(AddAnySealsPage.type, JsValue)] ::
     arbitrary[(PlaceOfUnloadingPage, JsValue)] ::
     arbitrary[(PlaceOfLoadingPage, JsValue)] ::
-    arbitrary[(AddAnyNotifiedPartiesPage.type, JsValue)] ::
     arbitrary[(PaymentMethodPage, JsValue)] ::
     arbitrary[(AddPaymentMethodPage, JsValue)] ::
-    arbitrary[(NotifiedPartyNamePage, JsValue)] ::
-    arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
-    arbitrary[(NotifiedPartyEORIPage, JsValue)] ::
-    arbitrary[(NotifiedPartyAddressPage, JsValue)] ::
-    arbitrary[(ConsigneeNamePage, JsValue)] ::
-    arbitrary[(ConsigneeIdentityPage, JsValue)] ::
-    arbitrary[(ConsigneeEORIPage, JsValue)] ::
-    arbitrary[(ConsigneeAddressPage, JsValue)] ::
-    arbitrary[(ConsignorNamePage, JsValue)] ::
-    arbitrary[(ConsignorEORIPage, JsValue)] ::
-    arbitrary[(ConsignorAddressPage, JsValue)] ::
-    arbitrary[(AnyConsigneesKnownPage.type, JsValue)] ::
+//    arbitrary[(NotifiedPartyNamePage, JsValue)] ::
+//    arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
+//    arbitrary[(NotifiedPartyEORIPage, JsValue)] ::
+//    arbitrary[(NotifiedPartyAddressPage, JsValue)] ::
+//    arbitrary[(ConsigneeNamePage, JsValue)] ::
+//    arbitrary[(ConsigneeIdentityPage, JsValue)] ::
+//    arbitrary[(ConsigneeEORIPage, JsValue)] ::
+//    arbitrary[(ConsigneeAddressPage, JsValue)] ::
+//    arbitrary[(ConsignorNamePage, JsValue)] ::
+//    arbitrary[(ConsignorEORIPage, JsValue)] ::
+//    arbitrary[(ConsignorAddressPage, JsValue)] ::
+//    arbitrary[(AnyConsigneesKnownPage.type, JsValue)] ::
     arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
     arbitrary[(ConsignorIdentityPage, JsValue)] ::
     arbitrary[(DangerousGoodCodePage, JsValue)] ::

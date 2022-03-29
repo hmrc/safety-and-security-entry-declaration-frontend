@@ -95,7 +95,7 @@ trait Generators
       .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+    Gen.alphaNumStr suchThat (_.nonEmpty)
 
   def stringsWithExactLength(length: Int): Gen[String] =
     for {

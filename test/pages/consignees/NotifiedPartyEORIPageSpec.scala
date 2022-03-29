@@ -19,27 +19,38 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import models.CheckMode
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyEORIPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyEORIPage" - {
 
-    beRetrievable[GbEori](NotifiedPartyEORIPage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[GbEori](NotifiedPartyEORIPage(index))
-
-    beRemovable[GbEori](NotifiedPartyEORIPage(index))
-
-    "must navigate in Normal Mode" - {
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Check Notified Party" in {
 
         NotifiedPartyEORIPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(emptyUserAnswers.lrn, index)
+            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current breadcrumb is AddNotifiedParty" - {
+
+      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage))
+
+      "to Check Notified Party" in {
+
+        NotifiedPartyEORIPage(index)
+          .navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(
+            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }

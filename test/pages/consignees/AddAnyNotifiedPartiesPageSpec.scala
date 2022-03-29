@@ -19,39 +19,36 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import models.{CheckMode, Index}
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnyNotifiedPartiesPage" - {
 
-    beRetrievable[Boolean](AddAnyNotifiedPartiesPage)
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[Boolean](AddAnyNotifiedPartiesPage)
-
-    beRemovable[Boolean](AddAnyNotifiedPartiesPage)
-
-    "must navigate in Normal Mode" - {
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Notified Party Identity when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, true).success.value
 
-        AddAnyNotifiedPartiesPage.navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0)))
+        AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(0)))
       }
 
       "to Check Consignees and Notified Parties when the answer is no" in {
 
         val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
 
-        AddAnyNotifiedPartiesPage.navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn))
+        AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, answers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is a CheckAnswersPage" - {
 
       "to Check Your Answers" in {
 

@@ -19,11 +19,11 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.AnyConsigneesKnownFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignees
+import pages.{Breadcrumbs, consignees}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,11 +34,12 @@ import scala.concurrent.Future
 
 class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new AnyConsigneesKnownFormProvider()
-  val form = formProvider()
+  private val formProvider = new AnyConsigneesKnownFormProvider()
+  private val form = formProvider()
+  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
 
   lazy val anyConsigneesKnownRoute =
-    routes.AnyConsigneesKnownController.onPageLoad(NormalMode, lrn).url
+    routes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, lrn).url
 
   "ConsigneeKnown Controller" - {
 
@@ -54,7 +55,7 @@ class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AnyConsigneesKnownView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, breadcrumbs, lrn)(
           request,
           messages(application)
         ).toString
@@ -75,7 +76,7 @@ class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill(true), breadcrumbs, lrn)(
           request,
           messages(application)
         ).toString
@@ -103,7 +104,7 @@ class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual consignees.AnyConsigneesKnownPage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(breadcrumbs, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -125,7 +126,7 @@ class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, breadcrumbs, lrn)(
           request,
           messages(application)
         ).toString

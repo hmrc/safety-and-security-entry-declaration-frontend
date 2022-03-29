@@ -18,12 +18,17 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
+import org.scalacheck.Arbitrary.arbitrary
+import pages.Breadcrumbs
+import pages.consignees.CheckConsigneesAndNotifiedPartiesPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.consignees.CheckConsigneesAndNotifiedPartiesView
 
 class CheckConsigneesAndNotifiedPartiesControllerSpec extends SpecBase with SummaryListFluency {
+
+  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
 
   "Check Consignees and Notified Parties Controller" - {
 
@@ -32,7 +37,7 @@ class CheckConsigneesAndNotifiedPartiesControllerSpec extends SpecBase with Summ
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, lrn).url)
 
         val result = route(application, request).value
 
@@ -40,7 +45,21 @@ class CheckConsigneesAndNotifiedPartiesControllerSpec extends SpecBase with Summ
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(breadcrumbs, list, lrn)(request, messages(application)).toString
+      }
+    }
+
+    "must redirect to the next page for a POST" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, lrn).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual CheckConsigneesAndNotifiedPartiesPage.navigate(breadcrumbs, emptyUserAnswers)
       }
     }
 
@@ -49,7 +68,7 @@ class CheckConsigneesAndNotifiedPartiesControllerSpec extends SpecBase with Summ
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, lrn).url)
 
         val result = route(application, request).value
 

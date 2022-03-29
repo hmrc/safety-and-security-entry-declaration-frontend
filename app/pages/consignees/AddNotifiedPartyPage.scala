@@ -18,27 +18,30 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import pages.{AddItemPage, Breadcrumb, Breadcrumbs, DataPage, JourneyRecoveryPage, Page}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
 
-case object AddNotifiedPartyPage extends Page {
+case object AddNotifiedPartyPage extends AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfNotifiedParties) match {
-        case Some(size) =>
-          consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val urlFragment: String = "add-notified-party"
+
+  override def path: JsPath = JsPath \ "addNotifiedParty"
+
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs, lrn)
+
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(AddNotifiedPartyPage).map {
+      case true =>
+        answers.get(DeriveNumberOfNotifiedParties).map {
+          case n => NotifiedPartyIdentityPage(Index(n))
+          case _ => JourneyRecoveryPage
+        }.orRecover
+
+      case false =>
+        CheckConsigneesAndNotifiedPartiesPage
+    }.getOrElse(CheckConsigneesAndNotifiedPartiesPage)
 }

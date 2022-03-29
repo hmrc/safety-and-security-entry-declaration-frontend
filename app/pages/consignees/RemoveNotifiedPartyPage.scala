@@ -18,30 +18,35 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
 
-final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Boolean] {
+final case class RemoveNotifiedPartyPage(index: Index) extends DataPage[Boolean] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "removeNotifiedParty"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(DeriveNumberOfNotifiedParties) match {
-      case Some(size) if size > 0 =>
-        consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn)
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index)
+
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] = {
+
+    lazy val noNotifiedPartiesRoute =
+      answers.get(AnyConsigneesKnownPage).map {
+        case true => AddAnyNotifiedPartiesPage
+        case false => NotifiedPartyIdentityPage(Index(0))
+      }.orRecover
+
+    answers.get(DeriveNumberOfNotifiedParties).map {
+      case n if n > 0 =>
+        AddNotifiedPartyPage
+
       case _ =>
-        answers.get(AnyConsigneesKnownPage) match {
-          case Some(true) =>
-            consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn)
-          case Some(false) =>
-            consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-          case None =>
-            routes.JourneyRecoveryController.onPageLoad()
-        }
-    }
+        noNotifiedPartiesRoute
+    }.getOrElse(noNotifiedPartiesRoute)
+  }
 }

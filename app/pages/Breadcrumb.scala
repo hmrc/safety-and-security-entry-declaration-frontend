@@ -17,6 +17,7 @@
 package pages
 
 import models.UserAnswers
+import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage, CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
 
 sealed trait Breadcrumb[A] extends DataPage[A] {
 
@@ -25,12 +26,27 @@ sealed trait Breadcrumb[A] extends DataPage[A] {
 
 object Breadcrumb {
 
-  def fromString[A](s: String): Option[Breadcrumb[A]] = ???
+  def fromString(s: String): Option[Breadcrumb[_]] =
+    s match {
+      case AddConsigneePage.urlFragment =>
+        Some(AddConsigneePage)
+
+      case AddNotifiedPartyPage.urlFragment =>
+        Some(AddNotifiedPartyPage)
+
+      case CheckConsigneesAndNotifiedPartiesPage.urlFragment =>
+        Some(CheckConsigneesAndNotifiedPartiesPage)
+
+      case x =>
+        CheckConsigneePage.fromString(x) orElse
+          CheckNotifiedPartyPage.fromString(x) orElse
+          None
+    }
 }
 
-trait CheckAnswersBreadcrumb extends Breadcrumb[Unit]
+trait CheckAnswersPage extends Breadcrumb[Nothing]
 
-trait AddItemBreadcrumb extends Breadcrumb[Boolean] {
+trait AddItemPage extends Breadcrumb[Boolean] {
 
   override protected def updateBreadcrumbs(
     breadcrumbs: Breadcrumbs,

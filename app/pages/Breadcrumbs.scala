@@ -51,10 +51,10 @@ object Breadcrumbs {
               case Success(maybeStack) =>
                 maybeStack
                   .map(Right(_))
-                  .getOrElse(Left("Unable to bind parameter as a mode stack"))
+                  .getOrElse(Left("Unable to bind parameter as breadcrumbs"))
 
               case Failure(_) =>
-                Left("Unable to bind parameter as a mode stack")
+                Left("Unable to bind parameter as breadcrumbs")
             }
         }
       }

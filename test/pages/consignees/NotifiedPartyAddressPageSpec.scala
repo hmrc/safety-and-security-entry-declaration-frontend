@@ -19,27 +19,38 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{Address, CheckMode, NormalMode}
+import models.CheckMode
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyAddressPage" - {
 
-    beRetrievable[Address](NotifiedPartyAddressPage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[Address](NotifiedPartyAddressPage(index))
-
-    beRemovable[Address](NotifiedPartyAddressPage(index))
-
-    "must navigate in Normal Mode" - {
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Check Notified Party" in {
 
         NotifiedPartyAddressPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(emptyUserAnswers.lrn, index)
+            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current breadcrumb is AddNotifiedParty" - {
+
+      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage))
+
+      "to Check Notified Party" in {
+
+        NotifiedPartyAddressPage(index)
+          .navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(
+            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }

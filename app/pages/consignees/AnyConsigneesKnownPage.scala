@@ -17,23 +17,23 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AnyConsigneesKnownPage extends QuestionPage[Boolean] {
+case object AnyConsigneesKnownPage extends DataPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "anyConsigneesKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(AnyConsigneesKnownPage) match {
-      case Some(true)  => consigneeRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) => consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case None        => routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, lrn)
+
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(AnyConsigneesKnownPage).map {
+      case true => ConsigneeIdentityPage(Index(0))
+      case false => NotifiedPartyIdentityPage(Index(0))
+    }.orRecover
 }

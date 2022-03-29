@@ -17,18 +17,20 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeNamePage(index: Index) extends QuestionPage[String] {
+case class ConsigneeNamePage(index: Index) extends DataPage[String] {
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
   override def toString: String = "name"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneeRoutes.ConsigneeAddressController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.ConsigneeNameController.onPageLoad(breadcrumbs, lrn, index)
+
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    ConsigneeAddressPage(index)
 }

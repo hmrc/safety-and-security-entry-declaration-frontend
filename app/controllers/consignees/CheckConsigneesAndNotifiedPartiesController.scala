@@ -19,6 +19,8 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
+import pages.Breadcrumbs
+import pages.consignees.CheckConsigneesAndNotifiedPartiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,19 +37,29 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
   view: CheckConsigneesAndNotifiedPartiesView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
+
+      val thisPage = CheckConsigneesAndNotifiedPartiesPage
 
       val list = SummaryListViewModel(
         rows = Seq(
-          AnyConsigneesKnownSummary.row(request.userAnswers),
-          AddConsigneeSummary.checkAnswersRow(request.userAnswers),
-          AddAnyNotifiedPartiesSummary.row(request.userAnswers),
-          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers)
+          AnyConsigneesKnownSummary.row(request.userAnswers, breadcrumbs, thisPage),
+          AddConsigneeSummary.checkAnswersRow(request.userAnswers, breadcrumbs),
+          AddAnyNotifiedPartiesSummary.row(request.userAnswers, breadcrumbs, thisPage),
+          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, breadcrumbs)
         ).flatten
       )
 
-      Ok(view(list, lrn))
+      Ok(view(breadcrumbs, list, lrn))
+    }
+
+
+  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+
+        Redirect(CheckConsigneesAndNotifiedPartiesPage.navigate(breadcrumbs, request.userAnswers))
     }
 }
 

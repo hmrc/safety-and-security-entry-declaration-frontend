@@ -20,6 +20,7 @@ import models.{LocalReferenceNumber, UserAnswers}
 import play.api.mvc.Call
 import queries.{Gettable, Settable}
 
+// TODO: At the end of refactoring all individual pages, this will replace Page itself
 trait DataPage[A] extends Page with Gettable[A] with Settable[A] {
 
   def navigate(breadcrumbs: Breadcrumbs, answers: UserAnswers): Call = {
@@ -31,12 +32,13 @@ trait DataPage[A] extends Page with Gettable[A] with Settable[A] {
   protected def updateBreadcrumbs(breadcrumbs: Breadcrumbs, target: DataPage[_], answers: UserAnswers): Breadcrumbs =
     breadcrumbs.current.map {
       case b if b == target => breadcrumbs.pop
+      case _                => breadcrumbs
     }.getOrElse(breadcrumbs)
 
   protected def nextPage(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
     breadcrumbs.current.map {
-      case _: CheckAnswersBreadcrumb => nextPageCheckMode(breadcrumbs, answers)
-      case _: AddItemBreadcrumb      => nextPageNormalMode(breadcrumbs, answers)
+      case _: CheckAnswersPage => nextPageCheckMode(breadcrumbs, answers)
+      case _: AddItemPage      => nextPageNormalMode(breadcrumbs, answers)
     }.getOrElse(nextPageNormalMode(breadcrumbs, answers))
 
   protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =

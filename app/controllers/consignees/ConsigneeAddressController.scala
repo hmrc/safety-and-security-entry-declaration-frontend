@@ -18,8 +18,8 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.ConsigneeAddressFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Breadcrumbs
 import pages.consignees.ConsigneeAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.ConsigneeAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeAddressController @Inject() (
@@ -44,7 +45,7 @@ class ConsigneeAddressController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(ConsigneeAddressPage(index)) match {
@@ -52,21 +53,21 @@ class ConsigneeAddressController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, breadcrumbs, lrn, index))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, index))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeAddressPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneeAddressPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(ConsigneeAddressPage(index).navigate(breadcrumbs, updatedAnswers))
         )
     }
 }

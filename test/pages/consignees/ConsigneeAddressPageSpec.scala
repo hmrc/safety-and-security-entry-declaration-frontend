@@ -19,27 +19,38 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
-import models.{Address, CheckMode, NormalMode}
+import models.CheckMode
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class ConsigneeAddressPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeAddressPage" - {
 
-    beRetrievable[Address](ConsigneeAddressPage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[Address](ConsigneeAddressPage(index))
-
-    beRemovable[Address](ConsigneeAddressPage(index))
-
-    "must navigate in Normal Mode" - {
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Check Consignee Details" in {
 
         ConsigneeAddressPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckConsigneeController.onPageLoad(emptyUserAnswers.lrn, index)
+            consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current breadcrumb is AddConsignee" - {
+
+      val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+
+      "to Check Consignee Details" in {
+
+        ConsigneeAddressPage(index)
+          .navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(
+            consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }

@@ -25,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("notifiedPartyEORI.title"))) {
 
-    @formHelper(action = routes.NotifiedPartyEORIController.onSubmit(mode, lrn, index)) {
+    @formHelper(action = routes.NotifiedPartyEORIController.onSubmit(breadcrumbs, lrn, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

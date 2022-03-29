@@ -16,26 +16,37 @@
 
 package pages.consignees
 
-import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
-import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{ConsigneeIdentity, Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import controllers.consignees.{routes => consigneesRoutes}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Breadcrumbs, CheckAnswersPage, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeIdentityPage(index: Index) extends DataPage[ConsigneeIdentity] {
+case class CheckConsigneePage(index: Index) extends CheckAnswersPage {
 
-  override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
+  override val urlFragment: String = s"check-consignee-${index.display}"
 
-  override def toString: String = "identity"
+  override def path: JsPath = JsPath
 
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneeRoutes.ConsigneeIdentityController.onPageLoad(breadcrumbs, lrn, index)
+    consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, lrn, index)
 
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    answers.get(ConsigneeIdentityPage(index)).map {
-      case GBEORI => ConsigneeEORIPage(index)
-      case NameAddress => ConsigneeNamePage(index)
-    }.orRecover
+    AddConsigneePage
+}
+
+object CheckConsigneePage {
+
+  def fromString(s: String): Option[CheckConsigneePage] = {
+
+    val pattern = """check-consignee-(\d{1,3})""".r.anchored
+
+    s match {
+      case pattern(indexDisplay) =>
+        Some(CheckConsigneePage(Index(indexDisplay.toInt - 1)))
+
+      case _ =>
+        None
+    }
+  }
 }

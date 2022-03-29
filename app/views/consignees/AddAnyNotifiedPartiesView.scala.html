@@ -15,6 +15,7 @@
  *@
 
 @import controllers.consignees.routes
+@import pages.Breadcrumbs
 
 @this(
     layout: templates.Layout,
@@ -24,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addAnyNotifiedParties.title"))) {
 
-    @formHelper(action = routes.AddAnyNotifiedPartiesController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddAnyNotifiedPartiesController.onSubmit(breadcrumbs, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

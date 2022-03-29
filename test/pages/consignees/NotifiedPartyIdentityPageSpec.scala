@@ -19,37 +19,56 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
 import controllers.routes
+import models.CheckMode
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
-import models.{CheckMode, NormalMode, NotifiedPartyIdentity}
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyIdentityPage" - {
 
-    beRetrievable[NotifiedPartyIdentity](NotifiedPartyIdentityPage(index))
+    "must navigate when there are no breadcrumbs" - {
 
-    beSettable[NotifiedPartyIdentity](NotifiedPartyIdentityPage(index))
+      val breadcrumbs = Breadcrumbs.empty
 
-    beRemovable[NotifiedPartyIdentity](NotifiedPartyIdentityPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to `consignee EORI page` when answered `gb eori`" in {
+      "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
 
         NotifiedPartyIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyEORIController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
-      "to `consignee name` when answered `name & address`" in {
+      "to Consignee Name when answered `name & address`" in {
         val answers =
           emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
 
         NotifiedPartyIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyNameController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+      }
+    }
+
+    "must navigate when the current breadcrumb is AddNotifiedParty" - {
+
+      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage))
+
+      "to Consignee EORI when answered `gb eori`" in {
+        val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
+
+        NotifiedPartyIdentityPage(index)
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+      }
+
+      "to Consignee Name when answered `name & address`" in {
+        val answers =
+          emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
+
+        NotifiedPartyIdentityPage(index)
+          .navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyNameController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
     }
 

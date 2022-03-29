@@ -21,6 +21,7 @@ import forms.consignees.RemoveConsigneeFormProvider
 
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.Breadcrumbs
 import pages.consignees.RemoveConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,35 +45,31 @@ class RemoveConsigneeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Ok(view(form, breadcrumbs, lrn, index))
+    }
 
-      val preparedForm = request.userAnswers.get(RemoveConsigneePage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      Ok(view(preparedForm, mode, lrn, index))
-  }
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, index))),
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-
-        value =>
-          if (value) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsigneeQuery(index)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(RemoveConsigneePage(index).navigate(mode, updatedAnswers))
-          } else {
-            Future.successful(
-              Redirect(RemoveConsigneePage(index).navigate(mode, request.userAnswers))
-            )
-          }
-      )
-  }
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsigneeQuery(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveConsigneePage(index).navigate(breadcrumbs: Breadcrumbs, updatedAnswers))
+            } else {
+              Future.successful(
+                Redirect(RemoveConsigneePage(index).navigate(breadcrumbs: Breadcrumbs, request.userAnswers))
+              )
+            }
+        )
+    }
 }

@@ -19,6 +19,8 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.{Index, LocalReferenceNumber}
+import pages.Breadcrumbs
+import pages.consignees.CheckNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,19 +38,29 @@ class CheckNotifiedPartyController @Inject() (
                                          ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
+
+      val thisPage = CheckNotifiedPartyPage(index)
 
       val list = SummaryListViewModel(
         rows = Seq(
-          NotifiedPartyIdentitySummary.row(request.userAnswers, index),
-          NotifiedPartyEORISummary.row(request.userAnswers, index),
-          NotifiedPartyNameSummary.row(request.userAnswers, index),
-          NotifiedPartyAddressSummary.row(request.userAnswers, index)
+          NotifiedPartyIdentitySummary.row(request.userAnswers, index, breadcrumbs, thisPage),
+          NotifiedPartyEORISummary.row(request.userAnswers, index, breadcrumbs, thisPage),
+          NotifiedPartyNameSummary.row(request.userAnswers, index, breadcrumbs, thisPage),
+          NotifiedPartyAddressSummary.row(request.userAnswers, index, breadcrumbs, thisPage)
         ).flatten
       )
 
-      Ok(view(list, lrn, index))
+      Ok(view(breadcrumbs, list, lrn, index))
+    }
+
+
+  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+
+        Redirect(CheckNotifiedPartyPage(index).navigate(breadcrumbs, request.userAnswers))
     }
 }
 

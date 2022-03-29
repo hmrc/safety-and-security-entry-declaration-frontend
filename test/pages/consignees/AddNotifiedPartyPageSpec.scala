@@ -18,7 +18,8 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{GbEori, Index, NormalMode}
+import models.{GbEori, Index}
+import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
 
@@ -26,7 +27,9 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "AddNotifiedPartyPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no breadcrumbs" - {
+
+      val breadcrumbs = Breadcrumbs.empty
 
       "to Notified Party Identity for the next index when the answer is yes" in {
 
@@ -34,15 +37,18 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
           emptyUserAnswers
             .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
             .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
+            .set(AddNotifiedPartyPage, true).success.value
 
-        AddNotifiedPartyPage.navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+        AddNotifiedPartyPage.navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(1)))
       }
 
       "to Check Consignees and Notified Parties when the answer is no" in {
 
-        AddNotifiedPartyPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(emptyUserAnswers.lrn))
+        val answers = emptyUserAnswers.set(AddNotifiedPartyPage, false).success.value
+
+        AddNotifiedPartyPage.navigate(breadcrumbs, answers)
+          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, answers.lrn))
       }
     }
   }

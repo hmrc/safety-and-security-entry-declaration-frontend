@@ -17,7 +17,8 @@
 package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, NormalMode, TraderWithEori, TraderWithoutEori, UserAnswers}
+import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
+import pages.Breadcrumbs
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllNotifiedPartiesQuery
@@ -29,7 +30,7 @@ import viewmodels.implicits._
 
 object AddNotifiedPartySummary  {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
+  def rows(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Seq[ListItem] =
     answers.get(AllNotifiedPartiesQuery).getOrElse(List.empty).zipWithIndex.map {
       case (notifiedParty, index) =>
         val name = notifiedParty match {
@@ -39,12 +40,12 @@ object AddNotifiedPartySummary  {
 
         ListItem(
           name      = name,
-          changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(answers.lrn, Index(index)).url,
-          removeUrl = consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
+          changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url,
+          removeUrl = consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllNotifiedPartiesQuery).map {
       notifiedParties =>
 
@@ -59,7 +60,7 @@ object AddNotifiedPartySummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn).url
+              consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn).url
             ).withVisuallyHiddenText(messages("notifiedParties.change.hidden"))
           )
         )

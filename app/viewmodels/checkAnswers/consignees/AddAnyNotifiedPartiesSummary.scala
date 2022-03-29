@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{CheckMode, UserAnswers}
+import pages.{Breadcrumbs, CheckAnswersPage}
 import pages.consignees.AddAnyNotifiedPartiesPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,7 +27,7 @@ import viewmodels.implicits._
 
 object AddAnyNotifiedPartiesSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AddAnyNotifiedPartiesPage).map {
       answer =>
 
@@ -36,8 +37,10 @@ object AddAnyNotifiedPartiesSummary  {
           key     = "addAnyNotifiedParties.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("addAnyNotifiedParties.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              AddAnyNotifiedPartiesPage.route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
+            ).withVisuallyHiddenText(messages("addAnyNotifiedParties.change.hidden"))
           )
         )
     }
