@@ -17,9 +17,7 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -36,7 +34,7 @@ class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
         ConsigneeEORIPage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -50,18 +48,20 @@ class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
         ConsigneeEORIPage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is CheckConsignee" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index)))
+
+      "to Check Consignee with the current breadcrumb removed" in {
 
         ConsigneeEORIPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn, index))
       }
     }
   }

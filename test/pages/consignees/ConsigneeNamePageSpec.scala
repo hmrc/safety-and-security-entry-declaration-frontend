@@ -17,9 +17,8 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
+import models.{Address, Country}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -36,7 +35,7 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
         ConsigneeNamePage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.ConsigneeAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.ConsigneeAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -50,18 +49,36 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
         ConsigneeNamePage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.ConsigneeAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.ConsigneeAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is Check Consignee" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index)))
 
-        ConsigneeNamePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "and Consignee Address has been answered" - {
+
+        "to Check Consignee with the current breadcrumb removed" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(ConsigneeAddressPage(index), Address("street", "city", "AA11 1AA", Country("GB", "United Kingdom")))
+              .success.value
+
+          ConsigneeNamePage(index).navigate(breadcrumbs, answers)
+            .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+        }
+      }
+
+      "and Consignee Address has not been answered" - {
+
+        "to Consignee Address" in {
+
+          ConsigneeNamePage(index).navigate(breadcrumbs, emptyUserAnswers)
+            .mustEqual(routes.ConsigneeAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index))
+        }
       }
     }
   }

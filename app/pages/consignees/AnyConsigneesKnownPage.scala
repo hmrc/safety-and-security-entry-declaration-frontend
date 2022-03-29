@@ -21,6 +21,7 @@ import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 
 case object AnyConsigneesKnownPage extends DataPage[Boolean] {
 
@@ -35,5 +36,20 @@ case object AnyConsigneesKnownPage extends DataPage[Boolean] {
     answers.get(AnyConsigneesKnownPage).map {
       case true => ConsigneeIdentityPage(Index(0))
       case false => NotifiedPartyIdentityPage(Index(0))
+    }.orRecover
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignees).map {
+          case n if n > 0 => breadcrumbs.current.orRecover
+          case _ => ConsigneeIdentityPage(Index(0))
+        }.getOrElse(ConsigneeIdentityPage(Index(0)))
+
+      case false =>
+        answers.get(DeriveNumberOfNotifiedParties).map {
+          case n if n > 0 => breadcrumbs.current.orRecover
+          case _ => NotifiedPartyIdentityPage(Index(0))
+        }.getOrElse(NotifiedPartyIdentityPage(Index(0)))
     }.orRecover
 }

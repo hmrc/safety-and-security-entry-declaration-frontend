@@ -42,8 +42,7 @@ trait DataPage[A] extends Page with Gettable[A] with Settable[A] {
     }.getOrElse(nextPageNormalMode(breadcrumbs, answers))
 
   protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    breadcrumbs.current
-      .getOrElse(JourneyRecoveryPage)
+    breadcrumbs.current.orRecover
 
   protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
     throw new NotImplementedError("nextPageCheckMode is not implemented")

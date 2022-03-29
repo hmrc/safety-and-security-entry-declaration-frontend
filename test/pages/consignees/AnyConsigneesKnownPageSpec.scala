@@ -17,11 +17,11 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
+import models.{ConsigneeIdentity, GbEori, Index, NotifiedPartyIdentity}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
+import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
 class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
@@ -36,7 +36,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
         AnyConsigneesKnownPage
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.ConsigneeIdentityController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.ConsigneeIdentityController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
       "to Notified Party Identity when answer is no" in {
@@ -45,18 +45,73 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
         AnyConsigneesKnownPage
           .navigate(breadcrumbs, answers)
           .mustEqual(
-            consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, index)
+            routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is Check Consignees and Notified Parties" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneesAndNotifiedPartiesPage))
+      
+      "and the answer is yes" - {
 
-        AnyConsigneesKnownPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        "and there are some consignees" - {
+
+          "to Check Consignees and Notified Parties with the current breadcrumb removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, true).success.value
+                .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+            AnyConsigneesKnownPage.navigate(breadcrumbs, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs.pop, answers.lrn))
+          }
+        }
+
+        "and there are no consignees" - {
+
+          "to Consignee Identity for index 0" in {
+
+            val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
+
+            AnyConsigneesKnownPage.navigate(breadcrumbs, answers)
+              .mustEqual(routes.ConsigneeIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(0)))
+          }
+        }
+      }
+      
+      "and the answer is no" - {
+        
+        "and there are some notified parties" - {
+
+          "to Check Consignees and Notified Parties with the current breadcrumb removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, false).success.value
+                .set(NotifiedPartyIdentityPage(Index(0)), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
+
+            AnyConsigneesKnownPage.navigate(breadcrumbs, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs.pop, answers.lrn))
+          }
+        }
+
+        "and there are no notified parties" - {
+
+          "to Notified Party Identity for index 0" in {
+
+            val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
+
+            AnyConsigneesKnownPage.navigate(breadcrumbs, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(0)))
+          }
+        }
       }
     }
   }

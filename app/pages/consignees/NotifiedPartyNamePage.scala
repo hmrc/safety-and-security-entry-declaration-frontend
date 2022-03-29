@@ -33,4 +33,9 @@ case class NotifiedPartyNamePage(index: Index) extends DataPage[String] {
 
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
     NotifiedPartyAddressPage(index)
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(NotifiedPartyAddressPage(index))
+      .map(_ => CheckNotifiedPartyPage(index))
+      .getOrElse(NotifiedPartyAddressPage(index))
 }

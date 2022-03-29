@@ -25,8 +25,15 @@ import queries.consignees.DeriveNumberOfConsignees
 
 case object AddConsigneePage extends AddItemPage {
 
+  override val urlFragment: String = "add-consignee"
+
+  override def path: JsPath = JsPath \ "addConsignee"
+
+  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, lrn)
+
   override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    answers.get(AddConsigneePage).map {
+    answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees)
           .map(n => ConsigneeIdentityPage(Index(n)))
@@ -36,10 +43,14 @@ case object AddConsigneePage extends AddItemPage {
         AddAnyNotifiedPartiesPage
     }.orRecover
 
-  override val urlFragment: String = "add-consignee"
+  override def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignees)
+        .map(n => ConsigneeIdentityPage(Index(n)))
+        .orRecover
 
-  override def path: JsPath = JsPath \ "addConsignee"
-
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, lrn)
+      case false =>
+        breadcrumbs.current.orRecover
+    }.orRecover
 }

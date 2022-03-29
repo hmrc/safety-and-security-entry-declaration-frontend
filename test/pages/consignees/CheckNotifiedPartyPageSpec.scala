@@ -17,7 +17,7 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
+import controllers.consignees.routes
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
@@ -58,7 +58,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
     "to Add Notified Party" in {
 
       CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
+        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
     }
   }
 
@@ -69,7 +69,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
     "to Add Notified Party with the first breadcrumb removed" in {
 
       CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn))
+        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn))
     }
   }
 }

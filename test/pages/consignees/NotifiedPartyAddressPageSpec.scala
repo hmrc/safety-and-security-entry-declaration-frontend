@@ -17,9 +17,7 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -36,7 +34,7 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
         NotifiedPartyAddressPage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -50,18 +48,22 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
         NotifiedPartyAddressPage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is CheckNotifiedParty" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index)))
+
+      "to Check Notified Party with the current breadcrumb removed" in {
 
         NotifiedPartyAddressPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(breadcrumbs, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn, index)
+          )
       }
     }
   }

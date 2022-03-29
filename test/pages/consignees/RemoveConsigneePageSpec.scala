@@ -17,9 +17,8 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori, Index}
+import controllers.consignees.routes
+import models.{GbEori, Index}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 import queries.consignees.ConsigneeKeyQuery
@@ -40,22 +39,13 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
             .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
         RemoveConsigneePage(index).navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, answers.lrn))
+          .mustEqual(routes.AddConsigneeController.onPageLoad(breadcrumbs, answers.lrn))
       }
 
       "to Consignee Known when there are no consignees left" in {
 
         RemoveConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
-          .mustEqual(consigneesRoutes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RemoveConsigneePage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
       }
     }
   }

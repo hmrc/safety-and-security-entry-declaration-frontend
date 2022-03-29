@@ -17,10 +17,9 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
+import models.{ConsigneeIdentity, GbEori}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -37,7 +36,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
         ConsigneeIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
       "to Consignee Name when answered `name & address`" in {
@@ -45,7 +44,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
         ConsigneeIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
     }
 
@@ -58,7 +57,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
         ConsigneeIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
       "to Consignee Name when answered `name & address`" in {
@@ -66,17 +65,68 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
         ConsigneeIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is Check Consignee" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index)))
 
-        ConsigneeIdentityPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is GB EORI" - {
+
+        "and Consignee EORI is already answered" - {
+
+          "to Check Consignee with the current breadcrumb removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+
+            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+          }
+        }
+
+        "and Consignee EORI has not been answered" - {
+
+          "to Consignee EORI" in {
+
+            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+
+            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          }
+        }
+      }
+
+      "when the answer is Name and Address" - {
+
+        "and Consignee Name is already answered" - {
+
+          "to Check Consignee with the current breadcrumb removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ConsigneeNamePage(index), "Name").success.value
+                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+
+            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+          }
+        }
+
+        "and Consignee Name has not been answered" - {
+
+          "to Consignee Name" in {
+
+            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+
+            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          }
+        }
       }
     }
   }

@@ -43,5 +43,17 @@ case object AddNotifiedPartyPage extends AddItemPage {
 
       case false =>
         CheckConsigneesAndNotifiedPartiesPage
-    }.getOrElse(CheckConsigneesAndNotifiedPartiesPage)
+    }.orRecover
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfNotifiedParties).map {
+          case n => NotifiedPartyIdentityPage(Index(n))
+          case _ => JourneyRecoveryPage
+        }.orRecover
+
+      case false =>
+        CheckConsigneesAndNotifiedPartiesPage
+    }.orRecover
 }

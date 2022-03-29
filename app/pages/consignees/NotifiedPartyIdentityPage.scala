@@ -38,4 +38,17 @@ case class NotifiedPartyIdentityPage(index: Index) extends DataPage[NotifiedPart
       case GBEORI => NotifiedPartyEORIPage(index)
       case NameAddress => NotifiedPartyNamePage(index)
     }.orRecover
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(this).map {
+      case GBEORI =>
+        answers.get(NotifiedPartyEORIPage(index))
+          .map(_ => CheckNotifiedPartyPage(index))
+          .getOrElse(NotifiedPartyEORIPage(index))
+
+      case NameAddress =>
+        answers.get(NotifiedPartyNamePage(index))
+          .map(_ => CheckNotifiedPartyPage(index))
+          .getOrElse(NotifiedPartyNamePage(index))
+    }.orRecover
 }

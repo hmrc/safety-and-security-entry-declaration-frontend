@@ -17,7 +17,7 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
+import controllers.consignees.routes
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
@@ -57,7 +57,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
     "to Add Consignee" in {
 
       CheckConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
+        .mustEqual(routes.AddConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
     }
   }
 
@@ -68,7 +68,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
     "to Add Consignee with the first breadcrumb removed" in {
 
       CheckConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn))
+        .mustEqual(routes.AddConsigneeController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn))
     }
   }
 }

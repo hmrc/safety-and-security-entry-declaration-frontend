@@ -17,9 +17,8 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
+import models.{Address, Country}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -36,7 +35,7 @@ class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
         NotifiedPartyNamePage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
@@ -50,18 +49,36 @@ class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
         NotifiedPartyNamePage(index)
           .navigate(breadcrumbs, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is CheckNotifiedParty" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index)))
 
-        NotifiedPartyNamePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when Notified Party Address has been answered" - {
+
+        "to Check Notified Party with the current breadcrumb removed" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(NotifiedPartyAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom")))
+              .success.value
+
+          NotifiedPartyNamePage(index).navigate(breadcrumbs, answers)
+            .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+        }
+      }
+
+      "when Notified Party Address has not been answered" - {
+
+        "to Notified Party Address" in {
+
+          NotifiedPartyNamePage(index).navigate(breadcrumbs, emptyUserAnswers)
+            .mustEqual(routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index))
+        }
       }
     }
   }

@@ -34,8 +34,21 @@ case class ConsigneeIdentityPage(index: Index) extends DataPage[ConsigneeIdentit
     consigneeRoutes.ConsigneeIdentityController.onPageLoad(breadcrumbs, lrn, index)
 
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    answers.get(ConsigneeIdentityPage(index)).map {
+    answers.get(this).map {
       case GBEORI => ConsigneeEORIPage(index)
       case NameAddress => ConsigneeNamePage(index)
+    }.orRecover
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(this).map {
+      case GBEORI =>
+        answers.get(ConsigneeEORIPage(index))
+          .map(_ => CheckConsigneePage(index))
+          .getOrElse(ConsigneeEORIPage(index))
+
+      case NameAddress =>
+        answers.get(ConsigneeNamePage(index))
+        .map (_ => CheckConsigneePage(index))
+        .getOrElse(ConsigneeNamePage(index))
     }.orRecover
 }

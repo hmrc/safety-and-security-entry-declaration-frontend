@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package pages.consignees
+package pages
 
-import controllers.consignees.{routes => consigneesRoutes}
-import models.{LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, CheckAnswersPage, DataPage, TaskListPage}
+import controllers.routes
+import models.LocalReferenceNumber
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object CheckConsigneesAndNotifiedPartiesPage extends CheckAnswersPage {
-  override val urlFragment: String = "check-consignees-notified-parties"
+case object TaskListPage extends DataPage[Nothing] {
 
   override def path: JsPath = JsPath
 
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
-
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    TaskListPage
+    routes.TaskListController.onPageLoad(lrn)
 }

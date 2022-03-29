@@ -18,9 +18,10 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 
 case object AddAnyNotifiedPartiesPage extends DataPage[Boolean] {
 
@@ -32,8 +33,23 @@ case object AddAnyNotifiedPartiesPage extends DataPage[Boolean] {
     consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
 
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    answers.get(AddAnyNotifiedPartiesPage).map {
+    answers.get(this).map {
       case true  => NotifiedPartyIdentityPage(Index(0))
       case false => CheckConsigneesAndNotifiedPartiesPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfNotifiedParties).map {
+          case n if n > 0 => CheckConsigneesAndNotifiedPartiesPage
+          case _ => NotifiedPartyIdentityPage(Index(0))
+        }.getOrElse(NotifiedPartyIdentityPage(Index(0)))
+
+      case false =>
+        answers.get(DeriveNumberOfConsignees).map {
+          case n if n > 0 => CheckConsigneesAndNotifiedPartiesPage
+          case _ => AnyConsigneesKnownPage
+        }.getOrElse(AnyConsigneesKnownPage)
     }.orRecover
 }

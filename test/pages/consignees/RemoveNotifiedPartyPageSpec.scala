@@ -17,9 +17,8 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori}
+import controllers.consignees.routes
+import models.GbEori
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
@@ -41,7 +40,7 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(index), 1).success.value
 
           RemoveNotifiedPartyPage(index).navigate(breadcrumbs, answers)
-            .mustEqual(consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn))
+            .mustEqual(routes.AddNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn))
         }
       }
 
@@ -52,7 +51,7 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
           val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
 
           RemoveNotifiedPartyPage(index).navigate(breadcrumbs, answers)
-            .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, index))
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, index))
         }
 
         "to Add Any Notified Parties when the user knows some consignees" in {
@@ -60,17 +59,8 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
           val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
 
           RemoveNotifiedPartyPage(index).navigate(breadcrumbs, answers)
-            .mustEqual(consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, answers.lrn))
+            .mustEqual(routes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, answers.lrn))
         }
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RemoveNotifiedPartyPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

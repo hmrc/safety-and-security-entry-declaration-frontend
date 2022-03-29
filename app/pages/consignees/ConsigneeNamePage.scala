@@ -33,4 +33,9 @@ case class ConsigneeNamePage(index: Index) extends DataPage[String] {
 
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
     ConsigneeAddressPage(index)
+
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+    answers.get(ConsigneeAddressPage(index))
+      .map(_ => CheckConsigneePage(index))
+      .getOrElse(ConsigneeAddressPage(index))
 }

@@ -17,9 +17,8 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.CheckMode
+import controllers.consignees.routes
+import models.GbEori
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
@@ -37,7 +36,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
         NotifiedPartyIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
       "to Consignee Name when answered `name & address`" in {
@@ -46,7 +45,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
         NotifiedPartyIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.NotifiedPartyNameController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
     }
 
@@ -59,7 +58,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
         NotifiedPartyIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
 
       "to Consignee Name when answered `name & address`" in {
@@ -68,17 +67,68 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
         NotifiedPartyIdentityPage(index)
           .navigate(breadcrumbs, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .mustEqual(routes.NotifiedPartyNameController.onPageLoad(breadcrumbs, answers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current breadcrumb is CheckNotifiedParty" - {
 
-      "to Check Your Answers" in {
+      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index)))
 
-        NotifiedPartyIdentityPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is GB EORI" - {
+
+        "And Notified Party EORI has already been answered" - {
+
+          "to Check Notified Party with the current breadcrumb removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+                .set(NotifiedPartyIdentityPage(index), GBEORI).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs.pop, lrn, index))
+          }
+        }
+
+        "And Notified Party EORI has not been answered" - {
+
+          "to Notified Party EORI" in {
+
+            val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, lrn, index))
+          }
+        }
+      }
+
+      "when the answer is Name and Address" - {
+
+        "and Notified Party Name has already been answered" - {
+
+          "to Check Notified Party with the current breadcrumb removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(NotifiedPartyNamePage(index), "Name").success.value
+                .set(NotifiedPartyIdentityPage(index), NameAddress).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs.pop, lrn, index))
+          }
+        }
+
+        "And Notified Party Name has not been answered" - {
+
+          "to Notified Party Name" in {
+
+            val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(breadcrumbs, answers)
+              .mustEqual(routes.NotifiedPartyNameController.onPageLoad(breadcrumbs, lrn, index))
+          }
+        }
       }
     }
   }
