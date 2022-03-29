@@ -17,8 +17,8 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.consignors.routes
 import controllers.{routes => baseRoutes}
+import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, DangerousGood, NormalMode}
 import pages.behaviours.PageBehaviours
 
@@ -34,12 +34,12 @@ class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate in Normal Mode" - {
 
-      "to Consignor Identity page" in {
+      "to payment method page" in {
 
         DangerousGoodCodePage(index)
           .navigate(NormalMode, emptyUserAnswers)
           .mustEqual(
-            routes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            goodsRoutes.PaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
           )
       }
     }
