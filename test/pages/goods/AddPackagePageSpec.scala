@@ -28,58 +28,18 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
   "AddPackagePage" - {
 
     "must navigate in Normal Mode" - {
+      "to Add Any Documents" in {
+        val answers =
+          emptyUserAnswers
+            .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
 
-      "when the answer is yes" - {
-
-        "to Kind of Package for the next index" in {
-
-          val answers =
-            emptyUserAnswers
-              .set(KindOfPackagePage(Index(0), Index(0)), KindOfPackage.standardKindsOfPackages.head).success.value
-              .set(NumberOfPackagesPage(Index(0), Index(0)), 1).success.value
-              .set(MarkOrNumberPage(Index(0), Index(0)), "mark or number").success.value
-
-          AddPackagePage(Index(0))
-            .navigate(NormalMode, answers, Index(0), addAnother = true)
-            .mustEqual(
-              goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, Index(0), Index(1))
-            )
-        }
+        AddPackagePage(index)
+          .navigate(NormalMode, answers, index, addAnother = false)
+          .mustEqual(
+            goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+          )
       }
-
-      "when the answer is no" - {
-
-        "and the weight is being given per item" - {
-
-          "to Goods Item Gross Weight" in {
-
-            val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-
-            AddPackagePage(index)
-              .navigate(NormalMode, answers, index, addAnother = false)
-              .mustEqual(
-                goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, index)
-              )
-          }
-        }
-
-        "and the weight is being given overall" - {
-
-          "to Add Any Documents" in {
-
-            val answers =
-              emptyUserAnswers
-                .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-
-            AddPackagePage(index)
-              .navigate(NormalMode, answers, index, addAnother = false)
-              .mustEqual(
-                goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
-              )
-            }
-          }
-        }
-      }
+    }
 
     "must navigate in Check Mode" - {
 

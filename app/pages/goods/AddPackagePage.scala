@@ -35,16 +35,7 @@ case class AddPackagePage(itemIndex: Index) extends Page {
       }
     } else {
       mode match {
-        case NormalMode =>
-          answers.get(ProvideGrossWeightPage) match {
-            case Some(ProvideGrossWeight.PerItem) =>
-              goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case Some(ProvideGrossWeight.Overall) =>
-              goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-            case _ =>
-              routes.JourneyRecoveryController.onPageLoad()
-          }
-
+        case NormalMode => goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
         case CheckMode =>
           routes.CheckYourAnswersController.onPageLoad(answers.lrn)
       }
