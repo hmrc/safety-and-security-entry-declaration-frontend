@@ -16,7 +16,6 @@
 
 package pages.goods
 
-import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
@@ -32,12 +31,9 @@ case class DangerousGoodPage(index: Index) extends QuestionPage[Boolean] {
 
   override protected def navigateInNormalMode(answers: UserAnswers): Call = {
     answers.get(DangerousGoodPage(index)) match {
-      case Some(true) =>
-        goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(false) =>
-        consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
-      case None =>
-        routes.JourneyRecoveryController.onPageLoad()
+      case Some(true) => goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
+      case Some(false) => goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
+      case None => routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }

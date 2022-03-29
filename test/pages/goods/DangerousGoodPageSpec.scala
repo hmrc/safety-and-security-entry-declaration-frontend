@@ -17,7 +17,6 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
 import controllers.{routes => baseRoutes}
 import models.{CheckMode, NormalMode}
@@ -44,13 +43,13 @@ class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
           .mustEqual(goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
       }
 
-      "to consignor identity page when answer is no" in {
+      "to goods CYA when answer is no" in {
 
         val answers = emptyUserAnswers.set(DangerousGoodPage(index), false).success.value
 
         DangerousGoodPage(index)
           .navigate(NormalMode, answers)
-          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index))
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index))
       }
     }
 
