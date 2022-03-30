@@ -21,7 +21,13 @@ import models.{Index, NormalMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.AllDocumentsQuery
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import controllers.transport.{routes => transportRoutes}
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
+
 
 object DocumentSummary {
 
@@ -36,6 +42,24 @@ object DocumentSummary {
           removeUrl = goodsRoutes.RemoveDocumentController
             .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
             .url
+        )
+    }
+
+
+  def checkAnswersRow(answers: UserAnswers,  itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AllDocumentsQuery(itemIndex)).map {
+      documents =>
+        val value = documents.map(c => s"${c.documentType.name}-${c.documentType.code}(${c.documentType.code})").mkString("<br>")
+
+        SummaryListRowViewModel(
+          key = "addAnyDocuments.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn).url
+            ).withVisuallyHiddenText(messages("addAnyDocuments.change.hidden"))
+          )
         )
     }
 }
