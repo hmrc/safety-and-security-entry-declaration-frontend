@@ -34,7 +34,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
         index =>
           val breadcrumb = s"check-notified-party-$index"
 
-          CheckNotifiedPartyPage.fromString(breadcrumb).value mustEqual CheckNotifiedPartyPage(Index(index - 1))
+          CheckNotifiedPartyPage.breadcrumbFromString(breadcrumb).value mustEqual CheckNotifiedPartyPage(Index(index - 1))
       }
     }
 
@@ -44,7 +44,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
         s =>
 
           whenever(!s.startsWith("check-notified-party-")) {
-            CheckNotifiedPartyPage.fromString(s) must not be defined
+            CheckNotifiedPartyPage.breadcrumbFromString(s) must not be defined
           }
       }
     }

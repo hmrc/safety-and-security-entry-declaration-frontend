@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.consignees.AddConsigneeFormProvider
 
 import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.{CheckMode, LocalReferenceNumber, Mode}
 import pages.Breadcrumbs
 import pages.consignees.AddConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,7 +49,8 @@ class AddConsigneeController @Inject()(
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        val consignees = AddConsigneeSummary.rows(request.userAnswers, breadcrumbs)
+        val updatedBreadcrumbs = breadcrumbs.push(AddConsigneePage.breadcrumb(CheckMode))
+        val consignees = AddConsigneeSummary.rows(request.userAnswers, updatedBreadcrumbs)
 
         Ok(view(form, breadcrumbs, lrn, consignees))
     }

@@ -18,11 +18,11 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, CheckAnswersPage, DataPage}
+import pages.{Breadcrumb, Breadcrumbs, CheckAnswersBreadcrumbPage, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class CheckConsigneePage(index: Index) extends CheckAnswersPage {
+case class CheckConsigneePage(index: Index) extends CheckAnswersBreadcrumbPage {
 
   override val urlFragment: String = s"check-consignee-${index.display}"
 
@@ -37,13 +37,13 @@ case class CheckConsigneePage(index: Index) extends CheckAnswersPage {
 
 object CheckConsigneePage {
 
-  def fromString(s: String): Option[CheckConsigneePage] = {
+  def breadcrumbFromString(s: String): Option[Breadcrumb] = {
 
     val pattern = """check-consignee-(\d{1,3})""".r.anchored
 
     s match {
       case pattern(indexDisplay) =>
-        Some(CheckConsigneePage(Index(indexDisplay.toInt - 1)))
+        Some(CheckConsigneePage(Index(indexDisplay.toInt - 1)).breadcrumb)
 
       case _ =>
         None

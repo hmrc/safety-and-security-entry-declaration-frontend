@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.consignees
 
 import models.{Index, UserAnswers}
 import pages.consignees.NotifiedPartyNamePage
-import pages.{Breadcrumbs, CheckAnswersPage, consignees}
+import pages.{Breadcrumbs, consignees}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object NotifiedPartyNameSummary {
 
-  def row(answers: UserAnswers, index: Index, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)
+  def row(answers: UserAnswers, index: Index, breadcrumbs: Breadcrumbs)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.NotifiedPartyNamePage(index)).map { answer =>
 
@@ -37,7 +37,7 @@ object NotifiedPartyNameSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            NotifiedPartyNamePage(index).route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
+            NotifiedPartyNamePage(index).route(breadcrumbs, answers.lrn).url
           ).withVisuallyHiddenText(messages("notifiedPartyName.change.hidden"))
         )
       )

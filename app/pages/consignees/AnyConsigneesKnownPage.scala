@@ -44,13 +44,13 @@ case object AnyConsigneesKnownPage extends DataPage[Boolean] {
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees).map {
-          case n if n > 0 => breadcrumbs.current.orRecover
+          case n if n > 0 => breadcrumbs.current.map(_.page).orRecover
           case _ => ConsigneeIdentityPage(Index(0))
         }.getOrElse(ConsigneeIdentityPage(Index(0)))
 
       case false =>
         answers.get(DeriveNumberOfNotifiedParties).map {
-          case n if n > 0 => breadcrumbs.current.orRecover
+          case n if n > 0 => breadcrumbs.current.map(_.page).orRecover
           case _ => NotifiedPartyIdentityPage(Index(0))
         }.getOrElse(NotifiedPartyIdentityPage(Index(0)))
     }.orRecover

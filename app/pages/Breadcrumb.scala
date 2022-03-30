@@ -16,37 +16,31 @@
 
 package pages
 
-import models.UserAnswers
-import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage, CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import pages.consignees._
 
-sealed trait Breadcrumb[A] extends DataPage[A] {
+sealed trait BreadcrumbPage[A] extends DataPage[A]
 
+trait CheckAnswersBreadcrumbPage extends BreadcrumbPage[Nothing] {
   val urlFragment: String
+
+  def breadcrumb: Breadcrumb =
+    Breadcrumb(this, CheckMode, urlFragment)
 }
 
-object Breadcrumb {
+trait AddItemBreadcrumbPage extends BreadcrumbPage[Boolean] {
+  def breadcrumb(mode: Mode): Breadcrumb = {
+    Breadcrumb(this, mode, urlFragment(mode))
+  }
 
-  def fromString(s: String): Option[Breadcrumb[_]] =
-    s match {
-      case AddConsigneePage.urlFragment =>
-        Some(AddConsigneePage)
-
-      case AddNotifiedPartyPage.urlFragment =>
-        Some(AddNotifiedPartyPage)
-
-      case CheckConsigneesAndNotifiedPartiesPage.urlFragment =>
-        Some(CheckConsigneesAndNotifiedPartiesPage)
-
-      case x =>
-        CheckConsigneePage.fromString(x) orElse
-          CheckNotifiedPartyPage.fromString(x) orElse
-          None
+  private def urlFragment(mode: Mode): String =
+    mode match {
+      case NormalMode => normalModeUrlFragment
+      case CheckMode  => checkModeUrlFragment
     }
-}
 
-trait CheckAnswersPage extends Breadcrumb[Nothing]
-
-trait AddItemPage extends Breadcrumb[Boolean] {
+  val normalModeUrlFragment: String
+  val checkModeUrlFragment: String
 
   override protected def updateBreadcrumbs(
     breadcrumbs: Breadcrumbs,
@@ -55,7 +49,39 @@ trait AddItemPage extends Breadcrumb[Boolean] {
   ): Breadcrumbs =
     answers.get(this).map {
       answer =>
-        if (answer && breadcrumbs.list.nonEmpty) { breadcrumbs.push(this) }
+        if (answer && breadcrumbs.list.nonEmpty) { breadcrumbs.push(breadcrumb(NormalMode)) }
         else                                     { super.updateBreadcrumbs(breadcrumbs, target, answers) }
     }.getOrElse(throw new Exception(s"Could not find an answer for ${this.toString}"))
+}
+
+case class Breadcrumb (
+  page: BreadcrumbPage[_],
+  mode: Mode,
+  urlFragment: String
+)
+
+object Breadcrumb {
+
+  def fromString(s: String): Option[Breadcrumb] =
+    s match {
+      case AddConsigneePage.checkModeUrlFragment =>
+        Some(AddConsigneePage.breadcrumb(CheckMode))
+
+      case AddConsigneePage.normalModeUrlFragment =>
+        Some(AddConsigneePage.breadcrumb(NormalMode))
+
+      case AddNotifiedPartyPage.checkModeUrlFragment =>
+        Some(AddNotifiedPartyPage.breadcrumb(CheckMode))
+
+      case AddNotifiedPartyPage.normalModeUrlFragment =>
+        Some(AddNotifiedPartyPage.breadcrumb(NormalMode))
+
+      case CheckConsigneesAndNotifiedPartiesPage.urlFragment =>
+        Some(CheckConsigneesAndNotifiedPartiesPage.breadcrumb)
+
+      case other =>
+        CheckConsigneePage.breadcrumbFromString(other) orElse
+          CheckNotifiedPartyPage.breadcrumbFromString(other) orElse
+          None
+    }
 }

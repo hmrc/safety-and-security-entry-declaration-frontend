@@ -17,16 +17,16 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
-import pages.{AddItemPage, Breadcrumb, Breadcrumbs, DataPage, JourneyRecoveryPage, Page}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemBreadcrumbPage, Breadcrumbs, DataPage, JourneyRecoveryPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
 
-case object AddNotifiedPartyPage extends AddItemPage {
+case object AddNotifiedPartyPage extends AddItemBreadcrumbPage {
 
-  override val urlFragment: String = "add-notified-party"
+  override val normalModeUrlFragment: String = "add-notified-party"
+  override val checkModeUrlFragment: String = "change-notified-party"
 
   override def path: JsPath = JsPath \ "addNotifiedParty"
 

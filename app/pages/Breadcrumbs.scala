@@ -17,15 +17,17 @@
 package pages
 
 import cats.implicits.toTraverseOps
+import models.{Mode, NormalMode}
 import play.api.mvc.QueryStringBindable
 
 import scala.util.{Failure, Success, Try}
 
-case class Breadcrumbs(list: List[Breadcrumb[_]]) {
+case class Breadcrumbs(list: List[Breadcrumb]) {
 
-  def current[_]: Option[Breadcrumb[_]] = list.headOption
+  def current[_]: Option[Breadcrumb] = list.headOption
+  def mode: Mode = current.map(_.mode).getOrElse(NormalMode)
 
-  def push(breadcrumb: Breadcrumb[_]): Breadcrumbs = Breadcrumbs(breadcrumb +: list)
+  def push(breadcrumb: Breadcrumb): Breadcrumbs = Breadcrumbs(breadcrumb +: list)
   def pop: Breadcrumbs = Breadcrumbs(list.tail)
 
   override def toString: String = list.map(_.urlFragment).mkString(",")

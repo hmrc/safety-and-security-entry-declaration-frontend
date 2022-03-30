@@ -16,10 +16,9 @@
 
 package viewmodels.checkAnswers.consignees
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{CheckMode, GbEori, Index, UserAnswers}
+import models.{GbEori, Index, UserAnswers}
 import pages.consignees.NotifiedPartyEORIPage
-import pages.{Breadcrumbs, CheckAnswersPage, consignees}
+import pages.{Breadcrumbs, consignees}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +27,7 @@ import viewmodels.implicits._
 
 object NotifiedPartyEORISummary {
 
-  def row(answers: UserAnswers, index: Index, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)
+  def row(answers: UserAnswers, index: Index, breadcrumbs: Breadcrumbs)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.NotifiedPartyEORIPage(index)).map { answer: GbEori =>
 
@@ -38,7 +37,7 @@ object NotifiedPartyEORISummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            NotifiedPartyEORIPage(index).route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
+            NotifiedPartyEORIPage(index).route(breadcrumbs, answers.lrn).url
           ).withVisuallyHiddenText(messages("notifiedPartyEORI.change.hidden"))
         )
       )

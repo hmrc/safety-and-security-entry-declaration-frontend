@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, NormalMode, UserAnswers}
 import play.api.mvc.Call
 import queries.{Gettable, Settable}
 
@@ -31,18 +31,20 @@ trait DataPage[A] extends Page with Gettable[A] with Settable[A] {
 
   protected def updateBreadcrumbs(breadcrumbs: Breadcrumbs, target: DataPage[_], answers: UserAnswers): Breadcrumbs =
     breadcrumbs.current.map {
-      case b if b == target => breadcrumbs.pop
-      case _                => breadcrumbs
+      case b if b.page == target => breadcrumbs.pop
+      case _ => breadcrumbs
     }.getOrElse(breadcrumbs)
 
   protected def nextPage(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    breadcrumbs.current.map {
-      case _: CheckAnswersPage => nextPageCheckMode(breadcrumbs, answers)
-      case _: AddItemPage      => nextPageNormalMode(breadcrumbs, answers)
-    }.getOrElse(nextPageNormalMode(breadcrumbs, answers))
+    breadcrumbs.mode match {
+      case CheckMode  => nextPageCheckMode(breadcrumbs, answers)
+      case NormalMode => nextPageNormalMode(breadcrumbs, answers)
+    }
 
   protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
-    breadcrumbs.current.orRecover
+    breadcrumbs.current
+      .map(_.page)
+      .orRecover
 
   protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
     throw new NotImplementedError("nextPageCheckMode is not implemented")

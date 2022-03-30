@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
+import models.{CheckMode, Index, TraderWithEori, TraderWithoutEori, UserAnswers}
 import pages.consignees.AddConsigneePage
-import pages.{Breadcrumbs, CheckAnswersPage}
+import pages.{Breadcrumb, Breadcrumbs}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllConsigneesQuery
@@ -39,14 +39,16 @@ object AddConsigneeSummary  {
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
+        val updatedBreadcrumbs = breadcrumbs.push(AddConsigneePage.breadcrumb(CheckMode))
+
         ListItem(
           name      = name,
-          changeUrl = consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url,
+          changeUrl = consigneesRoutes.CheckConsigneeController.onPageLoad(updatedBreadcrumbs, answers.lrn, Index(index)).url,
           removeUrl = consigneesRoutes.RemoveConsigneeController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)
                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllConsigneesQuery).map {
       consignees =>
@@ -62,7 +64,7 @@ object AddConsigneeSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              AddConsigneePage.route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
+              AddConsigneePage.route(breadcrumbs, answers.lrn).url
             ).withVisuallyHiddenText(messages("consignees.change.hidden"))
           )
         )

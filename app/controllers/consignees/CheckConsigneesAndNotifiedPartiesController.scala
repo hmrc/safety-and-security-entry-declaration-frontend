@@ -40,14 +40,14 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
   def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val thisPage = CheckConsigneesAndNotifiedPartiesPage
+      val changeLinkBreadcrumbs = breadcrumbs.push(CheckConsigneesAndNotifiedPartiesPage.breadcrumb)
 
       val list = SummaryListViewModel(
         rows = Seq(
-          AnyConsigneesKnownSummary.row(request.userAnswers, breadcrumbs, thisPage),
-          AddConsigneeSummary.checkAnswersRow(request.userAnswers, breadcrumbs, thisPage),
-          AddAnyNotifiedPartiesSummary.row(request.userAnswers, breadcrumbs, thisPage),
-          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, breadcrumbs, thisPage)
+          AnyConsigneesKnownSummary.row(request.userAnswers, changeLinkBreadcrumbs),
+          AddConsigneeSummary.checkAnswersRow(request.userAnswers, changeLinkBreadcrumbs),
+          AddAnyNotifiedPartiesSummary.row(request.userAnswers, changeLinkBreadcrumbs),
+          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, changeLinkBreadcrumbs)
         ).flatten
       )
 

@@ -18,11 +18,11 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, CheckAnswersPage, DataPage, TaskListPage}
+import pages.{Breadcrumbs, CheckAnswersBreadcrumbPage, DataPage, TaskListPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object CheckConsigneesAndNotifiedPartiesPage extends CheckAnswersPage {
+object CheckConsigneesAndNotifiedPartiesPage extends CheckAnswersBreadcrumbPage {
   override val urlFragment: String = "check-consignees-notified-parties"
 
   override def path: JsPath = JsPath

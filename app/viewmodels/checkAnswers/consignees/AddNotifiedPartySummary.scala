@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
-import pages.consignees.AddAnyNotifiedPartiesPage
-import pages.{Breadcrumbs, CheckAnswersPage}
+import models.{CheckMode, Index, TraderWithEori, TraderWithoutEori, UserAnswers}
+import pages.{Breadcrumb, Breadcrumbs}
+import pages.consignees.{AddAnyNotifiedPartiesPage, AddNotifiedPartyPage}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllNotifiedPartiesQuery
@@ -39,14 +39,16 @@ object AddNotifiedPartySummary  {
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
+        val updatedBreadcrumbs = breadcrumbs.push(AddNotifiedPartyPage.breadcrumb(CheckMode))
+
         ListItem(
           name      = name,
-          changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url,
+          changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(updatedBreadcrumbs, answers.lrn, Index(index)).url,
           removeUrl = consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs, checkAnswersPage: CheckAnswersPage)
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)
                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllNotifiedPartiesQuery).map {
       notifiedParties =>
@@ -62,7 +64,7 @@ object AddNotifiedPartySummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              AddAnyNotifiedPartiesPage.route(breadcrumbs.push(checkAnswersPage), answers.lrn).url
+              AddAnyNotifiedPartiesPage.route(breadcrumbs, answers.lrn).url
             ).withVisuallyHiddenText(messages("notifiedParties.change.hidden"))
           )
         )

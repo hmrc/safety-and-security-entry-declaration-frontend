@@ -18,14 +18,15 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, DataPage}
+import pages.{AddItemBreadcrumbPage, Breadcrumbs, DataPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
 
-case object AddConsigneePage extends AddItemPage {
+case object AddConsigneePage extends AddItemBreadcrumbPage {
 
-  override val urlFragment: String = "add-consignee"
+  override val normalModeUrlFragment: String = "add-consignee"
+  override val checkModeUrlFragment: String = "change-consignee"
 
   override def path: JsPath = JsPath \ "addConsignee"
 
@@ -51,6 +52,8 @@ case object AddConsigneePage extends AddItemPage {
         .orRecover
 
       case false =>
-        breadcrumbs.current.orRecover
+        breadcrumbs.current
+          .map(_.page)
+          .orRecover
     }.orRecover
 }

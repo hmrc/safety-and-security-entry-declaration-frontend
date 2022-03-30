@@ -34,7 +34,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
         index =>
           val breadcrumb = s"check-consignee-$index"
 
-          CheckConsigneePage.fromString(breadcrumb).value mustEqual CheckConsigneePage(Index(index - 1))
+          CheckConsigneePage.breadcrumbFromString(breadcrumb).value mustEqual CheckConsigneePage(Index(index - 1))
       }
     }
 
@@ -44,7 +44,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
         s =>
 
           whenever(!s.startsWith("check-consignee-")) {
-            CheckConsigneePage.fromString(s) must not be defined
+            CheckConsigneePage.breadcrumbFromString(s) must not be defined
           }
       }
     }

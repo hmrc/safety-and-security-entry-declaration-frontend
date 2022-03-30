@@ -41,14 +41,14 @@ class CheckNotifiedPartyController @Inject() (
   def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val thisPage = CheckNotifiedPartyPage(index)
+      val changeLinkBreadcrumbs = breadcrumbs.push(CheckNotifiedPartyPage(index).breadcrumb)
 
       val list = SummaryListViewModel(
         rows = Seq(
-          NotifiedPartyIdentitySummary.row(request.userAnswers, index, breadcrumbs, thisPage),
-          NotifiedPartyEORISummary.row(request.userAnswers, index, breadcrumbs, thisPage),
-          NotifiedPartyNameSummary.row(request.userAnswers, index, breadcrumbs, thisPage),
-          NotifiedPartyAddressSummary.row(request.userAnswers, index, breadcrumbs, thisPage)
+          NotifiedPartyIdentitySummary.row(request.userAnswers, index, changeLinkBreadcrumbs),
+          NotifiedPartyEORISummary.row(request.userAnswers, index, changeLinkBreadcrumbs),
+          NotifiedPartyNameSummary.row(request.userAnswers, index, changeLinkBreadcrumbs),
+          NotifiedPartyAddressSummary.row(request.userAnswers, index, changeLinkBreadcrumbs)
         ).flatten
       )
 
