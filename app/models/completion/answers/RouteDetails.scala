@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package models.completion.downstream
+package models.completion.answers
 
-import models.Country
+import models.completion.{CustomsOffice, Itinerary, LoadingPlace}
 
-case class Itinerary(countries: List[Country])
+case class RouteDetails(
+  placesOfLoading: Map[Int, LoadingPlace],
+  placesOfUnloading: Map[Int, LoadingPlace],
+  itinerary: Itinerary,
+  customsOffice: CustomsOffice
+)

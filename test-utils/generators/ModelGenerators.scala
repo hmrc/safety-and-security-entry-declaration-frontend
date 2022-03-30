@@ -17,7 +17,8 @@
 package generators
 
 import models._
-import models.completion.downstream.{CustomsOffice => _, _}
+import models.completion.{CustomsOffice => _, _}
+import models.completion.downstream._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 

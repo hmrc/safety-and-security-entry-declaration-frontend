@@ -22,6 +22,7 @@ import play.api.libs.json.Reads
 
 import models.UserAnswers
 import pages.QuestionPage
+import queries.Gettable
 
 /**
  * Extractor DSL to neatly handle extracting answers in common patterns
@@ -52,6 +53,48 @@ trait Extractors {
     answers.get(canProvidePage) map {
       case true => requireAnswer[T](answerPage) map { Some(_) }
       case _ => None.validNec
+    } getOrElse ValidationError.MissingField(canProvidePage).invalidNec
+  }
+
+  /**
+   * Extract a list of items, as from the "add to list" pattern
+   *
+   * This assumes that having an empty list is an error, and that the list can be accessed via a
+   * query
+   *
+   * @param query The query to run to fetch the list from user answers
+   * @param requiredPage The page to report as missing if we extracted an empty list or entirely
+   *   missed section; this is probably the page where you record the first element
+   */
+  def requireList[T : Reads](query: Gettable[List[T]], requiredPage: QuestionPage[T])(
+    implicit answers: UserAnswers
+  ): ValidationResult[List[T]] = {
+    answers.get(query) flatMap {
+      case Nil => None
+      case results => Some(results.validNec)
+    } getOrElse ValidationError.MissingField(requiredPage).invalidNec
+  }
+
+  /**
+   * Extract list of items guarded by a "can you provide... / do you need to provide..." page
+   *
+   * This is effectively a combination of `getAnswer` and `requireList`: we check whether the user
+   * has answered the "guard" question, as in `getAnswer`, and then we extract a list if they have
+   * said yes, they will provide one or more items.
+   *
+   * This enforces the following rules:
+   *   - If they answered yes to `canProvidePage`, there must be at least one item provided
+   *   - If they answered no to `canProvidePage`, we'll return Nil
+   *   - If they didn't answer `canProvidePage`, we'll error as that field is missing
+   */
+  def getList[T : Reads](
+    canProvidePage: QuestionPage[Boolean],
+    query: Gettable[List[T]],
+    requiredPage: QuestionPage[T]
+  )(implicit answers: UserAnswers): ValidationResult[List[T]] = {
+    answers.get(canProvidePage) map {
+      case true => requireList[T](query, requiredPage)
+      case _ => Nil.validNec
     } getOrElse ValidationError.MissingField(canProvidePage).invalidNec
   }
 }

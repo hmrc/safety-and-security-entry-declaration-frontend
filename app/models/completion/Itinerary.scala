@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package models.completion.downstream
+package models.completion
 
 import models.Country
 
-/**
- * A place where good are loaded or unloaded
- *
- * Represents both the "place of loading" and "place of unloading" and is a simplified version of
- * the individual models found in the journey
- */
-case class LoadingPlace(country: Country, desc: String)
+case class Itinerary(countries: List[Country])

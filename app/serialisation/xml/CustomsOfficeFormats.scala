@@ -19,7 +19,7 @@ package serialisation.xml
 import java.time.Instant
 import scala.xml.NodeSeq
 
-import models.completion.downstream.CustomsOffice
+import models.completion.CustomsOffice
 import serialisation.xml.XmlImplicits._
 
 trait CustomsOfficeFormats extends CommonFormats with TimeFormats {

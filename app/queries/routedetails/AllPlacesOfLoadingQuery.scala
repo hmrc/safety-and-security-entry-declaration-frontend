@@ -18,9 +18,11 @@ package queries.routedetails
 
 import models.PlaceOfLoading
 import play.api.libs.json.JsPath
-import queries.Gettable
+import queries.{Gettable, Settable}
 
-case object AllPlacesOfLoadingQuery extends Gettable[List[PlaceOfLoading]] {
+case object AllPlacesOfLoadingQuery
+  extends Settable[List[PlaceOfLoading]]
+  with Gettable[List[PlaceOfLoading]] {
 
   override def path: JsPath = JsPath \ "placesOfLoading"
 }
