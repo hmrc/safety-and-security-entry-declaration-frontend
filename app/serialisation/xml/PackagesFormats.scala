@@ -18,7 +18,7 @@ package serialisation.xml
 
 import scala.xml.NodeSeq
 
-import models.completion.downstream.Packages
+import models.completion.downstream.Package
 import models.KindOfPackage
 import serialisation.xml.XmlImplicits._
 
@@ -33,27 +33,31 @@ trait PackagesFormats extends CommonFormats {
     }
   }
 
-  implicit val packagesFmt = new Format[Packages] {
-    override def encode(packages: Packages): NodeSeq = {
+  implicit val packageFmt = new Format[Package] {
+    override def encode(p: Package): NodeSeq = {
       val numPackages: NodeSeq = {
-        packages.numPackages.map { n => <NumOfPacGS24>{n}</NumOfPacGS24> }.toSeq
+        p.numPackages.map { n => <NumOfPacGS24>{n}</NumOfPacGS24> }.toSeq
       }
       val numPieces: NodeSeq = {
-        packages.numPieces.map { n => <NumOfPieGS25>{n}</NumOfPieGS25> }.toSeq
+        p.numPieces.map { n => <NumOfPieGS25>{n}</NumOfPieGS25> }.toSeq
       }
+      val mark: NodeSeq = {
+        p.mark.map { m => <MarNumOfPacGSL21>{m}</MarNumOfPacGSL21> }.toSeq
+      }
+
       Seq(
-        <KinOfPacGS23>{packages.kindPackage.toXmlString}</KinOfPacGS23>,
+        <KinOfPacGS23>{p.kindPackage.toXmlString}</KinOfPacGS23>,
         numPackages,
         numPieces,
-        <MarNumOfPacGSL21>{packages.itemMark}</MarNumOfPacGSL21>
+        mark
       ).flatten
     }
 
-    override def decode(data: NodeSeq): Packages = Packages(
+    override def decode(data: NodeSeq): Package = Package(
       kindPackage = (data \\ "KinOfPacGS23").text.parseXmlString[KindOfPackage],
       numPackages = (data \\ "NumOfPacGS24").headOption map { _.text.toInt },
       numPieces = (data \\ "NumOfPieGS25").headOption map { _.text.toInt },
-      itemMark = (data \\ "MarNumOfPacGSL21").text
+      mark = (data \\ "MarNumOfPacGSL21").headOption map { _.text }
     )
   }
 }

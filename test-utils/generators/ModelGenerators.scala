@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import models.completion.downstream.{Header, MessageSender, MessageType, TransportDetails}
+import models.completion.downstream.{CustomsOffice => _, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
@@ -287,6 +287,26 @@ trait ModelGenerators {
     }
   }
 
+  implicit lazy val arbitraryGoodsIdByCommCode: Arbitrary[GoodsItemIdentity.ByCommodityCode] = Arbitrary {
+    Gen.listOfN(8, Gen.alphaNumChar) map { code: List[Char] =>
+      GoodsItemIdentity.ByCommodityCode(code.mkString.toUpperCase)
+    }
+  }
+
+  implicit lazy val arbitraryGoodsIdDesc: Arbitrary[GoodsItemIdentity.WithDescription] = Arbitrary {
+    for {
+      len <- Gen.choose(10, 200)
+      desc <- Gen.listOfN(len, Gen.alphaNumChar)
+    } yield GoodsItemIdentity.WithDescription(desc.mkString.toUpperCase)
+  }
+
+  implicit lazy val arbitraryGoodsId: Arbitrary[GoodsItemIdentity] = Arbitrary {
+    Gen.oneOf(
+      arbitrary[GoodsItemIdentity.ByCommodityCode],
+      arbitrary[GoodsItemIdentity.WithDescription]
+    )
+  }
+
   implicit lazy val arbitraryMessageSender: Arbitrary[MessageSender] = Arbitrary {
     for {
       eori <- Gen.numStr map { _.take(15) }
@@ -296,5 +316,86 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryMessageType: Arbitrary[MessageType] = Arbitrary {
     Gen.oneOf(MessageType.Submission, MessageType.Amendment)
+  }
+
+  implicit lazy val arbitraryDangerousGoodsCode: Arbitrary[DangerousGoodsCode] = Arbitrary {
+    arbitrary[DangerousGood].map { good => DangerousGoodsCode(good.code) }
+  }
+
+  implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] = Arbitrary {
+    for {
+      country <- arbitrary[Country]
+      len <- Gen.choose(2, 32)
+      desc <- Gen.listOfN(len, Gen.alphaNumChar)
+    } yield LoadingPlace(country, desc.mkString)
+  }
+
+  implicit lazy val arbitraryPartyByEori: Arbitrary[Party.ByEori] = Arbitrary {
+    for {
+      country <- Gen.oneOf(Country.allCountries)
+      number <- Gen.numStr.map { _.take(12) }
+    } yield Party.ByEori(s"${country.code}$number")
+  }
+
+  implicit lazy val arbitraryPartyByAddress: Arbitrary[Party.ByAddress] = Arbitrary {
+    for {
+      name <- Gen.alphaStr.map { _.take(40) }
+      addr <- arbitrary[Address]
+    } yield Party.ByAddress(name, addr)
+  }
+
+  implicit lazy val arbitraryParty: Arbitrary[Party] = Arbitrary {
+    Gen.oneOf(arbitrary[Party.ByEori], arbitrary[Party.ByAddress])
+  }
+
+  implicit lazy val arbitrarySpecialMention = Arbitrary {
+    Gen.listOfN(5, Gen.numChar) map { v => SpecialMention(v.mkString) }
+  }
+
+  implicit lazy val arbitraryPackage = Arbitrary {
+    for {
+      kindPackage <- arbitrary[KindOfPackage]
+      numPackages <- Gen.option(Gen.choose(0, 99999))
+      numPieces <- Gen.option(Gen.choose(0, 99999))
+      mark <- Gen.option(Gen.alphaStr.map { _.take(2) })
+    } yield Package(kindPackage, numPackages, numPieces, mark)
+  }
+
+  implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] = Arbitrary {
+    for {
+      itemNumber <- Gen.choose(1, 1000)
+      itemId <- arbitrary[GoodsItemIdentity]
+      grossMass <- Gen.option(Gen.choose(BigDecimal("0.001"), BigDecimal("99999999.999")))
+      paymentMethod <- arbitrary[PaymentMethod]
+      dangerousGoodsCode <- Gen.option(arbitrary[DangerousGoodsCode])
+      placeOfLoading <- arbitrary[LoadingPlace]
+      placeOfUnloading <- arbitrary[LoadingPlace]
+      documentsLen <- Gen.choose(0, 99)
+      documents <- Gen.listOfN(documentsLen, arbitrary[Document])
+      consignor <- arbitrary[Party]
+      consignee <- Gen.option(arbitrary[Party])
+      notifiedParty <- Gen.option(arbitrary[Party])
+      containersLen <- Gen.choose(0, 99)
+      containers <- Gen.listOfN(containersLen, arbitrary[Container])
+      packagesLen <- Gen.choose(0, 99)
+      packages <- Gen.listOfN(packagesLen, arbitrary[Package])
+      specialMentionsLen <- Gen.choose(0, 10)
+      specialMentions <- Gen.listOfN(specialMentionsLen, arbitrary[SpecialMention])
+    } yield GoodsItem(
+      itemNumber,
+      itemId,
+      grossMass,
+      paymentMethod,
+      dangerousGoodsCode,
+      placeOfLoading,
+      placeOfUnloading,
+      documents,
+      consignor,
+      consignee,
+      notifiedParty,
+      containers,
+      packages,
+      specialMentions
+    )
   }
 }
