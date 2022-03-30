@@ -326,7 +326,7 @@ consignorIdentity.change.hidden = how you want to identify the consignor
 
 addAnyDocuments.title = Do you need to add any documents?
 addAnyDocuments.heading = Do you need to add any documents?
-addAnyDocuments.checkYourAnswersLabel = Do you need to add any documents?
+addAnyDocuments.checkYourAnswersLabel = Documents
 addAnyDocuments.error.required = Select yes if you need to add any documents
 addAnyDocuments.change.hidden = if you need to add any documents
 
