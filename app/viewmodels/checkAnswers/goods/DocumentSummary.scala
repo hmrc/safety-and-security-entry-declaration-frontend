@@ -49,7 +49,7 @@ object DocumentSummary {
   def checkAnswersRow(answers: UserAnswers,  itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllDocumentsQuery(itemIndex)).map {
       documents =>
-        val value = documents.map(c => s"${c.documentType.name}-${c.documentType.code}(${c.documentType.code})").mkString("<br>")
+        val value = documents.map(c => s"${c.documentType.name}-${c.documentType.code}(${c.reference})").mkString("<br>")
 
         SummaryListRowViewModel(
           key = "addAnyDocuments.checkYourAnswersLabel",
