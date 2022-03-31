@@ -17,6 +17,7 @@
 package serialisation.xml
 
 import models.{Container, Country, Document, DocumentType, PaymentMethod}
+import models.completion.LoadingPlace
 import models.completion.downstream._
 import scala.xml.NodeSeq
 import serialisation.xml.XmlImplicits._

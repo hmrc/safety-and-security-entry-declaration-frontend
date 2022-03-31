@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.completion.downstream
+package models.completion
 
 import java.time.Instant
 

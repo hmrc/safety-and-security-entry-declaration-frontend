@@ -18,7 +18,7 @@ package serialisation.xml
 
 import base.SpecBase
 import models.Country
-import models.completion.downstream.Itinerary
+import models.completion.Itinerary
 
 class ItineraryFormatsSpec extends SpecBase with ItineraryFormats with XmlImplicits {
   "The itinerary format" - {

@@ -16,10 +16,11 @@
 
 package serialisation.xml
 
-import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.completion.downstream.CustomsOffice
+
+import base.SpecBase
+import models.completion.CustomsOffice
 import models.{CustomsOffice => JourneyCustomsOffice}
 
 class CustomsOfficeFormatsSpec
