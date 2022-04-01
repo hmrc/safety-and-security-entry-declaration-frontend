@@ -18,11 +18,11 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class NotifiedPartyEORIPage(index: Index) extends DataPage[GbEori] {
+case class NotifiedPartyEORIPage(index: Index) extends NotifiedPartyQuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
@@ -31,6 +31,6 @@ case class NotifiedPartyEORIPage(index: Index) extends DataPage[GbEori] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     CheckNotifiedPartyPage(index)
 }

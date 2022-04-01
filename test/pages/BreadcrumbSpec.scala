@@ -17,36 +17,47 @@
 package pages
 
 import base.SpecBase
-import models.Index
+import models.{CheckMode, Index, NormalMode}
 import pages.consignees._
 
 class BreadcrumbSpec extends SpecBase {
 
   ".fromString" - {
 
-    "must return AddConsigneePage when given its breadcrumb" in {
+    "must return AddConsigneePage when given its normal-mode breadcrumb" in {
 
-      Breadcrumb.fromString("add-consignee").value mustEqual AddConsigneePage
+      Breadcrumb.fromString("add-consignee").value mustEqual AddConsigneePage.breadcrumb(NormalMode)
     }
 
-    "must return AddNotifiedPartyPage when given its breadcrumb" in {
+    "must return AddConsigneePage when given its check-mode breadcrumb" in {
 
-      Breadcrumb.fromString("add-notified-party").value mustEqual AddNotifiedPartyPage
+      Breadcrumb.fromString("change-consignee").value mustEqual AddConsigneePage.breadcrumb(CheckMode)
+    }
+
+    "must return AddNotifiedPartyPage when given its normal-mode breadcrumb" in {
+
+      Breadcrumb.fromString("add-notified-party").value mustEqual AddNotifiedPartyPage.breadcrumb(NormalMode)
+    }
+
+    "must return AddNotifiedPartyPage when given its check-mode breadcrumb" in {
+
+      Breadcrumb.fromString("change-notified-party").value mustEqual AddNotifiedPartyPage.breadcrumb(CheckMode)
     }
 
     "must return CheckConsigneesAndNotifiedPartiesPage when given its breadcrumb" in {
 
-      Breadcrumb.fromString("check-consignees-notified-parties").value mustEqual CheckConsigneesAndNotifiedPartiesPage
+      Breadcrumb.fromString("check-consignees-notified-parties").value.
+        mustEqual(CheckConsigneesAndNotifiedPartiesPage.breadcrumb)
     }
 
     "must return CheckConsigneePage when given its breadcrumb" in {
 
-      Breadcrumb.fromString("check-consignee-1").value mustEqual CheckConsigneePage(Index(0))
+      Breadcrumb.fromString("check-consignee-1").value mustEqual CheckConsigneePage(Index(0)).breadcrumb
     }
 
     "must return CheckNotifiedPartyPage when given its breadcrumb" in {
 
-      Breadcrumb.fromString("check-notified-party-1").value mustEqual CheckNotifiedPartyPage(Index(0))
+      Breadcrumb.fromString("check-notified-party-1").value mustEqual CheckNotifiedPartyPage(Index(0)).breadcrumb
     }
   }
 }

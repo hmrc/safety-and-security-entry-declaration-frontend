@@ -18,12 +18,12 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemBreadcrumbPage, Breadcrumbs, DataPage, JourneyRecoveryPage}
+import pages.{AddItemPage, Breadcrumbs, QuestionPage, JourneyRecoveryPage, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
 
-case object AddNotifiedPartyPage extends AddItemBreadcrumbPage {
+case object AddNotifiedPartyPage extends QuestionPage[Boolean] with AddItemPage {
 
   override val normalModeUrlFragment: String = "add-notified-party"
   override val checkModeUrlFragment: String = "change-notified-party"
@@ -33,7 +33,7 @@ case object AddNotifiedPartyPage extends AddItemBreadcrumbPage {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.AddNotifiedPartyController.onPageLoad(breadcrumbs, lrn)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(AddNotifiedPartyPage).map {
       case true =>
         answers.get(DeriveNumberOfNotifiedParties).map {
@@ -45,7 +45,7 @@ case object AddNotifiedPartyPage extends AddItemBreadcrumbPage {
         CheckConsigneesAndNotifiedPartiesPage
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfNotifiedParties).map {

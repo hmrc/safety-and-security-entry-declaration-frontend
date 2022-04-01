@@ -49,8 +49,7 @@ class AddConsigneeController @Inject()(
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        val updatedBreadcrumbs = breadcrumbs.push(AddConsigneePage.breadcrumb(CheckMode))
-        val consignees = AddConsigneeSummary.rows(request.userAnswers, updatedBreadcrumbs)
+        val consignees = AddConsigneeSummary.rows(request.userAnswers, breadcrumbs, AddConsigneePage)
 
         Ok(view(form, breadcrumbs, lrn, consignees))
     }
@@ -61,7 +60,7 @@ class AddConsigneeController @Inject()(
 
         form.bindFromRequest().fold(
           formWithErrors => {
-            val consignees = AddConsigneeSummary.rows(request.userAnswers, breadcrumbs)
+            val consignees = AddConsigneeSummary.rows(request.userAnswers, breadcrumbs, AddConsigneePage)
 
             Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, consignees)))
           },

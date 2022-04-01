@@ -36,7 +36,7 @@ class ConsigneeNameControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new ConsigneeNameFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val consigneeNameRoute =
     routes.ConsigneeNameController.onPageLoad(breadcrumbs, lrn, index).url

@@ -17,15 +17,14 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.DataPage
-import pages.Breadcrumbs
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Breadcrumbs, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
 
 
-final case class RemoveConsigneePage(index: Index) extends DataPage[Boolean] {
+final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
@@ -34,7 +33,7 @@ final case class RemoveConsigneePage(index: Index) extends DataPage[Boolean] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.RemoveConsigneeController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfConsignees).map {
       case n if n > 0 => AddConsigneePage
       case _ => AnyConsigneesKnownPage

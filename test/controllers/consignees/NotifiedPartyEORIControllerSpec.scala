@@ -36,7 +36,7 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new NotifiedPartyEORIFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
   
   lazy val notifiedPartyEORIRoute =
     routes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, lrn, index).url

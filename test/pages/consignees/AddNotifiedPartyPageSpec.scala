@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{GbEori, Index, NotifiedPartyIdentity}
+import models.{GbEori, Index, NormalMode, NotifiedPartyIdentity}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
@@ -54,7 +54,7 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is Check Consignees and Notified Parties" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneesAndNotifiedPartiesPage))
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneesAndNotifiedPartiesPage.breadcrumb))
 
       "when the answer is yes" - {
 
@@ -68,7 +68,7 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
 
           AddNotifiedPartyPage.navigate(breadcrumbs, answers)
-            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs.push(AddNotifiedPartyPage), answers.lrn, Index(1)))
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs.push(AddNotifiedPartyPage.breadcrumb(NormalMode)), answers.lrn, Index(1)))
         }
       }
 

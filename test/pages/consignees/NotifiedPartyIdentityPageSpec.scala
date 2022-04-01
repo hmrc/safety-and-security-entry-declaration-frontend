@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{Address, Country, GbEori, NotifiedPartyIdentity}
+import models.{Address, Country, GbEori, NormalMode, NotifiedPartyIdentity}
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
@@ -51,7 +51,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is AddNotifiedParty" - {
 
-      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage))
+      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage.breadcrumb(NormalMode)))
 
       "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
@@ -73,7 +73,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is CheckNotifiedParty" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index)))
+      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index).breadcrumb))
 
       "when the answer is GB EORI" - {
 

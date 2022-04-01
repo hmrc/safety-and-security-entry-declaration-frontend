@@ -18,8 +18,8 @@ package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{CheckMode, Index, TraderWithEori, TraderWithoutEori, UserAnswers}
+import pages.{AddItemPage, Breadcrumbs, CheckAnswersPage}
 import pages.consignees.AddConsigneePage
-import pages.{Breadcrumb, Breadcrumbs}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllConsigneesQuery
@@ -31,7 +31,7 @@ import viewmodels.implicits._
 
 object AddConsigneeSummary  {
 
-  def rows(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Seq[ListItem] =
+  def rows(answers: UserAnswers, breadcrumbs: Breadcrumbs, sourcePage: AddItemPage)(implicit messages: Messages): Seq[ListItem] =
     answers.get(AllConsigneesQuery).getOrElse(List.empty).zipWithIndex.map {
       case (consignee, index) =>
         val name = consignee match {
@@ -39,19 +39,21 @@ object AddConsigneeSummary  {
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
-        val updatedBreadcrumbs = breadcrumbs.push(AddConsigneePage.breadcrumb(CheckMode))
+        val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb(CheckMode))
 
         ListItem(
           name      = name,
-          changeUrl = consigneesRoutes.CheckConsigneeController.onPageLoad(updatedBreadcrumbs, answers.lrn, Index(index)).url,
+          changeUrl = consigneesRoutes.CheckConsigneeController.onPageLoad(changeLinkBreadcrumbs, answers.lrn, Index(index)).url,
           removeUrl = consigneesRoutes.RemoveConsigneeController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs, sourcePage: CheckAnswersPage)
                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllConsigneesQuery).map {
       consignees =>
+
+        val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
 
         val value = consignees.map {
           case c: TraderWithEori => c.eori
@@ -64,7 +66,7 @@ object AddConsigneeSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              AddConsigneePage.route(breadcrumbs, answers.lrn).url
+              AddConsigneePage.route(changeLinkBreadcrumbs, answers.lrn).url
             ).withVisuallyHiddenText(messages("consignees.change.hidden"))
           )
         )

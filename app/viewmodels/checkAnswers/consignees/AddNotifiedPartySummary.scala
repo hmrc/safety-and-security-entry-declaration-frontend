@@ -18,8 +18,8 @@ package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{CheckMode, Index, TraderWithEori, TraderWithoutEori, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs}
-import pages.consignees.{AddAnyNotifiedPartiesPage, AddNotifiedPartyPage}
+import pages.{AddItemPage, Breadcrumbs, CheckAnswersPage}
+import pages.consignees.AddAnyNotifiedPartiesPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllNotifiedPartiesQuery
@@ -31,7 +31,7 @@ import viewmodels.implicits._
 
 object AddNotifiedPartySummary  {
 
-  def rows(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Seq[ListItem] =
+  def rows(answers: UserAnswers, breadcrumbs: Breadcrumbs, sourcePage: AddItemPage)(implicit messages: Messages): Seq[ListItem] =
     answers.get(AllNotifiedPartiesQuery).getOrElse(List.empty).zipWithIndex.map {
       case (notifiedParty, index) =>
         val name = notifiedParty match {
@@ -39,19 +39,21 @@ object AddNotifiedPartySummary  {
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
-        val updatedBreadcrumbs = breadcrumbs.push(AddNotifiedPartyPage.breadcrumb(CheckMode))
+        val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb(CheckMode))
 
         ListItem(
           name      = name,
-          changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(updatedBreadcrumbs, answers.lrn, Index(index)).url,
+          changeUrl = consigneesRoutes.CheckNotifiedPartyController.onPageLoad(changeLinkBreadcrumbs, answers.lrn, Index(index)).url,
           removeUrl = consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn, Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs)
+  def checkAnswersRow(answers: UserAnswers, breadcrumbs: Breadcrumbs, sourcePage: CheckAnswersPage)
                      (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllNotifiedPartiesQuery).map {
       notifiedParties =>
+
+        val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
 
         val value = notifiedParties.map {
           case np: TraderWithEori => np.eori
@@ -64,7 +66,7 @@ object AddNotifiedPartySummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              AddAnyNotifiedPartiesPage.route(breadcrumbs, answers.lrn).url
+              AddAnyNotifiedPartiesPage.route(changeLinkBreadcrumbs, answers.lrn).url
             ).withVisuallyHiddenText(messages("notifiedParties.change.hidden"))
           )
         )

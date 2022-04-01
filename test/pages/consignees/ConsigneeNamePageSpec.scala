@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{Address, Country}
+import models.{Address, Country, NormalMode}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -42,7 +42,7 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is AddConsignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+      val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb(NormalMode)))
 
       "to consignee address" in {
 
@@ -56,7 +56,7 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is Check Consignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index)))
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index).breadcrumb))
 
       "and Consignee Address has been answered" - {
 

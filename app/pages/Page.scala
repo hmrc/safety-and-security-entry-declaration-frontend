@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 
 import scala.language.implicitConversions
@@ -35,6 +35,52 @@ trait Page {
 
   protected def navigateInCheckMode(answers: UserAnswers): Call =
     routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+
+  // ******************************
+
+  def navigate(breadcrumbs: Breadcrumbs, answers: UserAnswers): Call = {
+    val targetPage = nextPage(breadcrumbs, answers)
+    val updatedBreadcrumbs = updateBreadcrumbs(breadcrumbs, targetPage)
+    targetPage.route(updatedBreadcrumbs, answers.lrn)
+  }
+
+  protected def updateBreadcrumbs(breadcrumbs: Breadcrumbs, target: Page): Breadcrumbs = {
+
+    (this, target) match {
+      case (_, thatPage: AddToListQuestionPage) =>
+        if (breadcrumbs.list.isEmpty || breadcrumbs.current.contains(thatPage.addItemBreadcrumb)) {
+          breadcrumbs
+        } else {
+          breadcrumbs.push(thatPage.addItemBreadcrumb)
+        }
+
+      case _ =>
+        breadcrumbs.current.map {
+          case b if b.page == target => breadcrumbs.pop
+          case _ => breadcrumbs
+        }.getOrElse(breadcrumbs)
+    }
+  }
+
+  protected def nextPage(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+    breadcrumbs.mode match {
+      case CheckMode  => nextPageCheckMode(breadcrumbs, answers)
+      case NormalMode => nextPageNormalMode(breadcrumbs, answers)
+    }
+
+  protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+    breadcrumbs.current
+      .map(_.page)
+      .orRecover
+
+  protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+    throw new NotImplementedError("nextPageCheckMode is not implemented")
+
+  def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+    throw new NotImplementedError("route is not implemented")
+
+  def changeLink(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
+    route(breadcrumbs.push(sourcePage.breadcrumb), lrn)
 }
 
 object Page {

@@ -18,7 +18,6 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import org.scalacheck.Arbitrary.arbitrary
 import pages.Breadcrumbs
 import pages.consignees.CheckNotifiedPartyPage
 import play.api.test.FakeRequest
@@ -28,7 +27,7 @@ import views.html.consignees.CheckNotifiedPartyView
 
 class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   "Check Notified Party Controller" - {
 
@@ -59,7 +58,8 @@ class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers)
+        redirectLocation(result).value.
+          mustEqual(CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers).url)
       }
     }
 

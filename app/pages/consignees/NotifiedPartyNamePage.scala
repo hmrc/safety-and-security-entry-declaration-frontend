@@ -17,12 +17,12 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Breadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class NotifiedPartyNamePage(index: Index) extends DataPage[String] {
+case class NotifiedPartyNamePage(index: Index) extends NotifiedPartyQuestionPage[String] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
@@ -31,10 +31,10 @@ case class NotifiedPartyNamePage(index: Index) extends DataPage[String] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneeRoutes.NotifiedPartyNameController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     NotifiedPartyAddressPage(index)
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(NotifiedPartyAddressPage(index))
       .map(_ => CheckNotifiedPartyPage(index))
       .getOrElse(NotifiedPartyAddressPage(index))

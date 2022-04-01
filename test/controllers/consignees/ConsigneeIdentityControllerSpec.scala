@@ -39,7 +39,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
   
   private val formProvider = new ConsigneeIdentityFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val consigneeIdentityRoute =
     routes.ConsigneeIdentityController.onPageLoad(breadcrumbs, lrn, index).url

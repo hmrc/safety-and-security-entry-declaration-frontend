@@ -18,14 +18,14 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, JourneyRecoveryPage, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.{AllNotifiedPartiesQuery, DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 
 import scala.util.Try
 
-case object AddAnyNotifiedPartiesPage extends DataPage[Boolean] {
+case object AddAnyNotifiedPartiesPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -34,23 +34,23 @@ case object AddAnyNotifiedPartiesPage extends DataPage[Boolean] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true  => NotifiedPartyIdentityPage(Index(0))
       case false => CheckConsigneesAndNotifiedPartiesPage
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfNotifiedParties).map {
-          case n if n > 0 => CheckConsigneesAndNotifiedPartiesPage
+          case n if n > 0 => breadcrumbs.current.map(_.page).getOrElse(JourneyRecoveryPage)
           case _ => NotifiedPartyIdentityPage(Index(0))
         }.getOrElse(NotifiedPartyIdentityPage(Index(0)))
 
       case false =>
         answers.get(DeriveNumberOfConsignees).map {
-          case n if n > 0 => CheckConsigneesAndNotifiedPartiesPage
+          case n if n > 0 => breadcrumbs.current.map(_.page).getOrElse(JourneyRecoveryPage)
           case _ => AnyConsigneesKnownPage
         }.getOrElse(AnyConsigneesKnownPage)
     }.orRecover

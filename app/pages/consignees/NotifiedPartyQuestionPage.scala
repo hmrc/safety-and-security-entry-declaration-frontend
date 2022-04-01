@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package object pages {
+package pages.consignees
 
-  implicit class RecoveryOps(val a: Option[Page]) {
-    def orRecover: Page =
-      a.getOrElse(JourneyRecoveryPage)
-  }
+import models.NormalMode
+import pages.{AddToListQuestionPage, AddToListSection, Breadcrumb, NotifiedPartySection, QuestionPage}
+
+trait NotifiedPartyQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
+
+  override val addItemBreadcrumb: Breadcrumb = AddNotifiedPartyPage.breadcrumb(NormalMode)
+
+  override val section: AddToListSection = NotifiedPartySection
 }

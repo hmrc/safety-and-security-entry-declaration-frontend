@@ -37,7 +37,7 @@ class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AddAnyNotifiedPartiesFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val addAnyNotifiedPartiesRoute = routes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, lrn).url
 

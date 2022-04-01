@@ -21,7 +21,7 @@ import models.LocalReferenceNumber
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TaskListPage extends DataPage[Nothing] {
+case object TaskListPage extends QuestionPage[Nothing] {
 
   override def path: JsPath = JsPath
 

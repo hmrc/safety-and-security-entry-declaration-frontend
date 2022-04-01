@@ -48,7 +48,7 @@ class AddNotifiedPartyController @Inject()(
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, breadcrumbs)
+        val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, breadcrumbs, AddNotifiedPartyPage)
 
         Ok(view(form, breadcrumbs, lrn, notifiedParties))
     }
@@ -59,7 +59,7 @@ class AddNotifiedPartyController @Inject()(
 
         form.bindFromRequest().fold(
           formWithErrors => {
-            val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, breadcrumbs)
+            val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, breadcrumbs, AddNotifiedPartyPage)
 
             Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, notifiedParties)))
           },

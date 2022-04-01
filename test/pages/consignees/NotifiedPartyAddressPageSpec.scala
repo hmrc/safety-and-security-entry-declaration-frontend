@@ -18,6 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
+import models.NormalMode
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -41,7 +42,7 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is AddNotifiedParty" - {
 
-      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage))
+      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage.breadcrumb((NormalMode))))
 
       "to Check Notified Party" in {
 
@@ -55,7 +56,7 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is CheckNotifiedParty" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index)))
+      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index).breadcrumb))
 
       "to Check Notified Party with the current breadcrumb removed" in {
 

@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.consignees
 
 import models.UserAnswers
 import pages.consignees.AnyConsigneesKnownPage
-import pages.{Breadcrumbs, consignees}
+import pages.{Breadcrumbs, CheckAnswersPage, consignees}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -26,9 +26,11 @@ import viewmodels.implicits._
 
 object AnyConsigneesKnownSummary {
 
-  def row(answers: UserAnswers, breadcrumbs: Breadcrumbs)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, breadcrumbs: Breadcrumbs, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.AnyConsigneesKnownPage).map { answer =>
 
+      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
@@ -37,7 +39,7 @@ object AnyConsigneesKnownSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            AnyConsigneesKnownPage.route(breadcrumbs, answers.lrn).url
+            AnyConsigneesKnownPage.route(changeLinkBreadcrumbs, answers.lrn).url
           ).withVisuallyHiddenText(messages("anyConsigneesKnown.change.hidden"))
         )
       )

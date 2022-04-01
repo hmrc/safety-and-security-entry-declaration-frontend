@@ -17,14 +17,13 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Breadcrumbs, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
 
-final case class RemoveNotifiedPartyPage(index: Index) extends DataPage[Boolean] {
+final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
@@ -33,7 +32,7 @@ final case class RemoveNotifiedPartyPage(index: Index) extends DataPage[Boolean]
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] = {
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page = {
 
     lazy val noNotifiedPartiesRoute =
       answers.get(AnyConsigneesKnownPage).map {

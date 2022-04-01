@@ -17,14 +17,15 @@
 package pages
 
 import base.SpecBase
+import models.{CheckMode, NormalMode}
 import org.scalatest.EitherValues
 import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage}
 import play.api.mvc.QueryStringBindable
 
 class BreadcrumbsSpec extends SpecBase with EitherValues {
 
-  private val breadcrumb1 = AddConsigneePage
-  private val breadcrumb2 = AddNotifiedPartyPage
+  private val breadcrumb1 = AddConsigneePage.breadcrumb(NormalMode)
+  private val breadcrumb2 = AddNotifiedPartyPage.breadcrumb(CheckMode)
 
   ".push" - {
 

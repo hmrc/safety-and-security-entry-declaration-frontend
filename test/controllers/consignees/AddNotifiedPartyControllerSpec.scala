@@ -39,7 +39,7 @@ class AddNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AddNotifiedPartyFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val addNotifiedPartyRoute = routes.AddNotifiedPartyController.onPageLoad(breadcrumbs, lrn).url
 
@@ -57,7 +57,7 @@ class AddNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddNotifiedPartyView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddNotifiedPartySummary.rows(emptyUserAnswers, breadcrumbs)
+        val list = AddNotifiedPartySummary.rows(emptyUserAnswers, breadcrumbs, AddNotifiedPartyPage)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, breadcrumbs, lrn, list)(request, implicitly).toString
@@ -102,7 +102,7 @@ class AddNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddNotifiedPartyView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddNotifiedPartySummary.rows(emptyUserAnswers, breadcrumbs)
+        val list = AddNotifiedPartySummary.rows(emptyUserAnswers, breadcrumbs, AddNotifiedPartyPage)
 
         val result = route(application, request).value
 

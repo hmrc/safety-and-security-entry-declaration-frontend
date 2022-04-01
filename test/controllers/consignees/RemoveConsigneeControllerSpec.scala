@@ -39,7 +39,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new RemoveConsigneeFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
   private val address = arbitrary[Address].sample.value
   private val baseAnswers = emptyUserAnswers.set(ConsigneeAddressPage(index), address).success.value
 

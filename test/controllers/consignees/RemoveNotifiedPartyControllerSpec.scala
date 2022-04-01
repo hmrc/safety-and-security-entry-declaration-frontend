@@ -38,7 +38,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new RemoveNotifiedPartyFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
   private val baseAnswers = emptyUserAnswers.set(NotifiedPartyNamePage(index),"Test LTD.").success.value
 
   lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index).url

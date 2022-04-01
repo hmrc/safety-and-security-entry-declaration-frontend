@@ -18,11 +18,11 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeNamePage(index: Index) extends DataPage[String] {
+case class ConsigneeNamePage(index: Index) extends ConsigneeQuestionPage[String] {
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
@@ -31,10 +31,10 @@ case class ConsigneeNamePage(index: Index) extends DataPage[String] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneeRoutes.ConsigneeNameController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     ConsigneeAddressPage(index)
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(ConsigneeAddressPage(index))
       .map(_ => CheckConsigneePage(index))
       .getOrElse(ConsigneeAddressPage(index))

@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package object pages {
+package pages
 
-  implicit class RecoveryOps(val a: Option[Page]) {
-    def orRecover: Page =
-      a.getOrElse(JourneyRecoveryPage)
-  }
+trait AddToListQuestionPage {
+  self: Page =>
+
+    val section: AddToListSection
+    val addItemBreadcrumb: Breadcrumb
 }
+
+sealed trait AddToListSection
+
+case object ConsigneeSection extends AddToListSection
+case object NotifiedPartySection extends AddToListSection

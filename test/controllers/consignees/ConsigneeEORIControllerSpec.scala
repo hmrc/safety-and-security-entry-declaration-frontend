@@ -36,7 +36,7 @@ class ConsigneeEORIControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new ConsigneeEORIFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val consigneeEORIRoute =
     routes.ConsigneeEORIController.onPageLoad(breadcrumbs, lrn, index).url

@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import generators.Generators
-import models.Index
+import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.Breadcrumbs
@@ -34,7 +34,8 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
         index =>
           val breadcrumb = s"check-consignee-$index"
 
-          CheckConsigneePage.breadcrumbFromString(breadcrumb).value mustEqual CheckConsigneePage(Index(index - 1))
+          CheckConsigneePage.breadcrumbFromString(breadcrumb).value
+            .mustEqual(CheckConsigneePage(Index(index - 1)).breadcrumb)
       }
     }
 
@@ -63,7 +64,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   "must navigate when the current breadcrumb is AddConsignee" - {
 
-    val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+    val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb(NormalMode)))
 
     "to Add Consignee with the first breadcrumb removed" in {
 

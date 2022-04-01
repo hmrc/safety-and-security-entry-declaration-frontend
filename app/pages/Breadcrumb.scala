@@ -16,19 +16,19 @@
 
 package pages
 
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 
-sealed trait BreadcrumbPage[A] extends DataPage[A]
+sealed trait BreadcrumbPage extends Page
 
-trait CheckAnswersBreadcrumbPage extends BreadcrumbPage[Nothing] {
+trait CheckAnswersPage extends BreadcrumbPage {
   val urlFragment: String
 
   def breadcrumb: Breadcrumb =
     Breadcrumb(this, CheckMode, urlFragment)
 }
 
-trait AddItemBreadcrumbPage extends BreadcrumbPage[Boolean] {
+trait AddItemPage extends BreadcrumbPage {
   def breadcrumb(mode: Mode): Breadcrumb = {
     Breadcrumb(this, mode, urlFragment(mode))
   }
@@ -41,21 +41,10 @@ trait AddItemBreadcrumbPage extends BreadcrumbPage[Boolean] {
 
   val normalModeUrlFragment: String
   val checkModeUrlFragment: String
-
-  override protected def updateBreadcrumbs(
-    breadcrumbs: Breadcrumbs,
-    target: DataPage[_],
-    answers: UserAnswers
-  ): Breadcrumbs =
-    answers.get(this).map {
-      answer =>
-        if (answer && breadcrumbs.list.nonEmpty) { breadcrumbs.push(breadcrumb(NormalMode)) }
-        else                                     { super.updateBreadcrumbs(breadcrumbs, target, answers) }
-    }.getOrElse(throw new Exception(s"Could not find an answer for ${this.toString}"))
 }
 
 case class Breadcrumb (
-  page: BreadcrumbPage[_],
+  page: BreadcrumbPage,
   mode: Mode,
   urlFragment: String
 )

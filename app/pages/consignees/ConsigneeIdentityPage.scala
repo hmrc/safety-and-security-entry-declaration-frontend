@@ -18,14 +18,16 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{ConsigneeIdentity, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import models.{ConsigneeIdentity, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{Breadcrumb, Breadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class ConsigneeIdentityPage(index: Index) extends DataPage[ConsigneeIdentity] {
+case class ConsigneeIdentityPage(index: Index) extends ConsigneeQuestionPage[ConsigneeIdentity] {
+
+  override val addItemBreadcrumb: Breadcrumb = AddConsigneePage.breadcrumb(NormalMode)
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
@@ -34,13 +36,13 @@ case class ConsigneeIdentityPage(index: Index) extends DataPage[ConsigneeIdentit
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneeRoutes.ConsigneeIdentityController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI => ConsigneeEORIPage(index)
       case NameAddress => ConsigneeNamePage(index)
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI =>
         answers.get(ConsigneeEORIPage(index))

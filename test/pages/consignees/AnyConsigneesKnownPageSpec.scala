@@ -18,14 +18,14 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{ConsigneeIdentity, GbEori, Index, NotifiedPartyIdentity}
+import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 import queries.consignees.{AllConsigneesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
 class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
-  "ConsigneeKnownPage" - {
+  "AnyConsigneeKnownPage" - {
 
     "must navigate when there are no breadcrumbs" - {
 
@@ -52,7 +52,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is Check Consignees and Notified Parties" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneesAndNotifiedPartiesPage))
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneesAndNotifiedPartiesPage.breadcrumb))
       
       "and the answer is yes" - {
 
@@ -74,12 +74,13 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
         "and there are no consignees" - {
 
-          "to Consignee Identity for index 0" in {
+          "to Consignee Identity for index 0 with AddConsignee added to the breadcrumbs" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
+            val expectedBreadcrumbs = breadcrumbs.push(AddConsigneePage.breadcrumb(NormalMode))
 
             AnyConsigneesKnownPage.navigate(breadcrumbs, answers)
-              .mustEqual(routes.ConsigneeIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(0)))
+              .mustEqual(routes.ConsigneeIdentityController.onPageLoad(expectedBreadcrumbs, answers.lrn, Index(0)))
           }
         }
       }
@@ -107,9 +108,10 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           "to Notified Party Identity for index 0" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
+            val expectedBreadcrumbs = breadcrumbs.push(AddNotifiedPartyPage.breadcrumb(NormalMode))
 
             AnyConsigneesKnownPage.navigate(breadcrumbs, answers)
-              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(0)))
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedBreadcrumbs, answers.lrn, Index(0)))
           }
         }
       }

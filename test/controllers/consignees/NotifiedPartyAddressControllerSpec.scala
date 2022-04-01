@@ -38,7 +38,7 @@ class NotifiedPartyAddressControllerSpec extends SpecBase with MockitoSugar {
   private val formProvider = new NotifiedPartyAddressFormProvider()
   private val form = formProvider()
   private val country = arbitrary[Country].sample.value
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val notifiedPartyAddressRoute =
     routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, lrn, index).url

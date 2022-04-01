@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{Address, ConsigneeIdentity, Country, GbEori}
+import models.{Address, ConsigneeIdentity, Country, GbEori, NormalMode}
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -50,7 +50,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is AddConsignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+      val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb((NormalMode))))
 
       "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
@@ -71,7 +71,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is Check Consignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index)))
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index).breadcrumb))
 
       "when the answer is GB EORI" - {
 

@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.consignees
 
 import models.{Index, UserAnswers}
 import pages.consignees.ConsigneeNamePage
-import pages.{Breadcrumbs, consignees}
+import pages.{Breadcrumbs, CheckAnswersPage, consignees}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,9 +27,11 @@ import viewmodels.implicits._
 
 object ConsigneeNameSummary {
 
-  def row(answers: UserAnswers, index: Index, breadcrumbs: Breadcrumbs)
+  def row(answers: UserAnswers, index: Index, breadcrumbs: Breadcrumbs, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeNamePage(index)).map { answer =>
+
+      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
 
       SummaryListRowViewModel(
         key = "consigneeName.checkYourAnswersLabel",
@@ -37,7 +39,7 @@ object ConsigneeNameSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            ConsigneeNamePage(index).route(breadcrumbs, answers.lrn).url
+            ConsigneeNamePage(index).route(changeLinkBreadcrumbs, answers.lrn).url
           ).withVisuallyHiddenText(messages("consigneeName.change.hidden"))
         )
       )

@@ -18,6 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
+import models.NormalMode
 import pages.Breadcrumbs
 import pages.behaviours.PageBehaviours
 
@@ -41,7 +42,7 @@ class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is AddConsignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(AddConsigneePage))
+      val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb(NormalMode)))
 
       "to Check Consignee Details" in {
 
@@ -55,7 +56,7 @@ class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when the current breadcrumb is CheckConsignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index)))
+      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index).breadcrumb))
 
       "to Check Consignee with the current breadcrumb removed" in {
 

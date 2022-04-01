@@ -18,20 +18,17 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs, CheckAnswersBreadcrumbPage, DataPage}
-import play.api.libs.json.JsPath
+import pages.{Breadcrumb, Breadcrumbs, CheckAnswersPage, Page}
 import play.api.mvc.Call
 
-final case class CheckNotifiedPartyPage(index: Index) extends CheckAnswersBreadcrumbPage {
+final case class CheckNotifiedPartyPage(index: Index) extends CheckAnswersPage {
 
   override val urlFragment: String = s"check-notified-party-${index.display}"
-
-  override def path: JsPath = JsPath
 
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index)
 
-  override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     AddNotifiedPartyPage
 }
 

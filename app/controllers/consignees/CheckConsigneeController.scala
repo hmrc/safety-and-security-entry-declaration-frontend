@@ -41,14 +41,12 @@ class CheckConsigneeController @Inject() (
   def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(CheckConsigneePage(index).breadcrumb)
-
       val list = SummaryListViewModel(
         rows = Seq(
-          ConsigneeIdentitySummary.row(request.userAnswers, index, changeLinkBreadcrumbs),
-          ConsigneeEORISummary.row(request.userAnswers, index, changeLinkBreadcrumbs),
-          ConsigneeNameSummary.row(request.userAnswers, index, changeLinkBreadcrumbs),
-          ConsigneeAddressSummary.row(request.userAnswers, index, changeLinkBreadcrumbs)
+          ConsigneeIdentitySummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index)),
+          ConsigneeEORISummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index)),
+          ConsigneeNameSummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index)),
+          ConsigneeAddressSummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index))
         ).flatten
       )
 
@@ -58,6 +56,7 @@ class CheckConsigneeController @Inject() (
   def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
+
 
         Redirect(CheckConsigneePage(index).navigate(breadcrumbs, request.userAnswers))
     }

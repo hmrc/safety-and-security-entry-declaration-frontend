@@ -18,7 +18,6 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import org.scalacheck.Arbitrary.arbitrary
 import pages.Breadcrumbs
 import pages.consignees.CheckConsigneePage
 import play.api.test.FakeRequest
@@ -28,7 +27,7 @@ import views.html.consignees.CheckConsigneeView
 
 class CheckConsigneeControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   "Check Consignee Controller" - {
 
@@ -59,7 +58,7 @@ class CheckConsigneeControllerSpec extends SpecBase with SummaryListFluency {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CheckConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
+        redirectLocation(result).value mustEqual CheckConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers).url
       }
     }
 

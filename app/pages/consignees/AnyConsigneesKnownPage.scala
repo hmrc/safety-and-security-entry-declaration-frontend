@@ -18,14 +18,14 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, QuestionPage, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.{AllConsigneesQuery, DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 
 import scala.util.Try
 
-case object AnyConsigneesKnownPage extends DataPage[Boolean] {
+case object AnyConsigneesKnownPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -34,13 +34,13 @@ case object AnyConsigneesKnownPage extends DataPage[Boolean] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneeRoutes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, lrn)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(AnyConsigneesKnownPage).map {
       case true => ConsigneeIdentityPage(Index(0))
       case false => NotifiedPartyIdentityPage(Index(0))
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees).map {

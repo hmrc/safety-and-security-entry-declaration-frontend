@@ -17,16 +17,17 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import models.{Index, LocalReferenceNumber, NormalMode, NotifiedPartyIdentity, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import pages.{Breadcrumb, Breadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class NotifiedPartyIdentityPage(index: Index) extends DataPage[NotifiedPartyIdentity] {
+case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestionPage[NotifiedPartyIdentity] {
+
+  override val addItemBreadcrumb: Breadcrumb = AddNotifiedPartyPage.breadcrumb(NormalMode)
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
@@ -35,13 +36,13 @@ case class NotifiedPartyIdentityPage(index: Index) extends DataPage[NotifiedPart
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(NotifiedPartyIdentityPage(index)).map {
       case GBEORI => NotifiedPartyEORIPage(index)
       case NameAddress => NotifiedPartyNamePage(index)
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI =>
         answers.get(NotifiedPartyEORIPage(index))

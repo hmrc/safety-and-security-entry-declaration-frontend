@@ -36,7 +36,7 @@ class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AnyConsigneesKnownFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val anyConsigneesKnownRoute =
     routes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, lrn).url

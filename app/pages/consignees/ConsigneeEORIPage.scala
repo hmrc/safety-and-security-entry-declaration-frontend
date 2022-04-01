@@ -18,11 +18,11 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, DataPage}
+import pages.{Breadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeEORIPage(index: Index) extends DataPage[GbEori] {
+case class ConsigneeEORIPage(index: Index) extends ConsigneeQuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
@@ -31,6 +31,6 @@ case class ConsigneeEORIPage(index: Index) extends DataPage[GbEori] {
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.ConsigneeEORIController.onPageLoad(breadcrumbs, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): DataPage[_] =
+  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     CheckConsigneePage(index)
 }

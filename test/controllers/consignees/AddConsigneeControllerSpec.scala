@@ -39,7 +39,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AddConsigneeFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val addConsigneeRoute = routes.AddConsigneeController.onPageLoad(breadcrumbs, lrn).url
 
@@ -57,7 +57,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddConsigneeView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddConsigneeSummary.rows(emptyUserAnswers, breadcrumbs)
+        val list = AddConsigneeSummary.rows(emptyUserAnswers, breadcrumbs, AddConsigneePage)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, breadcrumbs, lrn, list)(request, implicitly).toString
@@ -103,7 +103,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddConsigneeView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddConsigneeSummary.rows(emptyUserAnswers, breadcrumbs)
+        val list = AddConsigneeSummary.rows(emptyUserAnswers, breadcrumbs, AddConsigneePage)
 
         val result = route(application, request).value
 

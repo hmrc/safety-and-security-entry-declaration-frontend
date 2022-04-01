@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import generators.Generators
-import models.Index
+import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.Breadcrumbs
@@ -34,7 +34,8 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
         index =>
           val breadcrumb = s"check-notified-party-$index"
 
-          CheckNotifiedPartyPage.breadcrumbFromString(breadcrumb).value mustEqual CheckNotifiedPartyPage(Index(index - 1))
+          CheckNotifiedPartyPage.breadcrumbFromString(breadcrumb).value
+            .mustEqual(CheckNotifiedPartyPage(Index(index - 1)).breadcrumb)
       }
     }
 
@@ -64,7 +65,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
 
   "must navigate when the current breadcrumb is AddNotifiedParty" - {
 
-    val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage))
+    val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage.breadcrumb(NormalMode)))
 
     "to Add Notified Party with the first breadcrumb removed" in {
 

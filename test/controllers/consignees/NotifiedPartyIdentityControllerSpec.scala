@@ -39,7 +39,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
   
   private val formProvider = new NotifiedPartyIdentityFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = arbitrary[Breadcrumbs].sample.value
+  private val breadcrumbs = Breadcrumbs.empty
 
   lazy val notifiedPartyIdentityRoute =
     routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, lrn, index).url
