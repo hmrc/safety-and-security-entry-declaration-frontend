@@ -35,7 +35,7 @@ class PackagesFormatsSpec
         kindPackage <- arbitrary[KindOfPackage]
         numPackages <- Gen.option(Gen.choose(0, 99999))
         numPieces <- Gen.option(Gen.choose(0, 99999))
-        mark <- Gen.option(Gen.alphaStr.map { _.take(2) })
+        mark <- Gen.option(stringsWithExactLength(2))
       } yield Package(kindPackage, numPackages, numPieces, mark)
 
       forAll(packagesGen) { p =>
