@@ -28,7 +28,9 @@ import models._
 import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 
-trait ModelGenerators {
+trait ModelGenerators extends StringGenerators {
+  // Three decimal places, between 0.001 and 99999999.999
+  val grossMassGen: Gen[BigDecimal] = Gen.choose(1L, 99999999999L).map { l => BigDecimal(l, 3) }
 
   implicit lazy val arbitraryCheckAnswersPage: Arbitrary[CheckAnswersPage] =
     Arbitrary {
@@ -51,7 +53,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         key <- arbitrary[Int]
-        name <- arbitrary[String]
+        name <- stringsWithMaxLength(35)
         address <- arbitrary[Address]
       } yield TraderWithoutEori(key, name, address)
     }
@@ -63,10 +65,11 @@ trait ModelGenerators {
   }
 
   // The default arbitrary[Instant] provides unrealistic dates prone to overflow issues; pick a
-  // value between epoch and 2030-01-01 00:00:00 instead. We also truncate to minute precision
-  // since we mostly encode datetimes at that precision
+  // value between 2000-01-01 00:00:00 and 2030-01-01 00:00:00 instead. We also truncate to minute
+  // precision since we mostly encode datetimes at that precision, and we pick a date after 2000
+  // because we sometimes encode year as two digits
   lazy val arbitraryRecentInstant: Arbitrary[Instant] = Arbitrary {
-    Gen.choose(0, 1893456000) map { seconds =>
+    Gen.choose(1577836800, 1893456000) map { seconds =>
       Instant.EPOCH.plusSeconds(seconds).truncatedTo(ChronoUnit.MINUTES)
     }
   }
@@ -79,41 +82,41 @@ trait ModelGenerators {
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
     Arbitrary {
       for {
-        trailer <- Gen.listOfN(12, Gen.alphaNumChar)
+        trailer <- stringsWithMaxLength(12)
         imo <- Gen.listOfN(8, Gen.numChar)
-        ferryCompany <- Gen.option(Gen.listOfN(12, Gen.alphaNumChar) map { _.mkString })
+        ferryCompany <- Gen.option(stringsWithMaxLength(12))
       } yield RoroUnaccompaniedIdentity(trailer.mkString, imo.mkString, ferryCompany)
     }
 
   implicit lazy val arbitraryRoroAccompaniedIdentity: Arbitrary[RoroAccompaniedIdentity] =
     Arbitrary {
       for {
-        vehicleReg <- Gen.listOfN(12, Gen.alphaNumChar)
-        trailer <- Gen.listOfN(12, Gen.alphaNumChar)
-        ferry <- Gen.option(Gen.listOfN(12, Gen.alphaNumChar) map { _.mkString })
+        vehicleReg <- stringsWithMaxLength(12)
+        trailer <- stringsWithMaxLength(12)
+        ferry <- Gen.option(stringsWithMaxLength(12))
       } yield RoroAccompaniedIdentity(vehicleReg.mkString, trailer.mkString, ferry)
     }
 
   implicit lazy val arbitraryRoadIdentity: Arbitrary[RoadIdentity] =
     Arbitrary {
       for {
-        vehicleReg <- Gen.listOfN(12, Gen.alphaNumChar)
-        trailer <- Gen.listOfN(12, Gen.alphaNumChar)
-        ferry <- Gen.option(Gen.listOfN(12, Gen.alphaNumChar) map { _.mkString })
+        vehicleReg <- stringsWithMaxLength(12)
+        trailer <- stringsWithMaxLength(12)
+        ferry <- Gen.option(stringsWithMaxLength(12))
       } yield RoadIdentity(vehicleReg.mkString, trailer.mkString, ferry)
     }
 
   implicit lazy val arbitraryRailIdentity: Arbitrary[RailIdentity] =
     Arbitrary {
-      arbitrary[String] map { RailIdentity(_) }
+      stringsWithMaxLength(27).map(RailIdentity.apply)
     }
 
   implicit lazy val arbitraryMaritimeIdentity: Arbitrary[MaritimeIdentity] =
     Arbitrary {
       for {
-        field1 <- arbitrary[String]
-        field2 <- arbitrary[String]
-      } yield MaritimeIdentity(field1, field2)
+        imo <- Gen.listOfN(8, Gen.numChar)
+        conveyanceRef <- stringsWithMaxLength(35)
+      } yield MaritimeIdentity(imo.mkString, conveyanceRef)
     }
 
   implicit lazy val arbitraryAirIdentity: Arbitrary[AirIdentity] = Arbitrary {
@@ -131,22 +134,24 @@ trait ModelGenerators {
       for {
         id <- Gen.choose(1, 100)
         country <- arbitrary[Country]
-        place <- arbitrary[String]
+        place <- stringsWithMaxLength(35)
       } yield PlaceOfUnloading(id, country, place)
     }
 
   implicit lazy val arbitrarySubmission: Arbitrary[Submission] =
     Arbitrary {
       for {
+        metadata <- arbitrary[Metadata]
         header <- arbitrary[Header]
         goodsItemsLen <- Gen.choose(1, 99)
         goodsItems <- Gen.listOfN(goodsItemsLen, arbitrary[GoodsItem])
         itinerary <- arbitrary[Itinerary]
-        declarer <- arbitrary[Party]
-        seals <- arbitrary[List[String]]
+        declarer <- arbitrary[Party.ByEori]
+        sealsLen <- Gen.choose(1, 99)
+        seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
         customsOffice <- arbitrary[CustomsOfficePayload]
         carrier <- arbitrary[Party]
-      } yield Submission(header, goodsItems, itinerary, declarer, seals, customsOffice, carrier)
+      } yield Submission(metadata, header, goodsItems, itinerary, declarer, seals, customsOffice, carrier)
     }
 
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
@@ -154,7 +159,7 @@ trait ModelGenerators {
       for {
         id <- Gen.choose(1, 100)
         country <- arbitrary[Country]
-        place <- arbitrary[String]
+        place <- stringsWithMaxLength(35)
       } yield PlaceOfLoading(id, country, place)
     }
 
@@ -201,23 +206,18 @@ trait ModelGenerators {
     Arbitrary {
       for {
         documentType <- arbitrary[DocumentType]
-        reference <- arbitrary[String]
+        reference <- stringsWithMaxLength(35)
       } yield Document(documentType, reference)
     }
 
   implicit lazy val arbitraryContainer: Arbitrary[Container] =
     Arbitrary {
-      for {
-        length <- Gen.choose(1, 17)
-        chars <- Gen.listOfN(length, Gen.alphaNumChar)
-      } yield Container(chars.mkString)
+      stringsWithMaxLength(17).map(Container.apply)
     }
 
   implicit lazy val arbitraryGoodItem: Arbitrary[GoodItem] =
     Arbitrary {
-      for {
-        commodityCode <- arbitrary[String]
-      } yield GoodItem(commodityCode)
+      Gen.listOfN(8, Gen.numChar) map { num => GoodItem(num.mkString) }
     }
 
   implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =
@@ -251,9 +251,9 @@ trait ModelGenerators {
   implicit lazy val arbitraryAddress: Arbitrary[Address] =
     Arbitrary {
       for {
-        streetAndNumber <- arbitrary[String]
-        city <- arbitrary[String]
-        postCode <- arbitrary[String]
+        streetAndNumber <- stringsWithMaxLength(35)
+        city <- stringsWithMaxLength(35)
+        postCode <- stringsWithMaxLength(9)
         country <- arbitrary[Country]
       } yield Address(streetAndNumber, city, postCode, country)
     }
@@ -275,10 +275,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
-      for {
-        length <- Gen.choose(1, 22)
-        chars <- Gen.listOfN(length, Gen.alphaNumChar)
-      } yield LocalReferenceNumber(chars.mkString)
+      stringsWithMaxLength(22).map(LocalReferenceNumber.apply)
     }
 
   implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
@@ -304,7 +301,7 @@ trait ModelGenerators {
   implicit lazy val arbitraryTransportDetails: Arbitrary[TransportDetails] = Arbitrary {
     for {
       mode <- arbitrary[TransportMode]
-      identifier <- Gen.alphaNumStr
+      identifier <- stringsWithMaxLength(27)
       nationality <- Gen.option(arbitrary[Country])
       paymentMethod <- Gen.option(arbitrary[PaymentMethod])
     } yield TransportDetails(mode, identifier, nationality, paymentMethod)
@@ -316,9 +313,9 @@ trait ModelGenerators {
       transportDetails <- arbitrary[TransportDetails]
       itemCount <- Gen.choose(1, 3)
       packageCount <- Gen.choose(1, 3)
-      grossMass <- Gen.option(Gen.choose(BigDecimal(0.001), BigDecimal(99999999.999)))
-      declarationPlace <- Gen.alphaNumStr
-      conveyanceReferenceNumber <- Gen.alphaNumStr
+      grossMass <- Gen.option(grossMassGen)
+      declarationPlace <- stringsWithMaxLength(35)
+      conveyanceReferenceNumber <- stringsWithMaxLength(35)
       datetime <- arbitrary[Instant](arbitraryRecentInstant)
     } yield {
       Header(
@@ -335,16 +332,14 @@ trait ModelGenerators {
   }
 
   implicit lazy val arbitraryGoodsIdByCommCode: Arbitrary[GoodsItemIdentity.ByCommodityCode] = Arbitrary {
-    Gen.listOfN(8, Gen.alphaNumChar) map { code: List[Char] =>
-      GoodsItemIdentity.ByCommodityCode(code.mkString.toUpperCase)
-    }
+    for {
+      len <- Gen.choose(4, 8)
+      code <- Gen.listOfN(len, Gen.numChar)
+    } yield GoodsItemIdentity.ByCommodityCode(code.mkString)
   }
 
   implicit lazy val arbitraryGoodsIdDesc: Arbitrary[GoodsItemIdentity.WithDescription] = Arbitrary {
-    for {
-      len <- Gen.choose(10, 200)
-      desc <- Gen.listOfN(len, Gen.alphaNumChar)
-    } yield GoodsItemIdentity.WithDescription(desc.mkString.toUpperCase)
+    stringsWithMaxLength(200).map(GoodsItemIdentity.WithDescription)
   }
 
   implicit lazy val arbitraryGoodsId: Arbitrary[GoodsItemIdentity] = Arbitrary {
@@ -365,6 +360,15 @@ trait ModelGenerators {
     Gen.oneOf(MessageType.Submission, MessageType.Amendment)
   }
 
+  implicit lazy val arbitraryMetadata: Arbitrary[Metadata] = Arbitrary {
+    for {
+      messageId <- stringsWithExactLength(14)
+      messageSender <- arbitrary[MessageSender]
+      messageType <- arbitrary[MessageType]
+      dt <- arbitrary[Instant](arbitraryRecentInstant)
+    } yield Metadata(messageId.mkString, messageSender, messageType, dt)
+  }
+
   implicit lazy val arbitraryDangerousGoodsCode: Arbitrary[DangerousGoodsCode] = Arbitrary {
     arbitrary[DangerousGood].map { good => DangerousGoodsCode(good.code) }
   }
@@ -372,9 +376,8 @@ trait ModelGenerators {
   implicit lazy val arbitraryLoadingPlace: Arbitrary[LoadingPlace] = Arbitrary {
     for {
       country <- arbitrary[Country]
-      len <- Gen.choose(2, 32)
-      desc <- Gen.listOfN(len, Gen.alphaNumChar)
-    } yield LoadingPlace(country, desc.mkString)
+      desc <- stringsWithMaxLength(32)
+    } yield LoadingPlace(country, desc)
   }
 
   implicit lazy val arbitraryPartyByEori: Arbitrary[Party.ByEori] = Arbitrary {
@@ -386,9 +389,9 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryPartyByAddress: Arbitrary[Party.ByAddress] = Arbitrary {
     for {
-      name <- Gen.listOfN(40, Gen.alphaChar)
+      name <- stringsWithMaxLength(35)
       addr <- arbitrary[Address]
-    } yield Party.ByAddress(name.mkString, addr)
+    } yield Party.ByAddress(name, addr)
   }
 
   implicit lazy val arbitraryParty: Arbitrary[Party] = Arbitrary {
@@ -412,7 +415,7 @@ trait ModelGenerators {
     for {
       itemNumber <- Gen.choose(1, 1000)
       itemId <- arbitrary[GoodsItemIdentity]
-      grossMass <- Gen.option(Gen.choose(BigDecimal("0.001"), BigDecimal("99999999.999")))
+      grossMass <- Gen.option(grossMassGen)
       paymentMethod <- arbitrary[PaymentMethod]
       dangerousGoodsCode <- Gen.option(arbitrary[DangerousGoodsCode])
       placeOfLoading <- arbitrary[LoadingPlace]
