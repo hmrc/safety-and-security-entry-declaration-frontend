@@ -63,19 +63,19 @@ trait ModelGenerators {
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
     Arbitrary {
       for {
-        trailerNumber <- Gen.alphaNumStr map { _.take(12) }
+        trailer <- Gen.listOfN(12, Gen.alphaNumChar)
         imo <- Gen.listOfN(8, Gen.numChar)
-        ferryCompany <- Gen.option(Gen.alphaNumStr map { _.take(12) })
-      } yield RoroUnaccompaniedIdentity(trailerNumber, imo.mkString, ferryCompany)
+        ferryCompany <- Gen.option(Gen.listOfN(12, Gen.alphaNumChar) map { _.mkString })
+      } yield RoroUnaccompaniedIdentity(trailer.mkString, imo.mkString, ferryCompany)
     }
 
   implicit lazy val arbitraryRoroAccompaniedIdentity: Arbitrary[RoroAccompaniedIdentity] =
     Arbitrary {
       for {
-        vehicleReg <- Gen.alphaNumStr map { _.take(12) }
-        trailer <- Gen.alphaNumStr map { _.take(12) }
-        ferry <- Gen.option(Gen.alphaNumStr map { _.take(12) })
-      } yield RoroAccompaniedIdentity(vehicleReg, trailer, ferry)
+        vehicleReg <- Gen.listOfN(12, Gen.alphaNumChar)
+        trailer <- Gen.listOfN(12, Gen.alphaNumChar)
+        ferry <- Gen.option(Gen.listOfN(12, Gen.alphaNumChar) map { _.mkString })
+      } yield RoroAccompaniedIdentity(vehicleReg.mkString, trailer.mkString, ferry)
     }
 
   implicit lazy val arbitraryRoadIdentity: Arbitrary[RoadIdentity] =
@@ -310,9 +310,9 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryMessageSender: Arbitrary[MessageSender] = Arbitrary {
     for {
-      eori <- Gen.numStr map { _.take(15) }
-      vatNumber <- Gen.numStr map { _.take(7) }
-    } yield MessageSender("GB" + eori, s"GB${vatNumber}000")
+      eori <- arbitrary[GbEori]
+      branch <- Gen.listOfN(10, Gen.numChar)
+    } yield MessageSender("GB" + eori.value, branch.mkString)
   }
 
   implicit lazy val arbitraryMessageType: Arbitrary[MessageType] = Arbitrary {
@@ -334,15 +334,15 @@ trait ModelGenerators {
   implicit lazy val arbitraryPartyByEori: Arbitrary[Party.ByEori] = Arbitrary {
     for {
       country <- Gen.oneOf(Country.allCountries)
-      number <- Gen.numStr.map { _.take(12) }
+      number <- Gen.listOfN(12, Gen.numChar)
     } yield Party.ByEori(s"${country.code}$number")
   }
 
   implicit lazy val arbitraryPartyByAddress: Arbitrary[Party.ByAddress] = Arbitrary {
     for {
-      name <- Gen.alphaStr.map { _.take(40) }
+      name <- Gen.listOfN(40, Gen.alphaChar)
       addr <- arbitrary[Address]
-    } yield Party.ByAddress(name, addr)
+    } yield Party.ByAddress(name.mkString, addr)
   }
 
   implicit lazy val arbitraryParty: Arbitrary[Party] = Arbitrary {
@@ -358,7 +358,7 @@ trait ModelGenerators {
       kindPackage <- arbitrary[KindOfPackage]
       numPackages <- Gen.option(Gen.choose(0, 99999))
       numPieces <- Gen.option(Gen.choose(0, 99999))
-      mark <- Gen.option(Gen.alphaStr.map { _.take(2) })
+      mark <- Gen.option(Gen.listOfN(2, Gen.alphaChar) map { _.mkString })
     } yield Package(kindPackage, numPackages, numPieces, mark)
   }
 

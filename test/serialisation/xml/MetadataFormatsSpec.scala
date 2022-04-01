@@ -23,6 +23,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import base.SpecBase
+import models.GbEori
 import models.completion.downstream.{MessageSender, MessageType, Metadata}
 
 class MetadataFormatsSpec
@@ -32,9 +33,9 @@ class MetadataFormatsSpec
   with XmlImplicits {
 
   private val senders: Gen[MessageSender] = for {
-    eori <- Gen.numStr map { _.take(15) }
-    vatNumber <- Gen.numStr map { _.take(7) }
-  } yield MessageSender("GB" + eori, s"GB${vatNumber}000")
+    eori <- arbitrary[GbEori]
+    branch <- Gen.listOfN(10, Gen.numChar)
+  } yield MessageSender("GB" + eori.value, branch.mkString)
 
   "The message type format" - {
     "should serialise symmetrically" in {
@@ -71,7 +72,7 @@ class MetadataFormatsSpec
   "The metadata format" - {
     "should serialise symmetrically" in {
       val metadataGen = for {
-        messageId <- Gen.alphaNumStr.map { _.take(20) }
+        messageId <- stringsWithExactLength(20)
         messageSender <- arbitrary[MessageSender]
         messageType <- arbitrary[MessageType]
         dt <- minutePrecisionInstants

@@ -20,7 +20,8 @@ package models.completion.downstream
  * Identify the user "sending" the message, represented by EORI number and "branch"
  *
  * @param eori The EORI number of the user submitting the declaration
- * @param branch This is either "GB" + VAT reg number + "000", for VAT-registered businesses, or
- *               "GB" + a unique number issued by HMRC for non-VAT-registered businesses.
+ * @param branch This refers to the sub-office the user belongs to within the declaring
+ *   organisation, if applicable, and is a 10-digit number to distinguish the office within the
+ *   organisation's EORI.
  */
 case class MessageSender(eori: String, branch: String)
