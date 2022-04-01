@@ -45,7 +45,6 @@ class AddGoodsController @Inject() (
 
   def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
-
       val goods = GoodsSummary.rows(request.userAnswers)
 
       Ok(view(form, mode, lrn, goods))
