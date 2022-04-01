@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, JourneyRecoveryPage, Page, QuestionPage}
+import pages.{Breadcrumbs, NonEmptyBreadcrumbs, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.{AllNotifiedPartiesQuery, DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
@@ -40,19 +40,17 @@ case object AddAnyNotifiedPartiesPage extends QuestionPage[Boolean] {
       case false => CheckConsigneesAndNotifiedPartiesPage
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
-        answers.get(DeriveNumberOfNotifiedParties).map {
-          case n if n > 0 => breadcrumbs.current.map(_.page).getOrElse(JourneyRecoveryPage)
-          case _ => NotifiedPartyIdentityPage(Index(0))
-        }.getOrElse(NotifiedPartyIdentityPage(Index(0)))
+        answers.get(DeriveNumberOfNotifiedParties)
+          .map(_ => breadcrumbs.current.page)
+          .getOrElse(NotifiedPartyIdentityPage(Index(0)))
 
       case false =>
-        answers.get(DeriveNumberOfConsignees).map {
-          case n if n > 0 => breadcrumbs.current.map(_.page).getOrElse(JourneyRecoveryPage)
-          case _ => AnyConsigneesKnownPage
-        }.getOrElse(AnyConsigneesKnownPage)
+        answers.get(DeriveNumberOfConsignees)
+          .map(_ => breadcrumbs.current.page)
+          .getOrElse(AnyConsigneesKnownPage)
     }.orRecover
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =

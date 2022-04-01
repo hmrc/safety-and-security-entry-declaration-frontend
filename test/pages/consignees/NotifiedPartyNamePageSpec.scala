@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{Address, Country, NormalMode}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
@@ -28,7 +28,7 @@ class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when there are no breadcrumbs" - {
 
-      val breadcrumbs = Breadcrumbs.empty
+      val breadcrumbs = EmptyBreadcrumbs
 
       "to notified party address" in {
 

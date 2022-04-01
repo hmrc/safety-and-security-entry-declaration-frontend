@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, QuestionPage, Page}
+import pages.{AddItemPage, Breadcrumbs, NonEmptyBreadcrumbs, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
@@ -44,16 +44,14 @@ case object AddConsigneePage extends QuestionPage[Boolean] with AddItemPage {
         AddAnyNotifiedPartiesPage
     }.orRecover
 
-  override def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees)
-        .map(n => ConsigneeIdentityPage(Index(n)))
-        .orRecover
+          .map(n => ConsigneeIdentityPage(Index(n)))
+          .orRecover
 
       case false =>
-        breadcrumbs.current
-          .map(_.page: Page)
-          .orRecover
+        breadcrumbs.current.page
     }.orRecover
 }

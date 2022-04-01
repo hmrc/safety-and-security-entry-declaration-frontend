@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.consignees.AddAnyNotifiedPartiesPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +37,7 @@ class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AddAnyNotifiedPartiesFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = Breadcrumbs.empty
+  private val breadcrumbs = EmptyBreadcrumbs
 
   lazy val addAnyNotifiedPartiesRoute = routes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, lrn).url
 

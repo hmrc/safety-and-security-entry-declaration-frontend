@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, Page}
+import pages.{Breadcrumbs, NonEmptyBreadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,8 +34,8 @@ case class NotifiedPartyNamePage(index: Index) extends NotifiedPartyQuestionPage
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     NotifiedPartyAddressPage(index)
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
     answers.get(NotifiedPartyAddressPage(index))
-      .map(_ => CheckNotifiedPartyPage(index))
+      .map(_ => breadcrumbs.current.page)
       .getOrElse(NotifiedPartyAddressPage(index))
 }

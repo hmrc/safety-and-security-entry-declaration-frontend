@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, QuestionPage, JourneyRecoveryPage, Page}
+import pages.{AddItemPage, Breadcrumbs, NonEmptyBreadcrumbs, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
@@ -36,22 +36,20 @@ case object AddNotifiedPartyPage extends QuestionPage[Boolean] with AddItemPage 
   override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
     answers.get(AddNotifiedPartyPage).map {
       case true =>
-        answers.get(DeriveNumberOfNotifiedParties).map {
-          case n => NotifiedPartyIdentityPage(Index(n))
-          case _ => JourneyRecoveryPage
-        }.orRecover
+        answers.get(DeriveNumberOfNotifiedParties)
+          .map(n => NotifiedPartyIdentityPage(Index(n)))
+          .orRecover
 
       case false =>
         CheckConsigneesAndNotifiedPartiesPage
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
-        answers.get(DeriveNumberOfNotifiedParties).map {
-          case n => NotifiedPartyIdentityPage(Index(n))
-          case _ => JourneyRecoveryPage
-        }.orRecover
+        answers.get(DeriveNumberOfNotifiedParties)
+          .map(n => NotifiedPartyIdentityPage(Index(n)))
+          .orRecover
 
       case false =>
         CheckConsigneesAndNotifiedPartiesPage

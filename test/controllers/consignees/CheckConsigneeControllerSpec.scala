@@ -18,7 +18,7 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.consignees.CheckConsigneePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -27,7 +27,7 @@ import views.html.consignees.CheckConsigneeView
 
 class CheckConsigneeControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val breadcrumbs = Breadcrumbs.empty
+  private val breadcrumbs = EmptyBreadcrumbs
 
   "Check Consignee Controller" - {
 

@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.consignees.AddConsigneePage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -39,7 +39,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AddConsigneeFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = Breadcrumbs.empty
+  private val breadcrumbs = EmptyBreadcrumbs
 
   lazy val addConsigneeRoute = routes.AddConsigneeController.onPageLoad(breadcrumbs, lrn).url
 

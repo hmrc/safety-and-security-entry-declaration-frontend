@@ -16,32 +16,59 @@
 
 package pages
 
+import cats.data.NonEmptyList
 import cats.implicits.toTraverseOps
 import models.{Mode, NormalMode}
 import play.api.mvc.QueryStringBindable
 
 import scala.util.{Failure, Success, Try}
 
-case class Breadcrumbs(list: List[Breadcrumb]) {
+trait Breadcrumbs {
 
-  def current[_]: Option[Breadcrumb] = list.headOption
-  def mode: Mode = current.map(_.mode).getOrElse(NormalMode)
+  val mode: Mode
+  def push(breadcrumb: Breadcrumb): Breadcrumbs
+  def pop: Breadcrumbs
+}
 
-  def push(breadcrumb: Breadcrumb): Breadcrumbs = Breadcrumbs(breadcrumb +: list)
-  def pop: Breadcrumbs = Breadcrumbs(list.tail)
+case class NonEmptyBreadcrumbs(list: NonEmptyList[Breadcrumb]) extends Breadcrumbs {
 
-  override def toString: String = list.map(_.urlFragment).mkString(",")
+  val current: Breadcrumb = list.head
+  override val mode: Mode = current.mode
+
+  override def push(breadcrumb: Breadcrumb): Breadcrumbs =
+    NonEmptyBreadcrumbs(NonEmptyList(breadcrumb, list.toList))
+
+  def pop: Breadcrumbs = list.tail match {
+    case Nil => EmptyBreadcrumbs
+    case t => NonEmptyBreadcrumbs(NonEmptyList(t.head, t.tail))
+  }
+
+  override def toString: String = list.toList.map(_.urlFragment).mkString(",")
+}
+
+case object EmptyBreadcrumbs extends Breadcrumbs {
+
+  override val mode: Mode = NormalMode
+
+  override def push(breadcrumb: Breadcrumb): Breadcrumbs =
+    NonEmptyBreadcrumbs(NonEmptyList(breadcrumb, Nil))
+
+  override def pop: Breadcrumbs = this
 }
 
 object Breadcrumbs {
 
-  def empty: Breadcrumbs = Breadcrumbs(Nil)
+  def apply(breadcrumbs: List[Breadcrumb]): Breadcrumbs =
+    breadcrumbs match {
+      case Nil => EmptyBreadcrumbs
+      case h :: t => NonEmptyBreadcrumbs(NonEmptyList(h, t))
+    }
 
   def fromString(s: String): Option[Breadcrumbs] =
     s.split(',').toList
       .map(Breadcrumb.fromString)
       .sequence
-      .map(Breadcrumbs(_))
+      .map(apply)
 
   implicit def queryStringBindable(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[Breadcrumbs] =
     new QueryStringBindable[Breadcrumbs] {

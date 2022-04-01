@@ -22,7 +22,7 @@ import generators.Generators
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 
 class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -54,7 +54,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
 
   "must navigate when there are no breadcrumbs" - {
 
-    val breadcrumbs = Breadcrumbs.empty
+    val breadcrumbs = EmptyBreadcrumbs
 
     "to Add Notified Party" in {
 

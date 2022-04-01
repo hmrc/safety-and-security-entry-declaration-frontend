@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.GbEori
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
 
@@ -29,7 +29,7 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when there are no breadcrumbs" - {
 
-      val breadcrumbs = Breadcrumbs.empty
+      val breadcrumbs = EmptyBreadcrumbs
 
       "when there are still notified parties in the user's answers" - {
 

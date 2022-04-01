@@ -31,7 +31,6 @@ object AddAnyNotifiedPartiesSummary  {
     answers.get(AddAnyNotifiedPartiesPage).map {
       answer =>
 
-        val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
@@ -40,7 +39,7 @@ object AddAnyNotifiedPartiesSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              AddAnyNotifiedPartiesPage.route(changeLinkBreadcrumbs, answers.lrn).url
+              AddAnyNotifiedPartiesPage.changeLink(breadcrumbs, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("addAnyNotifiedParties.change.hidden"))
           )
         )

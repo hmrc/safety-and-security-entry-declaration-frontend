@@ -16,12 +16,7 @@
 
 package pages
 
-import controllers.routes
-import models.LocalReferenceNumber
-import play.api.mvc.Call
+trait AddToListSection
 
-object JourneyRecoveryPage extends Page {
-
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    routes.JourneyRecoveryController.onPageLoad()
-}
+case object ConsigneeSection extends AddToListSection
+case object NotifiedPartySection extends AddToListSection

@@ -32,8 +32,6 @@ object ConsigneeAddressSummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeAddressPage(index)).map { answer =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       val address = Seq(
         HtmlFormat.escape(answer.streetAndNumber).toString,
         HtmlFormat.escape(answer.city).toString,
@@ -47,7 +45,7 @@ object ConsigneeAddressSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            ConsigneeAddressPage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            ConsigneeAddressPage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consigneeAddress.change.hidden"))
         )
       )

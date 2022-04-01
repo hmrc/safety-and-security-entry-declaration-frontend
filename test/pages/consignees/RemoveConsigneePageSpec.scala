@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{GbEori, Index}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.behaviours.PageBehaviours
 import queries.consignees.ConsigneeKeyQuery
 
@@ -29,7 +29,7 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when there are no breadcrumbs" - {
 
-      val breadcrumbs = Breadcrumbs.empty
+      val breadcrumbs = EmptyBreadcrumbs
 
       "to Add Consignee when there is still at least one consignee in the user's answers" in {
 

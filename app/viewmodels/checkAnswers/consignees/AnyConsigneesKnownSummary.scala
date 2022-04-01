@@ -30,7 +30,6 @@ object AnyConsigneesKnownSummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.AnyConsigneesKnownPage).map { answer =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
       val value = if (answer) "site.yes" else "site.no"
 
       SummaryListRowViewModel(
@@ -39,7 +38,7 @@ object AnyConsigneesKnownSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            AnyConsigneesKnownPage.route(changeLinkBreadcrumbs, answers.lrn).url
+            AnyConsigneesKnownPage.changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("anyConsigneesKnown.change.hidden"))
         )
       )

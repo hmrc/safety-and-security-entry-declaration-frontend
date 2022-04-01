@@ -31,15 +31,13 @@ object NotifiedPartyEORISummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.NotifiedPartyEORIPage(index)).map { answer: GbEori =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       SummaryListRowViewModel(
         key = "notifiedPartyEORI.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            NotifiedPartyEORIPage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            NotifiedPartyEORIPage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("notifiedPartyEORI.change.hidden"))
         )
       )

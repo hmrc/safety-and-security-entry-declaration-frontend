@@ -32,8 +32,6 @@ object NotifiedPartyIdentitySummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.NotifiedPartyIdentityPage(index)).map { answer =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"notifiedPartyIdentity.$answer"))
@@ -46,7 +44,7 @@ object NotifiedPartyIdentitySummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            NotifiedPartyIdentityPage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            NotifiedPartyIdentityPage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("notifiedPartyIdentity.change.hidden"))
         )
       )

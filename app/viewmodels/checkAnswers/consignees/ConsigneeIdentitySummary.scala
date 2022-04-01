@@ -32,8 +32,6 @@ object ConsigneeIdentitySummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeIdentityPage(index)).map { answer =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       val value = ValueViewModel(
         HtmlContent(
           HtmlFormat.escape(messages(s"consigneeIdentity.$answer"))
@@ -46,7 +44,7 @@ object ConsigneeIdentitySummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            ConsigneeIdentityPage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            ConsigneeIdentityPage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consigneeIdentity.change.hidden"))
         )
       )

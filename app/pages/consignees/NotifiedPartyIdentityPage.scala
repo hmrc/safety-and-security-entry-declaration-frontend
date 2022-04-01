@@ -19,7 +19,7 @@ package pages.consignees
 import controllers.consignees.{routes => consigneeRoutes}
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import models.{Index, LocalReferenceNumber, NormalMode, NotifiedPartyIdentity, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs, Page}
+import pages.{Breadcrumb, Breadcrumbs, NonEmptyBreadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -42,16 +42,16 @@ case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestion
       case NameAddress => NotifiedPartyNamePage(index)
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI =>
         answers.get(NotifiedPartyEORIPage(index))
-          .map(_ => CheckNotifiedPartyPage(index))
+          .map(_ => breadcrumbs.current.page)
           .getOrElse(NotifiedPartyEORIPage(index))
 
       case NameAddress =>
         answers.get(NotifiedPartyNamePage(index))
-          .map(_ => CheckNotifiedPartyPage(index))
+          .map(_ => breadcrumbs.current.page)
           .getOrElse(NotifiedPartyNamePage(index))
     }.orRecover
 

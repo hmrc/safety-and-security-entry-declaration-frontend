@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Breadcrumbs, consignees}
+import pages.{Breadcrumbs, EmptyBreadcrumbs, consignees}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,7 +36,7 @@ class AnyConsigneesKnownControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AnyConsigneesKnownFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = Breadcrumbs.empty
+  private val breadcrumbs = EmptyBreadcrumbs
 
   lazy val anyConsigneesKnownRoute =
     routes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, lrn).url

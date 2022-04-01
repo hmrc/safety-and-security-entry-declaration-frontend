@@ -18,13 +18,13 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.routes
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 
 class CheckConsigneesAndNotifiedPartiesPageSpec extends SpecBase {
 
   "must navigate when there are no breadcrumbs" - {
 
-    val breadcrumbs = Breadcrumbs.empty
+    val breadcrumbs = EmptyBreadcrumbs
 
     "to the task list" in {
 

@@ -26,6 +26,7 @@ lazy val root = (project in file("."))
     RoutesKeys.routesImport ++= Seq(
       "models._",
       "pages.Breadcrumbs",
+      "pages.EmptyBreadcrumbs",
       "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
     ),
     TwirlKeys.templateImports ++= Seq(

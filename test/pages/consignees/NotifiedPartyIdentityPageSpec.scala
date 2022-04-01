@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.consignees.routes
 import models.{Address, Country, GbEori, NormalMode, NotifiedPartyIdentity}
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
@@ -29,7 +29,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when there are no breadcrumbs" - {
 
-      val breadcrumbs = Breadcrumbs.empty
+      val breadcrumbs = EmptyBreadcrumbs
 
       "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value

@@ -31,15 +31,13 @@ object ConsigneeEORISummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeEORIPage(index)).map { answer: GbEori =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       SummaryListRowViewModel(
         key = "consigneeEORI.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            ConsigneeEORIPage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            ConsigneeEORIPage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consigneeEORI.change.hidden"))
         )
       )

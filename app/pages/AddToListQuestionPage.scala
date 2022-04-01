@@ -22,8 +22,3 @@ trait AddToListQuestionPage {
     val section: AddToListSection
     val addItemBreadcrumb: Breadcrumb
 }
-
-sealed trait AddToListSection
-
-case object ConsigneeSection extends AddToListSection
-case object NotifiedPartySection extends AddToListSection

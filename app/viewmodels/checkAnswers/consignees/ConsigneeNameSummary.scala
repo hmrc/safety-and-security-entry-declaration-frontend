@@ -31,15 +31,13 @@ object ConsigneeNameSummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeNamePage(index)).map { answer =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       SummaryListRowViewModel(
         key = "consigneeName.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            ConsigneeNamePage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            ConsigneeNamePage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consigneeName.change.hidden"))
         )
       )

@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.behaviours.PageBehaviours
 import queries.consignees.{AllConsigneesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
@@ -29,7 +29,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when there are no breadcrumbs" - {
 
-      val breadcrumbs = Breadcrumbs.empty
+      val breadcrumbs = EmptyBreadcrumbs
 
       "to Consignee Identity when answer is yes" in {
         val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value

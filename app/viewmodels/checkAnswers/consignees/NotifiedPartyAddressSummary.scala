@@ -32,8 +32,6 @@ object NotifiedPartyAddressSummary {
          (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.NotifiedPartyAddressPage(index)).map { answer =>
 
-      val changeLinkBreadcrumbs = breadcrumbs.push(sourcePage.breadcrumb)
-
       val address = Seq(
         HtmlFormat.escape(answer.streetAndNumber).toString,
         HtmlFormat.escape(answer.city).toString,
@@ -47,7 +45,7 @@ object NotifiedPartyAddressSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            NotifiedPartyAddressPage(index).route(changeLinkBreadcrumbs, answers.lrn).url
+            NotifiedPartyAddressPage(index).changeLink(breadcrumbs, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("notifiedPartyAddress.change.hidden"))
         )
       )

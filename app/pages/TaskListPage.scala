@@ -18,12 +18,9 @@ package pages
 
 import controllers.routes
 import models.LocalReferenceNumber
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TaskListPage extends QuestionPage[Nothing] {
-
-  override def path: JsPath = JsPath
+case object TaskListPage extends Page {
 
   override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     routes.TaskListController.onPageLoad(lrn)

@@ -16,12 +16,28 @@
 
 package pages
 
-import controllers.routes
-import models.LocalReferenceNumber
-import play.api.mvc.Call
+import models.{CheckMode, Mode, NormalMode}
 
-object JourneyRecoveryPage extends Page {
+sealed trait BreadcrumbPage extends Page
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+trait CheckAnswersPage extends BreadcrumbPage {
+  val urlFragment: String
+
+  def breadcrumb: Breadcrumb =
+    Breadcrumb(this, CheckMode, urlFragment)
+}
+
+trait AddItemPage extends BreadcrumbPage {
+  def breadcrumb(mode: Mode): Breadcrumb = {
+    Breadcrumb(this, mode, urlFragment(mode))
+  }
+
+  private def urlFragment(mode: Mode): String =
+    mode match {
+      case NormalMode => normalModeUrlFragment
+      case CheckMode  => checkModeUrlFragment
+    }
+
+  val normalModeUrlFragment: String
+  val checkModeUrlFragment: String
 }

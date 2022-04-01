@@ -36,51 +36,67 @@ trait Page {
   protected def navigateInCheckMode(answers: UserAnswers): Call =
     routes.CheckYourAnswersController.onPageLoad(answers.lrn)
 
-  // ******************************
-
   def navigate(breadcrumbs: Breadcrumbs, answers: UserAnswers): Call = {
     val targetPage = nextPage(breadcrumbs, answers)
     val updatedBreadcrumbs = updateBreadcrumbs(breadcrumbs, targetPage)
     targetPage.route(updatedBreadcrumbs, answers.lrn)
   }
 
-  protected def updateBreadcrumbs(breadcrumbs: Breadcrumbs, target: Page): Breadcrumbs = {
+  protected[pages] def updateBreadcrumbs(breadcrumbs: Breadcrumbs, target: Page): Breadcrumbs =
+    breadcrumbs match {
+      case EmptyBreadcrumbs =>
+        EmptyBreadcrumbs
 
-    (this, target) match {
-      case (_, thatPage: AddToListQuestionPage) =>
-        if (breadcrumbs.list.isEmpty || breadcrumbs.current.contains(thatPage.addItemBreadcrumb)) {
-          breadcrumbs
-        } else {
-          breadcrumbs.push(thatPage.addItemBreadcrumb)
+      case b: NonEmptyBreadcrumbs =>
+        (this, target) match {
+          case (thisPage: AddToListQuestionPage, thatPage: AddToListQuestionPage) =>
+            if (thisPage.section == thatPage.section) {
+              breadcrumbs
+            } else {
+              breadcrumbs.push(thatPage.addItemBreadcrumb)
+            }
+
+          case (_, thatPage: AddToListQuestionPage) =>
+            if (b.current == thatPage.addItemBreadcrumb) {
+              breadcrumbs
+            } else {
+              breadcrumbs.push(thatPage.addItemBreadcrumb)
+            }
+
+          case _ =>
+            b.current match {
+              case x if x.page == target => b.pop
+              case _ => b
+            }
         }
-
-      case _ =>
-        breadcrumbs.current.map {
-          case b if b.page == target => breadcrumbs.pop
-          case _ => breadcrumbs
-        }.getOrElse(breadcrumbs)
     }
-  }
 
   protected def nextPage(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
-    breadcrumbs.mode match {
-      case CheckMode  => nextPageCheckMode(breadcrumbs, answers)
-      case NormalMode => nextPageNormalMode(breadcrumbs, answers)
+    breadcrumbs match {
+      case EmptyBreadcrumbs =>
+        nextPageNormalMode(breadcrumbs, answers)
+
+      case b: NonEmptyBreadcrumbs =>
+        b.mode match {
+          case CheckMode  => nextPageCheckMode(b, answers)
+          case NormalMode => nextPageNormalMode(b, answers)
+        }
     }
 
-  protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
-    breadcrumbs.current
-      .map(_.page)
-      .orRecover
+  protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
+    breadcrumbs.current.page
 
   protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
-    throw new NotImplementedError("nextPageCheckMode is not implemented")
+    throw new NotImplementedError("nextPageNormalMode is not implemented")
 
   def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
     throw new NotImplementedError("route is not implemented")
 
   def changeLink(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
     route(breadcrumbs.push(sourcePage.breadcrumb), lrn)
+
+  def changeLink(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, sourcePage: AddItemPage): Call =
+    route(breadcrumbs.push(sourcePage.breadcrumb(CheckMode)), lrn)
 }
 
 object Page {

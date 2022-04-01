@@ -22,7 +22,7 @@ import generators.Generators
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 
 class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -53,7 +53,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
 
   "must navigate when there are no breadcrumbs" - {
 
-    val breadcrumbs = Breadcrumbs.empty
+    val breadcrumbs = EmptyBreadcrumbs
 
     "to Add Consignee" in {
 

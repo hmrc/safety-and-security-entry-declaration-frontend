@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.consignees.{NotifiedPartyNamePage, RemoveNotifiedPartyPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,7 +38,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new RemoveNotifiedPartyFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = Breadcrumbs.empty
+  private val breadcrumbs = EmptyBreadcrumbs
   private val baseAnswers = emptyUserAnswers.set(NotifiedPartyNamePage(index),"Test LTD.").success.value
 
   lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index).url

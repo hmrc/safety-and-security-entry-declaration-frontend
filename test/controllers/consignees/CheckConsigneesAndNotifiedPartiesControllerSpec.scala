@@ -18,7 +18,7 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.consignees.CheckConsigneesAndNotifiedPartiesPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -27,7 +27,7 @@ import views.html.consignees.CheckConsigneesAndNotifiedPartiesView
 
 class CheckConsigneesAndNotifiedPartiesControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val breadcrumbs = Breadcrumbs.empty
+  private val breadcrumbs = EmptyBreadcrumbs
 
   "Check Consignees and Notified Parties Controller" - {
 

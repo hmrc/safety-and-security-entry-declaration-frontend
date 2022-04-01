@@ -19,30 +19,6 @@ package pages
 import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 
-sealed trait BreadcrumbPage extends Page
-
-trait CheckAnswersPage extends BreadcrumbPage {
-  val urlFragment: String
-
-  def breadcrumb: Breadcrumb =
-    Breadcrumb(this, CheckMode, urlFragment)
-}
-
-trait AddItemPage extends BreadcrumbPage {
-  def breadcrumb(mode: Mode): Breadcrumb = {
-    Breadcrumb(this, mode, urlFragment(mode))
-  }
-
-  private def urlFragment(mode: Mode): String =
-    mode match {
-      case NormalMode => normalModeUrlFragment
-      case CheckMode  => checkModeUrlFragment
-    }
-
-  val normalModeUrlFragment: String
-  val checkModeUrlFragment: String
-}
-
 case class Breadcrumb (
   page: BreadcrumbPage,
   mode: Mode,

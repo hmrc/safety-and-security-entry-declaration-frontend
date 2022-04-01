@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{GbEori, Index, NormalMode, NotifiedPartyIdentity}
-import pages.Breadcrumbs
+import pages.{Breadcrumbs, EmptyBreadcrumbs}
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
 
@@ -29,7 +29,7 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
     "must navigate when there are no breadcrumbs" - {
 
-      val breadcrumbs = Breadcrumbs.empty
+      val breadcrumbs = EmptyBreadcrumbs
 
       "to Notified Party Identity for the next index when the answer is yes" in {
 

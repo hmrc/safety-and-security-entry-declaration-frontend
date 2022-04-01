@@ -19,7 +19,7 @@ package pages.consignees
 import controllers.consignees.{routes => consigneeRoutes}
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
 import models.{ConsigneeIdentity, Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs, Page}
+import pages.{Breadcrumb, Breadcrumbs, NonEmptyBreadcrumbs, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -42,17 +42,17 @@ case class ConsigneeIdentityPage(index: Index) extends ConsigneeQuestionPage[Con
       case NameAddress => ConsigneeNamePage(index)
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI =>
         answers.get(ConsigneeEORIPage(index))
-          .map(_ => CheckConsigneePage(index))
+          .map(_ => breadcrumbs.current.page)
           .getOrElse(ConsigneeEORIPage(index))
 
       case NameAddress =>
         answers.get(ConsigneeNamePage(index))
-        .map (_ => CheckConsigneePage(index))
-        .getOrElse(ConsigneeNamePage(index))
+          .map (_ => breadcrumbs.current.page)
+          .getOrElse(ConsigneeNamePage(index))
     }.orRecover
 
   override def cleanup(value: Option[ConsigneeIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
