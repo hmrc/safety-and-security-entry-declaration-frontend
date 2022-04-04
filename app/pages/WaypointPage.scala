@@ -18,18 +18,18 @@ package pages
 
 import models.{CheckMode, Mode, NormalMode}
 
-sealed trait BreadcrumbPage extends Page
+sealed trait WaypointPage extends Page
 
-trait CheckAnswersPage extends BreadcrumbPage {
+trait CheckAnswersPage extends WaypointPage {
   val urlFragment: String
 
-  def breadcrumb: Breadcrumb =
-    Breadcrumb(this, CheckMode, urlFragment)
+  def waypoint: Waypoint =
+    Waypoint(this, CheckMode, urlFragment)
 }
 
-trait AddItemPage extends BreadcrumbPage {
-  def breadcrumb(mode: Mode): Breadcrumb = {
-    Breadcrumb(this, mode, urlFragment(mode))
+trait AddItemPage extends WaypointPage {
+  def waypoint(mode: Mode): Waypoint = {
+    Waypoint(this, mode, urlFragment(mode))
   }
 
   private def urlFragment(mode: Mode): String =

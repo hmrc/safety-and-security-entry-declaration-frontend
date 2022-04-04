@@ -17,11 +17,11 @@
 package pages.consignees
 
 import models.NormalMode
-import pages.{AddToListQuestionPage, AddToListSection, Breadcrumb, ConsigneeSection, QuestionPage}
+import pages.{AddToListQuestionPage, AddToListSection, Waypoint, ConsigneeSection, QuestionPage}
 
 trait ConsigneeQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
 
-  override val addItemBreadcrumb: Breadcrumb = AddConsigneePage.breadcrumb(NormalMode)
+  override val addItemWaypoint: Waypoint = AddConsigneePage.waypoint(NormalMode)
 
   override val section: AddToListSection = ConsigneeSection
 }

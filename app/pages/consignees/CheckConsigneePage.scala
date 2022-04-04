@@ -18,29 +18,29 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs, CheckAnswersPage, Page}
+import pages.{Waypoint, Waypoints, CheckAnswersPage, Page}
 import play.api.mvc.Call
 
 case class CheckConsigneePage(index: Index) extends CheckAnswersPage {
 
   override val urlFragment: String = s"check-consignee-${index.display}"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.CheckConsigneeController.onPageLoad(breadcrumbs, lrn, index)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.CheckConsigneeController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     AddConsigneePage
 }
 
 object CheckConsigneePage {
 
-  def breadcrumbFromString(s: String): Option[Breadcrumb] = {
+  def waypointFromString(s: String): Option[Waypoint] = {
 
     val pattern = """check-consignee-(\d{1,3})""".r.anchored
 
     s match {
       case pattern(indexDisplay) =>
-        Some(CheckConsigneePage(Index(indexDisplay.toInt - 1)).breadcrumb)
+        Some(CheckConsigneePage(Index(indexDisplay.toInt - 1)).waypoint)
 
       case _ =>
         None

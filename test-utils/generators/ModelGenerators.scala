@@ -21,7 +21,7 @@ import java.time.temporal.ChronoUnit
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import pages.{AddItemPage, Breadcrumb, Breadcrumbs, CheckAnswersPage}
+import pages.{AddItemPage, Waypoint, Waypoints, CheckAnswersPage}
 import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage, CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
 
 import models._

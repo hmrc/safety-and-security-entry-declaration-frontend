@@ -20,5 +20,5 @@ trait AddToListQuestionPage {
   self: Page =>
 
     val section: AddToListSection
-    val addItemBreadcrumb: Breadcrumb
+    val addItemWaypoint: Waypoint
 }

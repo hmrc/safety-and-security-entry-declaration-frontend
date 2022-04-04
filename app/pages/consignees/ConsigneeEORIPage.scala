@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, Page}
+import pages.{Waypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,9 +28,9 @@ case class ConsigneeEORIPage(index: Index) extends ConsigneeQuestionPage[GbEori]
 
   override def toString: String = "eori"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.ConsigneeEORIController.onPageLoad(breadcrumbs, lrn, index)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.ConsigneeEORIController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     CheckConsigneePage(index)
 }

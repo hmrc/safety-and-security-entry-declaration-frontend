@@ -19,7 +19,7 @@ package pages.consignees
 import controllers.consignees.{routes => consigneeRoutes}
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
 import models.{ConsigneeIdentity, Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs, NonEmptyBreadcrumbs, Page}
+import pages.{Waypoint, Waypoints, NonEmptyWaypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -27,31 +27,31 @@ import scala.util.Try
 
 case class ConsigneeIdentityPage(index: Index) extends ConsigneeQuestionPage[ConsigneeIdentity] {
 
-  override val addItemBreadcrumb: Breadcrumb = AddConsigneePage.breadcrumb(NormalMode)
+  override val addItemWaypoint: Waypoint = AddConsigneePage.waypoint(NormalMode)
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
   override def toString: String = "identity"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneeRoutes.ConsigneeIdentityController.onPageLoad(breadcrumbs, lrn, index)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.ConsigneeIdentityController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI => ConsigneeEORIPage(index)
       case NameAddress => ConsigneeNamePage(index)
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI =>
         answers.get(ConsigneeEORIPage(index))
-          .map(_ => breadcrumbs.current.page)
+          .map(_ => waypoints.current.page)
           .getOrElse(ConsigneeEORIPage(index))
 
       case NameAddress =>
         answers.get(ConsigneeNamePage(index))
-          .map (_ => breadcrumbs.current.page)
+          .map (_ => waypoints.current.page)
           .getOrElse(ConsigneeNamePage(index))
     }.orRecover
 

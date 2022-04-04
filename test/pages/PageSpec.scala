@@ -22,375 +22,375 @@ import org.scalatest.matchers.must.Matchers
 
 class PageSpec extends AnyFreeSpec with Matchers {
 
-  ".updateBreadcrumbs" - {
+  ".updateWaypoints" - {
 
     "going from a regular page to a regular page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestPage1.updateBreadcrumbs(EmptyBreadcrumbs, TestPage2) mustEqual EmptyBreadcrumbs
+          TestPage1.updateWaypoints(EmptyWaypoints, TestPage2) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with a check answers page" - {
+      "when the original waypoints start with a check answers page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckConsigneePage.breadcrumb))
-          TestPage1.updateBreadcrumbs(breadcrumbs, TestPage2) mustEqual breadcrumbs
+          val waypoints: Waypoints = Waypoints(List(TestCheckConsigneePage.waypoint))
+          TestPage1.updateWaypoints(waypoints, TestPage2) mustEqual waypoints
         }
       }
     }
 
     "going from a regular page to an add-to-list question page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestPage1.updateBreadcrumbs(EmptyBreadcrumbs, TestConsigneePage1) mustEqual EmptyBreadcrumbs
+          TestPage1.updateWaypoints(EmptyWaypoints, TestConsigneePage1) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the add-item page of its section" - {
+      "when the original waypoints start with the add-item page of its section" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestAddConsigneePage.breadcrumb(NormalMode)))
-          TestPage1.updateBreadcrumbs(breadcrumbs, TestConsigneePage1) mustEqual breadcrumbs
+          val waypoints: Waypoints = Waypoints(List(TestAddConsigneePage.waypoint(NormalMode)))
+          TestPage1.updateWaypoints(waypoints, TestConsigneePage1) mustEqual waypoints
         }
       }
 
-      "when the original breadcrumbs start with something other than the add-item page of its section" - {
+      "when the original waypoints start with something other than the add-item page of its section" - {
 
-        "must add the add-item page of this section to the original breadcrumbs" in new Fixture {
+        "must add the add-item page of this section to the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckConsigneePage.breadcrumb))
-          TestPage1.updateBreadcrumbs(breadcrumbs, TestConsigneePage1)
-            .mustEqual(breadcrumbs.push(TestAddConsigneePage.breadcrumb(NormalMode)))
+          val waypoints: Waypoints = Waypoints(List(TestCheckConsigneePage.waypoint))
+          TestPage1.updateWaypoints(waypoints, TestConsigneePage1)
+            .mustEqual(waypoints.push(TestAddConsigneePage.waypoint(NormalMode)))
         }
       }
     }
 
     "going from a regular page to a check answers page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestPage1.updateBreadcrumbs(EmptyBreadcrumbs, TestCheckConsigneePage) mustEqual EmptyBreadcrumbs
+          TestPage1.updateWaypoints(EmptyWaypoints, TestCheckConsigneePage) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with that check answers page" - {
+      "when the original waypoints start with that check answers page" - {
 
-        "must remove the check answers page from the breadcrumbs" in new Fixture {
+        "must remove the check answers page from the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs =
-            Breadcrumbs(List(TestCheckConsigneePage.breadcrumb, TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints =
+            Waypoints(List(TestCheckConsigneePage.waypoint, TestCheckNotifiedPartyPage.waypoint))
 
-          TestPage1.updateBreadcrumbs(breadcrumbs, TestCheckConsigneePage)
-            .mustEqual(breadcrumbs.pop)
+          TestPage1.updateWaypoints(waypoints, TestCheckConsigneePage)
+            .mustEqual(waypoints.pop)
         }
       }
     }
 
     "going from an add-to-list question page to an add-to-list question page in the same section" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestConsigneePage1.updateBreadcrumbs(EmptyBreadcrumbs, TestConsigneePage2) mustEqual EmptyBreadcrumbs
+          TestConsigneePage1.updateWaypoints(EmptyWaypoints, TestConsigneePage2) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs are not empty" - {
+      "when the original waypoints are not empty" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckConsigneePage.breadcrumb))
-          TestConsigneePage1.updateBreadcrumbs(breadcrumbs, TestConsigneePage2) mustEqual breadcrumbs
+          val waypoints: Waypoints = Waypoints(List(TestCheckConsigneePage.waypoint))
+          TestConsigneePage1.updateWaypoints(waypoints, TestConsigneePage2) mustEqual waypoints
         }
       }
     }
 
     "going from an add-to-list question page to the add-item page for that section" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestConsigneePage1.updateBreadcrumbs(EmptyBreadcrumbs, TestAddConsigneePage) mustEqual EmptyBreadcrumbs
+          TestConsigneePage1.updateWaypoints(EmptyWaypoints, TestAddConsigneePage) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the add-item page" - {
+      "when the original waypoints start with the add-item page" - {
 
-        "must remove the add-item page from the breadcrumbs" in new Fixture {
+        "must remove the add-item page from the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs =
-            Breadcrumbs(List(TestAddConsigneePage.breadcrumb(NormalMode), TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints =
+            Waypoints(List(TestAddConsigneePage.waypoint(NormalMode), TestCheckNotifiedPartyPage.waypoint))
 
-          TestConsigneePage1.updateBreadcrumbs(breadcrumbs, TestAddConsigneePage) mustEqual breadcrumbs.pop
+          TestConsigneePage1.updateWaypoints(waypoints, TestAddConsigneePage) mustEqual waypoints.pop
         }
       }
 
-      "when the original breadcrumbs start with something other than the add-item page" - {
+      "when the original waypoints start with something other than the add-item page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs =
-            Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints =
+            Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestConsigneePage1.updateBreadcrumbs(breadcrumbs, TestAddConsigneePage) mustEqual breadcrumbs
+          TestConsigneePage1.updateWaypoints(waypoints, TestAddConsigneePage) mustEqual waypoints
         }
       }
     }
 
     "going from an add-to-list question page to a check answers page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestConsigneePage1.updateBreadcrumbs(EmptyBreadcrumbs, TestCheckConsigneePage) mustEqual EmptyBreadcrumbs
+          TestConsigneePage1.updateWaypoints(EmptyWaypoints, TestCheckConsigneePage) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the check answers page" - {
+      "when the original waypoints start with the check answers page" - {
 
-        "must remove the check answers page from the breadcrumbs" in new Fixture {
+        "must remove the check answers page from the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs =
-            Breadcrumbs(List(TestCheckConsigneePage.breadcrumb, TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints =
+            Waypoints(List(TestCheckConsigneePage.waypoint, TestCheckNotifiedPartyPage.waypoint))
 
-          TestConsigneePage1.updateBreadcrumbs(breadcrumbs, TestCheckConsigneePage) mustEqual breadcrumbs.pop
+          TestConsigneePage1.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints.pop
         }
       }
 
-      "when the original breadcrumbs start with something other than the check answers page" - {
+      "when the original waypoints start with something other than the check answers page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs =
-            Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints =
+            Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestConsigneePage1.updateBreadcrumbs(breadcrumbs, TestCheckConsigneePage) mustEqual breadcrumbs
+          TestConsigneePage1.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints
         }
       }
     }
 
     "going from an add-item page to an add-to-list question page in this section" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestAddConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestConsigneePage1) mustEqual EmptyBreadcrumbs
+          TestAddConsigneePage.updateWaypoints(EmptyWaypoints, TestConsigneePage1) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs are not empty" - {
+      "when the original waypoints are not empty" - {
 
-        "must add itself to the breadcrumbs" in new Fixture {
+        "must add itself to the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestAddConsigneePage.updateBreadcrumbs(breadcrumbs, TestConsigneePage1)
-            .mustEqual(breadcrumbs.push(TestAddConsigneePage.breadcrumb(NormalMode)))
+          TestAddConsigneePage.updateWaypoints(waypoints, TestConsigneePage1)
+            .mustEqual(waypoints.push(TestAddConsigneePage.waypoint(NormalMode)))
         }
       }
     }
 
     "going from an add-item page to an add-to-list question page in another section" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestAddConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestNotifiedPartyPage1) mustEqual EmptyBreadcrumbs
+          TestAddConsigneePage.updateWaypoints(EmptyWaypoints, TestNotifiedPartyPage1) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs are not empty" - {
+      "when the original waypoints are not empty" - {
 
-        "must return the original breadcrumbs with the add-item page of the new section added" in new Fixture {
+        "must return the original waypoints with the add-item page of the new section added" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestAddConsigneePage.updateBreadcrumbs(breadcrumbs, TestNotifiedPartyPage1)
-            .mustEqual(breadcrumbs.push(TestAddNotifiedPartyPage.breadcrumb(NormalMode)))
+          TestAddConsigneePage.updateWaypoints(waypoints, TestNotifiedPartyPage1)
+            .mustEqual(waypoints.push(TestAddNotifiedPartyPage.waypoint(NormalMode)))
         }
       }
     }
 
     "going from an add-item page to a regular page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestAddConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestPage1) mustEqual EmptyBreadcrumbs
+          TestAddConsigneePage.updateWaypoints(EmptyWaypoints, TestPage1) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs are not empty" - {
+      "when the original waypoints are not empty" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestAddConsigneePage.updateBreadcrumbs(breadcrumbs, TestPage1) mustEqual breadcrumbs
+          TestAddConsigneePage.updateWaypoints(waypoints, TestPage1) mustEqual waypoints
         }
       }
     }
 
     "going from an add-item page to a check answers page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestAddConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestCheckConsigneePage) mustEqual EmptyBreadcrumbs
+          TestAddConsigneePage.updateWaypoints(EmptyWaypoints, TestCheckConsigneePage) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the check answers page" - {
+      "when the original waypoints start with the check answers page" - {
 
-        "must remove the check answers page from the breadcrumbs" in new Fixture {
+        "must remove the check answers page from the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckConsigneePage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckConsigneePage.waypoint))
 
-          TestAddConsigneePage.updateBreadcrumbs(breadcrumbs, TestCheckConsigneePage) mustEqual breadcrumbs.pop
+          TestAddConsigneePage.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints.pop
         }
       }
 
-      "when the original breadcrumbs start with something other than the check answers page" - {
+      "when the original waypoints start with something other than the check answers page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestAddConsigneePage.updateBreadcrumbs(breadcrumbs, TestCheckConsigneePage) mustEqual breadcrumbs
+          TestAddConsigneePage.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints
         }
       }
     }
 
     "going from a check answers page to a regular page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestCheckConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestPage1) mustEqual EmptyBreadcrumbs
+          TestCheckConsigneePage.updateWaypoints(EmptyWaypoints, TestPage1) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs are not empty" - {
+      "when the original waypoints are not empty" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestCheckConsigneePage) mustEqual breadcrumbs
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints
         }
       }
     }
 
     "going from a check answers page to an add-item page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestCheckConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestAddConsigneePage) mustEqual EmptyBreadcrumbs
+          TestCheckConsigneePage.updateWaypoints(EmptyWaypoints, TestAddConsigneePage) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the add-item page" - {
+      "when the original waypoints start with the add-item page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs =
-            Breadcrumbs(List(TestAddConsigneePage.breadcrumb(NormalMode), TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints =
+            Waypoints(List(TestAddConsigneePage.waypoint(NormalMode), TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestAddConsigneePage) mustEqual breadcrumbs.pop
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestAddConsigneePage) mustEqual waypoints.pop
         }
       }
 
-      "when the original breadcrumbs start with something other than the add-item page" - {
+      "when the original waypoints start with something other than the add-item page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestAddConsigneePage) mustEqual breadcrumbs
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestAddConsigneePage) mustEqual waypoints
         }
       }
     }
 
     "going from a check answers page to a different check answers page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestCheckConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestCheckNotifiedPartyPage) mustEqual EmptyBreadcrumbs
+          TestCheckConsigneePage.updateWaypoints(EmptyWaypoints, TestCheckNotifiedPartyPage) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the target check answers page" - {
+      "when the original waypoints start with the target check answers page" - {
 
-        "must remove the check answers page from the breadcrumbs" in new Fixture {
+        "must remove the check answers page from the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestCheckNotifiedPartyPage) mustEqual breadcrumbs.pop
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestCheckNotifiedPartyPage) mustEqual waypoints.pop
         }
       }
 
-      "when the original breadcrumbs start with something other than the target check answers page" - {
+      "when the original waypoints start with something other than the target check answers page" - {
 
-        "must return the original breadcrumbs" in new Fixture {
+        "must return the original waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestAddNotifiedPartyPage.breadcrumb(NormalMode)))
+          val waypoints: Waypoints = Waypoints(List(TestAddNotifiedPartyPage.waypoint(NormalMode)))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestCheckNotifiedPartyPage) mustEqual breadcrumbs
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestCheckNotifiedPartyPage) mustEqual waypoints
         }
       }
     }
 
     "going from a check answers page to an add-to-list question page" - {
 
-      "when the original breadcrumbs are empty" - {
+      "when the original waypoints are empty" - {
 
-        "must return empty breadcrumbs" in new Fixture {
+        "must return empty waypoints" in new Fixture {
 
-          TestCheckConsigneePage.updateBreadcrumbs(EmptyBreadcrumbs, TestNotifiedPartyPage1) mustEqual EmptyBreadcrumbs
+          TestCheckConsigneePage.updateWaypoints(EmptyWaypoints, TestNotifiedPartyPage1) mustEqual EmptyWaypoints
         }
       }
 
-      "when the original breadcrumbs start with the add-item page of the target page's section" - {
+      "when the original waypoints start with the add-item page of the target page's section" - {
 
-        "must return the original the breadcrumbs" in new Fixture {
+        "must return the original the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestAddNotifiedPartyPage.breadcrumb(NormalMode)))
+          val waypoints: Waypoints = Waypoints(List(TestAddNotifiedPartyPage.waypoint(NormalMode)))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestNotifiedPartyPage1) mustEqual breadcrumbs
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestNotifiedPartyPage1) mustEqual waypoints
         }
       }
 
-      "when the original breadcrumbs start with something other than the add-item page of the target page's section" - {
+      "when the original waypoints start with something other than the add-item page of the target page's section" - {
 
-        "must add the add-item page of the target page's section to the breadcrumbs" in new Fixture {
+        "must add the add-item page of the target page's section to the waypoints" in new Fixture {
 
-          val breadcrumbs: Breadcrumbs = Breadcrumbs(List(TestCheckNotifiedPartyPage.breadcrumb))
+          val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateBreadcrumbs(breadcrumbs, TestNotifiedPartyPage1)
-            .mustEqual(breadcrumbs.push(TestAddNotifiedPartyPage.breadcrumb(NormalMode)))
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestNotifiedPartyPage1)
+            .mustEqual(waypoints.push(TestAddNotifiedPartyPage.waypoint(NormalMode)))
         }
       }
     }
@@ -408,12 +408,12 @@ class PageSpec extends AnyFreeSpec with Matchers {
 
     case object TestConsigneePage1 extends Page with AddToListQuestionPage {
       override val section: AddToListSection = ConsigneeSection
-      override val addItemBreadcrumb: Breadcrumb = TestAddConsigneePage.breadcrumb(NormalMode)
+      override val addItemWaypoint: Waypoint = TestAddConsigneePage.waypoint(NormalMode)
     }
 
     case object TestConsigneePage2 extends Page with AddToListQuestionPage {
       override val section: AddToListSection = ConsigneeSection
-      override val addItemBreadcrumb: Breadcrumb = TestAddConsigneePage.breadcrumb(NormalMode)
+      override val addItemWaypoint: Waypoint = TestAddConsigneePage.waypoint(NormalMode)
     }
 
     case object TestAddNotifiedPartyPage extends AddItemPage {
@@ -423,12 +423,12 @@ class PageSpec extends AnyFreeSpec with Matchers {
 
     case object TestNotifiedPartyPage1 extends Page with AddToListQuestionPage {
       override val section: AddToListSection = NotifiedPartySection
-      override val addItemBreadcrumb: Breadcrumb = TestAddNotifiedPartyPage.breadcrumb(NormalMode)
+      override val addItemWaypoint: Waypoint = TestAddNotifiedPartyPage.waypoint(NormalMode)
     }
 
     case object TestNotifiedPartyPage2 extends Page with AddToListQuestionPage {
       override val section: AddToListSection = NotifiedPartySection
-      override val addItemBreadcrumb: Breadcrumb = TestAddNotifiedPartyPage.breadcrumb(NormalMode)
+      override val addItemWaypoint: Waypoint = TestAddNotifiedPartyPage.waypoint(NormalMode)
     }
 
     case object TestCheckConsigneePage extends CheckAnswersPage {

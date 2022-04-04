@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.{NotifiedPartyNamePage, RemoveNotifiedPartyPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,10 +38,10 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new RemoveNotifiedPartyFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = EmptyBreadcrumbs
+  private val waypoints = EmptyWaypoints
   private val baseAnswers = emptyUserAnswers.set(NotifiedPartyNamePage(index),"Test LTD.").success.value
 
-  lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index).url
+  lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(waypoints, lrn, index).url
 
   "RemoveNotifiedParty Controller" - {
 
@@ -57,7 +57,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveNotifiedPartyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, breadcrumbs, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -82,7 +82,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index)
-          .navigate(breadcrumbs, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -109,7 +109,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index)
-          .navigate(breadcrumbs, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -131,7 +131,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, breadcrumbs, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 

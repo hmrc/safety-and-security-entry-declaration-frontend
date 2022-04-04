@@ -19,34 +19,34 @@ package pages
 import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 
-case class Breadcrumb (
-  page: BreadcrumbPage,
+case class Waypoint (
+  page: WaypointPage,
   mode: Mode,
   urlFragment: String
 )
 
-object Breadcrumb {
+object Waypoint {
 
-  def fromString(s: String): Option[Breadcrumb] =
+  def fromString(s: String): Option[Waypoint] =
     s match {
       case AddConsigneePage.checkModeUrlFragment =>
-        Some(AddConsigneePage.breadcrumb(CheckMode))
+        Some(AddConsigneePage.waypoint(CheckMode))
 
       case AddConsigneePage.normalModeUrlFragment =>
-        Some(AddConsigneePage.breadcrumb(NormalMode))
+        Some(AddConsigneePage.waypoint(NormalMode))
 
       case AddNotifiedPartyPage.checkModeUrlFragment =>
-        Some(AddNotifiedPartyPage.breadcrumb(CheckMode))
+        Some(AddNotifiedPartyPage.waypoint(CheckMode))
 
       case AddNotifiedPartyPage.normalModeUrlFragment =>
-        Some(AddNotifiedPartyPage.breadcrumb(NormalMode))
+        Some(AddNotifiedPartyPage.waypoint(NormalMode))
 
       case CheckConsigneesAndNotifiedPartiesPage.urlFragment =>
-        Some(CheckConsigneesAndNotifiedPartiesPage.breadcrumb)
+        Some(CheckConsigneesAndNotifiedPartiesPage.waypoint)
 
       case other =>
-        CheckConsigneePage.breadcrumbFromString(other) orElse
-          CheckNotifiedPartyPage.breadcrumbFromString(other) orElse
+        CheckConsigneePage.waypointFromString(other) orElse
+          CheckNotifiedPartyPage.waypointFromString(other) orElse
           None
     }
 }

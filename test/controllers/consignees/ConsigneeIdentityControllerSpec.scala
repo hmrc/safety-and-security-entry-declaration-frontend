@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.ConsigneeIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -39,10 +39,10 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
   
   private val formProvider = new ConsigneeIdentityFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = EmptyBreadcrumbs
+  private val waypoints = EmptyWaypoints
 
   lazy val consigneeIdentityRoute =
-    routes.ConsigneeIdentityController.onPageLoad(breadcrumbs, lrn, index).url
+    routes.ConsigneeIdentityController.onPageLoad(waypoints, lrn, index).url
 
   "ConsigneeIdentity Controller" - {
 
@@ -58,7 +58,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ConsigneeIdentityView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, breadcrumbs, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -82,7 +82,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(ConsigneeIdentity.values.head),
-          breadcrumbs,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -112,7 +112,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ConsigneeIdentityPage(index)
-          .navigate(breadcrumbs, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -134,7 +134,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, breadcrumbs, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

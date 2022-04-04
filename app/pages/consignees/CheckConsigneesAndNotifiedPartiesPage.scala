@@ -18,15 +18,15 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, CheckAnswersPage, Page, TaskListPage}
+import pages.{Waypoints, CheckAnswersPage, Page, TaskListPage}
 import play.api.mvc.Call
 
 object CheckConsigneesAndNotifiedPartiesPage extends CheckAnswersPage {
   override val urlFragment: String = "check-consignees-notified-parties"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints, lrn)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     TaskListPage
 }

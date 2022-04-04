@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, NonEmptyBreadcrumbs, Page, QuestionPage}
+import pages.{Waypoints, NonEmptyWaypoints, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.{AllNotifiedPartiesQuery, DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
@@ -31,25 +31,25 @@ case object AddAnyNotifiedPartiesPage extends QuestionPage[Boolean] {
 
   override def toString: String = "addAnyNotifiedParties"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(waypoints, lrn)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case true  => NotifiedPartyIdentityPage(Index(0))
       case false => CheckConsigneesAndNotifiedPartiesPage
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfNotifiedParties)
-          .map(_ => breadcrumbs.current.page)
+          .map(_ => waypoints.current.page)
           .getOrElse(NotifiedPartyIdentityPage(Index(0)))
 
       case false =>
         answers.get(DeriveNumberOfConsignees)
-          .map(_ => breadcrumbs.current.page)
+          .map(_ => waypoints.current.page)
           .getOrElse(AnyConsigneesKnownPage)
     }.orRecover
 

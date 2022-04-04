@@ -22,6 +22,6 @@ import play.api.mvc.Call
 
 case object TaskListPage extends Page {
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.TaskListController.onPageLoad(lrn)
 }

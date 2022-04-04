@@ -22,6 +22,6 @@ import play.api.mvc.Call
 
 object JourneyRecoveryPage extends Page {
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.JourneyRecoveryController.onPageLoad()
 }

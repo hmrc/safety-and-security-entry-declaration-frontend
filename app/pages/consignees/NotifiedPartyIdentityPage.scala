@@ -19,7 +19,7 @@ package pages.consignees
 import controllers.consignees.{routes => consigneeRoutes}
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
 import models.{Index, LocalReferenceNumber, NormalMode, NotifiedPartyIdentity, UserAnswers}
-import pages.{Breadcrumb, Breadcrumbs, NonEmptyBreadcrumbs, Page}
+import pages.{Waypoint, Waypoints, NonEmptyWaypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -27,31 +27,31 @@ import scala.util.Try
 
 case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestionPage[NotifiedPartyIdentity] {
 
-  override val addItemBreadcrumb: Breadcrumb = AddNotifiedPartyPage.breadcrumb(NormalMode)
+  override val addItemWaypoint: Waypoint = AddNotifiedPartyPage.waypoint(NormalMode)
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "identity"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, lrn, index)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(NotifiedPartyIdentityPage(index)).map {
       case GBEORI => NotifiedPartyEORIPage(index)
       case NameAddress => NotifiedPartyNamePage(index)
     }.orRecover
 
-  override protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case GBEORI =>
         answers.get(NotifiedPartyEORIPage(index))
-          .map(_ => breadcrumbs.current.page)
+          .map(_ => waypoints.current.page)
           .getOrElse(NotifiedPartyEORIPage(index))
 
       case NameAddress =>
         answers.get(NotifiedPartyNamePage(index))
-          .map(_ => breadcrumbs.current.page)
+          .map(_ => waypoints.current.page)
           .getOrElse(NotifiedPartyNamePage(index))
     }.orRecover
 

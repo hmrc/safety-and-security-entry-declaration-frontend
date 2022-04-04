@@ -15,7 +15,7 @@
  *@
 
 @import controllers.consignees.routes
-@import pages.Breadcrumbs
+@import pages.Waypoints
 
 @this(
         layout: templates.Layout,
@@ -25,7 +25,7 @@
 )
 
 
-@(breadcrumbs: Breadcrumbs, list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkConsignee.title"))) {
 
@@ -33,7 +33,7 @@
 
     @govukSummaryList(list)
 
-    @formHelper(action = routes.CheckConsigneeController.onSubmit(breadcrumbs, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.CheckConsigneeController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )

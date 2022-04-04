@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.{ConsigneeAddressPage, RemoveConsigneePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -39,11 +39,11 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new RemoveConsigneeFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = EmptyBreadcrumbs
+  private val waypoints = EmptyWaypoints
   private val address = arbitrary[Address].sample.value
   private val baseAnswers = emptyUserAnswers.set(ConsigneeAddressPage(index), address).success.value
 
-  lazy val removeConsigneeRoute = routes.RemoveConsigneeController.onPageLoad(breadcrumbs, lrn, index).url
+  lazy val removeConsigneeRoute = routes.RemoveConsigneeController.onPageLoad(waypoints, lrn, index).url
 
   "RemoveConsignee Controller" - {
 
@@ -59,7 +59,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveConsigneeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, breadcrumbs, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -84,7 +84,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveConsigneePage(index)
-          .navigate(breadcrumbs, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -111,7 +111,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveConsigneePage(index)
-          .navigate(breadcrumbs, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -134,7 +134,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, breadcrumbs, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 

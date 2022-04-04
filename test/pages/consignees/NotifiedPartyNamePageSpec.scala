@@ -19,56 +19,56 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{Address, Country, NormalMode}
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyNamePage" - {
 
-    "must navigate when there are no breadcrumbs" - {
+    "must navigate when there are no waypoints" - {
 
-      val breadcrumbs = EmptyBreadcrumbs
-
-      "to notified party address" in {
-
-        NotifiedPartyNamePage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
-          .mustEqual(
-            routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
-          )
-      }
-    }
-
-    "must navigate when the current breadcrumb is AddNotifiedParty" - {
-
-      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage.breadcrumb(NormalMode)))
+      val waypoints = EmptyWaypoints
 
       "to notified party address" in {
 
         NotifiedPartyNamePage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.NotifiedPartyAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate when the current breadcrumb is CheckNotifiedParty" - {
+    "must navigate when the current waypoint is AddNotifiedParty" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index).breadcrumb))
+      val waypoints = Waypoints(List(AddNotifiedPartyPage.waypoint(NormalMode)))
+
+      "to notified party address" in {
+
+        NotifiedPartyNamePage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.NotifiedPartyAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is CheckNotifiedParty" - {
+
+      val waypoints = Waypoints(List(CheckNotifiedPartyPage(index).waypoint))
 
       "when Notified Party Address has been answered" - {
 
-        "to Check Notified Party with the current breadcrumb removed" in {
+        "to Check Notified Party with the current waypoint removed" in {
 
           val answers =
             emptyUserAnswers
               .set(NotifiedPartyAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom")))
               .success.value
 
-          NotifiedPartyNamePage(index).navigate(breadcrumbs, answers)
-            .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+          NotifiedPartyNamePage(index).navigate(waypoints, answers)
+            .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(waypoints.pop, answers.lrn, index))
         }
       }
 
@@ -76,8 +76,8 @@ class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
 
         "to Notified Party Address" in {
 
-          NotifiedPartyNamePage(index).navigate(breadcrumbs, emptyUserAnswers)
-            .mustEqual(routes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index))
+          NotifiedPartyNamePage(index).navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.NotifiedPartyAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
         }
       }
     }

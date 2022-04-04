@@ -19,7 +19,7 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.{Index, LocalReferenceNumber}
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.CheckConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,27 +38,27 @@ class CheckConsigneeController @Inject() (
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          ConsigneeIdentitySummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index)),
-          ConsigneeEORISummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index)),
-          ConsigneeNameSummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index)),
-          ConsigneeAddressSummary.row(request.userAnswers, index, breadcrumbs, CheckConsigneePage(index))
+          ConsigneeIdentitySummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index)),
+          ConsigneeEORISummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index)),
+          ConsigneeNameSummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index)),
+          ConsigneeAddressSummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index))
         ).flatten
       )
 
-      Ok(view(breadcrumbs, list, lrn, index))
+      Ok(view(waypoints, list, lrn, index))
     }
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
 
-        Redirect(CheckConsigneePage(index).navigate(breadcrumbs, request.userAnswers))
+        Redirect(CheckConsigneePage(index).navigate(waypoints, request.userAnswers))
     }
 }
 

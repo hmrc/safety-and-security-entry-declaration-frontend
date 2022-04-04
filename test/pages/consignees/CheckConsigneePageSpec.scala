@@ -22,54 +22,54 @@ import generators.Generators
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 
 class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   ".fromString" - {
 
-    "must read from a valid breadcrumb" in {
+    "must read from a valid waypoint" in {
 
       forAll(Gen.choose(1, 999)) {
         index =>
-          val breadcrumb = s"check-consignee-$index"
+          val waypoint = s"check-consignee-$index"
 
-          CheckConsigneePage.breadcrumbFromString(breadcrumb).value
-            .mustEqual(CheckConsigneePage(Index(index - 1)).breadcrumb)
+          CheckConsigneePage.waypointFromString(waypoint).value
+            .mustEqual(CheckConsigneePage(Index(index - 1)).waypoint)
       }
     }
 
-    "must not read from an invalid breadcrumb" in {
+    "must not read from an invalid waypoint" in {
 
       forAll(nonEmptyString) {
         s =>
 
           whenever(!s.startsWith("check-consignee-")) {
-            CheckConsigneePage.breadcrumbFromString(s) must not be defined
+            CheckConsigneePage.waypointFromString(s) must not be defined
           }
       }
     }
   }
 
-  "must navigate when there are no breadcrumbs" - {
+  "must navigate when there are no waypoints" - {
 
-    val breadcrumbs = EmptyBreadcrumbs
+    val waypoints = EmptyWaypoints
 
     "to Add Consignee" in {
 
-      CheckConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(routes.AddConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
+      CheckConsigneePage(index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddConsigneeController.onPageLoad(waypoints, emptyUserAnswers.lrn))
     }
   }
 
-  "must navigate when the current breadcrumb is AddConsignee" - {
+  "must navigate when the current waypoint is AddConsignee" - {
 
-    val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb(NormalMode)))
+    val waypoints = Waypoints(List(AddConsigneePage.waypoint(NormalMode)))
 
-    "to Add Consignee with the first breadcrumb removed" in {
+    "to Add Consignee with the first waypoint removed" in {
 
-      CheckConsigneePage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(routes.AddConsigneeController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn))
+      CheckConsigneePage(index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddConsigneeController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn))
     }
   }
 }

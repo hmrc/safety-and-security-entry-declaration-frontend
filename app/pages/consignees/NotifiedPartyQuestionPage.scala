@@ -17,11 +17,11 @@
 package pages.consignees
 
 import models.NormalMode
-import pages.{AddToListQuestionPage, AddToListSection, Breadcrumb, NotifiedPartySection, QuestionPage}
+import pages.{AddToListQuestionPage, AddToListSection, Waypoint, NotifiedPartySection, QuestionPage}
 
 trait NotifiedPartyQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
 
-  override val addItemBreadcrumb: Breadcrumb = AddNotifiedPartyPage.breadcrumb(NormalMode)
+  override val addItemWaypoint: Waypoint = AddNotifiedPartyPage.waypoint(NormalMode)
 
   override val section: AddToListSection = NotifiedPartySection
 }

@@ -19,7 +19,7 @@ package controllers.consignees
 import controllers.actions._
 import forms.consignees.AddNotifiedPartyFormProvider
 import models.LocalReferenceNumber
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.AddNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,30 +44,30 @@ class AddNotifiedPartyController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, breadcrumbs, AddNotifiedPartyPage)
+        val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, waypoints, AddNotifiedPartyPage)
 
-        Ok(view(form, breadcrumbs, lrn, notifiedParties))
+        Ok(view(form, waypoints, lrn, notifiedParties))
     }
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
 
         form.bindFromRequest().fold(
           formWithErrors => {
-            val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, breadcrumbs, AddNotifiedPartyPage)
+            val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, waypoints, AddNotifiedPartyPage)
 
-            Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, notifiedParties)))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, notifiedParties)))
           },
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNotifiedPartyPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddNotifiedPartyPage.navigate(breadcrumbs, updatedAnswers))
+            } yield Redirect(AddNotifiedPartyPage.navigate(waypoints, updatedAnswers))
         )
     }
 }

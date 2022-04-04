@@ -20,72 +20,72 @@ import base.SpecBase
 import controllers.consignees.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
 import models.{Address, ConsigneeIdentity, Country, GbEori, NormalMode}
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeIdentityPage" - {
 
-    "must navigate when there are no breadcrumbs" - {
+    "must navigate when there are no waypoints" - {
 
-      val breadcrumbs = EmptyBreadcrumbs
+      val waypoints = EmptyWaypoints
 
       "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(breadcrumbs, answers)
-          .mustEqual(routes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
       }
 
       "to Consignee Name when answered `name & address`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(breadcrumbs, answers)
-          .mustEqual(routes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
 
-    "must navigate when the current breadcrumb is AddConsignee" - {
+    "must navigate when the current waypoint is AddConsignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb((NormalMode))))
+      val waypoints = Waypoints(List(AddConsigneePage.waypoint((NormalMode))))
 
       "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(breadcrumbs, answers)
-          .mustEqual(routes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
       }
 
       "to Consignee Name when answered `name & address`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(breadcrumbs, answers)
-          .mustEqual(routes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
 
-    "must navigate when the current breadcrumb is Check Consignee" - {
+    "must navigate when the current waypoint is Check Consignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index).breadcrumb))
+      val waypoints = Waypoints(List(CheckConsigneePage(index).waypoint))
 
       "when the answer is GB EORI" - {
 
         "and Consignee EORI is already answered" - {
 
-          "to Check Consignee with the current breadcrumb removed" in {
+          "to Check Consignee with the current waypoint removed" in {
 
             val answers =
               emptyUserAnswers
                 .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
                 .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
 
-            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
-              .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, answers.lrn, index))
           }
         }
 
@@ -95,8 +95,8 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
             val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
 
-            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
-              .mustEqual(routes.ConsigneeEORIController.onPageLoad(breadcrumbs, answers.lrn, index))
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
           }
         }
       }
@@ -105,15 +105,15 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
         "and Consignee Name is already answered" - {
 
-          "to Check Consignee with the current breadcrumb removed" in {
+          "to Check Consignee with the current waypoint removed" in {
 
             val answers =
               emptyUserAnswers
                 .set(ConsigneeNamePage(index), "Name").success.value
                 .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
 
-            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
-              .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, answers.lrn, index))
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, answers.lrn, index))
           }
         }
 
@@ -123,8 +123,8 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
             val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
 
-            ConsigneeIdentityPage(index).navigate(breadcrumbs, answers)
-              .mustEqual(routes.ConsigneeNameController.onPageLoad(breadcrumbs, answers.lrn, index))
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
           }
         }
       }

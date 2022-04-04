@@ -36,67 +36,63 @@ trait Page {
   protected def navigateInCheckMode(answers: UserAnswers): Call =
     routes.CheckYourAnswersController.onPageLoad(answers.lrn)
 
-  def navigate(breadcrumbs: Breadcrumbs, answers: UserAnswers): Call = {
-    val targetPage = nextPage(breadcrumbs, answers)
-    val updatedBreadcrumbs = updateBreadcrumbs(breadcrumbs, targetPage)
-    targetPage.route(updatedBreadcrumbs, answers.lrn)
+  def navigate(waypoints: Waypoints, answers: UserAnswers): Call = {
+    val targetPage = nextPage(waypoints, answers)
+    val updatedWaypoints = updateWaypoints(waypoints, targetPage)
+    targetPage.route(updatedWaypoints, answers.lrn)
   }
 
-  protected[pages] def updateBreadcrumbs(breadcrumbs: Breadcrumbs, target: Page): Breadcrumbs =
-    breadcrumbs match {
-      case EmptyBreadcrumbs =>
-        EmptyBreadcrumbs
+  protected[pages] def updateWaypoints(waypoints: Waypoints, target: Page): Waypoints =
+    waypoints match {
+      case EmptyWaypoints =>
+        EmptyWaypoints
 
-      case b: NonEmptyBreadcrumbs =>
+      case w: NonEmptyWaypoints =>
         (this, target) match {
-          case (thisPage: AddToListQuestionPage, thatPage: AddToListQuestionPage) =>
-            if (thisPage.section == thatPage.section) {
-              breadcrumbs
-            } else {
-              breadcrumbs.push(thatPage.addItemBreadcrumb)
-            }
+          case (a: AddToListQuestionPage, b: AddToListQuestionPage) if a.section == b.section =>
+              waypoints
 
           case (_, thatPage: AddToListQuestionPage) =>
-            if (b.current == thatPage.addItemBreadcrumb) {
-              breadcrumbs
+            if (w.current == thatPage.addItemWaypoint) {
+              waypoints
             } else {
-              breadcrumbs.push(thatPage.addItemBreadcrumb)
+              waypoints.push(thatPage.addItemWaypoint)
             }
 
           case _ =>
-            b.current match {
-              case x if x.page == target => b.pop
-              case _ => b
+            w.current match {
+              case x if x.page == target => w.pop
+              case _ => w
             }
         }
     }
 
-  protected def nextPage(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
-    breadcrumbs match {
-      case EmptyBreadcrumbs =>
-        nextPageNormalMode(breadcrumbs, answers)
+  protected def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
+    waypoints match {
+      case EmptyWaypoints =>
+        nextPageNormalMode(waypoints, answers)
 
-      case b: NonEmptyBreadcrumbs =>
+      case b: NonEmptyWaypoints =>
         b.mode match {
           case CheckMode  => nextPageCheckMode(b, answers)
           case NormalMode => nextPageNormalMode(b, answers)
         }
     }
 
-  protected def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
-    breadcrumbs.current.page
+  protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    waypoints.current.page
 
-  protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     throw new NotImplementedError("nextPageNormalMode is not implemented")
 
-  def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
+  def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     throw new NotImplementedError("route is not implemented")
 
-  def changeLink(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
-    route(breadcrumbs.push(sourcePage.breadcrumb), lrn)
+  def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
+    route(waypoints.push(sourcePage.waypoint), lrn)
 
-  def changeLink(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, sourcePage: AddItemPage): Call =
-    route(breadcrumbs.push(sourcePage.breadcrumb(CheckMode)), lrn)
+  def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: AddItemPage): Call =
+    route(waypoints.push(sourcePage.waypoint(CheckMode)), lrn)
 }
 
 object Page {

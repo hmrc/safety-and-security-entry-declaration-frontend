@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Breadcrumbs, NonEmptyBreadcrumbs, Page, QuestionPage}
+import pages.{AddItemPage, Waypoints, NonEmptyWaypoints, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
@@ -30,10 +30,10 @@ case object AddConsigneePage extends QuestionPage[Boolean] with AddItemPage {
 
   override def path: JsPath = JsPath \ "addConsignee"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.AddConsigneeController.onPageLoad(breadcrumbs, lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddConsigneeController.onPageLoad(waypoints, lrn)
 
-  override def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees)
@@ -44,7 +44,7 @@ case object AddConsigneePage extends QuestionPage[Boolean] with AddItemPage {
         AddAnyNotifiedPartiesPage
     }.orRecover
 
-  override def nextPageCheckMode(breadcrumbs: NonEmptyBreadcrumbs, answers: UserAnswers): Page =
+  override def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees)
@@ -52,6 +52,6 @@ case object AddConsigneePage extends QuestionPage[Boolean] with AddItemPage {
           .orRecover
 
       case false =>
-        breadcrumbs.current.page
+        waypoints.current.page
     }.orRecover
 }

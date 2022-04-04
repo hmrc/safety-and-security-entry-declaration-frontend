@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Breadcrumbs, EmptyBreadcrumbs, consignees}
+import pages.{Waypoints, EmptyWaypoints, consignees}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,10 +36,10 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new NotifiedPartyEORIFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = EmptyBreadcrumbs
+  private val waypoints = EmptyWaypoints
   
   lazy val notifiedPartyEORIRoute =
-    routes.NotifiedPartyEORIController.onPageLoad(breadcrumbs, lrn, index).url
+    routes.NotifiedPartyEORIController.onPageLoad(waypoints, lrn, index).url
 
   "NotifiedPartyEORI Controller" - {
 
@@ -55,7 +55,7 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NotifiedPartyEORIView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, breadcrumbs, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -76,7 +76,7 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(eori), breadcrumbs, lrn, index)(
+        contentAsString(result) mustEqual view(form.fill(eori), waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -105,7 +105,7 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual consignees.NotifiedPartyEORIPage(index)
-          .navigate(breadcrumbs, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -127,7 +127,7 @@ class NotifiedPartyEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, breadcrumbs, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

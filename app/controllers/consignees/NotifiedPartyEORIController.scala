@@ -21,7 +21,7 @@ import forms.consignees.NotifiedPartyEORIFormProvider
 
 import javax.inject.Inject
 import models.{GbEori, Index, LocalReferenceNumber, Mode}
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.NotifiedPartyEORIPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,7 +46,7 @@ class NotifiedPartyEORIController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(NotifiedPartyEORIPage(index)) match {
@@ -54,21 +54,21 @@ class NotifiedPartyEORIController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, breadcrumbs, lrn, index))
+      Ok(view(preparedForm, waypoints, lrn, index))
     }
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
           { value: GbEori =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyEORIPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(NotifiedPartyEORIPage(index).navigate(breadcrumbs, updatedAnswers))
+            } yield Redirect(NotifiedPartyEORIPage(index).navigate(waypoints, updatedAnswers))
           }
         )
     }

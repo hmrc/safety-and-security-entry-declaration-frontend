@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 import queries.consignees.{AllNotifiedPartiesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
@@ -27,36 +27,36 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnyNotifiedPartiesPage" - {
 
-    "must navigate when there are no breadcrumbs" - {
+    "must navigate when there are no waypoints" - {
 
-      val breadcrumbs = EmptyBreadcrumbs
+      val waypoints = EmptyWaypoints
 
       "to Notified Party Identity when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, true).success.value
 
-        AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
-          .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, Index(0)))
+        AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+          .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints, answers.lrn, Index(0)))
       }
 
       "to Check Consignees and Notified Parties when the answer is no" in {
 
         val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
 
-        AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
-          .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs, answers.lrn))
+        AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+          .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints, answers.lrn))
       }
     }
 
-    "must navigate when the current breadcrumb is CheckConsigneesAndNotifiedParties" - {
+    "must navigate when the current waypoint is CheckConsigneesAndNotifiedParties" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneesAndNotifiedPartiesPage.breadcrumb))
+      val waypoints = Waypoints(List(CheckConsigneesAndNotifiedPartiesPage.waypoint))
 
       "when the answer is yes" - {
 
         "and there are already some notified parties" - {
 
-          "to Check Consignees and Notified Parties with the current breadcrumb removed" in {
+          "to Check Consignees and Notified Parties with the current waypoint removed" in {
 
             val answers =
               emptyUserAnswers
@@ -65,8 +65,8 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
                 .set(NotifiedPartyKeyQuery(index), 1).success.value
                 .set(AddAnyNotifiedPartiesPage, true).success.value
 
-            AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
-              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs.pop, answers.lrn))
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints.pop, answers.lrn))
           }
         }
 
@@ -78,10 +78,10 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
               emptyUserAnswers
                 .set(AddAnyNotifiedPartiesPage, true).success.value
 
-            val expectedBreadcrumbs = breadcrumbs.push(AddNotifiedPartyPage.breadcrumb(NormalMode))
+            val expectedWaypoints = waypoints.push(AddNotifiedPartyPage.waypoint(NormalMode))
 
-            AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
-              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedBreadcrumbs, answers.lrn, index))
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, index))
           }
         }
       }
@@ -90,7 +90,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
         "and there are some consignees" - {
 
-          "to Check Consignees and Notified Parties with the current breadcrumb removed" in {
+          "to Check Consignees and Notified Parties with the current waypoint removed" in {
 
             val answers =
               emptyUserAnswers
@@ -99,8 +99,8 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
                 .set(ConsigneeKeyQuery(index), 1).success.value
                 .set(AddAnyNotifiedPartiesPage, false).success.value
 
-            AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
-              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(breadcrumbs.pop, answers.lrn))
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints.pop, answers.lrn))
           }
         }
 
@@ -110,8 +110,8 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
             val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
 
-            AddAnyNotifiedPartiesPage.navigate(breadcrumbs, answers)
-              .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(breadcrumbs, answers.lrn))
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(waypoints, answers.lrn))
           }
         }
       }

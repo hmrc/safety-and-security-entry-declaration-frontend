@@ -18,7 +18,7 @@ package controllers.consignees
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.CheckNotifiedPartyPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -27,7 +27,7 @@ import views.html.consignees.CheckNotifiedPartyView
 
 class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency {
 
-  private val breadcrumbs = EmptyBreadcrumbs
+  private val waypoints = EmptyWaypoints
 
   "Check Notified Party Controller" - {
 
@@ -36,7 +36,7 @@ class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs,  lrn, index).url)
+        val request = FakeRequest(GET, routes.CheckNotifiedPartyController.onPageLoad(waypoints,  lrn, index).url)
 
         val result = route(application, request).value
 
@@ -44,7 +44,7 @@ class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency 
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(breadcrumbs, list, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(waypoints, list, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -53,13 +53,13 @@ class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs,  lrn, index).url)
+        val request = FakeRequest(POST, routes.CheckNotifiedPartyController.onPageLoad(waypoints,  lrn, index).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value.
-          mustEqual(CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers).url)
+          mustEqual(CheckNotifiedPartyPage(index).navigate(waypoints, emptyUserAnswers).url)
       }
     }
 
@@ -68,7 +68,7 @@ class CheckNotifiedPartyControllerSpec extends SpecBase with SummaryListFluency 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index).url)
+        val request = FakeRequest(GET, routes.CheckNotifiedPartyController.onPageLoad(waypoints, lrn, index).url)
 
         val result = route(application, request).value
 

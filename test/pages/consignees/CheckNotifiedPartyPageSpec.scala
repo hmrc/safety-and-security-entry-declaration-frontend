@@ -22,55 +22,55 @@ import generators.Generators
 import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 
 class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   ".fromString" - {
 
-    "must read from a valid breadcrumb" in {
+    "must read from a valid waypoint" in {
 
       forAll(Gen.choose(1, 999)) {
         index =>
-          val breadcrumb = s"check-notified-party-$index"
+          val waypoint = s"check-notified-party-$index"
 
-          CheckNotifiedPartyPage.breadcrumbFromString(breadcrumb).value
-            .mustEqual(CheckNotifiedPartyPage(Index(index - 1)).breadcrumb)
+          CheckNotifiedPartyPage.waypointFromString(waypoint).value
+            .mustEqual(CheckNotifiedPartyPage(Index(index - 1)).waypoint)
       }
     }
 
-    "must not read from an invalid breadcrumb" in {
+    "must not read from an invalid waypoint" in {
 
       forAll(nonEmptyString) {
         s =>
 
           whenever(!s.startsWith("check-notified-party-")) {
-            CheckNotifiedPartyPage.breadcrumbFromString(s) must not be defined
+            CheckNotifiedPartyPage.waypointFromString(s) must not be defined
           }
       }
     }
   }
 
 
-  "must navigate when there are no breadcrumbs" - {
+  "must navigate when there are no waypoints" - {
 
-    val breadcrumbs = EmptyBreadcrumbs
+    val waypoints = EmptyWaypoints
 
     "to Add Notified Party" in {
 
-      CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn))
+      CheckNotifiedPartyPage(index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(waypoints, emptyUserAnswers.lrn))
     }
   }
 
-  "must navigate when the current breadcrumb is AddNotifiedParty" - {
+  "must navigate when the current waypoint is AddNotifiedParty" - {
 
-    val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage.breadcrumb(NormalMode)))
+    val waypoints = Waypoints(List(AddNotifiedPartyPage.waypoint(NormalMode)))
 
-    "to Add Notified Party with the first breadcrumb removed" in {
+    "to Add Notified Party with the first waypoint removed" in {
 
-      CheckNotifiedPartyPage(index).navigate(breadcrumbs, emptyUserAnswers)
-        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn))
+      CheckNotifiedPartyPage(index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn))
     }
   }
 }

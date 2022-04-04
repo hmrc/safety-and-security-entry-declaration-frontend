@@ -19,7 +19,7 @@ package controllers.consignees
 import controllers.actions._
 import forms.consignees.RemoveNotifiedPartyFormProvider
 import models.{Index, LocalReferenceNumber}
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.RemoveNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,29 +44,29 @@ class RemoveNotifiedPartyController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-        Ok(view(form, breadcrumbs, lrn, index))
+        Ok(view(form, waypoints, lrn, index))
     }
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
 
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, index))),
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
           value =>
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(NotifiedPartyQuery(index)))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveNotifiedPartyPage(index).navigate(breadcrumbs, updatedAnswers))
+              } yield Redirect(RemoveNotifiedPartyPage(index).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemoveNotifiedPartyPage(index).navigate(breadcrumbs, request.userAnswers))
+                Redirect(RemoveNotifiedPartyPage(index).navigate(waypoints, request.userAnswers))
               )
             }
         )

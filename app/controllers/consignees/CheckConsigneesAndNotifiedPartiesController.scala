@@ -19,7 +19,7 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.CheckConsigneesAndNotifiedPartiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,27 +37,27 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
   view: CheckConsigneesAndNotifiedPartiesView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          AnyConsigneesKnownSummary.row(request.userAnswers, breadcrumbs, CheckConsigneesAndNotifiedPartiesPage),
-          AddConsigneeSummary.checkAnswersRow(request.userAnswers, breadcrumbs, CheckConsigneesAndNotifiedPartiesPage),
-          AddAnyNotifiedPartiesSummary.row(request.userAnswers, breadcrumbs, CheckConsigneesAndNotifiedPartiesPage),
-          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, breadcrumbs, CheckConsigneesAndNotifiedPartiesPage)
+          AnyConsigneesKnownSummary.row(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage),
+          AddConsigneeSummary.checkAnswersRow(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage),
+          AddAnyNotifiedPartiesSummary.row(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage),
+          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage)
         ).flatten
       )
 
-      Ok(view(breadcrumbs, list, lrn))
+      Ok(view(waypoints, list, lrn))
     }
 
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        Redirect(CheckConsigneesAndNotifiedPartiesPage.navigate(breadcrumbs, request.userAnswers))
+        Redirect(CheckConsigneesAndNotifiedPartiesPage.navigate(waypoints, request.userAnswers))
     }
 }
 

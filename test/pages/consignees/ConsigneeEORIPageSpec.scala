@@ -19,50 +19,50 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.NormalMode
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeEORIPage" - {
 
-    "must navigate when there are no breadcrumbs" - {
+    "must navigate when there are no waypoints" - {
 
-      val breadcrumbs = EmptyBreadcrumbs
-
-      "to Check Consignee Details" in {
-
-        ConsigneeEORIPage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
-          .mustEqual(
-            routes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
-          )
-      }
-    }
-
-    "must navigate when the current breadcrumb is AddConsignee" - {
-
-      val breadcrumbs = Breadcrumbs(List(AddConsigneePage.breadcrumb(NormalMode)))
+      val waypoints = EmptyWaypoints
 
       "to Check Consignee Details" in {
 
         ConsigneeEORIPage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routes.CheckConsigneeController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.CheckConsigneeController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate when the current breadcrumb is CheckConsignee" - {
+    "must navigate when the current waypoint is AddConsignee" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckConsigneePage(index).breadcrumb))
+      val waypoints = Waypoints(List(AddConsigneePage.waypoint(NormalMode)))
 
-      "to Check Consignee with the current breadcrumb removed" in {
+      "to Check Consignee Details" in {
 
         ConsigneeEORIPage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
-          .mustEqual(routes.CheckConsigneeController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn, index))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckConsigneeController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is CheckConsignee" - {
+
+      val waypoints = Waypoints(List(CheckConsigneePage(index).waypoint))
+
+      "to Check Consignee with the current waypoint removed" in {
+
+        ConsigneeEORIPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn, index))
       }
     }
   }

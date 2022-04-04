@@ -18,17 +18,17 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.routes
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 
 class CheckConsigneesAndNotifiedPartiesPageSpec extends SpecBase {
 
-  "must navigate when there are no breadcrumbs" - {
+  "must navigate when there are no waypoints" - {
 
-    val breadcrumbs = EmptyBreadcrumbs
+    val waypoints = EmptyWaypoints
 
     "to the task list" in {
 
-      CheckConsigneesAndNotifiedPartiesPage.navigate(breadcrumbs, emptyUserAnswers)
+      CheckConsigneesAndNotifiedPartiesPage.navigate(waypoints, emptyUserAnswers)
         .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
     }
   }

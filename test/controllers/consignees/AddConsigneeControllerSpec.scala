@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.AddConsigneePage
 import play.api.i18n.Messages
 import play.api.inject.bind
@@ -39,9 +39,9 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new AddConsigneeFormProvider()
   private val form = formProvider()
-  private val breadcrumbs = EmptyBreadcrumbs
+  private val waypoints = EmptyWaypoints
 
-  lazy val addConsigneeRoute = routes.AddConsigneeController.onPageLoad(breadcrumbs, lrn).url
+  lazy val addConsigneeRoute = routes.AddConsigneeController.onPageLoad(waypoints, lrn).url
 
   "AddConsignee Controller" - {
 
@@ -57,10 +57,10 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddConsigneeView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddConsigneeSummary.rows(emptyUserAnswers, breadcrumbs, AddConsigneePage)
+        val list = AddConsigneeSummary.rows(emptyUserAnswers, waypoints, AddConsigneePage)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, breadcrumbs, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, list)(request, implicitly).toString
       }
     }
 
@@ -84,7 +84,7 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(AddConsigneePage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddConsigneePage.navigate(breadcrumbs, expectedAnswers).url
+        redirectLocation(result).value mustEqual AddConsigneePage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -103,12 +103,12 @@ class AddConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddConsigneeView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddConsigneeSummary.rows(emptyUserAnswers, breadcrumbs, AddConsigneePage)
+        val list = AddConsigneeSummary.rows(emptyUserAnswers, waypoints, AddConsigneePage)
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, breadcrumbs, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, list)(request, implicitly).toString
       }
     }
 

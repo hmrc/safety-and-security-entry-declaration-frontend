@@ -23,7 +23,7 @@ import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.transport.{routes => transportRoutes}
 import models.{Index, NormalMode, UserAnswers}
-import pages.EmptyBreadcrumbs
+import pages.EmptyWaypoints
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import queries.DeriveNumberOfGoods
@@ -87,10 +87,10 @@ object TaskListViewModel {
 
   private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfConsignees) match {
-      case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyBreadcrumbs, answers.lrn)
+      case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
       case _ => answers.get(DeriveNumberOfNotifiedParties) match {
-          case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyBreadcrumbs, answers.lrn)
-          case _ => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(EmptyBreadcrumbs, answers.lrn)
+          case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
+          case _ => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
     }
 

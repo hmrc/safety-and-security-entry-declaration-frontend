@@ -21,7 +21,7 @@ import forms.consignees.AddConsigneeFormProvider
 
 import javax.inject.Inject
 import models.{CheckMode, LocalReferenceNumber, Mode}
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.AddConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,30 +45,30 @@ class AddConsigneeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
-        val consignees = AddConsigneeSummary.rows(request.userAnswers, breadcrumbs, AddConsigneePage)
+        val consignees = AddConsigneeSummary.rows(request.userAnswers, waypoints, AddConsigneePage)
 
-        Ok(view(form, breadcrumbs, lrn, consignees))
+        Ok(view(form, waypoints, lrn, consignees))
     }
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
 
         form.bindFromRequest().fold(
           formWithErrors => {
-            val consignees = AddConsigneeSummary.rows(request.userAnswers, breadcrumbs, AddConsigneePage)
+            val consignees = AddConsigneeSummary.rows(request.userAnswers, waypoints, AddConsigneePage)
 
-            Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, consignees)))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, consignees)))
           },
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConsigneePage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddConsigneePage.navigate(breadcrumbs, updatedAnswers))
+            } yield Redirect(AddConsigneePage.navigate(waypoints, updatedAnswers))
         )
   }
 }

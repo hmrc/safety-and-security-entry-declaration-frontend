@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, Page, QuestionPage}
+import pages.{Waypoints, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
@@ -29,10 +29,10 @@ final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Bool
 
   override def toString: String = "removeNotifiedParty"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(breadcrumbs, lrn, index)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page = {
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     lazy val noNotifiedPartiesRoute =
       answers.get(AnyConsigneesKnownPage).map {

@@ -18,7 +18,7 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Address, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Breadcrumbs, Page}
+import pages.{Waypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,9 +28,9 @@ case class NotifiedPartyAddressPage(index: Index) extends NotifiedPartyQuestionP
 
   override def toString: String = "address"
 
-  override def route(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber): Call =
-    consigneesRoutes.NotifiedPartyAddressController.onPageLoad(breadcrumbs, lrn, index)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.NotifiedPartyAddressController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(breadcrumbs: Breadcrumbs, answers: UserAnswers): Page =
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     CheckNotifiedPartyPage(index)
 }

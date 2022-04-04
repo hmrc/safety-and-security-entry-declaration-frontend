@@ -24,7 +24,7 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.EmptyBreadcrumbs
+import pages.EmptyWaypoints
 import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import pages.consignors.ConsignorEORIPage
 import pages.goods.CommodityCodeKnownPage
@@ -78,7 +78,7 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyBreadcrumbs, answers.lrn)
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
       }
 
@@ -92,7 +92,7 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyBreadcrumbs, answers.lrn)
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
       }
 
@@ -100,7 +100,7 @@ class TaskListViewModelSpec
         "we go to the beginning of the journey for consignees and notified parties" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(consigneesIdx).link mustEqual consigneeRoutes.AnyConsigneesKnownController.onPageLoad(EmptyBreadcrumbs, emptyUserAnswers.lrn)
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.AnyConsigneesKnownController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn)
         }
       }
     }

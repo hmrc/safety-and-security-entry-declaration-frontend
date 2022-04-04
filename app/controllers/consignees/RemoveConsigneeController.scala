@@ -21,7 +21,7 @@ import forms.consignees.RemoveConsigneeFormProvider
 
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.Breadcrumbs
+import pages.Waypoints
 import pages.consignees.RemoveConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,29 +45,29 @@ class RemoveConsigneeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-        Ok(view(form, breadcrumbs, lrn, index))
+        Ok(view(form, waypoints, lrn, index))
     }
 
-  def onSubmit(breadcrumbs: Breadcrumbs, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
 
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, breadcrumbs, lrn, index))),
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
           value =>
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsigneeQuery(index)))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveConsigneePage(index).navigate(breadcrumbs: Breadcrumbs, updatedAnswers))
+              } yield Redirect(RemoveConsigneePage(index).navigate(waypoints: Waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemoveConsigneePage(index).navigate(breadcrumbs: Breadcrumbs, request.userAnswers))
+                Redirect(RemoveConsigneePage(index).navigate(waypoints: Waypoints, request.userAnswers))
               )
             }
         )

@@ -19,51 +19,51 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.NormalMode
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyEORIPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyEORIPage" - {
 
-    "must navigate when there are no breadcrumbs" - {
+    "must navigate when there are no waypoints" - {
 
-      val breadcrumbs = EmptyBreadcrumbs
-
-      "to Check Notified Party" in {
-
-        NotifiedPartyEORIPage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
-          .mustEqual(
-            routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
-          )
-      }
-    }
-
-    "must navigate when the current breadcrumb is AddNotifiedParty" - {
-
-      val breadcrumbs = Breadcrumbs(List(AddNotifiedPartyPage.breadcrumb((NormalMode))))
+      val waypoints = EmptyWaypoints
 
       "to Check Notified Party" in {
 
         NotifiedPartyEORIPage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs, emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate when the current breadcrumb is CheckNotifiedParty" - {
+    "must navigate when the current waypoint is AddNotifiedParty" - {
 
-      val breadcrumbs = Breadcrumbs(List(CheckNotifiedPartyPage(index).breadcrumb))
+      val waypoints = Waypoints(List(AddNotifiedPartyPage.waypoint((NormalMode))))
 
-      "to Check Notified Party with the current breadcrumb removed" in {
+      "to Check Notified Party" in {
 
         NotifiedPartyEORIPage(index)
-          .navigate(breadcrumbs, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routes.CheckNotifiedPartyController.onPageLoad(breadcrumbs.pop, emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is CheckNotifiedParty" - {
+
+      val waypoints = Waypoints(List(CheckNotifiedPartyPage(index).waypoint))
+
+      "to Check Notified Party with the current waypoint removed" in {
+
+        NotifiedPartyEORIPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckNotifiedPartyController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn, index)
           )
       }
     }

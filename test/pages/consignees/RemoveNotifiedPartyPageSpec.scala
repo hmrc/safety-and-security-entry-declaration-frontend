@@ -19,7 +19,7 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.GbEori
-import pages.{Breadcrumbs, EmptyBreadcrumbs}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
 
@@ -27,9 +27,9 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveNotifiedPartyPage" - {
 
-    "must navigate when there are no breadcrumbs" - {
+    "must navigate when there are no waypoints" - {
 
-      val breadcrumbs = EmptyBreadcrumbs
+      val waypoints = EmptyWaypoints
 
       "when there are still notified parties in the user's answers" - {
 
@@ -39,8 +39,8 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
               .set(NotifiedPartyKeyQuery(index), 1).success.value
 
-          RemoveNotifiedPartyPage(index).navigate(breadcrumbs, answers)
-            .mustEqual(routes.AddNotifiedPartyController.onPageLoad(breadcrumbs, answers.lrn))
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.AddNotifiedPartyController.onPageLoad(waypoints, answers.lrn))
         }
       }
 
@@ -50,16 +50,16 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
           val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
 
-          RemoveNotifiedPartyPage(index).navigate(breadcrumbs, answers)
-            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(breadcrumbs, answers.lrn, index))
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints, answers.lrn, index))
         }
 
         "to Add Any Notified Parties when the user knows some consignees" in {
 
           val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
 
-          RemoveNotifiedPartyPage(index).navigate(breadcrumbs, answers)
-            .mustEqual(routes.AddAnyNotifiedPartiesController.onPageLoad(breadcrumbs, answers.lrn))
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.AddAnyNotifiedPartiesController.onPageLoad(waypoints, answers.lrn))
         }
       }
     }
