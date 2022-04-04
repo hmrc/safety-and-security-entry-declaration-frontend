@@ -17,7 +17,6 @@
 package base
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
-import java.time.temporal.ChronoUnit
 
 import cats.scalatest.ValidatedValues
 import controllers.actions._
@@ -56,9 +55,7 @@ trait SpecBase
     Clock.fixed(arbitraryInstant, ZoneId.systemDefault)
 
   // For fields which write minute-precision datetimes
-  protected val minutePrecisionInstants = arbitrary[Instant](arbitraryRecentInstant) map {
-    _.truncatedTo(ChronoUnit.MINUTES)
-  }
+  protected val minutePrecisionInstants = arbitrary[Instant](arbitraryRecentInstant)
 
   protected def emptyUserAnswers: UserAnswers =
     UserAnswers(userAnswersId, lrn, lastUpdated = arbitraryInstant)
