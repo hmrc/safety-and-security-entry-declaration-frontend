@@ -16,12 +16,15 @@
 
 package generators
 
+import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
+import java.time.temporal.ChronoUnit
+
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
+
 import models._
 import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
-import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
 
@@ -49,9 +52,12 @@ trait ModelGenerators {
   }
 
   // The default arbitrary[Instant] provides unrealistic dates prone to overflow issues; pick a
-  // value between epoch and 2030-01-01 00:00:00 instead
+  // value between epoch and 2030-01-01 00:00:00 instead. We also truncate to minute precision
+  // since we mostly encode datetimes at that precision
   lazy val arbitraryRecentInstant: Arbitrary[Instant] = Arbitrary {
-    Gen.choose(0, 1893456000) map { seconds => Instant.EPOCH.plusSeconds(seconds) }
+    Gen.choose(0, 1893456000) map { seconds =>
+      Instant.EPOCH.plusSeconds(seconds).truncatedTo(ChronoUnit.MINUTES)
+    }
   }
 
   implicit lazy val arbitraryUnloadingPlace: Arbitrary[UnloadingPlace] =

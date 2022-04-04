@@ -54,13 +54,13 @@ trait SubmissionFormats
     }
 
     override def decode(data: NodeSeq): Submission = Submission(
-      header = data.parseXml[Header],
-      goodsItems = (data \\ "GOOITEGDS").map { _.parseXml[GoodsItem] }.toList,
-      itinerary = data.parseXml[Itinerary],
-      declarer = lodgingPersonFormat.decode(data \\ "PERLODSUMDEC"),
-      seals = (data \\ "SEAID529").map { _.text }.toList,
-      customsOffice = (data \\ "CUSOFFFENT730").parseXml[CustomsOffice],
-      carrier = lodgingPersonFormat.decode(data \\ "TRACARENT601")
+      header = (data \ "HEAHEA").parseXml[Header],
+      goodsItems = (data \ "GOOITEGDS").map { _.parseXml[GoodsItem] }.toList,
+      itinerary = (data \ "ITI").parseXml[Itinerary],
+      declarer = lodgingPersonFormat.decode(data \ "PERLODSUMDEC"),
+      seals = (data \ "SEAID529").map { _.text }.toList,
+      customsOffice = (data \ "CUSOFFFENT730").parseXml[CustomsOffice],
+      carrier = carrierFormat.decode(data \ "TRACARENT601")
     )
   }
 }
