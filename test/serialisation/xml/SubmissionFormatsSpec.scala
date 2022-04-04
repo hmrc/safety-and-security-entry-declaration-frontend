@@ -19,7 +19,8 @@ package serialisation.xml
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.completion.downstream.Submission
+import models.completion.{Itinerary, CustomsOffice}
+import models.completion.downstream.{GoodsItem, Header, Submission}
 
 class SubmissionFormatsSpec
   extends SpecBase
@@ -31,18 +32,40 @@ class SubmissionFormatsSpec
     "should work symmetrically" - {
 
       "for any submission" in {
-        forAll(arbitrary[Submission]) { submission =>
-          submission.toXml.parseXml[Submission] must be(submission)
+        forAll(arbitrary[Submission]) { s =>
+          s.toXml.parseXml[Submission] must be(s)
         }
       }
     }
 
-    "header" - {
-      "is present" in {
-
+    "The header format" - {
+      "should work symmetrically" in {
+        forAll(arbitrary[Header]) { h =>
+          h.toXml.parseXml[Header] must be(h)
+        }
       }
-      "when missing" in {
+    }
 
+    "The goodsItems format" - {
+      "should work symmetrically" in {
+        forAll(arbitrary[GoodsItem]) { g =>
+          g.toXml.parseXml[GoodsItem] must be(g)
+        }
+      }
+
+    "The itinerary format" - {
+      "should work symmetrically" in {
+        forAll(arbitrary[Itinerary]) { i =>
+          i.toXml.parseXml[Itinerary] must be(i)
+        }
+      }
+    }
+
+    "The customsOffice format" - {
+      "should work symmetrically" in {
+        forAll(arbitrary[CustomsOffice]) { co =>
+          co.toXml.parseXml[CustomsOffice] must be(co)
+        }
       }
     }
   }

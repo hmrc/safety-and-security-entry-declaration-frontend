@@ -50,7 +50,7 @@ trait MetadataFormats {
     override def decode(s: String): MessageType = s match {
       case "CC315A" => Submission
       case "CC313A" => Amendment
-      case v => throw new XmlDecodingException(s"Unexpected value $v for message type")
+      case v => throw new XmlDecodingException(s"Unexpected value$v for message type")
     }
   }
 
@@ -59,7 +59,7 @@ trait MetadataFormats {
 
     override def decode(s: String): MessageSender = s.split("/").toList match {
       case eori :: branch :: Nil => MessageSender(eori, branch)
-      case _ => throw new XmlDecodingException(s"Unexpected value $s for message sender")
+      case _ => throw new XmlDecodingException(s"Unexpected value$s for message sender")
     }
   }
 
