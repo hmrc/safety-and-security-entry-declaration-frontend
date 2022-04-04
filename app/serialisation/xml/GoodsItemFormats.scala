@@ -22,7 +22,7 @@ import models.completion.downstream._
 import scala.xml.NodeSeq
 import serialisation.xml.XmlImplicits._
 
-trait GoodItemsFormats
+trait GoodsItemFormats
   extends CommonFormats
   with TransportFormats
   with PackagesFormats

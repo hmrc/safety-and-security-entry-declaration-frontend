@@ -17,14 +17,33 @@
 package serialisation.xml
 
 import base.SpecBase
-import models.Country
-import models.completion.Itinerary
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.completion.downstream.Submission
 
-class ItineraryFormatsSpec extends SpecBase with ItineraryFormats with XmlImplicits {
-  "The itinerary format" - {
-    "should work symmetrically" in {
-      val itin = Itinerary(Country.allCountries.take(10).toList)
-      itin.toXml.parseXml[Itinerary] must be(itin)
+class SubmissionFormatsSpec
+  extends SpecBase
+  with SubmissionFormats
+  with XmlImplicits
+  with ScalaCheckPropertyChecks {
+
+  "The submission format" - {
+    "should work symmetrically" - {
+
+      "for any submission" in {
+        forAll(arbitrary[Submission]) { submission =>
+          submission.toXml.parseXml[Submission] must be(submission)
+        }
+      }
+    }
+
+    "header" - {
+      "is present" in {
+
+      }
+      "when missing" in {
+
+      }
     }
   }
 }

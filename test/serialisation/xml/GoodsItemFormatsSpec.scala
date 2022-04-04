@@ -24,8 +24,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class GoodItemsFormatsSpec extends SpecBase
-  with GoodItemsFormats
+class GoodsItemFormatsSpec extends SpecBase
+  with GoodsItemFormats
   with XmlImplicits
   with ScalaCheckPropertyChecks {
 

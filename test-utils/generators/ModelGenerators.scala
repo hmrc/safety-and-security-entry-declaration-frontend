@@ -17,11 +17,10 @@
 package generators
 
 import models._
-import models.completion.{CustomsOffice => _, _}
+import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-
 import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators {
@@ -119,6 +118,19 @@ trait ModelGenerators {
       } yield PlaceOfUnloading(id, country, place)
     }
 
+  implicit lazy val arbitrarySubmission: Arbitrary[Submission] =
+    Arbitrary {
+      for {
+        header <- arbitrary[Header]
+        goodsItems <- arbitrary[List[GoodsItem]]
+        itinerary <- arbitrary[Itinerary]
+        declarer <- arbitrary[Party]
+        seals <- arbitrary[List[String]]
+        customsOffice <- arbitrary[CustomsOfficePayload]
+        carrier <- arbitrary[Party]
+      } yield Submission(header, goodsItems, itinerary, declarer, seals, customsOffice, carrier)
+    }
+
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
     Arbitrary {
       for {
@@ -149,7 +161,15 @@ trait ModelGenerators {
     DangerousGood("7", "CARTRIDGES FOR WEAPONS with bursting charge")
   )
 
-  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+  implicit lazy val arbitraryCustomsOfficePayload: Arbitrary[CustomsOfficePayload] =
+    Arbitrary {
+      for {
+        office <- arbitrary[CustomsOffice]
+        datetime <- arbitrary[Instant](arbitraryRecentInstant)
+      } yield CustomsOfficePayload(office.code, datetime)
+    }
+
+  implicit lazy val arbitrarysOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       Gen.oneOf(CustomsOffice.allCustomsOffices)
     }
@@ -195,6 +215,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {
       Gen.oneOf(Country.internationalCountries)
+    }
+
+  implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
+    Arbitrary {
+      Gen.listOfN(12, arbitrary[Country]).map(Itinerary)
     }
 
   implicit lazy val arbitraryDangerousGood: Arbitrary[DangerousGood] =
@@ -335,7 +360,7 @@ trait ModelGenerators {
     for {
       country <- Gen.oneOf(Country.allCountries)
       number <- Gen.listOfN(12, Gen.numChar)
-    } yield Party.ByEori(s"${country.code}$number")
+    } yield Party.ByEori(s"${country.code}${number.mkString}")
   }
 
   implicit lazy val arbitraryPartyByAddress: Arbitrary[Party.ByAddress] = Arbitrary {
