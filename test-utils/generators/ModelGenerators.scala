@@ -226,7 +226,10 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
     Arbitrary {
-      Gen.listOfN(Gen.choose(1, 10).sample.get, arbitrary[Country]).map(Itinerary)
+      for {
+        len <- Gen.choose(1, 10)
+        countries <- Gen.listOfN(len, arbitrary[Country])
+      } yield Itinerary(countries)
     }
 
   implicit lazy val arbitraryDangerousGood: Arbitrary[DangerousGood] =
