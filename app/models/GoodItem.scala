@@ -16,12 +16,10 @@
 
 package models
 
-import play.api.libs.json.{Reads, __}
+import play.api.libs.json.{Json, Reads, __}
 
-case class GoodItem(unloadingCode: String)
+case class GoodItem(commodityCode: String)
 
 object GoodItem {
-  implicit lazy val reads: Reads[GoodItem] = {
-    (__ \ "unloadingCode").read[String].map(GoodItem(_))
-  }
+  implicit val format = Json.format[GoodItem]
 }

@@ -27,9 +27,9 @@ object GoodsSummary {
 
   def rows(answers: UserAnswers)(implicit messages: Messages): List[ListItem] =
     answers.get(AllGoodsQuery()).getOrElse(List.empty).zipWithIndex.map {
-      case (good, index) =>
+      case (good, index) => {
         ListItem(
-          name = HtmlFormat.escape(good.unloadingCode).toString,
+          name = HtmlFormat.escape(good.commodityCode).toString,
           changeUrl = goodsRoutes.CommodityCodeKnownController
             .onPageLoad(NormalMode, answers.lrn, Index(index))
             .url,
@@ -37,5 +37,6 @@ object GoodsSummary {
             .onPageLoad(NormalMode, answers.lrn, Index(index))
             .url
         )
+      }
     }
 }
