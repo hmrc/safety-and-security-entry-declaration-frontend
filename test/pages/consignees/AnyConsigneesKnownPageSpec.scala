@@ -77,7 +77,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           "to Consignee Identity for index 0 with AddConsignee added to the waypoints" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
-            val expectedWaypoints = waypoints.set(AddConsigneePage.waypoint(NormalMode))
+            val expectedWaypoints = waypoints.setNextWaypoint(AddConsigneePage.waypoint(NormalMode))
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)
               .mustEqual(routes.ConsigneeIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
@@ -108,7 +108,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           "to Notified Party Identity for index 0" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
-            val expectedWaypoints = waypoints.set(AddNotifiedPartyPage.waypoint(NormalMode))
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)
               .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))

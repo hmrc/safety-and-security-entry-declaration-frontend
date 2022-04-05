@@ -68,7 +68,7 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
               .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
           AddConsigneePage.navigate(waypoints, answers)
-            .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints.set(AddConsigneePage.waypoint(NormalMode)), answers.lrn, Index(1)))
+            .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints.setNextWaypoint(AddConsigneePage.waypoint(NormalMode)), answers.lrn, Index(1)))
         }
       }
 

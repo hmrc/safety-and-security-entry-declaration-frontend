@@ -36,6 +36,6 @@ case class ConsigneeNamePage(index: Index) extends ConsigneeQuestionPage[String]
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
     answers.get(ConsigneeAddressPage(index))
-      .map(_ => waypoints.current.page)
+      .map(_ => waypoints.next.page)
       .getOrElse(ConsigneeAddressPage(index))
 }

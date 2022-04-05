@@ -46,12 +46,12 @@ case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestion
     answers.get(this).map {
       case GBEORI =>
         answers.get(NotifiedPartyEORIPage(index))
-          .map(_ => waypoints.current.page)
+          .map(_ => waypoints.next.page)
           .getOrElse(NotifiedPartyEORIPage(index))
 
       case NameAddress =>
         answers.get(NotifiedPartyNamePage(index))
-          .map(_ => waypoints.current.page)
+          .map(_ => waypoints.next.page)
           .getOrElse(NotifiedPartyNamePage(index))
     }.orRecover
 

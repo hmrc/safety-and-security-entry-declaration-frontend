@@ -44,12 +44,12 @@ case object AddAnyNotifiedPartiesPage extends QuestionPage[Boolean] {
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfNotifiedParties)
-          .map(_ => waypoints.current.page)
+          .map(_ => waypoints.next.page)
           .getOrElse(NotifiedPartyIdentityPage(Index(0)))
 
       case false =>
         answers.get(DeriveNumberOfConsignees)
-          .map(_ => waypoints.current.page)
+          .map(_ => waypoints.next.page)
           .getOrElse(AnyConsigneesKnownPage)
     }.orRecover
 

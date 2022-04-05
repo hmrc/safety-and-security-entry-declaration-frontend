@@ -38,28 +38,8 @@ trait Page {
 
   def navigate(waypoints: Waypoints, answers: UserAnswers): Call = {
     val targetPage = nextPage(waypoints, answers)
-    val updatedWaypoints = updateWaypoints(waypoints, targetPage)
-    targetPage.route(updatedWaypoints, answers.lrn)
-  }
-
-  protected[pages] def updateWaypoints(waypoints: Waypoints, target: Page): Waypoints = {
-
-    waypoints match {
-      case EmptyWaypoints =>
-        EmptyWaypoints
-
-      case _: NonEmptyWaypoints =>
-        (this, target) match {
-          case (a: AddToListQuestionPage, b: AddToListQuestionPage) if a.section == b.section =>
-            waypoints
-
-          case (_, targetPage: AddToListQuestionPage) =>
-            waypoints.set(targetPage.addItemWaypoint)
-
-          case _ =>
-            waypoints.removeWhenReached(target)
-        }
-    }
+    val recalibratedWaypoints = waypoints.recalibrate(this, targetPage)
+    targetPage.route(recalibratedWaypoints, answers.lrn)
   }
 
   protected def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
@@ -68,14 +48,14 @@ trait Page {
         nextPageNormalMode(waypoints, answers)
 
       case b: NonEmptyWaypoints =>
-        b.mode match {
+        b.currentMode match {
           case CheckMode  => nextPageCheckMode(b, answers)
           case NormalMode => nextPageNormalMode(b, answers)
         }
     }
 
   protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
-    waypoints.current.page
+    waypoints.next.page
 
   protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     throw new NotImplementedError("nextPageNormalMode is not implemented")
@@ -84,10 +64,10 @@ trait Page {
     throw new NotImplementedError("route is not implemented")
 
   def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
-    route(waypoints.set(sourcePage.waypoint), lrn)
+    route(waypoints.setNextWaypoint(sourcePage.waypoint), lrn)
 
   def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: AddItemPage): Call =
-    route(waypoints.set(sourcePage.waypoint(CheckMode)), lrn)
+    route(waypoints.setNextWaypoint(sourcePage.waypoint(CheckMode)), lrn)
 }
 
 object Page {

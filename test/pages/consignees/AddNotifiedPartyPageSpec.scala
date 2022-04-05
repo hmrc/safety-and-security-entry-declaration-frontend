@@ -68,7 +68,7 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
 
           AddNotifiedPartyPage.navigate(waypoints, answers)
-            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints.set(AddNotifiedPartyPage.waypoint(NormalMode)), answers.lrn, Index(1)))
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode)), answers.lrn, Index(1)))
         }
       }
 

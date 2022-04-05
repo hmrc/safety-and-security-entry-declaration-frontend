@@ -52,6 +52,6 @@ case object AddConsigneePage extends QuestionPage[Boolean] with AddItemPage {
           .orRecover
 
       case false =>
-        waypoints.current.page
+        waypoints.next.page
     }.orRecover
 }

@@ -46,12 +46,12 @@ case class ConsigneeIdentityPage(index: Index) extends ConsigneeQuestionPage[Con
     answers.get(this).map {
       case GBEORI =>
         answers.get(ConsigneeEORIPage(index))
-          .map(_ => waypoints.current.page)
+          .map(_ => waypoints.next.page)
           .getOrElse(ConsigneeEORIPage(index))
 
       case NameAddress =>
         answers.get(ConsigneeNamePage(index))
-          .map (_ => waypoints.current.page)
+          .map (_ => waypoints.next.page)
           .getOrElse(ConsigneeNamePage(index))
     }.orRecover
 

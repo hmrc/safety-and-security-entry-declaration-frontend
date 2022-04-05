@@ -36,6 +36,6 @@ case class NotifiedPartyNamePage(index: Index) extends NotifiedPartyQuestionPage
 
   override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
     answers.get(NotifiedPartyAddressPage(index))
-      .map(_ => waypoints.current.page)
+      .map(_ => waypoints.next.page)
       .getOrElse(NotifiedPartyAddressPage(index))
 }

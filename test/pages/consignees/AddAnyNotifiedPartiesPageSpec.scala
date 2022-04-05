@@ -78,7 +78,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
               emptyUserAnswers
                 .set(AddAnyNotifiedPartiesPage, true).success.value
 
-            val expectedWaypoints = waypoints.set(AddNotifiedPartyPage.waypoint(NormalMode))
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
 
             AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
               .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, index))

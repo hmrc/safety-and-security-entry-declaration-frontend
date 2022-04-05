@@ -23,48 +23,55 @@ import play.api.mvc.QueryStringBindable
 
 import scala.util.{Failure, Success, Try}
 
-trait Waypoints {
+sealed trait Waypoints {
 
-  val mode: Mode
-  def set(waypoint: Waypoint): Waypoints
-  def removeWhenReached(target: Page): Waypoints
+  val currentMode: Mode
+  def setNextWaypoint(waypoint: Waypoint): Waypoints
+  def recalibrate(currentPage: Page, targetPage: Page): Waypoints
 }
 
-case class NonEmptyWaypoints(list: NonEmptyList[Waypoint]) extends Waypoints {
+case class NonEmptyWaypoints(waypoints: NonEmptyList[Waypoint]) extends Waypoints {
 
-  val current: Waypoint = list.head
-  override val mode: Mode = current.mode
+  val next: Waypoint = waypoints.head
+  override val currentMode: Mode = next.mode
 
-  override def set(waypoint: Waypoint): Waypoints = {
-    if (current == waypoint) {
+  override def setNextWaypoint(waypoint: Waypoint): Waypoints = {
+    if (next == waypoint) {
       this
     } else {
-      NonEmptyWaypoints(NonEmptyList(waypoint, list.toList))
+      NonEmptyWaypoints(NonEmptyList(waypoint, waypoints.toList))
     }
   }
 
-  def removeWhenReached(target: Page): Waypoints = {
-    if (current.page == target) {
-      list.tail match {
-        case Nil => EmptyWaypoints
-        case t => NonEmptyWaypoints(NonEmptyList(t.head, t.tail))
-      }
-    } else {
-      this
-    }
-  }
+  override def recalibrate(currentPage: Page, targetPage: Page): Waypoints =
+    (currentPage, targetPage) match {
+      case (a: AddToListQuestionPage, b: AddToListQuestionPage) if a.section == b.section =>
+        this
 
-  override def toString: String = list.toList.map(_.urlFragment).mkString(",")
+      case (_, targetPage: AddToListQuestionPage) =>
+        setNextWaypoint(targetPage.addItemWaypoint)
+
+      case _ =>
+        if (next.page == targetPage) { remove } else { this }
+    }
+
+  override def toString: String = waypoints.toList.map(_.urlFragment).mkString(",")
+
+  private def remove: Waypoints =
+    waypoints.tail match {
+      case Nil => EmptyWaypoints
+      case t => NonEmptyWaypoints(NonEmptyList(t.head, t.tail))
+    }
 }
 
-case object EmptyWaypoints extends Waypoints {
+object EmptyWaypoints extends Waypoints {
 
-  override val mode: Mode = NormalMode
+  override val currentMode: Mode = NormalMode
 
-  override def set(waypoint: Waypoint): Waypoints =
+  override def setNextWaypoint(waypoint: Waypoint): Waypoints =
     NonEmptyWaypoints(NonEmptyList(waypoint, Nil))
 
-  override def removeWhenReached(target: Page): Waypoints = this
+  override def recalibrate(currentPage: Page, targetPage: Page): Waypoints = this
 }
 
 object Waypoints {
