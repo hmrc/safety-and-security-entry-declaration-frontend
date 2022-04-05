@@ -410,11 +410,11 @@ consigneeEORI.error.required = Enter the consignee’s GB EORI number
 consigneeEORI.error.length = The GB EORI number must be 35 characters or less
 consigneeEORI.change.hidden = the consignee’s GB EORI number
 
-consigneeIdentity.title = How do you want to identify the cosignee?
-consigneeIdentity.heading = How do you want to identify the cosignee?
+consigneeIdentity.title = How do you want to identify the consignee?
+consigneeIdentity.heading = How do you want to identify the consignee?
 consigneeIdentity.GBEORI = I’ll provide the consignee’s GB EORI number
 consigneeIdentity.nameAddress = I’ll provide the consignee’s name and address
-consigneeIdentity.checkYourAnswersLabel = How do you want to identify the cosignee?
+consigneeIdentity.checkYourAnswersLabel = How do you want to identify the consignee?
 consigneeIdentity.error.required = Select how you want to identify the consignee
 consigneeIdentity.change.hidden = how the consignee is identified
 
@@ -649,7 +649,7 @@ maritimeIdentity.imo.change.hidden = imo
 maritimeIdentity.conveyanceRefNum.change.hidden = conveyanceRefNum
 
 nationalityOfTransport.title = nationalityOfTransport
-nationalityOfTransport.heading = Which country is your transport form?
+nationalityOfTransport.heading = Which country is your transport from?
 nationalityOfTransport.hint = Start typing to select a country from the dropdown menu
 nationalityOfTransport.checkYourAnswersLabel = Nationality Of Transport
 nationalityOfTransport.error.required = Please select a Nationality
