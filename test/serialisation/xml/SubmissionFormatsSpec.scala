@@ -19,8 +19,7 @@ package serialisation.xml
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.completion.{CustomsOffice, Itinerary}
-import models.completion.downstream.{GoodsItem, Header, Submission}
+import models.completion.downstream.Submission
 import org.scalacheck.Gen
 
 class SubmissionFormatsSpec
