@@ -63,7 +63,7 @@ class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
         NotifiedPartyAddressPage(index)
           .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routes.CheckNotifiedPartyController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index)
           )
       }
     }

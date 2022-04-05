@@ -70,7 +70,7 @@ class CheckNotifiedPartyPageSpec extends SpecBase with ScalaCheckPropertyChecks 
     "to Add Notified Party with the first waypoint removed" in {
 
       CheckNotifiedPartyPage(index).navigate(waypoints, emptyUserAnswers)
-        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn))
+        .mustEqual(routes.AddNotifiedPartyController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
     }
   }
 }

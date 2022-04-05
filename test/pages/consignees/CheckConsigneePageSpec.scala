@@ -69,7 +69,7 @@ class CheckConsigneePageSpec extends SpecBase with ScalaCheckPropertyChecks with
     "to Add Consignee with the first waypoint removed" in {
 
       CheckConsigneePage(index).navigate(waypoints, emptyUserAnswers)
-        .mustEqual(routes.AddConsigneeController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn))
+        .mustEqual(routes.AddConsigneeController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
     }
   }
 }

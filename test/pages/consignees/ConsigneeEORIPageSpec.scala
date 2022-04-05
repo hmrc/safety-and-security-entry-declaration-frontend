@@ -62,7 +62,7 @@ class ConsigneeEORIPageSpec extends SpecBase with PageBehaviours {
 
         ConsigneeEORIPage(index)
           .navigate(waypoints, emptyUserAnswers)
-          .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn, index))
+          .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

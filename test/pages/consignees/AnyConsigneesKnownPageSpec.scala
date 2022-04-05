@@ -68,7 +68,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
                 .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)
-              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints.pop, answers.lrn))
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
           }
         }
 
@@ -77,7 +77,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           "to Consignee Identity for index 0 with AddConsignee added to the waypoints" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
-            val expectedWaypoints = waypoints.push(AddConsigneePage.waypoint(NormalMode))
+            val expectedWaypoints = waypoints.set(AddConsigneePage.waypoint(NormalMode))
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)
               .mustEqual(routes.ConsigneeIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
@@ -99,7 +99,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
                 .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)
-              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints.pop, answers.lrn))
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
           }
         }
 
@@ -108,7 +108,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           "to Notified Party Identity for index 0" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
-            val expectedWaypoints = waypoints.push(AddNotifiedPartyPage.waypoint(NormalMode))
+            val expectedWaypoints = waypoints.set(AddNotifiedPartyPage.waypoint(NormalMode))
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)
               .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))

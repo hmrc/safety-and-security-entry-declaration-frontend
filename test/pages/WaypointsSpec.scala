@@ -27,45 +27,76 @@ class WaypointsSpec extends SpecBase with EitherValues {
   private val waypoint1 = AddConsigneePage.waypoint(NormalMode)
   private val waypoint2 = AddNotifiedPartyPage.waypoint(CheckMode)
 
-  ".push" - {
+  ".set" - {
 
     "must add the waypoint to the head of the list" - {
 
       "when the list is empty" in {
 
-        EmptyWaypoints.push(waypoint1) mustEqual Waypoints(List(waypoint1))
+        EmptyWaypoints.set(waypoint1) mustEqual Waypoints(List(waypoint1))
       }
 
-      "when the list is not empty" in {
+      "when the list is not empty and does not start with the new waypoint" in {
 
-        Waypoints(List(waypoint1)).push(waypoint2) mustEqual Waypoints(List(waypoint2, waypoint1))
+        Waypoints(List(waypoint1)).set(waypoint2) mustEqual Waypoints(List(waypoint2, waypoint1))
+      }
+    }
+
+    "must return the original waypoints" - {
+
+      "when the list starts with the new waypoint" in {
+
+        Waypoints(List(waypoint1, waypoint2)).set(waypoint1) mustEqual Waypoints(List(waypoint1, waypoint2))
       }
     }
   }
 
-  ".pop" - {
+  ".removeFirst" - {
 
     "when there are no waypoints" - {
 
       "must return empty waypoints" in {
 
-        EmptyWaypoints.pop mustEqual EmptyWaypoints
+        EmptyWaypoints.removeWhenReached(waypoint1.page) mustEqual EmptyWaypoints
       }
     }
 
     "when there is a single waypoint" - {
 
-      "must return empty waypoints" in {
+      "and the given waypoint is the current waypoint" - {
 
-        Waypoints(List(waypoint1)).pop mustEqual EmptyWaypoints
+        "must return empty waypoints" in {
+
+          Waypoints(List(waypoint1)).removeWhenReached(waypoint1.page) mustEqual EmptyWaypoints
+        }
+      }
+
+      "and the given waypoint is not the current waypoint" - {
+
+        "must return the original waypoints" in {
+
+          Waypoints(List(waypoint1)).removeWhenReached(waypoint2.page) mustEqual Waypoints(List(waypoint1))
+        }
       }
     }
 
     "when there are multiple waypoints" - {
 
-      "must return waypoints with the first one removed" in {
+      "and the given waypoint is the current waypoint" - {
 
-        Waypoints(List(waypoint1, waypoint2)).pop mustEqual Waypoints(List(waypoint2))
+        "must return waypoints with the first one removed" in {
+
+          Waypoints(List(waypoint1, waypoint2)).removeWhenReached(waypoint1.page) mustEqual Waypoints(List(waypoint2))
+        }
+      }
+
+      "and the given waypoint is not the current waypoint" - {
+
+        "must return the original waypoints" in {
+
+          Waypoints(List(waypoint1, waypoint2)).removeWhenReached(waypoint2.page)
+            .mustEqual(Waypoints(List(waypoint1, waypoint2)))
+        }
       }
     }
   }

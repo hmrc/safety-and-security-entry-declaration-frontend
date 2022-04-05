@@ -26,8 +26,8 @@ import scala.util.{Failure, Success, Try}
 trait Waypoints {
 
   val mode: Mode
-  def push(waypoint: Waypoint): Waypoints
-  def pop: Waypoints
+  def set(waypoint: Waypoint): Waypoints
+  def removeWhenReached(target: Page): Waypoints
 }
 
 case class NonEmptyWaypoints(list: NonEmptyList[Waypoint]) extends Waypoints {
@@ -35,12 +35,23 @@ case class NonEmptyWaypoints(list: NonEmptyList[Waypoint]) extends Waypoints {
   val current: Waypoint = list.head
   override val mode: Mode = current.mode
 
-  override def push(waypoint: Waypoint): Waypoints =
-    NonEmptyWaypoints(NonEmptyList(waypoint, list.toList))
+  override def set(waypoint: Waypoint): Waypoints = {
+    if (current == waypoint) {
+      this
+    } else {
+      NonEmptyWaypoints(NonEmptyList(waypoint, list.toList))
+    }
+  }
 
-  def pop: Waypoints = list.tail match {
-    case Nil => EmptyWaypoints
-    case t => NonEmptyWaypoints(NonEmptyList(t.head, t.tail))
+  def removeWhenReached(target: Page): Waypoints = {
+    if (current.page == target) {
+      list.tail match {
+        case Nil => EmptyWaypoints
+        case t => NonEmptyWaypoints(NonEmptyList(t.head, t.tail))
+      }
+    } else {
+      this
+    }
   }
 
   override def toString: String = list.toList.map(_.urlFragment).mkString(",")
@@ -50,10 +61,10 @@ case object EmptyWaypoints extends Waypoints {
 
   override val mode: Mode = NormalMode
 
-  override def push(waypoint: Waypoint): Waypoints =
+  override def set(waypoint: Waypoint): Waypoints =
     NonEmptyWaypoints(NonEmptyList(waypoint, Nil))
 
-  override def pop: Waypoints = this
+  override def removeWhenReached(target: Page): Waypoints = this
 }
 
 object Waypoints {

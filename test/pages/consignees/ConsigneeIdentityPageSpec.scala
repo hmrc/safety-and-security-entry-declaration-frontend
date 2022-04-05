@@ -85,7 +85,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
                 .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
 
             ConsigneeIdentityPage(index).navigate(waypoints, answers)
-              .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, answers.lrn, index))
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
           }
         }
 
@@ -113,7 +113,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
                 .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
 
             ConsigneeIdentityPage(index).navigate(waypoints, answers)
-              .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, answers.lrn, index))
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
           }
         }
 

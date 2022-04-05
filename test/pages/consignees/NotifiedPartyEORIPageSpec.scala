@@ -63,7 +63,7 @@ class NotifiedPartyEORIPageSpec extends SpecBase with PageBehaviours {
         NotifiedPartyEORIPage(index)
           .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routes.CheckNotifiedPartyController.onPageLoad(waypoints.pop, emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index)
           )
       }
     }

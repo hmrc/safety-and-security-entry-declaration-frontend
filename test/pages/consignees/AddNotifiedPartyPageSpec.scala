@@ -68,7 +68,7 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
 
           AddNotifiedPartyPage.navigate(waypoints, answers)
-            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints.push(AddNotifiedPartyPage.waypoint(NormalMode)), answers.lrn, Index(1)))
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints.set(AddNotifiedPartyPage.waypoint(NormalMode)), answers.lrn, Index(1)))
         }
       }
 
@@ -79,7 +79,7 @@ class AddNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
           val answers = emptyUserAnswers.set(AddNotifiedPartyPage, false).success.value
 
           AddNotifiedPartyPage.navigate(waypoints, answers)
-            .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints.pop, answers.lrn))
+            .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
         }
       }
     }

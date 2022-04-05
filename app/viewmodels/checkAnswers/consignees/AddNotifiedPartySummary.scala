@@ -39,7 +39,7 @@ object AddNotifiedPartySummary  {
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
-        val changeLinkWaypoints = waypoints.push(sourcePage.waypoint(CheckMode))
+        val changeLinkWaypoints = waypoints.set(sourcePage.waypoint(CheckMode))
 
         ListItem(
           name      = name,

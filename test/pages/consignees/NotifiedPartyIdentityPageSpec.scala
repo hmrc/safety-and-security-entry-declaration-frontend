@@ -87,7 +87,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
                 .set(NotifiedPartyIdentityPage(index), GBEORI).success.value
 
             NotifiedPartyIdentityPage(index).navigate(waypoints, answers)
-              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(waypoints.pop, lrn, index))
+              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, lrn, index))
           }
         }
 
@@ -115,7 +115,7 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
                 .set(NotifiedPartyIdentityPage(index), NameAddress).success.value
 
             NotifiedPartyIdentityPage(index).navigate(waypoints, answers)
-              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(waypoints.pop, lrn, index))
+              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, lrn, index))
           }
         }
 

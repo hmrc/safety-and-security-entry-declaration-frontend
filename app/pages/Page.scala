@@ -42,30 +42,25 @@ trait Page {
     targetPage.route(updatedWaypoints, answers.lrn)
   }
 
-  protected[pages] def updateWaypoints(waypoints: Waypoints, target: Page): Waypoints =
+  protected[pages] def updateWaypoints(waypoints: Waypoints, target: Page): Waypoints = {
+
     waypoints match {
       case EmptyWaypoints =>
         EmptyWaypoints
 
-      case w: NonEmptyWaypoints =>
+      case _: NonEmptyWaypoints =>
         (this, target) match {
           case (a: AddToListQuestionPage, b: AddToListQuestionPage) if a.section == b.section =>
-              waypoints
+            waypoints
 
-          case (_, thatPage: AddToListQuestionPage) =>
-            if (w.current == thatPage.addItemWaypoint) {
-              waypoints
-            } else {
-              waypoints.push(thatPage.addItemWaypoint)
-            }
+          case (_, targetPage: AddToListQuestionPage) =>
+            waypoints.set(targetPage.addItemWaypoint)
 
           case _ =>
-            w.current match {
-              case x if x.page == target => w.pop
-              case _ => w
-            }
+            waypoints.removeWhenReached(target)
         }
     }
+  }
 
   protected def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
     waypoints match {
@@ -89,10 +84,10 @@ trait Page {
     throw new NotImplementedError("route is not implemented")
 
   def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
-    route(waypoints.push(sourcePage.waypoint), lrn)
+    route(waypoints.set(sourcePage.waypoint), lrn)
 
   def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: AddItemPage): Call =
-    route(waypoints.push(sourcePage.waypoint(CheckMode)), lrn)
+    route(waypoints.set(sourcePage.waypoint(CheckMode)), lrn)
 }
 
 object Page {

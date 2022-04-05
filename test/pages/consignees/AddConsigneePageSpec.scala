@@ -68,7 +68,7 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
               .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
           AddConsigneePage.navigate(waypoints, answers)
-            .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints.push(AddConsigneePage.waypoint(NormalMode)), answers.lrn, Index(1)))
+            .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints.set(AddConsigneePage.waypoint(NormalMode)), answers.lrn, Index(1)))
         }
       }
 
@@ -79,7 +79,7 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
           val answers = emptyUserAnswers.set(AddConsigneePage, false).success.value
 
           AddConsigneePage.navigate(waypoints, answers)
-            .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints.pop, answers.lrn))
+            .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
         }
       }
     }

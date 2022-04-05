@@ -68,7 +68,7 @@ class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
               .success.value
 
           ConsigneeNamePage(index).navigate(waypoints, answers)
-            .mustEqual(routes.CheckConsigneeController.onPageLoad(waypoints.pop, answers.lrn, index))
+            .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
         }
       }
 

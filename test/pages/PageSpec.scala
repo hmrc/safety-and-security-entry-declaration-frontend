@@ -69,7 +69,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
 
           val waypoints: Waypoints = Waypoints(List(TestCheckConsigneePage.waypoint))
           TestPage1.updateWaypoints(waypoints, TestConsigneePage1)
-            .mustEqual(waypoints.push(TestAddConsigneePage.waypoint(NormalMode)))
+            .mustEqual(waypoints.set(TestAddConsigneePage.waypoint(NormalMode)))
         }
       }
     }
@@ -92,7 +92,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
             Waypoints(List(TestCheckConsigneePage.waypoint, TestCheckNotifiedPartyPage.waypoint))
 
           TestPage1.updateWaypoints(waypoints, TestCheckConsigneePage)
-            .mustEqual(waypoints.pop)
+            .mustEqual(Waypoints(List(TestCheckNotifiedPartyPage.waypoint)))
         }
       }
     }
@@ -134,7 +134,8 @@ class PageSpec extends AnyFreeSpec with Matchers {
           val waypoints: Waypoints =
             Waypoints(List(TestAddConsigneePage.waypoint(NormalMode), TestCheckNotifiedPartyPage.waypoint))
 
-          TestConsigneePage1.updateWaypoints(waypoints, TestAddConsigneePage) mustEqual waypoints.pop
+          TestConsigneePage1.updateWaypoints(waypoints, TestAddConsigneePage)
+            .mustEqual(Waypoints(List(TestCheckNotifiedPartyPage.waypoint)))
         }
       }
 
@@ -167,7 +168,8 @@ class PageSpec extends AnyFreeSpec with Matchers {
           val waypoints: Waypoints =
             Waypoints(List(TestCheckConsigneePage.waypoint, TestCheckNotifiedPartyPage.waypoint))
 
-          TestConsigneePage1.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints.pop
+          TestConsigneePage1.updateWaypoints(waypoints, TestCheckConsigneePage)
+            .mustEqual(Waypoints(List(TestCheckNotifiedPartyPage.waypoint)))
         }
       }
 
@@ -200,7 +202,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
           val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
           TestAddConsigneePage.updateWaypoints(waypoints, TestConsigneePage1)
-            .mustEqual(waypoints.push(TestAddConsigneePage.waypoint(NormalMode)))
+            .mustEqual(waypoints.set(TestAddConsigneePage.waypoint(NormalMode)))
         }
       }
     }
@@ -222,7 +224,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
           val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
           TestAddConsigneePage.updateWaypoints(waypoints, TestNotifiedPartyPage1)
-            .mustEqual(waypoints.push(TestAddNotifiedPartyPage.waypoint(NormalMode)))
+            .mustEqual(waypoints.set(TestAddNotifiedPartyPage.waypoint(NormalMode)))
         }
       }
     }
@@ -264,7 +266,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
 
           val waypoints: Waypoints = Waypoints(List(TestCheckConsigneePage.waypoint))
 
-          TestAddConsigneePage.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual waypoints.pop
+          TestAddConsigneePage.updateWaypoints(waypoints, TestCheckConsigneePage) mustEqual EmptyWaypoints
         }
       }
 
@@ -317,7 +319,8 @@ class PageSpec extends AnyFreeSpec with Matchers {
           val waypoints: Waypoints =
             Waypoints(List(TestAddConsigneePage.waypoint(NormalMode), TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateWaypoints(waypoints, TestAddConsigneePage) mustEqual waypoints.pop
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestAddConsigneePage)
+            .mustEqual(Waypoints(List(TestCheckNotifiedPartyPage.waypoint)))
         }
       }
 
@@ -348,7 +351,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
 
           val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
-          TestCheckConsigneePage.updateWaypoints(waypoints, TestCheckNotifiedPartyPage) mustEqual waypoints.pop
+          TestCheckConsigneePage.updateWaypoints(waypoints, TestCheckNotifiedPartyPage) mustEqual EmptyWaypoints
         }
       }
 
@@ -390,7 +393,7 @@ class PageSpec extends AnyFreeSpec with Matchers {
           val waypoints: Waypoints = Waypoints(List(TestCheckNotifiedPartyPage.waypoint))
 
           TestCheckConsigneePage.updateWaypoints(waypoints, TestNotifiedPartyPage1)
-            .mustEqual(waypoints.push(TestAddNotifiedPartyPage.waypoint(NormalMode)))
+            .mustEqual(waypoints.set(TestAddNotifiedPartyPage.waypoint(NormalMode)))
         }
       }
     }
