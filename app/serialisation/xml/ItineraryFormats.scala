@@ -19,7 +19,7 @@ package serialisation.xml
 import scala.xml.NodeSeq
 
 import models.Country
-import models.completion.downstream.Itinerary
+import models.completion.Itinerary
 import serialisation.xml.XmlImplicits._
 
 trait ItineraryFormats extends CommonFormats {

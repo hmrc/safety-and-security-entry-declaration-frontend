@@ -16,11 +16,13 @@
 
 package queries.routedetails
 
-import models.{Country, PlaceOfUnloading}
+import models.PlaceOfUnloading
 import play.api.libs.json.JsPath
-import queries.Gettable
+import queries.{Gettable, Settable}
 
-case object AllPlacesOfUnloadingQuery extends Gettable[List[PlaceOfUnloading]] {
+case object AllPlacesOfUnloadingQuery
+  extends Gettable[List[PlaceOfUnloading]]
+  with Settable[List[PlaceOfUnloading]] {
 
   override def path: JsPath = JsPath \ "placesOfUnloading"
 }

@@ -38,7 +38,9 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
   private val formProvider = new RoroAccompaniedIdentityFormProvider()
   private val form = formProvider()
 
-  private lazy val roroAccompaniedIdentityRoute = routes.RoroAccompaniedIdentityController.onPageLoad(NormalMode, lrn).url
+  private lazy val roroAccompaniedIdentityRoute = {
+    routes.RoroAccompaniedIdentityController.onPageLoad(NormalMode, lrn).url
+  }
 
   private val id = arbitrary[RoroAccompaniedIdentity].sample.value
   private val formData: List[(String, String)] = List(

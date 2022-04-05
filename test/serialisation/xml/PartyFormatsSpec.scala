@@ -32,11 +32,11 @@ class PartyFormatsSpec
 
   private val partyByEori: Gen[Party] = for {
     country <- Gen.oneOf(Country.allCountries)
-    number <- Gen.numStr.map { _.take(12) }
-  } yield Party.ByEori(s"${country.code}$number")
+    number <- Gen.listOfN(12, Gen.numChar)
+  } yield Party.ByEori(s"${country.code}${number.mkString}")
 
   private val partyByAddress: Gen[Party] = for {
-    name <- Gen.alphaStr.map { _.take(40) }
+    name <- stringsWithMaxLength(40)
     addr <- arbitrary[Address]
   } yield Party.ByAddress(name, addr)
 

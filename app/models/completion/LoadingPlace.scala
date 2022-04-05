@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package queries.routedetails
+package models.completion
 
 import models.Country
-import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
 
-case object AllCountriesEnRouteQuery
-  extends Settable[List[Country]]
-  with Gettable[List[Country]] {
-
-  override def path: JsPath = JsPath \ "countriesEnRoute"
-}
+/**
+ * A place where good are loaded or unloaded
+ *
+ * Represents both the "place of loading" and "place of unloading" and is a simplified version of
+ * the individual models found in the journey
+ */
+case class LoadingPlace(country: Country, desc: String)
