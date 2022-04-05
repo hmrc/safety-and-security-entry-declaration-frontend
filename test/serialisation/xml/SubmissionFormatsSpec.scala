@@ -52,6 +52,7 @@ class SubmissionFormatsSpec
           g.toXml.parseXml[GoodsItem] must be(g)
         }
       }
+    }
 
     "The itinerary format" - {
       "should work symmetrically" in {
