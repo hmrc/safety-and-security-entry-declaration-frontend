@@ -23,8 +23,7 @@ import scala.xml.NodeSeq
 import serialisation.xml.XmlImplicits._
 
 trait SubmissionFormats
-  extends CommonFormats
-  with CustomsOfficeFormats
+  extends CustomsOfficeFormats
   with GoodsItemFormats
   with HeaderFormats
   with ItineraryFormats
