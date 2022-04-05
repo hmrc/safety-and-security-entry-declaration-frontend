@@ -17,9 +17,7 @@
 package serialisation.xml
 
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import base.SpecBase
@@ -34,11 +32,7 @@ class TimeFormatsSpec
 
   "The instant formats" - {
     "should work symmetrically (at relevant precision)" in {
-      val instants = arbitrary[Instant](arbitraryRecentInstant) map {
-        _.truncatedTo(ChronoUnit.MINUTES)
-      }
-
-      forAll(instants) { instant =>
+      forAll(minutePrecisionInstants) { instant =>
         instant.toXmlString.parseXmlString must be(instant)
       }
     }

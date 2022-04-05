@@ -16,13 +16,15 @@
 
 package generators
 
-import models._
-import models.completion.{CustomsOffice => _, _}
-import models.completion.downstream._
+import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
+import java.time.temporal.ChronoUnit
+
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
-import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
+import models._
+import models.completion.{CustomsOffice => CustomsOfficePayload, _}
+import models.completion.downstream._
 
 trait ModelGenerators {
 
@@ -50,9 +52,12 @@ trait ModelGenerators {
   }
 
   // The default arbitrary[Instant] provides unrealistic dates prone to overflow issues; pick a
-  // value between epoch and 2030-01-01 00:00:00 instead
+  // value between epoch and 2030-01-01 00:00:00 instead. We also truncate to minute precision
+  // since we mostly encode datetimes at that precision
   lazy val arbitraryRecentInstant: Arbitrary[Instant] = Arbitrary {
-    Gen.choose(0, 1893456000) map { seconds => Instant.EPOCH.plusSeconds(seconds) }
+    Gen.choose(0, 1893456000) map { seconds =>
+      Instant.EPOCH.plusSeconds(seconds).truncatedTo(ChronoUnit.MINUTES)
+    }
   }
 
   implicit lazy val arbitraryUnloadingPlace: Arbitrary[UnloadingPlace] =
@@ -119,6 +124,20 @@ trait ModelGenerators {
       } yield PlaceOfUnloading(id, country, place)
     }
 
+  implicit lazy val arbitrarySubmission: Arbitrary[Submission] =
+    Arbitrary {
+      for {
+        header <- arbitrary[Header]
+        goodsItemsLen <- Gen.choose(1, 99)
+        goodsItems <- Gen.listOfN(goodsItemsLen, arbitrary[GoodsItem])
+        itinerary <- arbitrary[Itinerary]
+        declarer <- arbitrary[Party]
+        seals <- arbitrary[List[String]]
+        customsOffice <- arbitrary[CustomsOfficePayload]
+        carrier <- arbitrary[Party]
+      } yield Submission(header, goodsItems, itinerary, declarer, seals, customsOffice, carrier)
+    }
+
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
     Arbitrary {
       for {
@@ -149,7 +168,15 @@ trait ModelGenerators {
     DangerousGood("7", "CARTRIDGES FOR WEAPONS with bursting charge")
   )
 
-  implicit lazy val arbitraryCustomsOffice: Arbitrary[CustomsOffice] =
+  implicit lazy val arbitraryCustomsOfficePayload: Arbitrary[CustomsOfficePayload] =
+    Arbitrary {
+      for {
+        office <- arbitrary[CustomsOffice]
+        datetime <- arbitrary[Instant](arbitraryRecentInstant)
+      } yield CustomsOfficePayload(office.code, datetime)
+    }
+
+  implicit lazy val arbitrarysOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       Gen.oneOf(CustomsOffice.allCustomsOffices)
     }
@@ -195,6 +222,14 @@ trait ModelGenerators {
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
     Arbitrary {
       Gen.oneOf(Country.internationalCountries)
+    }
+
+  implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
+    Arbitrary {
+      for {
+        len <- Gen.choose(1, 10)
+        countries <- Gen.listOfN(len, arbitrary[Country])
+      } yield Itinerary(countries)
     }
 
   implicit lazy val arbitraryDangerousGood: Arbitrary[DangerousGood] =
@@ -335,7 +370,7 @@ trait ModelGenerators {
     for {
       country <- Gen.oneOf(Country.allCountries)
       number <- Gen.listOfN(12, Gen.numChar)
-    } yield Party.ByEori(s"${country.code}$number")
+    } yield Party.ByEori(s"${country.code}${number.mkString}")
   }
 
   implicit lazy val arbitraryPartyByAddress: Arbitrary[Party.ByAddress] = Arbitrary {

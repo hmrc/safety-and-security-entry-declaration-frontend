@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package serialisation.xml
+package models.completion.downstream
 
-import base.SpecBase
-import models.Country
-import models.completion.Itinerary
+import models.completion.{CustomsOffice, Itinerary}
 
-class ItineraryFormatsSpec extends SpecBase with ItineraryFormats with XmlImplicits {
-  "The itinerary format" - {
-    "should work symmetrically" in {
-      val itin = Itinerary(Country.allCountries.take(10).toList)
-      itin.toXml.parseXml[Itinerary] must be(itin)
-    }
-  }
-}
+case class Submission(
+  header: Header,
+  goodsItems: List[GoodsItem],
+  itinerary: Itinerary,
+  declarer: Party,
+  seals: List[String],
+  customsOffice: CustomsOffice,
+  carrier: Party
+)
