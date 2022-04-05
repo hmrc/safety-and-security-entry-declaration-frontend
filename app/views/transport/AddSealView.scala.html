@@ -16,6 +16,7 @@
 
 @import controllers.transport.{SealController, routes}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
+@import viewmodels.LegendSize
 
 @this(
     layout: templates.Layout,
@@ -45,7 +46,7 @@
             @govukRadios(
                 RadiosViewModel.yesNo(
                     field = form("value"),
-                    legend = LegendViewModel(messages("addSeal.heading2")).asPageHeading()
+                    legend = LegendViewModel(messages("addSeal.heading2")).withSize(LegendSize.Medium)
                 )
             )
         } else {
