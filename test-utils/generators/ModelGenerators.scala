@@ -128,7 +128,8 @@ trait ModelGenerators {
     Arbitrary {
       for {
         header <- arbitrary[Header]
-        goodsItems <- arbitrary[List[GoodsItem]]
+        goodsItemsLen <- Gen.choose(1, 99)
+        goodsItems <- Gen.listOfN(goodsItemsLen, arbitrary[GoodsItem])
         itinerary <- arbitrary[Itinerary]
         declarer <- arbitrary[Party]
         seals <- arbitrary[List[String]]
@@ -225,7 +226,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
     Arbitrary {
-      Gen.listOfN(12, arbitrary[Country]).map(Itinerary)
+      Gen.listOfN(Gen.choose(1, 10).sample.get, arbitrary[Country]).map(Itinerary)
     }
 
   implicit lazy val arbitraryDangerousGood: Arbitrary[DangerousGood] =

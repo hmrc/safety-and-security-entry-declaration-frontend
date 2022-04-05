@@ -19,8 +19,9 @@ package serialisation.xml
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import models.completion.{Itinerary, CustomsOffice}
+import models.completion.{CustomsOffice, Itinerary}
 import models.completion.downstream.{GoodsItem, Header, Submission}
+import org.scalacheck.Gen
 
 class SubmissionFormatsSpec
   extends SpecBase
@@ -30,42 +31,25 @@ class SubmissionFormatsSpec
 
   "The submission format" - {
     "should work symmetrically" - {
-
       "for any submission" in {
         forAll(arbitrary[Submission]) { s =>
           s.toXml.parseXml[Submission] must be(s)
         }
       }
-    }
 
-    "The header format" - {
-      "should work symmetrically" in {
-        forAll(arbitrary[Header]) { h =>
-          h.toXml.parseXml[Header] must be(h)
+      "when seals are" - {
+        "present" in {
+          val gen = for {
+            len <- Gen.choose(1, 10)
+            seals <- Gen.listOfN(len, stringsWithMaxLength(27))
+            submission <- arbitrary[Submission]
+          } yield submission.copy(seals = seals)
+
+          forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
         }
-      }
-    }
-
-    "The goodsItems format" - {
-      "should work symmetrically" in {
-        forAll(arbitrary[GoodsItem]) { g =>
-          g.toXml.parseXml[GoodsItem] must be(g)
-        }
-      }
-    }
-
-    "The itinerary format" - {
-      "should work symmetrically" in {
-        forAll(arbitrary[Itinerary]) { i =>
-          i.toXml.parseXml[Itinerary] must be(i)
-        }
-      }
-    }
-
-    "The customsOffice format" - {
-      "should work symmetrically" in {
-        forAll(arbitrary[CustomsOffice]) { co =>
-          co.toXml.parseXml[CustomsOffice] must be(co)
+        "absent" in {
+          val gen = arbitrary[Submission] map { _.copy(seals = Nil) }
+          forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
         }
       }
     }

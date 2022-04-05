@@ -45,7 +45,7 @@ trait TransportFormats extends CommonFormats {
       case "4" => Air
       case "10" => RoroAccompanied
       case "11" => RoroUnaccompanied
-      case v => throw new XmlDecodingException(s"Unexpected value$v for transport mode")
+      case v => throw new XmlDecodingException(s"Unexpected value $v for transport mode")
     }
   }
 
@@ -68,7 +68,7 @@ trait TransportFormats extends CommonFormats {
       case "H" => CreditTransfer
       case "Y" => AccountHolderWithCarrier
       case "Z" => NotPrePaid
-      case v => throw new XmlDecodingException(s"Unexpected value$v for payment method")
+      case v => throw new XmlDecodingException(s"Unexpected value $v for payment method")
     }
   }
 
