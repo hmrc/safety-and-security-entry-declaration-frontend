@@ -94,31 +94,6 @@ trait Generators
       .suchThat(_ != "true")
       .suchThat(_ != "false")
 
-  def nonEmptyString: Gen[String] =
-    Gen.alphaNumStr suchThat (_.nonEmpty)
-
-  def stringsWithExactLength(length: Int): Gen[String] =
-    for {
-      length <- length
-      chars <- listOfN(length, alphaNumChar)
-    } yield chars.mkString
-
-  def stringsWithMaxLength(maxLength: Int): Gen[String] =
-    for {
-      length <- choose(1, maxLength)
-      chars <- listOfN(length, alphaNumChar)
-    } yield chars.mkString
-
-  def stringsLongerThan(minLength: Int): Gen[String] =
-    for {
-      maxLength <- (minLength * 2).max(100)
-      length <- Gen.chooseNum(minLength + 1, maxLength)
-      chars <- listOfN(length, alphaNumChar)
-    } yield chars.mkString
-
-  def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
-    nonEmptyString suchThat (!excluded.contains(_))
-
   def oneOf[T](xs: Seq[Gen[T]]): Gen[T] =
     if (xs.isEmpty) {
       throw new IllegalArgumentException("oneOf called on empty collection")

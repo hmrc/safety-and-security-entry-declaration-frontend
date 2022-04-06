@@ -17,7 +17,7 @@
 package serialisation.xml
 
 import models.completion.{CustomsOffice, Itinerary}
-import models.completion.downstream.{GoodsItem, Header, Submission}
+import models.completion.downstream.{GoodsItem, Header, Metadata, Submission}
 
 import scala.xml.NodeSeq
 import serialisation.xml.XmlImplicits._
@@ -38,10 +38,11 @@ trait SubmissionFormats
       }
 
       val seals: NodeSeq = sub.seals map {
-        s => <SEAID529>{s}</SEAID529>
+        s => <SEAID529><SeaIdSEAID530>{s}</SeaIdSEAID530></SEAID529>
       }
 
       <ie:CC315A xmlns:ie="http://ics.dgtaxud.ec/CC315A">
+        {sub.metadata.toXml}
         {sub.header.toXml}
         {goodsItems}
         {sub.itinerary.toXml}
@@ -53,11 +54,12 @@ trait SubmissionFormats
     }
 
     override def decode(data: NodeSeq): Submission = Submission(
+      metadata = data.parseXml[Metadata],
       header = (data \ "HEAHEA").parseXml[Header],
       goodsItems = (data \ "GOOITEGDS").map { _.parseXml[GoodsItem] }.toList,
       itinerary = (data \ "ITI").parseXml[Itinerary],
       declarer = lodgingPersonFormat.decode(data \ "PERLODSUMDEC"),
-      seals = (data \ "SEAID529").map { _.text }.toList,
+      seals = (data \ "SEAID529" \ "SeaIdSEAID530").map { _.text }.toList,
       customsOffice = (data \ "CUSOFFFENT730").parseXml[CustomsOffice],
       carrier = carrierFormat.decode(data \ "TRACARENT601")
     )

@@ -28,8 +28,8 @@ trait MetadataFormats {
   // N.B. we aren't using the StringFormat in TimeFormats because we have to serialise multiple
   // fields for a separate date + time in the message metadata fields
   implicit val metadataInstantFmt = new Format[Instant] {
-    private val dtFmt = DateTimeFormatter.ofPattern("yyyyMMddHHmm").withZone(ZoneId.from(ZoneOffset.UTC))
-    private val dateFmt = DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.from(ZoneOffset.UTC))
+    private val dtFmt = DateTimeFormatter.ofPattern("ddMMyyHHmm").withZone(ZoneId.from(ZoneOffset.UTC))
+    private val dateFmt = DateTimeFormatter.ofPattern("ddMMyy").withZone(ZoneId.from(ZoneOffset.UTC))
     private val timeFmt = DateTimeFormatter.ofPattern("HHmm").withZone(ZoneId.from(ZoneOffset.UTC))
 
     override def encode(dt: Instant): NodeSeq = {
@@ -66,9 +66,9 @@ trait MetadataFormats {
   implicit val metadataFmt = new Format[Metadata] {
     override def encode(metadata: Metadata): NodeSeq = Seq(
       <MesSenMES3>{metadata.messageSender.toXmlString}</MesSenMES3>,
+      metadata.datetime.toXml,
       <MesIdeMES19>{metadata.messageId}</MesIdeMES19>,
-      <MesTypMES20>{metadata.messageType.toXmlString}</MesTypMES20>,
-      metadata.datetime.toXml
+      <MesTypMES20>{metadata.messageType.toXmlString}</MesTypMES20>
     ).flatten
 
     override def decode(data: NodeSeq): Metadata = Metadata(
