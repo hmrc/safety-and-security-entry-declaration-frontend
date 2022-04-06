@@ -17,7 +17,7 @@
 package models.completion.downstream
 
 import models.{Container, Document, PaymentMethod}
-import models.completion.LoadingPlace
+import models.completion.{LoadingPlace, Party}
 
 /**
  * Represents a single goods item in the XML payload (GOOITEGDS)

@@ -22,7 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import base.SpecBase
 import extractors.ValidationError._
 import models.{ConsignorIdentity => ConsignorIdentityAnswer, _}
-import models.completion.answers.ConsignorIdentity
+import models.completion.Party
 import pages.consignors._
 
 class ConsignorIdentityExtractorSpec extends SpecBase {
@@ -43,7 +43,7 @@ class ConsignorIdentityExtractorSpec extends SpecBase {
           .set(ConsignorEORIPage(itemOne), eori).success.value
       }
 
-      val expected = ConsignorIdentity.ByEori(eori)
+      val expected = Party.ByEori(s"GB${eori.value}")
       val actual = new ConsignorIdentityExtractor(itemOne).extract().value
 
       actual must be(expected)
@@ -57,7 +57,7 @@ class ConsignorIdentityExtractorSpec extends SpecBase {
           .set(ConsignorAddressPage(itemOne), addr).success.value
       }
 
-      val expected = ConsignorIdentity.ByAddress(name, addr)
+      val expected = Party.ByAddress(name, addr)
       val actual = new ConsignorIdentityExtractor(itemOne).extract().value
 
       actual must be(expected)
@@ -79,9 +79,9 @@ class ConsignorIdentityExtractorSpec extends SpecBase {
       }
 
       Seq(
-        itemOne -> ConsignorIdentity.ByEori(eori1),
-        itemTwo -> ConsignorIdentity.ByEori(eori2),
-        itemThree -> ConsignorIdentity.ByAddress(name, addr)
+        itemOne -> Party.ByEori(s"GB${eori1.value}"),
+        itemTwo -> Party.ByEori(s"GB${eori2.value}"),
+        itemThree -> Party.ByAddress(name, addr)
       ) foreach { case (itemNum, expected) =>
         val actual = new ConsignorIdentityExtractor(itemNum).extract().value
         actual must be(expected)

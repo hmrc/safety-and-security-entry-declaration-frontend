@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package models.completion.answers
+package models.completion
 
-import models.{Address, GbEori}
+import models.Address
 
-sealed trait ConsignorIdentity
+/**
+ * This identifies any party reported within the XML payload, by EORI or name + address
+ *
+ * This applies to several different parties, e.g. consignors, consignees, declaring person,
+ * notified party...
+ */
+sealed trait Party
 
-object ConsignorIdentity {
-  case class ByEori(eori: GbEori) extends ConsignorIdentity
-  case class ByAddress(name: String, address: Address) extends ConsignorIdentity
+object Party {
+  case class ByEori(eori: String) extends Party
+  case class ByAddress(name: String, address: Address) extends Party
 }

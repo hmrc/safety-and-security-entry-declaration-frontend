@@ -20,25 +20,25 @@ import cats.implicits._
 
 import extractors.ValidationError._
 import models.{ConsignorIdentity => ConsignorIdentityAnswer, Index, UserAnswers}
-import models.completion.answers.ConsignorIdentity
+import models.completion.Party
 import pages.consignors._
 
 class ConsignorIdentityExtractor(itemIndex: Index)(
   override protected implicit val answers: UserAnswers
-) extends Extractor[ConsignorIdentity] {
+) extends Extractor[Party] {
 
-  private def extractByEori(): ValidationResult[ConsignorIdentity] = {
-    requireAnswer(ConsignorEORIPage(itemIndex)) map { ConsignorIdentity.ByEori(_) }
+  private def extractByEori(): ValidationResult[Party] = {
+    requireAnswer(ConsignorEORIPage(itemIndex)) map { eori => Party.ByEori(s"GB${eori.value}") }
   }
 
-  private def extractByAddress(): ValidationResult[ConsignorIdentity] = {
+  private def extractByAddress(): ValidationResult[Party] = {
     val name = requireAnswer(ConsignorNamePage(itemIndex))
     val addr = requireAnswer(ConsignorAddressPage(itemIndex))
 
-    (name, addr).mapN(ConsignorIdentity.ByAddress)
+    (name, addr).mapN(Party.ByAddress)
   }
 
-  override def extract(): ValidationResult[ConsignorIdentity] = {
+  override def extract(): ValidationResult[Party] = {
     val page = ConsignorIdentityPage(itemIndex)
 
     answers.get(page) map {

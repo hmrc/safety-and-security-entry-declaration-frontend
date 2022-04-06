@@ -18,7 +18,7 @@ package serialisation.xml
 
 import base.SpecBase
 import models.{Container, Document, DocumentType}
-import models.completion.LoadingPlace
+import models.completion.{LoadingPlace, Party}
 import models.completion.downstream._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
