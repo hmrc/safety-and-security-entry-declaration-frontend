@@ -16,10 +16,9 @@
 
 package serialisation.xml
 
-import models.completion.Party
-
 import scala.xml.{Elem, NodeSeq, Null, Text, TopScope}
 import models.{Address, Country}
+import models.completion.Party
 import serialisation.xml.XmlImplicits._
 
 /**

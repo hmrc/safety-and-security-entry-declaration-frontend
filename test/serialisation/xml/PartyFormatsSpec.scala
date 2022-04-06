@@ -20,8 +20,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import base.SpecBase
-import models.completion.Party
 import models.{Address, Country}
+import models.completion.Party
 
 class PartyFormatsSpec
   extends SpecBase
