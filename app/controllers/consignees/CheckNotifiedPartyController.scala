@@ -56,7 +56,6 @@ class CheckNotifiedPartyController @Inject() (
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-
         Redirect(CheckNotifiedPartyPage(index).navigate(waypoints, request.userAnswers))
     }
 }

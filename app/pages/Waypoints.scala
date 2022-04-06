@@ -21,8 +21,6 @@ import cats.implicits.toTraverseOps
 import models.{Mode, NormalMode}
 import play.api.mvc.QueryStringBindable
 
-import scala.util.{Failure, Success, Try}
-
 sealed trait Waypoints {
 
   val currentMode: Mode
@@ -52,7 +50,7 @@ case class NonEmptyWaypoints(waypoints: NonEmptyList[Waypoint]) extends Waypoint
         setNextWaypoint(targetPage.addItemWaypoint)
 
       case _ =>
-        if (next.page == targetPage) { remove } else { this }
+        if (next.page == targetPage) remove else this
     }
 
   override def toString: String = waypoints.toList.map(_.urlFragment).mkString(",")
@@ -94,15 +92,9 @@ object Waypoints {
       override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Waypoints]] = {
         params.get(key).map {
           data =>
-            Try(Waypoints.fromString(data.head)) match {
-              case Success(maybeStack) =>
-                maybeStack
-                  .map(Right(_))
-                  .getOrElse(Left("Unable to bind parameter as waypoints"))
-
-              case Failure(_) =>
-                Left("Unable to bind parameter as waypoints")
-            }
+            Waypoints.fromString(data.head)
+              .map(Right(_))
+              .getOrElse(Left(s"Unable to bind parameter ${data.head} as waypoints"))
         }
       }
 

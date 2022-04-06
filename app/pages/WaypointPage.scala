@@ -18,7 +18,7 @@ package pages
 
 import models.{CheckMode, Mode, NormalMode}
 
-sealed trait WaypointPage extends Page
+trait WaypointPage extends Page
 
 trait CheckAnswersPage extends WaypointPage {
   val urlFragment: String

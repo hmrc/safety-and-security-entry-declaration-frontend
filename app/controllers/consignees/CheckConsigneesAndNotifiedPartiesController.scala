@@ -56,7 +56,6 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-
         Redirect(CheckConsigneesAndNotifiedPartiesPage.navigate(waypoints, request.userAnswers))
     }
 }

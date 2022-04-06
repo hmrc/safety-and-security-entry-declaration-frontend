@@ -45,8 +45,8 @@ object Waypoint {
         Some(CheckConsigneesAndNotifiedPartiesPage.waypoint)
 
       case other =>
-        CheckConsigneePage.waypointFromString(other) orElse
-          CheckNotifiedPartyPage.waypointFromString(other) orElse
-          None
+        CheckConsigneePage.waypointFromString(other)
+          .orElse(CheckNotifiedPartyPage.waypointFromString(other))
+
     }
 }

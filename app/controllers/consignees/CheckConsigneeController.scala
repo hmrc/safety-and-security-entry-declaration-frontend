@@ -56,8 +56,6 @@ class CheckConsigneeController @Inject() (
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-
-
         Redirect(CheckConsigneePage(index).navigate(waypoints, request.userAnswers))
     }
 }
