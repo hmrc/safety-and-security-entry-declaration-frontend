@@ -17,9 +17,9 @@
 package pages.consignors
 
 import base.SpecBase
-import controllers.consignors.{routes => consignorRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import controllers.consignors.routes
+import models.{GbEori, Index}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import queries.consignors.ConsignorKeyQuery
 
@@ -27,38 +27,25 @@ class RemoveConsignorPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveConsignorPage" - {
 
-    beRetrievable[Boolean](RemoveConsignorPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](RemoveConsignorPage(index))
-
-    beRemovable[Boolean](RemoveConsignorPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Add Consignor when there is still at least one consignor in the user's answers" in {
 
         val answers =
           emptyUserAnswers
             .set(ConsignorEORIPage(index), GbEori("123456789000")).success.value
-            .set(ConsignorKeyQuery(index), 1).success.value
+            .set(ConsignorKeyQuery(Index(0)), 1).success.value
 
-        RemoveConsignorPage(index).navigate(NormalMode, answers)
-          .mustEqual(consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn))
+        RemoveConsignorPage(index).navigate(waypoints, answers)
+          .mustEqual(routes.AddConsignorController.onPageLoad(waypoints, answers.lrn))
       }
 
-      "to Consignor Identity when there are no consignors left" in {
+      "to Consignor Identity with index 0 when there are no consignors left" in {
 
-        RemoveConsignorPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RemoveConsignorPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        RemoveConsignorPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.ConsignorIdentityController.onPageLoad(waypoints, emptyUserAnswers.lrn, Index(0)))
       }
     }
   }

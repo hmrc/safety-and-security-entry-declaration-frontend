@@ -73,8 +73,8 @@ object TaskListViewModel {
 
   private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfConsignors) match {
-      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn)
-      case _ => consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(EmptyWaypoints, answers.lrn)
+      case _ => consignorRoutes.ConsignorIdentityController.onPageLoad(EmptyWaypoints, answers.lrn, Index(0))
     }
 
     TaskListRow(

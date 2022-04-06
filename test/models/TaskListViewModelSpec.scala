@@ -55,14 +55,14 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(consignorsIdx).link mustEqual consignorRoutes.AddConsignorController.onPageLoad(NormalMode,answers.lrn)
+          result.rows(consignorsIdx).link mustEqual consignorRoutes.AddConsignorController.onPageLoad(EmptyWaypoints,answers.lrn)
         }
       }
       "When have don't have any" - {
         "we go to the first consignor input" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(consignorsIdx).link mustEqual consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode,emptyUserAnswers.lrn,Index(0))
+          result.rows(consignorsIdx).link mustEqual consignorRoutes.ConsignorIdentityController.onPageLoad(EmptyWaypoints,emptyUserAnswers.lrn,Index(0))
         }
       }
     }

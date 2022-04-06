@@ -19,6 +19,7 @@ package pages
 import base.SpecBase
 import models.{CheckMode, Index, NormalMode}
 import pages.consignees._
+import pages.consignors.{AddConsignorPage, CheckConsignorPage}
 
 class WaypointSpec extends SpecBase {
 
@@ -44,6 +45,16 @@ class WaypointSpec extends SpecBase {
       Waypoint.fromString("change-notified-party").value mustEqual AddNotifiedPartyPage.waypoint(CheckMode)
     }
 
+    "must return AddConsignorPage when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-consignor").value mustEqual AddConsignorPage.waypoint(NormalMode)
+    }
+
+    "must return AddConsignorPage when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-consignor").value mustEqual AddConsignorPage.waypoint(CheckMode)
+    }
+
     "must return CheckConsigneesAndNotifiedPartiesPage when given its waypoint" in {
 
       Waypoint.fromString("check-consignees-notified-parties").value.
@@ -53,6 +64,11 @@ class WaypointSpec extends SpecBase {
     "must return CheckConsigneePage when given its waypoint" in {
 
       Waypoint.fromString("check-consignee-1").value mustEqual CheckConsigneePage(Index(0)).waypoint
+    }
+
+    "must return CheckConsignorPage when given its waypoint" in {
+
+      Waypoint.fromString("check-consignor-1").value mustEqual CheckConsignorPage(Index(0)).waypoint
     }
 
     "must return CheckNotifiedPartyPage when given its waypoint" in {

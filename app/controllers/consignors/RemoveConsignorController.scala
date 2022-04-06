@@ -18,7 +18,8 @@ package controllers.consignors
 
 import controllers.actions._
 import forms.consignors.RemoveConsignorFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.consignors.RemoveConsignorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,36 +44,29 @@ class RemoveConsignorController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
-
-      val preparedForm = request.userAnswers.get(RemoveConsignorPage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, lrn, index))
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Ok(view(form, waypoints, lrn, index))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
-        value =>
-          if (value) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsignorQuery(index)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(RemoveConsignorPage(index).navigate(mode, updatedAnswers))
-          } else {
-            Future.successful(
-              Redirect(RemoveConsignorPage(index).navigate(mode, request.userAnswers))
-            )
-          }
-
-      )
-  }
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(ConsignorQuery(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveConsignorPage(index).navigate(waypoints, updatedAnswers))
+            } else {
+              Future.successful(Redirect(RemoveConsignorPage(index).navigate(waypoints, request.userAnswers)))
+            }
+        )
+    }
 }

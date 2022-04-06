@@ -18,15 +18,12 @@ package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Waypoints, Page, QuestionPage}
-import play.api.libs.json.JsPath
+import pages.{Page, Waypoints}
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
 
 
-final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
+final case class RemoveConsigneePage(index: Index) extends Page {
 
   override def toString: String = "removeConsignee"
 

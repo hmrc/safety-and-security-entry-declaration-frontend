@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.routes
 import models.{GbEori, Index, NormalMode}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import queries.consignors.ConsignorKeyQuery
 
@@ -27,7 +28,9 @@ class AddConsignorPageSpec extends SpecBase with PageBehaviours {
 
   "AddConsignorPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Consignor Identity for the next index when the answer is yes" in {
 
@@ -35,15 +38,18 @@ class AddConsignorPageSpec extends SpecBase with PageBehaviours {
           emptyUserAnswers
             .set(ConsignorEORIPage(Index(0)), GbEori("123456789000")).success.value
             .set(ConsignorKeyQuery(Index(0)), 1).success.value
+            .set(AddConsignorPage, true).success.value
 
-        AddConsignorPage.navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+        AddConsignorPage.navigate(waypoints, answers)
+          .mustEqual(consignorRoutes.ConsignorIdentityController.onPageLoad(waypoints, answers.lrn, Index(1)))
       }
 
-      "to task list when the answer is no" in {
+      "to Task List when the answer is no" in {
 
-        AddConsignorPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
+        val answers = emptyUserAnswers.set(AddConsignorPage, false).success.value
+
+        AddConsignorPage.navigate(waypoints, answers)
+          .mustEqual(routes.TaskListController.onPageLoad(answers.lrn))
       }
     }
   }
