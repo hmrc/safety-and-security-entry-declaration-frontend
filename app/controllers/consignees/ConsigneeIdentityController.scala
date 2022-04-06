@@ -19,9 +19,8 @@ package controllers.consignees
 import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.consignees.ConsigneeIdentityFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.consignees.ConsigneeIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,6 +29,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.ConsigneeIdentityView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeIdentityController @Inject() (
@@ -48,7 +48,7 @@ class ConsigneeIdentityController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(ConsigneeIdentityPage(index)) match {
@@ -56,10 +56,10 @@ class ConsigneeIdentityController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, waypoints, lrn, index))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         getItemKey(index, AllConsigneesQuery) {
@@ -68,13 +68,13 @@ class ConsigneeIdentityController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
                 value =>
                   for {
                     answers <- Future.fromTry(request.userAnswers.set(ConsigneeIdentityPage(index), value))
                     updatedAnswers <- Future.fromTry(answers.set(ConsigneeKeyQuery(index), consigneeKey))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(ConsigneeIdentityPage(index).navigate(mode, updatedAnswers))
+                  } yield Redirect(ConsigneeIdentityPage(index).navigate(waypoints, updatedAnswers))
               )
         }
     }

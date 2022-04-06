@@ -19,10 +19,11 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.RemoveNotifiedPartyFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.{NotifiedPartyNamePage, RemoveNotifiedPartyPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,11 +36,12 @@ import scala.concurrent.Future
 
 class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new RemoveNotifiedPartyFormProvider()
-  val form = formProvider()
+  private val formProvider = new RemoveNotifiedPartyFormProvider()
+  private val form = formProvider()
+  private val waypoints = EmptyWaypoints
   private val baseAnswers = emptyUserAnswers.set(NotifiedPartyNamePage(index),"Test LTD.").success.value
 
-  lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(NormalMode, lrn, index).url
+  lazy val removeNotifiedPartyRoute = routes.RemoveNotifiedPartyController.onPageLoad(waypoints, lrn, index).url
 
   "RemoveNotifiedParty Controller" - {
 
@@ -55,28 +57,9 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveNotifiedPartyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemoveNotifiedPartyPage(index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeNotifiedPartyRoute)
-
-        val view = application.injector.instanceOf[RemoveNotifiedPartyView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(request, messages(application)).toString
-      }
-    }
-
 
     "must remove the notified party and redirect to the next page when the answer is yes" in {
 
@@ -99,7 +82,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -126,7 +109,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveNotifiedPartyPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -148,7 +131,7 @@ class RemoveNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 

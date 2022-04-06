@@ -17,28 +17,41 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, Waypoints, NonEmptyWaypoints, Page, QuestionPage}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfNotifiedParties
 
-case object AddNotifiedPartyPage extends Page {
+case object AddNotifiedPartyPage extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfNotifiedParties) match {
-        case Some(size) =>
-          consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = "add-notified-party"
+  override val checkModeUrlFragment: String = "change-notified-party"
+
+  override def path: JsPath = JsPath \ "addNotifiedParty"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddNotifiedPartyController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(AddNotifiedPartyPage).map {
+      case true =>
+        answers.get(DeriveNumberOfNotifiedParties)
+          .map(n => NotifiedPartyIdentityPage(Index(n)))
+          .orRecover
+
+      case false =>
+        CheckConsigneesAndNotifiedPartiesPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfNotifiedParties)
+          .map(n => NotifiedPartyIdentityPage(Index(n)))
+          .orRecover
+
+      case false =>
+        CheckConsigneesAndNotifiedPartiesPage
+    }.orRecover
 }

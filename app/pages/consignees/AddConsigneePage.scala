@@ -17,28 +17,41 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, Waypoints, NonEmptyWaypoints, Page, QuestionPage}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
 
-case object AddConsigneePage extends Page {
+case object AddConsigneePage extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfConsignees) match {
-        case Some(size) =>
-          consigneesRoutes.ConsigneeIdentityController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = "add-consignee"
+  override val checkModeUrlFragment: String = "change-consignee"
+
+  override def path: JsPath = JsPath \ "addConsignee"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.AddConsigneeController.onPageLoad(waypoints, lrn)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignees)
+          .map(n => ConsigneeIdentityPage(Index(n)))
+          .orRecover
+
+      case false =>
+        AddAnyNotifiedPartiesPage
+    }.orRecover
+
+  override def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignees)
+          .map(n => ConsigneeIdentityPage(Index(n)))
+          .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
 }

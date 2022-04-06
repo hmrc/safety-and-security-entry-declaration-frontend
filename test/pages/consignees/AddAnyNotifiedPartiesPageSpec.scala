@@ -17,47 +17,132 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import controllers.consignees.routes
+import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
+import queries.consignees.{AllNotifiedPartiesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
 class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnyNotifiedPartiesPage" - {
 
-    beRetrievable[Boolean](AddAnyNotifiedPartiesPage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](AddAnyNotifiedPartiesPage)
-
-    beRemovable[Boolean](AddAnyNotifiedPartiesPage)
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Notified Party Identity when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, true).success.value
 
-        AddAnyNotifiedPartiesPage.navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0)))
+        AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+          .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints, answers.lrn, Index(0)))
       }
 
       "to Check Consignees and Notified Parties when the answer is no" in {
 
         val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
 
-        AddAnyNotifiedPartiesPage.navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn))
+        AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+          .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(waypoints, answers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is CheckConsigneesAndNotifiedParties" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckConsigneesAndNotifiedPartiesPage.waypoint))
 
-        AddAnyNotifiedPartiesPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "and there are already some notified parties" - {
+
+          "to Check Consignees and Notified Parties with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+                .set(NotifiedPartyKeyQuery(index), 1).success.value
+                .set(AddAnyNotifiedPartiesPage, true).success.value
+
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
+          }
+        }
+
+        "and there are no notified parties" - {
+
+          "to Notified Party for index 0" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AddAnyNotifiedPartiesPage, true).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
+
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, index))
+          }
+        }
       }
+
+      "when the answer is no" - {
+
+        "and there are some consignees" - {
+
+          "to Check Consignees and Notified Parties with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+                .set(ConsigneeKeyQuery(index), 1).success.value
+                .set(AddAnyNotifiedPartiesPage, false).success.value
+
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
+          }
+        }
+
+        "and there are no consignees" - {
+
+          "to Any Consignees Known" in {
+
+            val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
+
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(waypoints, answers.lrn))
+          }
+        }
+      }
+    }
+
+    "must not alter the user's answers when the answer is yes" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+          .set(NotifiedPartyKeyQuery(index), 1).success.value
+          .set(AddAnyNotifiedPartiesPage, true).success.value
+
+      val result = AddAnyNotifiedPartiesPage.cleanup(Some(true), answers).success.value
+
+      result mustEqual answers
+    }
+
+    "must remove all notified parties when the answer is no" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+          .set(NotifiedPartyKeyQuery(index), 1).success.value
+          .set(AddAnyNotifiedPartiesPage, false).success.value
+
+      val result = AddAnyNotifiedPartiesPage.cleanup(Some(false), answers).success.value
+
+      result mustEqual answers.remove(AllNotifiedPartiesQuery).success.value
     }
   }
 }

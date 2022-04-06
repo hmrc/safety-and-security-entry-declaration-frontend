@@ -18,10 +18,13 @@
 
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
-@(list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkNotifiedParty.title"))) {
 
@@ -29,6 +32,10 @@
 
     @govukSummaryList(list)
 
-    <a href="@routes.AddNotifiedPartyController.onPageLoad(NormalMode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
+    @formHelper(action = routes.CheckNotifiedPartyController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }
     

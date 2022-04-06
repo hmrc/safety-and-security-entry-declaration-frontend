@@ -17,11 +17,12 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Waypoints, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.DeriveNumberOfConsignees
+
 
 final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean] {
 
@@ -29,9 +30,12 @@ final case class RemoveConsigneePage(index: Index) extends QuestionPage[Boolean]
 
   override def toString: String = "removeConsignee"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(DeriveNumberOfConsignees) match {
-      case Some(size) if size > 0 => consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn)
-      case _                      => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode, answers.lrn)
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.RemoveConsigneeController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfConsignees).map {
+      case n if n > 0 => AddConsigneePage
+      case _ => AnyConsigneesKnownPage
+    }.getOrElse(AnyConsigneesKnownPage)
 }

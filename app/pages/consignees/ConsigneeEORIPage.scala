@@ -17,18 +17,20 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{GbEori, Index, UserAnswers}
-import pages.QuestionPage
+import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Waypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeEORIPage(index: Index) extends QuestionPage[GbEori] {
+case class ConsigneeEORIPage(index: Index) extends ConsigneeQuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
   override def toString: String = "eori"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneesRoutes.CheckConsigneeController.onPageLoad(answers.lrn, index)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.ConsigneeEORIController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    CheckConsigneePage(index)
 }

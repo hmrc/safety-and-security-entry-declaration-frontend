@@ -19,10 +19,11 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.AddAnyNotifiedPartiesFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.AddAnyNotifiedPartiesPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,10 +35,11 @@ import scala.concurrent.Future
 
 class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new AddAnyNotifiedPartiesFormProvider()
-  val form = formProvider()
+  private val formProvider = new AddAnyNotifiedPartiesFormProvider()
+  private val form = formProvider()
+  private val waypoints = EmptyWaypoints
 
-  lazy val addAnyNotifiedPartiesRoute = routes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, lrn).url
+  lazy val addAnyNotifiedPartiesRoute = routes.AddAnyNotifiedPartiesController.onPageLoad(waypoints, lrn).url
 
   "AddAnyNotifiedParties Controller" - {
 
@@ -53,7 +55,7 @@ class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddAnyNotifiedPartiesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -71,7 +73,7 @@ class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -95,7 +97,7 @@ class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddAnyNotifiedPartiesPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual AddAnyNotifiedPartiesPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -116,7 +118,7 @@ class AddAnyNotifiedPartiesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

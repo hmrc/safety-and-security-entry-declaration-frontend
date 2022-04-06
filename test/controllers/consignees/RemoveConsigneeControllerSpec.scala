@@ -19,10 +19,12 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.RemoveConsigneeFormProvider
-import models.{Address, Country, NormalMode}
+import models.Address
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.{ConsigneeAddressPage, RemoveConsigneePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,11 +37,13 @@ import scala.concurrent.Future
 
 class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new RemoveConsigneeFormProvider()
-  val form = formProvider()
-  private val baseAnswers = emptyUserAnswers.set(ConsigneeAddressPage(index),Address("test","test","test",Country("test","test"))).success.value
+  private val formProvider = new RemoveConsigneeFormProvider()
+  private val form = formProvider()
+  private val waypoints = EmptyWaypoints
+  private val address = arbitrary[Address].sample.value
+  private val baseAnswers = emptyUserAnswers.set(ConsigneeAddressPage(index), address).success.value
 
-  lazy val removeConsigneeRoute = routes.RemoveConsigneeController.onPageLoad(NormalMode, lrn, index).url
+  lazy val removeConsigneeRoute = routes.RemoveConsigneeController.onPageLoad(waypoints, lrn, index).url
 
   "RemoveConsignee Controller" - {
 
@@ -55,25 +59,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveConsigneeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemoveConsigneePage(index), true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeConsigneeRoute)
-
-        val view = application.injector.instanceOf[RemoveConsigneeView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -98,7 +84,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveConsigneePage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -125,7 +111,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveConsigneePage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -148,7 +134,7 @@ class RemoveConsigneeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 

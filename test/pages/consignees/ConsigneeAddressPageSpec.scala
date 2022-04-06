@@ -17,40 +17,52 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{Address, CheckMode, NormalMode}
+import controllers.consignees.routes
+import models.NormalMode
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class ConsigneeAddressPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeAddressPage" - {
 
-    beRetrievable[Address](ConsigneeAddressPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Address](ConsigneeAddressPage(index))
-
-    beRemovable[Address](ConsigneeAddressPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Check Consignee Details" in {
 
         ConsigneeAddressPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckConsigneeController.onPageLoad(emptyUserAnswers.lrn, index)
+            routes.CheckConsigneeController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is AddConsignee" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddConsigneePage.waypoint(NormalMode)))
+
+      "to Check Consignee Details" in {
 
         ConsigneeAddressPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckConsigneeController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is Check Consignee" - {
+
+      val waypoints = Waypoints(List(CheckConsigneePage(index).waypoint))
+      
+      "to Check Consignee with the current waypoint removed" in {
+
+        ConsigneeAddressPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

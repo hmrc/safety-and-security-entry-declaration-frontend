@@ -17,8 +17,9 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import models.{GbEori, Index, NormalMode}
+import controllers.consignees.routes
+import models.{ConsigneeIdentity, GbEori, Index, NormalMode}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 import queries.consignees.ConsigneeKeyQuery
 
@@ -26,7 +27,9 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
 
   "AddConsigneePage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Consignee Identity for the next index when the answer is yes" in {
 
@@ -34,15 +37,50 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
           emptyUserAnswers
             .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
             .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+            .set(AddConsigneePage, true).success.value
 
-        AddConsigneePage.navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(consigneesRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+        AddConsigneePage.navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints, answers.lrn, Index(1)))
       }
 
       "to Add Any Notified Parties when the answer is no" in {
 
-        AddConsigneePage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        val answers = emptyUserAnswers.set(AddConsigneePage, false).success.value
+
+        AddConsigneePage.navigate(waypoints, answers)
+          .mustEqual(routes.AddAnyNotifiedPartiesController.onPageLoad(waypoints, answers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Consignees and Notified Parties" - {
+
+      val waypoints = Waypoints(List(CheckConsigneesAndNotifiedPartiesPage.waypoint))
+
+      "when the answer is yes" - {
+
+        "to ConsigneeIdentity for the next index with AddConsignee added to the waypoints" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(AddConsigneePage, true).success.value
+              .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+              .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+              .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+          AddConsigneePage.navigate(waypoints, answers)
+            .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints.setNextWaypoint(AddConsigneePage.waypoint(NormalMode)), answers.lrn, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Consignees and Notified Parties with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddConsigneePage, false).success.value
+
+          AddConsigneePage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
       }
     }
   }

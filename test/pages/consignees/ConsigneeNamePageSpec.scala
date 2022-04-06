@@ -17,40 +17,68 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.consignees.routes
+import models.{Address, Country, NormalMode}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class ConsigneeNamePageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeNamePage" - {
 
-    beRetrievable[String](ConsigneeNamePage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[String](ConsigneeNamePage(index))
-
-    beRemovable[String](ConsigneeNamePage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to consignee address" in {
 
         ConsigneeNamePage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.ConsigneeAddressController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            routes.ConsigneeAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is AddConsignee" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddConsigneePage.waypoint(NormalMode)))
+
+      "to consignee address" in {
 
         ConsigneeNamePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.ConsigneeAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is Check Consignee" - {
+
+      val waypoints = Waypoints(List(CheckConsigneePage(index).waypoint))
+
+      "and Consignee Address has been answered" - {
+
+        "to Check Consignee with the current waypoint removed" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(ConsigneeAddressPage(index), Address("street", "city", "AA11 1AA", Country("GB", "United Kingdom")))
+              .success.value
+
+          ConsigneeNamePage(index).navigate(waypoints, answers)
+            .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+      }
+
+      "and Consignee Address has not been answered" - {
+
+        "to Consignee Address" in {
+
+          ConsigneeNamePage(index).navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.ConsigneeAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
+        }
       }
     }
   }

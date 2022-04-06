@@ -17,41 +17,68 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.consignees.routes
+import models.{Address, Country, NormalMode}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyNamePageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyNamePage" - {
 
-    beRetrievable[String](NotifiedPartyNamePage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[String](NotifiedPartyNamePage(index))
-
-    beRemovable[String](NotifiedPartyNamePage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to notified party address" in {
 
         NotifiedPartyNamePage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.NotifiedPartyAddressController
-              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
+            routes.NotifiedPartyAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is AddNotifiedParty" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddNotifiedPartyPage.waypoint(NormalMode)))
+
+      "to notified party address" in {
 
         NotifiedPartyNamePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.NotifiedPartyAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is CheckNotifiedParty" - {
+
+      val waypoints = Waypoints(List(CheckNotifiedPartyPage(index).waypoint))
+
+      "when Notified Party Address has been answered" - {
+
+        "to Check Notified Party with the current waypoint removed" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(NotifiedPartyAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom")))
+              .success.value
+
+          NotifiedPartyNamePage(index).navigate(waypoints, answers)
+            .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+      }
+
+      "when Notified Party Address has not been answered" - {
+
+        "to Notified Party Address" in {
+
+          NotifiedPartyNamePage(index).navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.NotifiedPartyAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
+        }
       }
     }
   }

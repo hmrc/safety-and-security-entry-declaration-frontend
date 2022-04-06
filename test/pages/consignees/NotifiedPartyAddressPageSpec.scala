@@ -17,40 +17,54 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{Address, CheckMode, NormalMode}
+import controllers.consignees.routes
+import models.NormalMode
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyAddressPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyAddressPage" - {
 
-    beRetrievable[Address](NotifiedPartyAddressPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Address](NotifiedPartyAddressPage(index))
-
-    beRemovable[Address](NotifiedPartyAddressPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Check Notified Party" in {
 
         NotifiedPartyAddressPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            consigneesRoutes.CheckNotifiedPartyController.onPageLoad(emptyUserAnswers.lrn, index)
+            routes.CheckNotifiedPartyController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is AddNotifiedParty" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddNotifiedPartyPage.waypoint((NormalMode))))
+
+      "to Check Notified Party" in {
 
         NotifiedPartyAddressPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckNotifiedPartyController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
+          )
+      }
+    }
+
+    "must navigate when the current waypoint is CheckNotifiedParty" - {
+
+      val waypoints = Waypoints(List(CheckNotifiedPartyPage(index).waypoint))
+
+      "to Check Notified Party with the current waypoint removed" in {
+
+        NotifiedPartyAddressPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index)
+          )
       }
     }
   }

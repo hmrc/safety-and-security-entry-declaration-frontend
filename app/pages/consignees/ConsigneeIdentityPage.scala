@@ -17,25 +17,53 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{ConsigneeIdentity, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{ConsigneeIdentity, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{Waypoint, Waypoints, NonEmptyWaypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsigneeIdentityPage(index: Index) extends QuestionPage[ConsigneeIdentity] {
+import scala.util.Try
+
+case class ConsigneeIdentityPage(index: Index) extends ConsigneeQuestionPage[ConsigneeIdentity] {
+
+  override val addItemWaypoint: Waypoint = AddConsigneePage.waypoint(NormalMode)
 
   override def path: JsPath = JsPath \ "consignees" \ index.position \ toString
 
   override def toString: String = "identity"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(ConsigneeIdentityPage(index)) match {
-      case Some(GBEORI) => consigneeRoutes.ConsigneeEORIController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(NameAddress) =>
-        consigneeRoutes.ConsigneeNameController.onPageLoad(NormalMode, answers.lrn, index)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.ConsigneeIdentityController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case GBEORI => ConsigneeEORIPage(index)
+      case NameAddress => ConsigneeNamePage(index)
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case GBEORI =>
+        answers.get(ConsigneeEORIPage(index))
+          .map(_ => waypoints.next.page)
+          .getOrElse(ConsigneeEORIPage(index))
+
+      case NameAddress =>
+        answers.get(ConsigneeNamePage(index))
+          .map (_ => waypoints.next.page)
+          .getOrElse(ConsigneeNamePage(index))
+    }.orRecover
+
+  override def cleanup(value: Option[ConsigneeIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value.map {
+      case GBEORI =>
+        userAnswers
+          .remove(ConsigneeNamePage(index))
+          .flatMap(_.remove(ConsigneeAddressPage(index)))
+
+      case NameAddress =>
+        userAnswers.remove(ConsigneeEORIPage(index))
+    }.getOrElse(super.cleanup(value, userAnswers))
   }
 }

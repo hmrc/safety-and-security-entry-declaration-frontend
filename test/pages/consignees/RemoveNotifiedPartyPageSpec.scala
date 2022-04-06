@@ -17,9 +17,9 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import controllers.consignees.routes
+import models.GbEori
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
 
@@ -27,13 +27,9 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveNotifiedPartyPage" - {
 
-    beRetrievable[Boolean](RemoveNotifiedPartyPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](RemoveNotifiedPartyPage(index))
-
-    beRemovable[Boolean](RemoveNotifiedPartyPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "when there are still notified parties in the user's answers" - {
 
@@ -43,8 +39,8 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
               .set(NotifiedPartyKeyQuery(index), 1).success.value
 
-          RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
-            .mustEqual(consigneesRoutes.AddNotifiedPartyController.onPageLoad(NormalMode, answers.lrn))
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.AddNotifiedPartyController.onPageLoad(waypoints, answers.lrn))
         }
       }
 
@@ -54,26 +50,17 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
           val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
 
-          RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
-            .mustEqual(consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index))
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints, answers.lrn, index))
         }
 
         "to Add Any Notified Parties when the user knows some consignees" in {
 
           val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
 
-          RemoveNotifiedPartyPage(index).navigate(NormalMode, answers)
-            .mustEqual(consigneesRoutes.AddAnyNotifiedPartiesController.onPageLoad(NormalMode, answers.lrn))
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.AddAnyNotifiedPartiesController.onPageLoad(waypoints, answers.lrn))
         }
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RemoveNotifiedPartyPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
       }
     }
   }

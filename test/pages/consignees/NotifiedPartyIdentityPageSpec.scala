@@ -17,50 +17,147 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
+import controllers.consignees.routes
+import models.{Address, Country, GbEori, NormalMode, NotifiedPartyIdentity}
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
-import models.{CheckMode, NormalMode, NotifiedPartyIdentity}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyIdentityPage" - {
 
-    beRetrievable[NotifiedPartyIdentity](NotifiedPartyIdentityPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[NotifiedPartyIdentity](NotifiedPartyIdentityPage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[NotifiedPartyIdentity](NotifiedPartyIdentityPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to `consignee EORI page` when answered `gb eori`" in {
+      "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
 
         NotifiedPartyIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyEORIController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to `consignee name` when answered `name & address`" in {
+      "to Consignee Name when answered `name & address`" in {
         val answers =
           emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
 
         NotifiedPartyIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.NotifiedPartyNameController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.NotifiedPartyNameController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is AddNotifiedParty" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddNotifiedPartyPage.waypoint(NormalMode)))
+
+      "to Consignee EORI when answered `gb eori`" in {
+        val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
 
         NotifiedPartyIdentityPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(waypoints, answers.lrn, index))
       }
+
+      "to Consignee Name when answered `name & address`" in {
+        val answers =
+          emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
+
+        NotifiedPartyIdentityPage(index)
+          .navigate(waypoints, answers)
+          .mustEqual(routes.NotifiedPartyNameController.onPageLoad(waypoints, answers.lrn, index))
+      }
+    }
+
+    "must navigate when the current waypoint is CheckNotifiedParty" - {
+
+      val waypoints = Waypoints(List(CheckNotifiedPartyPage(index).waypoint))
+
+      "when the answer is GB EORI" - {
+
+        "And Notified Party EORI has already been answered" - {
+
+          "to Check Notified Party with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+                .set(NotifiedPartyIdentityPage(index), GBEORI).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, lrn, index))
+          }
+        }
+
+        "And Notified Party EORI has not been answered" - {
+
+          "to Notified Party EORI" in {
+
+            val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), GBEORI).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyEORIController.onPageLoad(waypoints, lrn, index))
+          }
+        }
+      }
+
+      "when the answer is Name and Address" - {
+
+        "and Notified Party Name has already been answered" - {
+
+          "to Check Notified Party with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(NotifiedPartyNamePage(index), "Name").success.value
+                .set(NotifiedPartyIdentityPage(index), NameAddress).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.CheckNotifiedPartyController.onPageLoad(EmptyWaypoints, lrn, index))
+          }
+        }
+
+        "And Notified Party Name has not been answered" - {
+
+          "to Notified Party Name" in {
+
+            val answers = emptyUserAnswers.set(NotifiedPartyIdentityPage(index), NameAddress).success.value
+
+            NotifiedPartyIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyNameController.onPageLoad(waypoints, lrn, index))
+          }
+        }
+      }
+    }
+
+    "must remove Notified Party EORI when the answer is Name and Address" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.NameAddress).success.value
+          .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+
+      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NotifiedPartyIdentity.NameAddress), answers).success.value
+
+      result mustEqual answers.remove(NotifiedPartyEORIPage(index)).success.value
+    }
+
+    "must remove Notified Party Name and Notified Party Address when the answer is EORI" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyNamePage(index), "name").success.value
+          .set(NotifiedPartyAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom"))).success.value
+
+      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NotifiedPartyIdentity.GBEORI), answers).success.value
+
+      result.mustEqual(
+        answers
+          .remove(NotifiedPartyNamePage(index)).success.value
+          .remove(NotifiedPartyAddressPage(index)).success.value)
     }
   }
 }

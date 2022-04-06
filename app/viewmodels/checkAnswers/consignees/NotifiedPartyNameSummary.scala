@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.consignees
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{CheckMode, Index, UserAnswers}
-import pages.consignees
+import models.{Index, UserAnswers}
+import pages.consignees.NotifiedPartyNamePage
+import pages.{Waypoints, CheckAnswersPage, consignees}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,8 @@ import viewmodels.implicits._
 
 object NotifiedPartyNameSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.NotifiedPartyNamePage(index)).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +37,7 @@ object NotifiedPartyNameSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            consigneeRoutes.NotifiedPartyNameController.onPageLoad(CheckMode, answers.lrn, index).url
+            NotifiedPartyNamePage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("notifiedPartyName.change.hidden"))
         )
       )

@@ -17,11 +17,13 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Waypoints, NonEmptyWaypoints, Page, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.consignees.{AllConsigneesQuery, DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
+
+import scala.util.Try
 
 case object AnyConsigneesKnownPage extends QuestionPage[Boolean] {
 
@@ -29,11 +31,32 @@ case object AnyConsigneesKnownPage extends QuestionPage[Boolean] {
 
   override def toString: String = "anyConsigneesKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(AnyConsigneesKnownPage) match {
-      case Some(true)  => consigneeRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) => consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case None        => routes.JourneyRecoveryController.onPageLoad()
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.AnyConsigneesKnownController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(AnyConsigneesKnownPage).map {
+      case true => ConsigneeIdentityPage(Index(0))
+      case false => NotifiedPartyIdentityPage(Index(0))
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignees)
+          .map(_ => waypoints.next.page)
+          .getOrElse(ConsigneeIdentityPage(Index(0)))
+
+      case false =>
+        answers.get(DeriveNumberOfNotifiedParties)
+          .map(_ => waypoints.next.page)
+          .getOrElse(NotifiedPartyIdentityPage(Index(0)))
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value.map {
+      case false => userAnswers.remove(AllConsigneesQuery)
+      case true => super.cleanup(value, userAnswers)
+    }.getOrElse(super.cleanup(value, userAnswers))
   }
 }

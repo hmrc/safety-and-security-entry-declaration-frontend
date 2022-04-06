@@ -17,49 +17,145 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
+import controllers.consignees.routes
 import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{CheckMode, ConsigneeIdentity, NormalMode}
+import models.{Address, ConsigneeIdentity, Country, GbEori, NormalMode}
+import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
 class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeIdentityPage" - {
 
-    beRetrievable[ConsigneeIdentity](ConsigneeIdentityPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[ConsigneeIdentity](ConsigneeIdentityPage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[ConsigneeIdentity](ConsigneeIdentityPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to `consignee EORI page` when answered `gb eori`" in {
+      "to Consignee EORI when answered `gb eori`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.ConsigneeEORIController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to `consignee name` when answered `name & address`" in {
+      "to Consignee Name when answered `name & address`" in {
         val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.ConsigneeNameController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is AddConsignee" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddConsigneePage.waypoint((NormalMode))))
+
+      "to Consignee EORI when answered `gb eori`" in {
+        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), GBEORI).success.value
 
         ConsigneeIdentityPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
       }
+
+      "to Consignee Name when answered `name & address`" in {
+        val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), NameAddress).success.value
+
+        ConsigneeIdentityPage(index)
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Consignee" - {
+
+      val waypoints = Waypoints(List(CheckConsigneePage(index).waypoint))
+
+      "when the answer is GB EORI" - {
+
+        "and Consignee EORI is already answered" - {
+
+          "to Check Consignee with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+          }
+        }
+
+        "and Consignee EORI has not been answered" - {
+
+          "to Consignee EORI" in {
+
+            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
+          }
+        }
+      }
+
+      "when the answer is Name and Address" - {
+
+        "and Consignee Name is already answered" - {
+
+          "to Check Consignee with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ConsigneeNamePage(index), "Name").success.value
+                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+          }
+        }
+
+        "and Consignee Name has not been answered" - {
+
+          "to Consignee Name" in {
+
+            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+
+            ConsigneeIdentityPage(index).navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
+          }
+        }
+      }
+    }
+
+    "must remove Consignee EORI when the answer is Name and Address" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+          .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+
+      val result = ConsigneeIdentityPage(index).cleanup(Some(ConsigneeIdentity.NameAddress), answers).success.value
+
+      result mustEqual answers.remove(ConsigneeEORIPage(index)).success.value
+    }
+
+    "must remove Consignee Name and Consignee Address when the answer is EORI" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeNamePage(index), "name").success.value
+          .set(ConsigneeAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom"))).success.value
+
+      val result = ConsigneeIdentityPage(index).cleanup(Some(ConsigneeIdentity.GBEORI), answers).success.value
+
+      result.mustEqual(
+        answers
+          .remove(ConsigneeNamePage(index)).success.value
+          .remove(ConsigneeAddressPage(index)).success.value)
     }
   }
 }

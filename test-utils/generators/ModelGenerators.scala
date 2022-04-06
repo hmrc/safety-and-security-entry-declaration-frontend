@@ -21,12 +21,23 @@ import java.time.temporal.ChronoUnit
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import pages.{AddItemPage, Waypoint, Waypoints, CheckAnswersPage}
+import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage, CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
 
 import models._
 import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryCheckAnswersPage: Arbitrary[CheckAnswersPage] =
+    Arbitrary {
+      Gen.oneOf(
+        CheckConsigneePage(Index(0)),
+        CheckNotifiedPartyPage(Index(0)),
+        CheckConsigneesAndNotifiedPartiesPage
+      )
+    }
 
   implicit lazy val arbitraryTraderWithEori: Arbitrary[TraderWithEori] =
     Arbitrary {

@@ -17,13 +17,14 @@
 package models
 
 import base.SpecBase
-import controllers.consignors.{routes => consignorRoutes}
 import controllers.consignees.{routes => consigneeRoutes}
+import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.EmptyWaypoints
 import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import pages.consignors.ConsignorEORIPage
 import pages.goods.CommodityCodeKnownPage
@@ -77,7 +78,7 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
       }
 
@@ -91,7 +92,7 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
       }
 
@@ -99,7 +100,7 @@ class TaskListViewModelSpec
         "we go to the beginning of the journey for consignees and notified parties" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(consigneesIdx).link mustEqual consigneeRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode,emptyUserAnswers.lrn)
+          result.rows(consigneesIdx).link mustEqual consigneeRoutes.AnyConsigneesKnownController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn)
         }
       }
     }
@@ -120,7 +121,7 @@ class TaskListViewModelSpec
         "we go to the first good input" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(goodsIdx).link mustEqual goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode,emptyUserAnswers.lrn,Index(0))
+          result.rows(goodsIdx).link mustEqual goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, Index(0))
         }
       }
     }
