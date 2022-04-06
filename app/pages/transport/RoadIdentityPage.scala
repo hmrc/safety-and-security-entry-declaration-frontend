@@ -17,7 +17,8 @@
 package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
-import models.{RoadIdentity, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
+import models.TransportIdentity.RoadIdentity
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

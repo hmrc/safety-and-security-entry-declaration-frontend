@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package models.completion.answers
 
-import play.api.libs.json._
+import models.{Country, Document, TransportIdentity, TransportMode}
 
-case class RoroAccompaniedIdentity(
-  vehicleRegistrationNumber: String,
-  trailerNumber: String,
-  ferryCompany: Option[String]
+case class Transport(
+  identity: TransportIdentity,
+  mode: TransportMode,
+  nationality: Option[Country],
+  documents: List[Document],
+  seals: List[String]
 )
-
-object RoroAccompaniedIdentity {
-  implicit val format = Json.format[RoroAccompaniedIdentity]
-}

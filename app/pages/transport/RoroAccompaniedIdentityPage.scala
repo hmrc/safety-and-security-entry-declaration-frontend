@@ -16,9 +16,9 @@
 
 package pages.transport
 
-import controllers.routes
 import controllers.transport.{routes => transportRoutes}
-import models.{RoroAccompaniedIdentity, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
+import models.TransportIdentity.RoroAccompaniedIdentity
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

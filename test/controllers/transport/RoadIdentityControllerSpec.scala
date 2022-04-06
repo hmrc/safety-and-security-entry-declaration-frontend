@@ -19,7 +19,8 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoadIdentityFormProvider
-import models.{NormalMode, RoadIdentity}
+import models.NormalMode
+import models.TransportIdentity.RoadIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary

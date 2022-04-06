@@ -19,7 +19,8 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{AirIdentity, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode}
+import models.TransportIdentity.AirIdentity
 import pages.behaviours.PageBehaviours
 
 class AirIdentityPageSpec extends SpecBase with PageBehaviours {

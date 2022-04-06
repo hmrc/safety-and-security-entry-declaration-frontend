@@ -19,9 +19,9 @@ package forms.transport
 import javax.inject.Inject
 
 import forms.mappings.Mappings
+import models.TransportIdentity.RoroAccompaniedIdentity
 import play.api.data.Form
 import play.api.data.Forms._
-import models.RoroAccompaniedIdentity
 
 class RoroAccompaniedIdentityFormProvider @Inject() extends Mappings {
   private val alphanumericPattern = "[A-Za-z0-9]+"

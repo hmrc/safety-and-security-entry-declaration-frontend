@@ -17,6 +17,7 @@
 package generators
 
 import models._
+import models.TransportIdentity._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
 import pages.consignees._
