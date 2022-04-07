@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routedetails
 
-trait AddToListSection
+import base.SpecBase
+import controllers.routes
+import pages.EmptyWaypoints
 
-case object ConsigneeSection extends AddToListSection
-case object NotifiedPartySection extends AddToListSection
-case object ConsignorSection extends AddToListSection
-case object CountryEnRouteSection extends AddToListSection
-case object PlaceOfLoadingSection extends AddToListSection
-case object PlaceOfUnloadingSection extends AddToListSection
+class CheckRouteDetailsPageSpec extends SpecBase {
+
+  "must navigate when there are no waypoints" - {
+
+    val waypoints = EmptyWaypoints
+
+    "to the task list" in {
+
+      CheckRouteDetailsPage.navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
+    }
+  }
+}

@@ -17,21 +17,17 @@
 package pages.routedetails
 
 import controllers.routedetails.routes
-import models.{Country, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
-import play.api.libs.json.JsPath
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, TaskListPage, Waypoints}
 import play.api.mvc.Call
 
+object CheckRouteDetailsPage extends CheckAnswersPage {
 
-case class CountryEnRoutePage(index: Index) extends CountryEnRouteQuestionPage[Country] {
-
-  override def path: JsPath = JsPath \ toString \ index.position
-
-  override def toString: String = "countriesEnRoute"
+  override val urlFragment: String = "check-route-details"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.CountryEnRouteController.onPageLoad(waypoints, lrn, index)
+    routes.CheckRouteDetailsController.onPageLoad(waypoints, lrn)
 
-  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    AddCountryEnRoutePage
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    TaskListPage
 }

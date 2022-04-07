@@ -17,41 +17,70 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode, PlaceOfUnloading}
+import controllers.routedetails.routes
+import models.{Index, NormalMode, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
-class AddPlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
+class AddPlaceOfUnloadingPageSpec extends SpecBase {
 
   "AddPlaceOfUnloadingPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-      "to Place of Unloading with an index equal tot he number of places of loading we have details for when the answer is yes" in {
+      val waypoints = EmptyWaypoints
 
+      "to Place of Unloading for the next index when the answer is yes" in {
+
+        val placeOfUnloading = arbitrary[PlaceOfUnloading].sample.value
         val answers =
           emptyUserAnswers
-            .set(PlaceOfUnloadingPage(index), arbitrary[PlaceOfUnloading].sample.value).success.value
+            .set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading).success.value
+            .set(AddPlaceOfUnloadingPage, true).success.value
 
-        AddPlaceOfUnloadingPage.navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+        AddPlaceOfUnloadingPage.navigate(waypoints, answers)
+          .mustEqual(routes.PlaceOfUnloadingController.onPageLoad(waypoints, answers.lrn, Index(1)))
       }
 
       "to Check Route Details when the answer is no" in {
 
-        AddPlaceOfUnloadingPage.navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(routedetailsRoutes.CheckRouteDetailsController.onPageLoad(emptyUserAnswers.lrn))
+        val answers = emptyUserAnswers.set(AddPlaceOfUnloadingPage, false).success.value
+
+        AddPlaceOfUnloadingPage.navigate(waypoints, answers)
+          .mustEqual(routes.CheckRouteDetailsController.onPageLoad(waypoints, answers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
 
-        AddPlaceOfUnloadingPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "to Place of Unloading for the next index with Add Place of Unloading added to the waypoints" in {
+
+          val placeOfUnloading = arbitrary[PlaceOfUnloading].sample.value
+          val answers =
+            emptyUserAnswers
+              .set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading).success.value
+              .set(AddPlaceOfUnloadingPage, true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddPlaceOfUnloadingPage.waypoint(NormalMode))
+
+          AddPlaceOfUnloadingPage.navigate(waypoints, answers)
+            .mustEqual(routes.PlaceOfUnloadingController.onPageLoad(expectedWaypoints, answers.lrn, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Route Details with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddPlaceOfUnloadingPage, false).success.value
+
+          AddPlaceOfUnloadingPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckRouteDetailsController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
       }
     }
   }

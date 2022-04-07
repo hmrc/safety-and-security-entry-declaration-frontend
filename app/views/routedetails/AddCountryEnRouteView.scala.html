@@ -27,11 +27,11 @@
     addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, countries: Seq[ListItem])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, countries: Seq[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addCountryEnRoute.title"))) {
 
-    @formHelper(action = routes.AddCountryEnRouteController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddCountryEnRouteController.onSubmit(waypoints, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.routedetails
 
-trait AddToListSection
+import models.NormalMode
+import pages.{AddToListQuestionPage, AddToListSection, PlaceOfLoadingSection, QuestionPage, Waypoint}
 
-case object ConsigneeSection extends AddToListSection
-case object NotifiedPartySection extends AddToListSection
-case object ConsignorSection extends AddToListSection
-case object CountryEnRouteSection extends AddToListSection
-case object PlaceOfLoadingSection extends AddToListSection
-case object PlaceOfUnloadingSection extends AddToListSection
+trait PlaceOfLoadingQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
+
+  override val addItemWaypoint: Waypoint = AddPlaceOfLoadingPage.waypoint(NormalMode)
+
+  override val section: AddToListSection = PlaceOfLoadingSection
+}

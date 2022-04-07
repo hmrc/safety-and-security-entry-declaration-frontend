@@ -17,38 +17,35 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{ArrivalDateAndTime, CheckMode, NormalMode}
+import controllers.routedetails.routes
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class ArrivalDateAndTimePageSpec extends SpecBase with PageBehaviours {
 
   "ArrivalDateAndTimePage" - {
 
-    beRetrievable[ArrivalDateAndTime](ArrivalDateAndTimePage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[ArrivalDateAndTime](ArrivalDateAndTimePage)
-
-    beRemovable[ArrivalDateAndTime](ArrivalDateAndTimePage)
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Place of unloading with index 0" in {
 
         ArrivalDateAndTimePage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.PlaceOfUnloadingController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
+
+      "to Check Route Details with the current waypoint removed" in {
 
         ArrivalDateAndTimePage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckRouteDetailsController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

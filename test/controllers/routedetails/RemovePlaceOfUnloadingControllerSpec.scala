@@ -19,11 +19,12 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.RemovePlaceOfUnloadingFormProvider
-import models.{NormalMode, PlaceOfUnloading}
+import models.PlaceOfUnloading
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.routedetails.{PlaceOfUnloadingPage, RemovePlaceOfUnloadingPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,8 +38,9 @@ class RemovePlaceOfUnloadingControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemovePlaceOfUnloadingFormProvider()
   val form = formProvider()
-
-  lazy val removePlaceOfUnloadingRoute = routes.RemovePlaceOfUnloadingController.onPageLoad(NormalMode, lrn, index).url
+  val waypoints = EmptyWaypoints
+  
+  lazy val removePlaceOfUnloadingRoute = routes.RemovePlaceOfUnloadingController.onPageLoad(waypoints, lrn, index).url
 
   private val placeOfUnloading = arbitrary[PlaceOfUnloading].sample.value
   private val baseAnswers = emptyUserAnswers.set(PlaceOfUnloadingPage(index), placeOfUnloading).success.value
@@ -57,7 +59,7 @@ class RemovePlaceOfUnloadingControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemovePlaceOfUnloadingView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -81,7 +83,7 @@ class RemovePlaceOfUnloadingControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = baseAnswers.remove(PlaceOfUnloadingPage(index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemovePlaceOfUnloadingPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemovePlaceOfUnloadingPage(index).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -105,7 +107,7 @@ class RemovePlaceOfUnloadingControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemovePlaceOfUnloadingPage(index).navigate(NormalMode, baseAnswers).url
+        redirectLocation(result).value mustEqual RemovePlaceOfUnloadingPage(index).navigate(waypoints, baseAnswers).url
         verify(mockSessionRepository, never()).set(any())
       }
     }
@@ -126,7 +128,7 @@ class RemovePlaceOfUnloadingControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 

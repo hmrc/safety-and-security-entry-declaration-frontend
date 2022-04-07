@@ -17,49 +17,55 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Country, Index, NormalMode}
+import controllers.routedetails.routes
+import models.{Country, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.routedetails
+import pages.{EmptyWaypoints, Waypoints, routedetails}
 
 class RemoveCountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
   "RemoveCountryEnRoutePage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Add Country En Route when there is at least one country in user answers" in {
 
-        val answers = emptyUserAnswers
-          .set(CountryEnRoutePage(Index(0)), arbitrary[Country].sample.value)
-          .success
-          .value
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), arbitrary[Country].sample.value).success.value
 
         RemoveCountryEnRoutePage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(waypoints, answers.lrn))
       }
 
       "to Goods Pass Through Other Countries when there are no countries in user answers" in {
 
         routedetails.RemoveCountryEnRoutePage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            routedetailsRoutes.GoodsPassThroughOtherCountriesController
-              .onPageLoad(NormalMode, emptyUserAnswers.lrn)
-          )
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
+
+      "to Add Country En Route when there is at least one country in user answers" in {
+
+        val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), arbitrary[Country].sample.value).success.value
+
+        RemoveCountryEnRoutePage(index)
+          .navigate(waypoints, answers)
+          .mustEqual(routes.AddCountryEnRouteController.onPageLoad(waypoints, answers.lrn))
+      }
+
+      "to Goods Pass Through Other Countries when there are no countries in user answers" in {
 
         routedetails.RemoveCountryEnRoutePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
   }

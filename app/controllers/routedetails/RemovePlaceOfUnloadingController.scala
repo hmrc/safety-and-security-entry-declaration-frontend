@@ -18,7 +18,8 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.RemovePlaceOfUnloadingFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.routedetails.{PlaceOfUnloadingPage, RemovePlaceOfUnloadingPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,29 +43,29 @@ class RemovePlaceOfUnloadingController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
-        Ok(view(form, mode, lrn, index))
+        Ok(view(form, waypoints, lrn, index))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
 
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
           value =>
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(PlaceOfUnloadingPage(index)))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemovePlaceOfUnloadingPage(index).navigate(mode, updatedAnswers))
+              } yield Redirect(RemovePlaceOfUnloadingPage(index).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemovePlaceOfUnloadingPage(index).navigate(mode, request.userAnswers))
+                Redirect(RemovePlaceOfUnloadingPage(index).navigate(waypoints, request.userAnswers))
               )
             }
         )

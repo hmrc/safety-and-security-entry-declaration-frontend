@@ -19,17 +19,17 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.AddPlaceOfLoadingFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.routedetails.AddPlaceOfLoadingPage
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import viewmodels.checkAnswers.routedetails.PlaceOfLoadingSummary
+import viewmodels.checkAnswers.routedetails.AddPlaceOfLoadingSummary
 import views.html.routedetails.AddPlaceOfLoadingView
 
 import scala.concurrent.Future
@@ -38,8 +38,9 @@ class AddPlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddPlaceOfLoadingFormProvider()
   val form = formProvider()
+  val waypoints = EmptyWaypoints
 
-  lazy val addPlaceOfLoadingRoute = routes.AddPlaceOfLoadingController.onPageLoad(NormalMode, lrn).url
+  lazy val addPlaceOfLoadingRoute = routes.AddPlaceOfLoadingController.onPageLoad(waypoints, lrn).url
 
   "AddPlaceOfLoading Controller" - {
 
@@ -55,16 +56,23 @@ class AddPlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddPlaceOfLoadingView]
 
         implicit val msgs: Messages = messages(application)
-        val list = PlaceOfLoadingSummary.rows(emptyUserAnswers)
+        val list = AddPlaceOfLoadingSummary.rows(emptyUserAnswers, waypoints, AddPlaceOfLoadingPage)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, list)(request, implicitly).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
 
       running(application) {
         val request =
@@ -72,9 +80,11 @@ class AddPlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(AddPlaceOfLoadingPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddPlaceOfLoadingPage.navigate(NormalMode, emptyUserAnswers, true).url
+        redirectLocation(result).value mustEqual AddPlaceOfLoadingPage.navigate(waypoints, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -94,10 +104,10 @@ class AddPlaceOfLoadingControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         implicit val msgs: Messages = messages(application)
-        val list = PlaceOfLoadingSummary.rows(emptyUserAnswers)
+        val list = AddPlaceOfLoadingSummary.rows(emptyUserAnswers, waypoints, AddPlaceOfLoadingPage)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, list)(request, implicitly).toString
       }
     }
 

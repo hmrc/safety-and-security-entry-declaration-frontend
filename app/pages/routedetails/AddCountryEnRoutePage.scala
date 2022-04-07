@@ -16,27 +16,42 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import controllers.routedetails.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.routedetails.DeriveNumberOfCountriesEnRoute
 
-case object AddCountryEnRoutePage extends Page {
+case object AddCountryEnRoutePage extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfCountriesEnRoute) match {
-        case Some(size) =>
-          routedetailsRoutes.CountryEnRouteController.onPageLoad(mode, answers.lrn, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, answers.lrn)
-        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = "add-country"
+  override val checkModeUrlFragment: String = "change-country"
+
+  override def path: JsPath = JsPath \ "addCountry"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddCountryEnRouteController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfCountriesEnRoute)
+          .map(n => CountryEnRoutePage(Index(n)))
+          .orRecover
+
+      case false =>
+        CustomsOfficeOfFirstEntryPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfCountriesEnRoute)
+          .map(n => CountryEnRoutePage(Index(n)))
+          .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
 }

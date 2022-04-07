@@ -19,22 +19,29 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.AddCountryEnRouteFormProvider
-import models.NormalMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.routedetails.AddCountryEnRoutePage
 import play.api.i18n.Messages
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.checkAnswers.routedetails.CountryEnRouteSummary
+import repositories.SessionRepository
+import viewmodels.checkAnswers.routedetails.AddCountryEnRouteSummary
 import views.html.routedetails.AddCountryEnRouteView
+
+import scala.concurrent.Future
 
 class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddCountryEnRouteFormProvider()
   val form = formProvider()
+  val waypoints = EmptyWaypoints
 
   lazy val addCountryEnRouteRoute =
-    routes.AddCountryEnRouteController.onPageLoad(NormalMode, lrn).url
+    routes.AddCountryEnRouteController.onPageLoad(waypoints, lrn).url
 
   "AddCountryEnRoute Controller" - {
 
@@ -50,20 +57,25 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddCountryEnRouteView]
 
         implicit val msgs: Messages = messages(application)
-        val list = CountryEnRouteSummary.rows(emptyUserAnswers)
+        val list = AddCountryEnRouteSummary.rows(emptyUserAnswers, waypoints, AddCountryEnRoutePage)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, list)(
           request,
           implicitly
         ).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -72,11 +84,11 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(AddCountryEnRoutePage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddCountryEnRoutePage
-          .navigate(NormalMode, emptyUserAnswers, addAnother = true)
-          .url
+        redirectLocation(result).value mustEqual AddCountryEnRoutePage.navigate(waypoints, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -96,10 +108,10 @@ class AddCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         implicit val msgs: Messages = messages(application)
-        val list = CountryEnRouteSummary.rows(emptyUserAnswers)
+        val list = AddCountryEnRouteSummary.rows(emptyUserAnswers, waypoints, AddCountryEnRoutePage)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, list)(
           request,
           implicitly
         ).toString

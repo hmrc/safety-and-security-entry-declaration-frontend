@@ -26,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("arrivalDateAndTime.title"))) {
 
-    @formHelper(action = routes.ArrivalDateAndTimeController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.ArrivalDateAndTimeController.onSubmit(waypoints, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(

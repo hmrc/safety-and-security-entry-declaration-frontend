@@ -18,16 +18,16 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.RemoveCountryEnRouteFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.routedetails.{CountryEnRoutePage, RemoveCountryEnRoutePage}
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.RemoveCountryEnRouteView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveCountryEnRouteController @Inject() (
@@ -45,27 +45,27 @@ class RemoveCountryEnRouteController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
-      Ok(view(form, mode, lrn, index))
+      Ok(view(form, waypoints, lrn, index))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
           value =>
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(CountryEnRoutePage(index)))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveCountryEnRoutePage(index).navigate(mode, updatedAnswers))
+              } yield Redirect(RemoveCountryEnRoutePage(index).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemoveCountryEnRoutePage(index).navigate(mode, request.userAnswers))
+                Redirect(RemoveCountryEnRoutePage(index).navigate(waypoints, request.userAnswers))
               )
             }
         )

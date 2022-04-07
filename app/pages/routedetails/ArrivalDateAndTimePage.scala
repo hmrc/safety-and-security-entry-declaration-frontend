@@ -16,9 +16,9 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{ArrivalDateAndTime, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.routedetails.routes
+import models.{ArrivalDateAndTime, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +28,9 @@ case object ArrivalDateAndTimePage extends QuestionPage[ArrivalDateAndTime] {
 
   override def toString: String = "arrivalDateAndTime"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn, Index(0))
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.ArrivalDateAndTimeController.onPageLoad(waypoints, lrn)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    PlaceOfUnloadingPage(Index(0))
 }

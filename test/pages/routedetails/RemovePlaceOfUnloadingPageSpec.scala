@@ -17,22 +17,24 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
+import controllers.routedetails.routes
 import models.{CheckMode, NormalMode, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class RemovePlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
   "RemovePlaceOfUnloadingPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Place of Unloading with index 0 when there are no places of loading left" in {
 
-        RemovePlaceOfUnloadingPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+        RemovePlaceOfUnloadingPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.PlaceOfUnloadingController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
 
       "to Add Place of Unloading with index 0 when there is at least one place of loading left" in {
@@ -40,17 +42,33 @@ class RemovePlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
         val placeOfUnloading = arbitrary[PlaceOfUnloading].sample.value
         val answers = emptyUserAnswers.set(PlaceOfUnloadingPage(index), placeOfUnloading).success.value
 
-        RemovePlaceOfUnloadingPage(index).navigate(NormalMode, answers)
-          .mustEqual(routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        RemovePlaceOfUnloadingPage(index).navigate(waypoints, answers)
+          .mustEqual(routes.AddPlaceOfUnloadingController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
 
-        RemovePlaceOfUnloadingPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when there are no places of unloading" - {
+
+        "to Place of Unloading with Add Place of Unloading added to the waypoints" in {
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddPlaceOfUnloadingPage.waypoint(NormalMode))
+
+          RemovePlaceOfUnloadingPage(index).navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.PlaceOfUnloadingController.onPageLoad(expectedWaypoints, emptyUserAnswers.lrn, index))
+        }
+      }
+
+      "to Add Place of Unloading when there is at least one place of loading left" in {
+
+        val placeOfUnloading = arbitrary[PlaceOfUnloading].sample.value
+        val answers = emptyUserAnswers.set(PlaceOfUnloadingPage(index), placeOfUnloading).success.value
+
+        RemovePlaceOfUnloadingPage(index).navigate(waypoints, answers)
+          .mustEqual(routes.AddPlaceOfUnloadingController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
   }
