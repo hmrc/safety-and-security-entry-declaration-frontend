@@ -18,7 +18,7 @@ package queries
 
 import play.api.libs.json.JsPath
 
-case object AllSealsQuery extends Gettable[List[String]] {
+case object AllSealsQuery extends Settable[List[String]] with Gettable[List[String]] {
 
   override def path: JsPath = JsPath \ "seals"
 }

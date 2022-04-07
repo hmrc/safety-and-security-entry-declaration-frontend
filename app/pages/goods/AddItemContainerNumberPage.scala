@@ -22,7 +22,7 @@ import models.{Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.Page
 import pages.predec.ProvideGrossWeightPage
 import play.api.mvc.Call
-import queries.{DeriveNumberOfContainers, DeriveNumberOfPackages}
+import queries.DeriveNumberOfContainers
 
 final case class AddItemContainerNumberPage(index: Index) extends Page {
 

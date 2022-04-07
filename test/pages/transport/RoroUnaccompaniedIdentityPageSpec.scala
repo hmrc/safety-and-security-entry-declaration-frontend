@@ -19,7 +19,8 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{RoroUnaccompaniedIdentity, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode}
+import models.TransportIdentity.RoroUnaccompaniedIdentity
 import pages.behaviours.PageBehaviours
 
 class RoroUnaccompaniedIdentityPageSpec extends SpecBase with PageBehaviours {

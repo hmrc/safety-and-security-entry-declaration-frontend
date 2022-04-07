@@ -130,7 +130,6 @@ class RoroUnaccompaniedIdentityFormProviderSpec extends StringFieldBehaviours {
   ".ferryCompany" - {
 
     val fieldName = "ferryCompany"
-    val requiredKey = "roroUnaccompaniedIdentity.error.ferryCompany.required"
     val lengthKey = "roroUnaccompaniedIdentity.error.ferryCompany.length"
     val maxLength = 35
 

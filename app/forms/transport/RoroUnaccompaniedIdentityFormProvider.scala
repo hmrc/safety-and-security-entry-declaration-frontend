@@ -19,9 +19,9 @@ package forms.transport
 import javax.inject.Inject
 
 import forms.mappings.Mappings
+import models.TransportIdentity.RoroUnaccompaniedIdentity
 import play.api.data.Form
 import play.api.data.Forms._
-import models.RoroUnaccompaniedIdentity
 
 class RoroUnaccompaniedIdentityFormProvider @Inject() extends Mappings {
 

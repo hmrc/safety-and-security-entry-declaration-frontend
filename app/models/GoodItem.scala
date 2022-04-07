@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{Json, Reads, __}
+import play.api.libs.json.{Json, Reads}
 
 case class GoodItem(commodityCode: String)
 

@@ -18,7 +18,7 @@ package pages.transport
 
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

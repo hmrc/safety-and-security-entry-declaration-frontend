@@ -17,8 +17,7 @@
 package pages.predec
 
 import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

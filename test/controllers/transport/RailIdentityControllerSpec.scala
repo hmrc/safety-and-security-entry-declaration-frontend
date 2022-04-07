@@ -19,7 +19,8 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RailIdentityFormProvider
-import models.{NormalMode, UserAnswers, RailIdentity}
+import models.{NormalMode, UserAnswers}
+import models.TransportIdentity.RailIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar

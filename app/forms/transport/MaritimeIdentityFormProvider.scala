@@ -19,9 +19,9 @@ package forms.transport
 import javax.inject.Inject
 
 import forms.mappings.Mappings
+import models.TransportIdentity.MaritimeIdentity
 import play.api.data.Form
 import play.api.data.Forms._
-import models.MaritimeIdentity
 
 class MaritimeIdentityFormProvider @Inject() extends Mappings {
 

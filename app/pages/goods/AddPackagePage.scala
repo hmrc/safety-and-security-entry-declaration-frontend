@@ -18,9 +18,8 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
+import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
 import pages.Page
-import pages.predec.ProvideGrossWeightPage
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 

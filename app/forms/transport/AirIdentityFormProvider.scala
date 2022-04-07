@@ -19,9 +19,9 @@ package forms.transport
 import javax.inject.Inject
 
 import forms.mappings.Mappings
+import models.TransportIdentity.AirIdentity
 import play.api.data.Form
 import play.api.data.Forms._
-import models.AirIdentity
 
 class AirIdentityFormProvider @Inject() extends Mappings {
   // IATA format is 3 alphanumeric + 4 numeric + optional single letter suffix
