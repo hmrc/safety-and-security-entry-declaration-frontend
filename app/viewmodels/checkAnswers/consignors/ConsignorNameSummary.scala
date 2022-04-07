@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.consignors
 
-import controllers.consignors.routes
-import models.{CheckMode, Index, UserAnswers}
-import pages.consignors
+import models.{Index, UserAnswers}
+import pages.consignors.ConsignorNamePage
+import pages.{CheckAnswersPage, Waypoints, consignors}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,8 @@ import viewmodels.implicits._
 
 object ConsignorNameSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignors.ConsignorNamePage(index)).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +37,7 @@ object ConsignorNameSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.ConsignorNameController.onPageLoad(CheckMode, answers.lrn, index).url
+            ConsignorNamePage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consignorName.change.hidden"))
         )
       )

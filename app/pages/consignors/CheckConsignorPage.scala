@@ -17,20 +17,34 @@
 package pages.consignors
 
 import controllers.consignors.routes
-import models.{GbEori, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
-import play.api.libs.json.JsPath
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, Waypoint, Waypoints}
 import play.api.mvc.Call
 
-case class ConsignorEORIPage(index: Index) extends ConsignorQuestionPage[GbEori] {
+case class CheckConsignorPage(index: Index) extends CheckAnswersPage {
 
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
-
-  override def toString: String = "eori"
+  override val urlFragment: String = s"check-consignor-${index.display}"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.ConsignorEORIController.onPageLoad(waypoints, lrn, index)
+    routes.CheckConsignorController.onPageLoad(waypoints, lrn, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    CheckConsignorPage(index)
+    AddConsignorPage
 }
+
+object CheckConsignorPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val pattern = """check-consignor-(\d{1,3})""".r.anchored
+
+    s match {
+      case pattern(indexDisplay) =>
+        Some(CheckConsignorPage(Index(indexDisplay.toInt - 1)).waypoint)
+
+      case _ =>
+        None
+    }
+  }
+}
+

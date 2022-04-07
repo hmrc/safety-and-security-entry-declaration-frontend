@@ -18,15 +18,15 @@ package controllers.consignors
 
 import controllers.actions._
 import forms.consignors.ConsignorEORIFormProvider
-import javax.inject.Inject
-import models.{GbEori, Index, LocalReferenceNumber, Mode}
-import pages.consignors
+import models.{GbEori, Index, LocalReferenceNumber}
+import pages.{Waypoints, consignors}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignors.ConsignorEORIView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorEORIController @Inject() (
@@ -44,7 +44,7 @@ class ConsignorEORIController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(consignors.ConsignorEORIPage(index)) match {
@@ -52,21 +52,21 @@ class ConsignorEORIController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, waypoints, lrn, index))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
           { value: GbEori =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(consignors.ConsignorEORIPage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(consignors.ConsignorEORIPage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(consignors.ConsignorEORIPage(index).navigate(waypoints, updatedAnswers))
           }
         )
     }

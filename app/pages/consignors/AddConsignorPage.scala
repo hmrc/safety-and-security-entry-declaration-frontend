@@ -16,29 +16,42 @@
 
 package pages.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import controllers.consignors.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, TaskListPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignors.DeriveNumberOfConsignors
 
-case object AddConsignorPage extends Page {
+case object AddConsignorPage extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfConsignors) match {
-        case Some(size) =>
-          consignorRoutes.ConsignorIdentityController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          routes.TaskListController.onPageLoad(answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = "add-consignor"
+  override val checkModeUrlFragment: String = "change-consignor"
+
+  override def path: JsPath = JsPath \ "addConsignor"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddConsignorController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignors)
+        .map(n => ConsignorIdentityPage(Index(n)))
+        .orRecover
+
+      case false =>
+        TaskListPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfConsignors)
+        .map(n => ConsignorIdentityPage(Index(n)))
+        .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
 }

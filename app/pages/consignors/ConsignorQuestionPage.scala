@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.consignors
 
-trait AddToListSection
+import models.NormalMode
+import pages.{AddToListQuestionPage, AddToListSection, ConsigneeSection, ConsignorSection, QuestionPage, Waypoint}
 
-case object ConsigneeSection extends AddToListSection
-case object NotifiedPartySection extends AddToListSection
-case object ConsignorSection extends AddToListSection
+trait ConsignorQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
+
+  override val addItemWaypoint: Waypoint = AddConsignorPage.waypoint(NormalMode)
+
+  override val section: AddToListSection = ConsignorSection
+}

@@ -18,7 +18,8 @@ package viewmodels.checkAnswers.consignors
 
 import controllers.consignors.routes
 import models.{CheckMode, GbEori, Index, UserAnswers}
-import pages.consignors
+import pages.consignors.ConsignorEORIPage
+import pages.{CheckAnswersPage, Waypoints, consignors}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +28,8 @@ import viewmodels.implicits._
 
 object ConsignorEORISummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignors.ConsignorEORIPage(index)).map { answer: GbEori =>
 
       SummaryListRowViewModel(
@@ -36,7 +38,7 @@ object ConsignorEORISummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.ConsignorEORIController.onPageLoad(CheckMode, answers.lrn, index).url
+            ConsignorEORIPage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consignorEORI.change.hidden"))
         )
       )

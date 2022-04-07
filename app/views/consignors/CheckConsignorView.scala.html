@@ -18,16 +18,23 @@
 
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
-@(list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkConsignor.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("checkConsignor.heading")</h1>
+ <h1 class="govuk-heading-xl">@messages("checkConsignor.heading")</h1>
 
-    @govukSummaryList(list)
+ @govukSummaryList(list)
 
-    <a href="@routes.AddConsignorController.onPageLoad(NormalMode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
+ @formHelper(action = routes.CheckConsignorController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
+  @govukButton(
+   ButtonViewModel(messages("site.continue"))
+  )
+ }
 }
+

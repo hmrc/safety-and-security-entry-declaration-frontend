@@ -496,7 +496,7 @@ addConsignee.addAnother = Do you need to add any more consignees?
 addConsignor.title = Consignors
 addConsignor.heading = Consignors
 addConsignor.error.required = Select yes if you need to add another consignor
-addConsignor.addAnother = Do you need to add any more consignor?
+addConsignor.addAnother = Do you need to add any more consignors?
 
 consignees.checkYourAnswersLabel = Consignees
 consignees.change.hidden = the consignees
