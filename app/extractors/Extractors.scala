@@ -66,7 +66,7 @@ trait Extractors {
    * @param requiredPage The page to report as missing if we extracted an empty list or entirely
    *   missed section; this is probably the page where you record the first element
    */
-  def requireList[T : Reads](query: Gettable[List[T]], requiredPage: QuestionPage[T])(
+  def requireList[T : Reads](query: Gettable[List[T]], requiredPage: QuestionPage[_])(
     implicit answers: UserAnswers
   ): ValidationResult[List[T]] = {
     answers.get(query) flatMap {
@@ -90,7 +90,7 @@ trait Extractors {
   def getList[T : Reads](
     canProvidePage: QuestionPage[Boolean],
     query: Gettable[List[T]],
-    requiredPage: QuestionPage[T]
+    requiredPage: QuestionPage[_]
   )(implicit answers: UserAnswers): ValidationResult[List[T]] = {
     answers.get(canProvidePage) map {
       case true => requireList[T](query, requiredPage)
