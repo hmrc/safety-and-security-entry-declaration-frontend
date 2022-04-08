@@ -18,8 +18,8 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.GbEori
-import pages.{Waypoints, EmptyWaypoints}
+import models.{GbEori, NormalMode}
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import queries.consignees.NotifiedPartyKeyQuery
 
@@ -52,6 +52,45 @@ class RemoveNotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
           RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
             .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(waypoints, answers.lrn, index))
+        }
+
+        "to Add Any Notified Parties when the user knows some consignees" in {
+
+          val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
+
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.AddAnyNotifiedPartiesController.onPageLoad(waypoints, answers.lrn))
+        }
+      }
+    }
+
+    "must navigate when the current waypoint is Check Consignees and Notified Parties" - {
+
+      val waypoints = Waypoints(List(CheckConsigneesAndNotifiedPartiesPage.waypoint))
+
+      "when there are still notified parties in the user's answers" - {
+
+        "to Add Notified Party" in {
+          val answers =
+            emptyUserAnswers
+              .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+              .set(NotifiedPartyKeyQuery(index), 1).success.value
+
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.AddNotifiedPartyController.onPageLoad(waypoints, answers.lrn))
+        }
+      }
+
+      "when there are no notified parties in the user's answers" - {
+
+        "to Notified Party Identity with Add Notified Party added to the waypoints when the user does not know any consignees" in {
+
+          val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
+
+          RemoveNotifiedPartyPage(index).navigate(waypoints, answers)
+            .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, index))
         }
 
         "to Add Any Notified Parties when the user knows some consignees" in {
