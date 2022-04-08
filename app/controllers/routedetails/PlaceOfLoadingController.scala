@@ -19,7 +19,8 @@ package controllers.routedetails
 import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.routedetails.PlaceOfLoadingFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.routedetails.PlaceOfLoadingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,25 +46,25 @@ class PlaceOfLoadingController @Inject() (
   with I18nSupport
   with ByKeyExtractor {
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
         getItemKey(index, AllPlacesOfLoadingQuery) {
-          placeOfLoadingId =>
+          placeOfLoadingKey =>
 
-            val form = formProvider(placeOfLoadingId)
+            val form = formProvider(placeOfLoadingKey)
 
             val preparedForm = request.userAnswers.get(PlaceOfLoadingPage(index)) match {
               case None => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, mode, lrn, index))
+            Ok(view(preparedForm, waypoints, lrn, index))
         }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         getItemKey(index, AllPlacesOfLoadingQuery) {
@@ -74,12 +75,12 @@ class PlaceOfLoadingController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfLoadingPage(index), value))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(PlaceOfLoadingPage(index).navigate(mode, updatedAnswers))
+                  } yield Redirect(PlaceOfLoadingPage(index).navigate(waypoints, updatedAnswers))
               )
         }
     }

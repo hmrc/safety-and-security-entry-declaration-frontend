@@ -19,12 +19,12 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.RemoveCountryEnRouteFormProvider
-import models.{Country, NormalMode}
+import models.Country
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.routedetails
+import pages.{EmptyWaypoints, routedetails}
 import pages.routedetails.{CountryEnRoutePage, RemoveCountryEnRoutePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -39,9 +39,10 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new RemoveCountryEnRouteFormProvider()
   val form = formProvider()
   val country = arbitrary[Country].sample.value
-
+  val waypoints = EmptyWaypoints
+  
   lazy val removeCountryEnRouteRoute =
-    routes.RemoveCountryEnRouteController.onPageLoad(NormalMode, lrn, index).url
+    routes.RemoveCountryEnRouteController.onPageLoad(waypoints, lrn, index).url
 
   private val baseAnswers = emptyUserAnswers.set(CountryEnRoutePage(index), country).success.value
 
@@ -59,7 +60,7 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveCountryEnRouteView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -87,7 +88,7 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveCountryEnRoutePage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -114,7 +115,7 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routedetails.RemoveCountryEnRoutePage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never).set(any())
       }
@@ -136,7 +137,7 @@ class RemoveCountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

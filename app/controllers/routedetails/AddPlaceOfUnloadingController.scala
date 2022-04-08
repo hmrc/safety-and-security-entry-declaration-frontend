@@ -18,19 +18,22 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.AddPlaceOfUnloadingFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.routedetails.AddPlaceOfUnloadingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.routedetails.PlaceOfUnloadingSummary
+import viewmodels.checkAnswers.routedetails.AddPlaceOfUnloadingSummary
 import views.html.routedetails.AddPlaceOfUnloadingView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddPlaceOfUnloadingController @Inject()(
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -41,24 +44,30 @@ class AddPlaceOfUnloadingController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val places = PlaceOfUnloadingSummary.rows(request.userAnswers)
+        val places = AddPlaceOfUnloadingSummary.rows(request.userAnswers, waypoints, AddPlaceOfUnloadingPage)
 
-      Ok(view(form, mode, lrn, places))
-  }
+        Ok(view(form, waypoints, lrn, places))
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val places = PlaceOfUnloadingSummary.rows(request.userAnswers)
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val places = AddPlaceOfUnloadingSummary.rows(request.userAnswers, waypoints, AddPlaceOfUnloadingPage)
 
-          BadRequest(view(formWithErrors, mode, lrn, places))
-        },
-        value => Redirect(AddPlaceOfUnloadingPage.navigate(mode, request.userAnswers, value))
-      )
-  }
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, places)))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPlaceOfUnloadingPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddPlaceOfUnloadingPage.navigate(waypoints, updatedAnswers))
+        )
+    }
 }

@@ -16,8 +16,10 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import controllers.routedetails.routes
+import models.{Index, UserAnswers}
+import pages.routedetails.{AddCountryEnRoutePage, CountryEnRoutePage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.routedetails.AllCountriesEnRouteQuery
@@ -27,9 +29,21 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CountryEnRouteSummary {
+object AddCountryEnRouteSummary {
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage)
+          (implicit messages: Messages): Seq[ListItem] =
+    answers.get(AllCountriesEnRouteQuery).getOrElse(List.empty).zipWithIndex.map {
+      case (country, index) =>
+        ListItem(
+          name = HtmlFormat.escape(country.name).toString,
+          changeUrl = CountryEnRoutePage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
+          removeUrl = routes.RemoveCountryEnRouteController.onPageLoad(waypoints, answers.lrn, Index(index)).url
+        )
+    }
+
+  def checkAnswersRow(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllCountriesEnRouteQuery).map { countries =>
 
       val value = countries.map(_.name).mkString("<br/>")
@@ -40,21 +54,9 @@ object CountryEnRouteSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, answers.lrn).url
+            AddCountryEnRoutePage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("countryEnRoute.change.hidden"))
         )
       )
-    }
-
-  def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
-    answers.get(AllCountriesEnRouteQuery).getOrElse(List.empty).zipWithIndex.map {
-      case (country, index) =>
-        ListItem(
-          name = HtmlFormat.escape(country.name).toString,
-          changeUrl = routedetailsRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
-          removeUrl = routedetailsRoutes.RemoveCountryEnRouteController
-            .onPageLoad(NormalMode, answers.lrn, Index(index))
-            .url
-        )
     }
 }

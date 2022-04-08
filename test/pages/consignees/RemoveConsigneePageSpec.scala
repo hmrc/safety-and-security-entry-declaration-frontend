@@ -48,5 +48,27 @@ class RemoveConsigneePageSpec extends SpecBase with PageBehaviours {
           .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
+
+    "must navigate when the current waypoint is Check Consignees and Notified Parties" - {
+
+      val waypoints = Waypoints(List(CheckConsigneesAndNotifiedPartiesPage.waypoint))
+
+      "to Add Consignee when there is still at least one consignee in the user's answers" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+            .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+        RemoveConsigneePage(index).navigate(waypoints, answers)
+          .mustEqual(routes.AddConsigneeController.onPageLoad(waypoints, answers.lrn))
+      }
+
+      "to Consignee Known when there are no consignees left" in {
+
+        RemoveConsigneePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+    }
   }
 }

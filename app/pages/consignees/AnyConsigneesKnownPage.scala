@@ -44,12 +44,18 @@ case object AnyConsigneesKnownPage extends QuestionPage[Boolean] {
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfConsignees)
-          .map(_ => waypoints.next.page)
+          .map {
+            case n if n > 0 => waypoints.next.page
+            case _ => ConsigneeIdentityPage(Index(0))
+          }
           .getOrElse(ConsigneeIdentityPage(Index(0)))
 
       case false =>
         answers.get(DeriveNumberOfNotifiedParties)
-          .map(_ => waypoints.next.page)
+          .map {
+            case n if n > 0 => waypoints.next.page
+            case _ => NotifiedPartyIdentityPage(Index(0))
+          }
           .getOrElse(NotifiedPartyIdentityPage(Index(0)))
     }.orRecover
 

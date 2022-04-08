@@ -16,9 +16,9 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{CustomsOffice, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.routedetails.routes
+import models.{CustomsOffice, LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +28,9 @@ case object CustomsOfficeOfFirstEntryPage extends QuestionPage[CustomsOffice] {
 
   override def toString: String = "customsOfficeOfFirstEntry"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routedetailsRoutes.ArrivalDateAndTimeController.onPageLoad(NormalMode, answers.lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CustomsOfficeOfFirstEntryController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    ArrivalDateAndTimePage
 }

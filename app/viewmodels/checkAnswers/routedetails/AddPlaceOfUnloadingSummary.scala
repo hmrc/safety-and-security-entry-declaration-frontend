@@ -16,8 +16,10 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import controllers.routedetails.routes
+import models.{Index, UserAnswers}
+import pages.routedetails.{AddPlaceOfLoadingPage, PlaceOfLoadingPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.routedetails.AllPlacesOfUnloadingQuery
@@ -27,12 +29,28 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PlaceOfUnloadingSummary {
+object AddPlaceOfUnloadingSummary {
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage)
+          (implicit messages: Messages): Seq[ListItem] =
+    answers.get(AllPlacesOfUnloadingQuery).getOrElse(List.empty).zipWithIndex.map {
+      case (placeOfUnloading, index) =>
+        ListItem(
+          name = HtmlFormat.escape(placeOfUnloading.place).toString,
+          changeUrl = PlaceOfLoadingPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
+          removeUrl = routes.RemovePlaceOfUnloadingController.onPageLoad(waypoints, answers.lrn, Index(index)).url
+        )
+    }
+
+  def checkAnswersRow(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllPlacesOfUnloadingQuery).map { places =>
 
-      val value = places.map(_.place).mkString("<br/>")
+      val value =
+        places
+          .map(_.place)
+          .map(HtmlFormat.escape)
+          .mkString("<br/>")
 
       SummaryListRowViewModel(
         key = "placeOfUnloading.checkYourAnswersLabel",
@@ -40,21 +58,9 @@ object PlaceOfUnloadingSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn).url
+            AddPlaceOfLoadingPage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("placeOfUnloading.change.hidden"))
         )
       )
-    }
-
-  def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
-    answers.get(AllPlacesOfUnloadingQuery).getOrElse(List.empty).zipWithIndex.map {
-      case (placeOfUnloading, index) =>
-        ListItem(
-          name = HtmlFormat.escape(placeOfUnloading.place).toString,
-          changeUrl = routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn, Index(index)).url,
-          removeUrl = routedetailsRoutes.RemovePlaceOfUnloadingController
-            .onPageLoad(NormalMode, answers.lrn, Index(index))
-            .url
-        )
     }
 }

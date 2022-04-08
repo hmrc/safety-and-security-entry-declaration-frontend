@@ -18,7 +18,8 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.CountryOfDepartureFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.routedetails.CountryOfDeparturePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,7 +45,7 @@ class CountryOfDepartureController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryOfDeparturePage) match {
@@ -52,21 +53,21 @@ class CountryOfDepartureController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, waypoints, lrn))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfDeparturePage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(CountryOfDeparturePage.navigate(mode, updatedAnswers))
+            } yield Redirect(CountryOfDeparturePage.navigate(waypoints, updatedAnswers))
         )
     }
 }

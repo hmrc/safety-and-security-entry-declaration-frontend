@@ -16,9 +16,9 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{Country, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.routedetails.routes
+import models.{Country, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +28,9 @@ case object CountryOfDeparturePage extends QuestionPage[Country] {
 
   override def toString: String = "countryOfDeparture"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn, Index(0))
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CountryOfDepartureController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    PlaceOfLoadingPage(Index(0))
 }

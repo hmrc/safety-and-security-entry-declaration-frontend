@@ -16,29 +16,42 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import controllers.routedetails.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.routedetails.DeriveNumberOfPlacesOfLoading
 
-case object AddPlaceOfLoadingPage extends Page {
+case object AddPlaceOfLoadingPage extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfPlacesOfLoading) match {
-        case Some(size) =>
-          routedetailsRoutes.PlaceOfLoadingController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = "add-place-of-loading"
+  override val checkModeUrlFragment: String = "change-place-of-loading"
+
+  override def path: JsPath = JsPath \ "addPlaceOfLoading"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddPlaceOfLoadingController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfPlacesOfLoading)
+          .map(n => PlaceOfLoadingPage(Index(n)))
+          .orRecover
+
+      case false =>
+        GoodsPassThroughOtherCountriesPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfPlacesOfLoading)
+          .map(n => PlaceOfLoadingPage(Index(n)))
+          .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
 }

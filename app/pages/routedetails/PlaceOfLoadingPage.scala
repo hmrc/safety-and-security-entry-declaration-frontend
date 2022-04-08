@@ -16,18 +16,21 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{Index, NormalMode, PlaceOfLoading, UserAnswers}
-import pages.QuestionPage
+import controllers.routedetails.routes
+import models.{Index, LocalReferenceNumber, PlaceOfLoading, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class PlaceOfLoadingPage(index: Index) extends QuestionPage[PlaceOfLoading] {
+final case class PlaceOfLoadingPage(index: Index) extends PlaceOfLoadingQuestionPage[PlaceOfLoading] {
 
   override def path: JsPath = JsPath \ toString \ index.position
 
   override def toString: String = "placesOfLoading"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routedetailsRoutes.AddPlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.PlaceOfLoadingController.onPageLoad(waypoints, lrn, index)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AddPlaceOfLoadingPage
 }

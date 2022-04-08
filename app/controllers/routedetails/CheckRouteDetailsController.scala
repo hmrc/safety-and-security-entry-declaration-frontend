@@ -19,6 +19,8 @@ package controllers.routedetails
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
+import pages.Waypoints
+import pages.routedetails.CheckRouteDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,21 +38,27 @@ class CheckRouteDetailsController @Inject() (
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          CountryOfDepartureSummary.row(request.userAnswers),
-          PlaceOfLoadingSummary.checkAnswersRow(request.userAnswers),
-          GoodsPassThroughOtherCountriesSummary.row(request.userAnswers),
-          CountryEnRouteSummary.checkAnswersRow(request.userAnswers),
-          CustomsOfficeOfFirstEntrySummary.row(request.userAnswers),
-          ArrivalDateAndTimeSummary.row(request.userAnswers),
-          PlaceOfUnloadingSummary.checkAnswersRow(request.userAnswers)
+          CountryOfDepartureSummary.row(request.userAnswers, waypoints, CheckRouteDetailsPage),
+          AddPlaceOfLoadingSummary.checkAnswersRow(request.userAnswers, waypoints, CheckRouteDetailsPage),
+          GoodsPassThroughOtherCountriesSummary.row(request.userAnswers, waypoints, CheckRouteDetailsPage),
+          AddCountryEnRouteSummary.checkAnswersRow(request.userAnswers, waypoints, CheckRouteDetailsPage),
+          CustomsOfficeOfFirstEntrySummary.row(request.userAnswers, waypoints, CheckRouteDetailsPage),
+          ArrivalDateAndTimeSummary.row(request.userAnswers, waypoints, CheckRouteDetailsPage),
+          AddPlaceOfUnloadingSummary.checkAnswersRow(request.userAnswers, waypoints, CheckRouteDetailsPage)
         ).flatten
       )
 
-      Ok(view(list, lrn))
+      Ok(view(waypoints, list, lrn))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckRouteDetailsPage.navigate(waypoints, request.userAnswers))
     }
 }

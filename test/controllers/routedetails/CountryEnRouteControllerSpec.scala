@@ -19,12 +19,12 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.CountryEnRouteFormProvider
-import models.{Country, NormalMode}
+import models.Country
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.routedetails
+import pages.{EmptyWaypoints, routedetails}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,9 +38,10 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new CountryEnRouteFormProvider()
   val form = formProvider()
   val country = arbitrary[Country].sample.value
-
+  val waypoints = EmptyWaypoints
+  
   lazy val countryEnRouteRoute =
-    routes.CountryEnRouteController.onPageLoad(NormalMode, lrn, index).url
+    routes.CountryEnRouteController.onPageLoad(waypoints, lrn, index).url
 
   "CountryEnRoute Controller" - {
 
@@ -56,7 +57,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CountryEnRouteView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -77,7 +78,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(country), NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form.fill(country), waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -105,7 +106,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routedetails.CountryEnRoutePage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -127,7 +128,7 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

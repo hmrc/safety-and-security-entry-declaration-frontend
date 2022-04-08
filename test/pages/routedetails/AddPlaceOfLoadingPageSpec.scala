@@ -17,43 +17,70 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode, PlaceOfLoading}
+import controllers.routedetails.routes
+import models.{Index, NormalMode, PlaceOfLoading}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
-class AddPlaceOfLoadingPageSpec extends SpecBase with PageBehaviours {
+class AddPlaceOfLoadingPageSpec extends SpecBase {
 
   "AddPlaceOfLoadingPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-      "to Place of Loading with an index equal to the number of places of loading we have details for when the answer is yes" in {
+      val waypoints = EmptyWaypoints
 
+      "to Place of Loading for the next index when the answer is yes" in {
+
+        val placeOfLoading = arbitrary[PlaceOfLoading].sample.value
         val answers =
           emptyUserAnswers
-            .set(PlaceOfLoadingPage(index), arbitrary[PlaceOfLoading].sample.value).success.value
+            .set(PlaceOfLoadingPage(Index(0)), placeOfLoading).success.value
+            .set(AddPlaceOfLoadingPage, true).success.value
 
-        AddPlaceOfLoadingPage
-          .navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(routedetailsRoutes.PlaceOfLoadingController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+        AddPlaceOfLoadingPage.navigate(waypoints, answers)
+          .mustEqual(routes.PlaceOfLoadingController.onPageLoad(waypoints, answers.lrn, Index(1)))
       }
 
       "to Goods Pass Through Other Countries when the answer is no" in {
 
-        AddPlaceOfLoadingPage
-          .navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        val answers = emptyUserAnswers.set(AddPlaceOfLoadingPage, false).success.value
+
+        AddPlaceOfLoadingPage.navigate(waypoints, answers)
+          .mustEqual(routes.GoodsPassThroughOtherCountriesController.onPageLoad(waypoints, answers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
 
-        AddPlaceOfLoadingPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "to Place of Loading for the next index with AddPlaceOfLoading added to the waypoints" in {
+
+          val placeOfLoading = arbitrary[PlaceOfLoading].sample.value
+          val answers =
+            emptyUserAnswers
+              .set(PlaceOfLoadingPage(Index(0)), placeOfLoading).success.value
+              .set(AddPlaceOfLoadingPage, true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddPlaceOfLoadingPage.waypoint(NormalMode))
+
+          AddPlaceOfLoadingPage.navigate(waypoints, answers)
+            .mustEqual(routes.PlaceOfLoadingController.onPageLoad(expectedWaypoints, answers.lrn, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Route Details with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddPlaceOfLoadingPage, false).success.value
+
+          AddPlaceOfLoadingPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckRouteDetailsController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
       }
     }
   }

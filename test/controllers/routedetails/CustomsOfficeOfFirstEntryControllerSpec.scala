@@ -19,11 +19,12 @@ package controllers.routedetails
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.CustomsOfficeOfFirstEntryFormProvider
-import models.{CustomsOffice, NormalMode}
+import models.CustomsOffice
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.routedetails.CustomsOfficeOfFirstEntryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,9 +39,10 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
   val formProvider = new CustomsOfficeOfFirstEntryFormProvider()
   val form = formProvider()
   val customsOffice = arbitrary[CustomsOffice].sample.value
-
+  val waypoints = EmptyWaypoints
+  
   lazy val customsOfficeOfFirstEntryRoute =
-    routes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, lrn).url
+    routes.CustomsOfficeOfFirstEntryController.onPageLoad(waypoints, lrn).url
 
   "CustomsOfficeOfFirstEntry Controller" - {
 
@@ -56,7 +58,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
         val view = application.injector.instanceOf[CustomsOfficeOfFirstEntryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -78,7 +80,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(customsOffice), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill(customsOffice), waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -107,7 +109,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CustomsOfficeOfFirstEntryPage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -129,7 +131,7 @@ class CustomsOfficeOfFirstEntryControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(
           request,
           messages(application)
         ).toString

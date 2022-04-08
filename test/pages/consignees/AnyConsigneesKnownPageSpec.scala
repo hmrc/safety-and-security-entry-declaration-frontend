@@ -19,9 +19,9 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
-import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
-import queries.consignees.{AllConsigneesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
+import pages.{EmptyWaypoints, Waypoints}
+import queries.consignees._
 
 class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
@@ -72,6 +72,26 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
           }
         }
 
+        "and consignees have been added then removed so there are none left" - {
+
+          "to Consignee Identity for index 0 with AddConsignee added to the waypoints" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, true).success.value
+                .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+                .remove(ConsigneeQuery(Index(0))).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddConsigneePage.waypoint(NormalMode))
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
+
+
         "and there are no consignees" - {
 
           "to Consignee Identity for index 0 with AddConsignee added to the waypoints" in {
@@ -105,9 +125,28 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
         "and there are no notified parties" - {
 
-          "to Notified Party Identity for index 0" in {
+          "to Notified Party Identity for index 0 with Add Notified Party added to the waypoints" in {
 
             val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
+
+        "and notified parties have been added then removed so there are none left" - {
+
+          "to Notified Party Identity for index 0 with Add Notified Party added to the waypoints" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, false).success.value
+                .set(NotifiedPartyIdentityPage(Index(0)), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
+                .remove(NotifiedPartyQuery(Index(0))).success.value
+
             val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
 
             AnyConsigneesKnownPage.navigate(waypoints, answers)

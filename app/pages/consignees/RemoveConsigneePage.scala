@@ -30,7 +30,7 @@ final case class RemoveConsigneePage(index: Index) extends Page {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.RemoveConsigneeController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  override protected def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfConsignees).map {
       case n if n > 0 => AddConsigneePage
       case _ => AnyConsigneesKnownPage

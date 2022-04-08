@@ -17,46 +17,70 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Country, Index, NormalMode}
+import controllers.routedetails.routes
+import models.{Country, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddCountryEnRoutePageSpec extends SpecBase {
 
   "AddCountryEnRoutePage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-      "to Country En Route with an index equal to the number of countries we have details for when the answer is yes" in {
+      val waypoints = EmptyWaypoints
 
-        val answers = emptyUserAnswers
-          .set(CountryEnRoutePage(index), arbitrary[Country].sample.value)
-          .success
-          .value
+      "to Country En Route for the next index when the answer is yes" in {
 
-        AddCountryEnRoutePage
-          .navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(routedetailsRoutes.CountryEnRouteController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+        val country = arbitrary[Country].sample.value
+        val answers =
+          emptyUserAnswers
+            .set(CountryEnRoutePage(Index(0)), country).success.value
+            .set(AddCountryEnRoutePage, true).success.value
+
+        AddCountryEnRoutePage.navigate(waypoints, answers)
+          .mustEqual(routes.CountryEnRouteController.onPageLoad(waypoints, answers.lrn, Index(1)))
       }
 
       "to Customs Office of First Entry when the answer is no" in {
 
-        AddCountryEnRoutePage
-          .navigate(NormalMode, emptyUserAnswers, addAnother = false)
-          .mustEqual(
-            routedetailsRoutes.CustomsOfficeOfFirstEntryController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
-          )
+        val answers = emptyUserAnswers.set(AddCountryEnRoutePage, false).success.value
+
+        AddCountryEnRoutePage.navigate(waypoints, answers)
+          .mustEqual(routes.CustomsOfficeOfFirstEntryController.onPageLoad(waypoints, answers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
 
-        AddCountryEnRoutePage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "to Country En Route for the next index with AddCountryEnRoute added to the waypoints" in {
+
+          val country = arbitrary[Country].sample.value
+          val answers =
+            emptyUserAnswers
+              .set(CountryEnRoutePage(Index(0)), country).success.value
+              .set(AddCountryEnRoutePage, true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddCountryEnRoutePage.waypoint(NormalMode))
+
+          AddCountryEnRoutePage.navigate(waypoints, answers)
+            .mustEqual(routes.CountryEnRouteController.onPageLoad(expectedWaypoints, answers.lrn, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Route Details with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddCountryEnRoutePage, false).success.value
+
+          AddCountryEnRoutePage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckRouteDetailsController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
       }
     }
   }

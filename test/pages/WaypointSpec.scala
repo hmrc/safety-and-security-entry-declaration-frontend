@@ -19,7 +19,8 @@ package pages
 import base.SpecBase
 import models.{CheckMode, Index, NormalMode}
 import pages.consignees._
-import pages.consignors.{AddConsignorPage, CheckConsignorPage}
+import pages.consignors._
+import pages.routedetails._
 
 class WaypointSpec extends SpecBase {
 
@@ -74,6 +75,41 @@ class WaypointSpec extends SpecBase {
     "must return CheckNotifiedPartyPage when given its waypoint" in {
 
       Waypoint.fromString("check-notified-party-1").value mustEqual CheckNotifiedPartyPage(Index(0)).waypoint
+    }
+    
+    "must return CheckRouteDetailsPag when given its waypoint" in {
+      
+      Waypoint.fromString("check-route-details").value mustEqual CheckRouteDetailsPage.waypoint
+    }
+
+    "must return AddCountryEnRoutePage when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-country").value mustEqual AddCountryEnRoutePage.waypoint(NormalMode)
+    }
+
+    "must return AddCountryEnRoutePage when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-country").value mustEqual AddCountryEnRoutePage.waypoint(CheckMode)
+    }
+
+    "must return AddPlaceOfLoadingPage when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-place-of-loading").value mustEqual AddPlaceOfLoadingPage.waypoint(NormalMode)
+    }
+
+    "must return AddPlaceOfLoadingPage when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-place-of-loading").value mustEqual AddPlaceOfLoadingPage.waypoint(CheckMode)
+    }
+
+    "must return AddPlaceOfUnloadingPage when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-place-of-unloading").value mustEqual AddPlaceOfUnloadingPage.waypoint(NormalMode)
+    }
+
+    "must return AddPlaceOfUnloadingPage when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-place-of-unloading").value mustEqual AddPlaceOfUnloadingPage.waypoint(CheckMode)
     }
   }
 }

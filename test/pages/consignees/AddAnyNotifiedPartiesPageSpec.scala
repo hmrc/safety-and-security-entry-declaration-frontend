@@ -19,9 +19,9 @@ package pages.consignees
 import base.SpecBase
 import controllers.consignees.routes
 import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
-import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
-import queries.consignees.{AllNotifiedPartiesQuery, ConsigneeKeyQuery, NotifiedPartyKeyQuery}
+import pages.{EmptyWaypoints, Waypoints}
+import queries.consignees._
 
 class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
@@ -72,11 +72,30 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
         "and there are no notified parties" - {
 
-          "to Notified Party for index 0" in {
+          "to Notified Party for index 0 with Add Notified Party added to the waypoints" in {
 
             val answers =
               emptyUserAnswers
                 .set(AddAnyNotifiedPartiesPage, true).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
+
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, index))
+          }
+        }
+
+        "and notified parties have been added then removed so there are none left" - {
+
+          "to Notified Party for index 0 with Add Notified Party added to the waypoints" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
+                .set(NotifiedPartyKeyQuery(index), 1).success.value
+                .set(AddAnyNotifiedPartiesPage, true).success.value
+                .remove(NotifiedPartyQuery(Index(0))).success.value
 
             val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
 
@@ -109,6 +128,23 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
           "to Any Consignees Known" in {
 
             val answers = emptyUserAnswers.set(AddAnyNotifiedPartiesPage, false).success.value
+
+            AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
+              .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(waypoints, answers.lrn))
+          }
+        }
+
+        "and consignees have been added then removed so there are none left" - {
+
+          "to Any Consignees Known" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
+                .set(ConsigneeKeyQuery(index), 1).success.value
+                .set(AddAnyNotifiedPartiesPage, false).success.value
+                .remove(ConsigneeQuery(Index(0))).success.value
 
             AddAnyNotifiedPartiesPage.navigate(waypoints, answers)
               .mustEqual(routes.AnyConsigneesKnownController.onPageLoad(waypoints, answers.lrn))
