@@ -84,12 +84,12 @@ class WaypointSpec extends SpecBase {
 
     "must return AddCountryEnRoutePage when given its normal-mode waypoint" in {
 
-      Waypoint.fromString("add-country-en-route").value mustEqual AddCountryEnRoutePage.waypoint(NormalMode)
+      Waypoint.fromString("add-country").value mustEqual AddCountryEnRoutePage.waypoint(NormalMode)
     }
 
     "must return AddCountryEnRoutePage when given its check-mode waypoint" in {
 
-      Waypoint.fromString("change-country-en-route").value mustEqual AddCountryEnRoutePage.waypoint(CheckMode)
+      Waypoint.fromString("change-country").value mustEqual AddCountryEnRoutePage.waypoint(CheckMode)
     }
 
     "must return AddPlaceOfLoadingPage when given its normal-mode waypoint" in {
