@@ -86,6 +86,24 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
               .mustEqual(routes.CountryEnRouteController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
           }
         }
+
+        "and countries en route have been added then removed so there are none left" - {
+
+          "to Country En Route with index 0 and with Add Country En Route added to the waypoints" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(CountryEnRoutePage(Index(0)), country).success.value
+                .set(GoodsPassThroughOtherCountriesPage, true).success.value
+                .remove(CountryEnRoutePage(Index(0))).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddCountryEnRoutePage.waypoint(NormalMode))
+
+            GoodsPassThroughOtherCountriesPage
+              .navigate(waypoints, answers)
+              .mustEqual(routes.CountryEnRouteController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
       }
 
       "when the answer is no" - {

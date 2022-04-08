@@ -44,7 +44,10 @@ case object GoodsPassThroughOtherCountriesPage extends QuestionPage[Boolean] {
     answers.get(this).map {
       case true =>
         answers.get(DeriveNumberOfCountriesEnRoute)
-          .map(_ => waypoints.next.page)
+          .map {
+            case n if n > 0 => waypoints.next.page
+            case _ => CountryEnRoutePage(Index(0))
+          }
           .getOrElse(CountryEnRoutePage(Index(0)))
 
       case false =>
