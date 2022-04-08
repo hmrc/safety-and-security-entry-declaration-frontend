@@ -100,5 +100,27 @@ class GoodsPassThroughOtherCountriesPageSpec extends SpecBase with PageBehaviour
         }
       }
     }
+
+    "must remove all countries en route when the answer is no" in {
+
+      val country = arbitrary[Country].sample.value
+
+      val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), country).success.value
+
+      val result = answers.set(GoodsPassThroughOtherCountriesPage, false).success.value
+
+      result.get(CountryEnRoutePage(Index(0))) must not be defined
+    }
+
+    "must not remove any countries en route when the answer is yes" in {
+
+      val country = arbitrary[Country].sample.value
+
+      val answers = emptyUserAnswers.set(CountryEnRoutePage(Index(0)), country).success.value
+
+      val result = answers.set(GoodsPassThroughOtherCountriesPage, true).success.value
+
+      result.get(CountryEnRoutePage(Index(0))).value mustEqual country
+    }
   }
 }

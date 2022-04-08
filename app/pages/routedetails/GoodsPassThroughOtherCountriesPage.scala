@@ -21,7 +21,9 @@ import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.routedetails.DeriveNumberOfCountriesEnRoute
+import queries.routedetails.{AllCountriesEnRouteQuery, DeriveNumberOfCountriesEnRoute}
+
+import scala.util.Try
 
 case object GoodsPassThroughOtherCountriesPage extends QuestionPage[Boolean] {
 
@@ -48,4 +50,11 @@ case object GoodsPassThroughOtherCountriesPage extends QuestionPage[Boolean] {
       case false =>
         waypoints.next.page
     }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(AllCountriesEnRouteQuery)
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }
