@@ -25,9 +25,8 @@ import models.completion.Party
 import models.completion.answers.Parties
 import pages.consignees.{AnyConsigneesKnownPage, ConsigneeIdentityPage, NotifiedPartyIdentityPage}
 import pages.consignors.ConsignorIdentityPage
-import queries.consignees.AllConsigneesQuery
+import queries.consignees.{AllConsigneesQuery, AllNotifiedPartiesQuery}
 import queries.consignors.AllConsignorsQuery
-import queries.consignees.AllNotifiedPartiesQuery
 
 class PartiesExtractor(
   override protected implicit val answers: UserAnswers

@@ -18,9 +18,11 @@ package queries.consignors
 
 import models.Trader
 import play.api.libs.json.JsPath
-import queries.Gettable
+import queries.{Gettable, Settable}
 
-case object AllConsignorsQuery extends Gettable[List[Trader]] {
+case object AllConsignorsQuery
+  extends Settable[List[Trader]]
+  with Gettable[List[Trader]] {
 
   override def path: JsPath = JsPath \ "consignors"
 }

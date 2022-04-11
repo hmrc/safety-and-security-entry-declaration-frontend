@@ -32,6 +32,8 @@ import queries.routedetails._
 
 class RouteDetailsExtractorSpec extends SpecBase {
   private val originCountry = arbitrary[Country].sample.value
+  private val customsOfficeAnswer = arbitrary[CustomsOfficeAnswer].sample.value
+  private val arrivalDatetime = arbitrary[ArrivalDateAndTime].sample.value
 
   private val placesOfLoading = {
     Gen.choose(1, 10)
@@ -49,9 +51,6 @@ class RouteDetailsExtractorSpec extends SpecBase {
       .flatMap { len => Gen.listOfN(len, arbitrary[Country]) }
       .sample.value
   }
-
-  private val customsOfficeAnswer = arbitrary[CustomsOfficeAnswer].sample.value
-  private val arrivalDatetime = arbitrary[ArrivalDateAndTime].sample.value
 
   private val expectedResult = RouteDetails(
     placesOfLoading.map { p => p.key -> LoadingPlace(p.country, p.place) }.toMap,
