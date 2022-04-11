@@ -20,8 +20,6 @@ import controllers.routes
 import models.{CheckMode, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 
-import scala.language.implicitConversions
-
 trait Page {
 
   def navigate(mode: Mode, answers: UserAnswers): Call =
@@ -68,10 +66,4 @@ trait Page {
 
   def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: AddItemPage): Call =
     route(waypoints.setNextWaypoint(sourcePage.waypoint(CheckMode)), lrn)
-}
-
-object Page {
-
-  implicit def toString(page: Page): String =
-    page.toString
 }
