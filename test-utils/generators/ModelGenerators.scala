@@ -176,6 +176,7 @@ trait ModelGenerators extends StringGenerators {
     Arbitrary {
       Gen.oneOf(ConsigneeIdentity.values.toSeq)
     }
+
   val allDangerousGoods = Seq(
     DangerousGood("4", "AMMONIUM PICRATE dry or wetted with less than 10% water, by mass"),
     DangerousGood("5", "CARTRIDGES FOR WEAPONS with bursting charge"),

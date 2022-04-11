@@ -31,25 +31,21 @@ import queries.consignors.AllConsignorsQuery
 
 class PartiesExtractorSpec extends SpecBase {
 
-  private def tenTraders: List[Trader] = {
+  private val tenTraders: Gen[List[Trader]] = {
     Gen.choose(1, 10)
       .flatMap { len => Gen.listOfN(len, arbitrary[Trader]) }
-      .sample.value
   }
 
-  private val consigneeIdentity = arbitrary[ConsigneeIdentity].sample.value
-  private val consignorIdentity = arbitrary[ConsignorIdentity].sample.value
-  private val notifiedParty = arbitrary[NotifiedPartyIdentity].sample.value
+  private val consignors = tenTraders.sample.value
+  private val consignees = tenTraders.sample.value
+  private val notifiedParties = tenTraders.sample.value
 
   private val validAnswers = {
     arbitrary[UserAnswers].sample.value
-      .set(AllConsigneesQuery, tenTraders).success.value
-      .set(AllConsignorsQuery, tenTraders).success.value
-      .set(AllNotifiedPartiesQuery, tenTraders).success.value
+      .set(AllConsignorsQuery, consignors).success.value
+      .set(AllConsigneesQuery, consignees).success.value
+      .set(AllNotifiedPartiesQuery, notifiedParties).success.value
       .set(AnyConsigneesKnownPage, true).success.value
-      .set(ConsigneeIdentityPage(Index(0)), consigneeIdentity).success.value
-      .set(ConsignorIdentityPage(Index(0)), consignorIdentity).success.value
-      .set(NotifiedPartyIdentityPage(Index(0)), notifiedParty).success.value
   }
 
   private def tradersToParties(traders: List[Trader]): Map[Int, Party] = {
@@ -60,9 +56,9 @@ class PartiesExtractorSpec extends SpecBase {
   }
 
   private val expectedResult: Parties = Parties(
-    tradersToParties(tenTraders),
-    tradersToParties(tenTraders),
-    tradersToParties(tenTraders)
+    tradersToParties(consignors),
+    tradersToParties(consignees),
+    tradersToParties(notifiedParties)
   )
 
   "The parties extractor" - {
@@ -73,12 +69,26 @@ class PartiesExtractorSpec extends SpecBase {
   }
 
   "consignees" - {
-    "should fail when not provided" in {
-      val answers = validAnswers.set(AllConsigneesQuery, Nil).success.value
+    "should fail when empty list if AnyConsigneesKnownPage is true" in {
+      val answers = {
+        validAnswers
+          .set(AllConsigneesQuery, Nil).success.value
+          .set(AnyConsigneesKnownPage, true).success.value
+      }
       val expected = List(MissingField(ConsigneeIdentityPage(Index(0))))
       val actual = new PartiesExtractor()(answers).extract().invalidValue.toList
-
       actual must contain theSameElementsAs(expected)
+    }
+
+    "should extract empty list if AnyConsigneesKnownPage is false" in {
+      val answers = {
+        validAnswers
+          .set(AllConsigneesQuery, Nil).success.value
+          .set(AnyConsigneesKnownPage, false).success.value
+      }
+      val expected = expectedResult.copy(consignees = Map.empty)
+      val actual = new PartiesExtractor()(answers).extract().value
+      actual must be(expected)
     }
   }
 
@@ -87,19 +97,35 @@ class PartiesExtractorSpec extends SpecBase {
       val answers = validAnswers.set(AllConsignorsQuery, Nil).success.value
       val expected = List(MissingField(ConsignorIdentityPage(Index(0))))
       val actual = new PartiesExtractor()(answers).extract().invalidValue.toList
-
       actual must contain theSameElementsAs(expected)
     }
   }
 
-  "notifedParties" - {
-    "should fail when not provided" in {
-      val answers = validAnswers.set(AllNotifiedPartiesQuery, Nil).success.value
+  "notifiedParties" - {
+    "should fail when both notifiedParties and Consignees are empty" in {
+      val answers = {
+        validAnswers
+          .set(AllNotifiedPartiesQuery, Nil).success.value
+          .set(AnyConsigneesKnownPage, false).success.value
+          .set(AllConsigneesQuery, Nil).success.value
+      }
+
       val expected = List(MissingField(NotifiedPartyIdentityPage(Index(0))))
       val actual = new PartiesExtractor()(answers).extract().invalidValue.toList
-
       actual must contain theSameElementsAs(expected)
     }
-  }
 
+    "should allow empty list if consignees are specified" in {
+      val answers = {
+        validAnswers
+          .set(AllNotifiedPartiesQuery, Nil).success.value
+          .set(AnyConsigneesKnownPage, true).success.value
+          .set(AllConsigneesQuery, consignees).success.value
+      }
+
+      val expected = expectedResult.copy(notifiedParties = Map.empty)
+      val actual = new PartiesExtractor()(answers).extract().value
+      actual must be(expected)
+    }
+  }
 }
