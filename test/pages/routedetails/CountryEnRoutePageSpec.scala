@@ -17,41 +17,37 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Country, NormalMode}
+import controllers.routedetails.routes
 import pages.behaviours.PageBehaviours
-import pages.routedetails
+import pages.{EmptyWaypoints, Waypoints, routedetails}
 
 class CountryEnRoutePageSpec extends SpecBase with PageBehaviours {
 
   "CountryEnRoutePage" - {
 
-    beRetrievable[Country](CountryEnRoutePage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Country](routedetails.CountryEnRoutePage(index))
-
-    beRemovable[Country](routedetails.CountryEnRoutePage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Add Country En Route" in {
 
         routedetails.CountryEnRoutePage(index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
-            routedetailsRoutes.AddCountryEnRouteController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+            routes.AddCountryEnRouteController.onPageLoad(waypoints, emptyUserAnswers.lrn)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Route Details" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckRouteDetailsPage.waypoint))
+
+      "to Check Route Details with the current waypoint removed" in {
 
         routedetails.CountryEnRoutePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckRouteDetailsController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

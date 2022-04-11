@@ -17,50 +17,171 @@
 package pages.consignees
 
 import base.SpecBase
-import controllers.consignees.{routes => consigneesRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.consignees.routes
+import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
+import queries.consignees._
 
 class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
 
-  "ConsigneeKnownPage" - {
+  "AnyConsigneeKnownPage" - {
 
-    beRetrievable[Boolean](AnyConsigneesKnownPage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](AnyConsigneesKnownPage)
+      val waypoints = EmptyWaypoints
 
-    beRemovable[Boolean](AnyConsigneesKnownPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to `How do you want to identify the consignee` when answer is yes" in {
+      "to Consignee Identity when answer is yes" in {
         val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
 
         AnyConsigneesKnownPage
-          .navigate(NormalMode, answers)
-          .mustEqual(consigneesRoutes.ConsigneeIdentityController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ConsigneeIdentityController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to `How do you want to identify the notified party` when answer is no" in {
+      "to Notified Party Identity when answer is no" in {
         val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
 
         AnyConsigneesKnownPage
-          .navigate(NormalMode, answers)
+          .navigate(waypoints, answers)
           .mustEqual(
-            consigneesRoutes.NotifiedPartyIdentityController.onPageLoad(NormalMode, answers.lrn, index)
+            routes.NotifiedPartyIdentityController.onPageLoad(waypoints, answers.lrn, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Consignees and Notified Parties" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckConsigneesAndNotifiedPartiesPage.waypoint))
+      
+      "and the answer is yes" - {
 
-        AnyConsigneesKnownPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        "and there are some consignees" - {
+
+          "to Check Consignees and Notified Parties with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, true).success.value
+                .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
+          }
+        }
+
+        "and consignees have been added then removed so there are none left" - {
+
+          "to Consignee Identity for index 0 with AddConsignee added to the waypoints" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, true).success.value
+                .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+                .remove(ConsigneeQuery(Index(0))).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddConsigneePage.waypoint(NormalMode))
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
+
+
+        "and there are no consignees" - {
+
+          "to Consignee Identity for index 0 with AddConsignee added to the waypoints" in {
+
+            val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, true).success.value
+            val expectedWaypoints = waypoints.setNextWaypoint(AddConsigneePage.waypoint(NormalMode))
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.ConsigneeIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
       }
+      
+      "and the answer is no" - {
+        
+        "and there are some notified parties" - {
+
+          "to Check Consignees and Notified Parties with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, false).success.value
+                .set(NotifiedPartyIdentityPage(Index(0)), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn))
+          }
+        }
+
+        "and there are no notified parties" - {
+
+          "to Notified Party Identity for index 0 with Add Notified Party added to the waypoints" in {
+
+            val answers = emptyUserAnswers.set(AnyConsigneesKnownPage, false).success.value
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
+
+        "and notified parties have been added then removed so there are none left" - {
+
+          "to Notified Party Identity for index 0 with Add Notified Party added to the waypoints" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AnyConsigneesKnownPage, false).success.value
+                .set(NotifiedPartyIdentityPage(Index(0)), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
+                .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
+                .remove(NotifiedPartyQuery(Index(0))).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddNotifiedPartyPage.waypoint(NormalMode))
+
+            AnyConsigneesKnownPage.navigate(waypoints, answers)
+              .mustEqual(routes.NotifiedPartyIdentityController.onPageLoad(expectedWaypoints, answers.lrn, Index(0)))
+          }
+        }
+      }
+    }
+
+    "must not alter the user's answers when the answer is yes" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(AnyConsigneesKnownPage, true).success.value
+          .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+          .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+      val result = AnyConsigneesKnownPage.cleanup(Some(true), answers).success.value
+
+      result mustEqual answers
+    }
+
+    "must remove any consignees when the answer is no" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(AnyConsigneesKnownPage, false).success.value
+          .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
+          .set(ConsigneeKeyQuery(Index(0)), 1).success.value
+
+      val result = AnyConsigneesKnownPage.cleanup(Some(false), answers).success.value
+
+      result mustEqual answers.remove(AllConsigneesQuery).success.value
     }
   }
 }

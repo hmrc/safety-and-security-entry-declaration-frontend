@@ -18,12 +18,15 @@ package controllers.consignors
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
+import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.consignors.CheckConsignorView
 
 class CheckConsignorControllerSpec extends SpecBase with SummaryListFluency {
+
+  private val waypoints = EmptyWaypoints
 
   "Check Consignor Controller" - {
 
@@ -32,7 +35,7 @@ class CheckConsignorControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckConsignorController.onPageLoad(lrn, index).url)
+        val request = FakeRequest(GET, routes.CheckConsignorController.onPageLoad(waypoints, lrn, index).url)
 
         val result = route(application, request).value
 
@@ -40,7 +43,7 @@ class CheckConsignorControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(waypoints, list, lrn, index)(request, messages(application)).toString
       }
     }
 
@@ -49,7 +52,7 @@ class CheckConsignorControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckConsignorController.onPageLoad(lrn, index).url)
+        val request = FakeRequest(GET, routes.CheckConsignorController.onPageLoad(waypoints, lrn, index).url)
 
         val result = route(application, request).value
 

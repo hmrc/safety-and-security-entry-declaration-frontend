@@ -19,7 +19,8 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoroAccompaniedIdentityFormProvider
-import models.{NormalMode, RoroAccompaniedIdentity}
+import models.NormalMode
+import models.TransportIdentity.RoroAccompaniedIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary

@@ -17,7 +17,9 @@
 package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Index, NormalMode, TraderWithEori, TraderWithoutEori, UserAnswers}
+import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
+import pages.consignees.{AddConsigneePage, CheckConsigneePage}
+import pages.{AddItemPage, Waypoints, CheckAnswersPage}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllConsigneesQuery
@@ -29,7 +31,7 @@ import viewmodels.implicits._
 
 object AddConsigneeSummary  {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage): Seq[ListItem] =
     answers.get(AllConsigneesQuery).getOrElse(List.empty).zipWithIndex.map {
       case (consignee, index) =>
         val name = consignee match {
@@ -39,12 +41,13 @@ object AddConsigneeSummary  {
 
         ListItem(
           name      = name,
-          changeUrl = consigneesRoutes.CheckConsigneeController.onPageLoad(answers.lrn, Index(index)).url,
-          removeUrl = consigneesRoutes.RemoveConsigneeController.onPageLoad(NormalMode, answers.lrn, Index(index)).url
+          changeUrl = CheckConsigneePage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
+          removeUrl = consigneesRoutes.RemoveConsigneeController.onPageLoad(waypoints, answers.lrn, Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllConsigneesQuery).map {
       consignees =>
 
@@ -59,7 +62,7 @@ object AddConsigneeSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              consigneesRoutes.AddConsigneeController.onPageLoad(NormalMode, answers.lrn).url
+              AddConsigneePage.changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("consignees.change.hidden"))
           )
         )

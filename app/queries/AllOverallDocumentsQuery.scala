@@ -16,10 +16,10 @@
 
 package queries
 
-import models.{Document, Index}
+import models.Document
 import play.api.libs.json.JsPath
 
-case object AllOverallDocumentsQuery extends Gettable[List[Document]] {
+case object AllOverallDocumentsQuery extends Settable[List[Document]] with Gettable[List[Document]] {
 
   override def path: JsPath = JsPath \ "overallDocuments"
 }

@@ -19,21 +19,29 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.AddNotifiedPartyFormProvider
-import models.NormalMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.AddNotifiedPartyPage
 import play.api.i18n.Messages
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import viewmodels.checkAnswers.consignees.AddNotifiedPartySummary
 import views.html.consignees.AddNotifiedPartyView
 
+import scala.concurrent.Future
+
 class AddNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new AddNotifiedPartyFormProvider()
-  val form = formProvider()
+  private val formProvider = new AddNotifiedPartyFormProvider()
+  private val form = formProvider()
+  private val waypoints = EmptyWaypoints
 
-  lazy val addNotifiedPartyRoute = routes.AddNotifiedPartyController.onPageLoad(NormalMode, lrn).url
+  lazy val addNotifiedPartyRoute = routes.AddNotifiedPartyController.onPageLoad(waypoints, lrn).url
 
   "AddNotifiedParty Controller" - {
 
@@ -49,28 +57,34 @@ class AddNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddNotifiedPartyView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddNotifiedPartySummary.rows(emptyUserAnswers)
+        val list = AddNotifiedPartySummary.rows(emptyUserAnswers, waypoints, AddNotifiedPartyPage)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, list)(request, implicitly).toString
       }
     }
 
-    "mustredirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
-
       running(application) {
         val request =
           FakeRequest(POST, addNotifiedPartyRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(AddNotifiedPartyPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddNotifiedPartyPage.navigate(NormalMode, emptyUserAnswers, addAnother = true).url
+        redirectLocation(result).value mustEqual AddNotifiedPartyPage.navigate(waypoints, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -88,12 +102,12 @@ class AddNotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddNotifiedPartyView]
 
         implicit val msgs: Messages = messages(application)
-        val list = AddNotifiedPartySummary.rows(emptyUserAnswers)
+        val list = AddNotifiedPartySummary.rows(emptyUserAnswers, waypoints, AddNotifiedPartyPage)
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, list)(request, implicitly).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, list)(request, implicitly).toString
       }
     }
 

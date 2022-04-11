@@ -19,7 +19,8 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{RailIdentity, CheckMode, NormalMode}
+import models.{CheckMode, NormalMode}
+import models.TransportIdentity.RailIdentity
 import pages.behaviours.PageBehaviours
 
 class RailIdentityPageSpec extends SpecBase with PageBehaviours {

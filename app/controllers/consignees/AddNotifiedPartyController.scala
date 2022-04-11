@@ -18,45 +18,56 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.AddNotifiedPartyFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.consignees.AddNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.consignees.AddNotifiedPartySummary
 import views.html.consignees.AddNotifiedPartyView
 
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
 class AddNotifiedPartyController @Inject()(
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddNotifiedPartyFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddNotifiedPartyView
-) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers)
+        val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, waypoints, AddNotifiedPartyPage)
 
-      Ok(view(form, mode, lrn, notifiedParties))
-  }
+        Ok(view(form, waypoints, lrn, notifiedParties))
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers)
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val notifiedParties = AddNotifiedPartySummary.rows(request.userAnswers, waypoints, AddNotifiedPartyPage)
 
-          BadRequest(view(formWithErrors, mode, lrn, notifiedParties))
-        },
-        value => Redirect(AddNotifiedPartyPage.navigate(mode, request.userAnswers, value))
-      )
-  }
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, notifiedParties)))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNotifiedPartyPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddNotifiedPartyPage.navigate(waypoints, updatedAnswers))
+        )
+    }
 }

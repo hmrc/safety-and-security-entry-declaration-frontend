@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json._
+import controllers.routes
+import models.LocalReferenceNumber
+import play.api.mvc.Call
 
-case class RoroAccompaniedIdentity(
-  vehicleRegistrationNumber: String,
-  trailerNumber: String,
-  ferryCompany: Option[String]
-)
+object JourneyRecoveryPage extends Page {
 
-object RoroAccompaniedIdentity {
-  implicit val format = Json.format[RoroAccompaniedIdentity]
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 }

@@ -18,7 +18,8 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.RemovePlaceOfLoadingFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.routedetails.{PlaceOfLoadingPage, RemovePlaceOfLoadingPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,29 +43,31 @@ class RemovePlaceOfLoadingController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
-      Ok(view(form, mode, lrn, index))
-  }
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Ok(view(form, waypoints, lrn, index))
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
-        value =>
-          if (value) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(PlaceOfLoadingPage(index)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(RemovePlaceOfLoadingPage(index).navigate(mode, updatedAnswers))
-          } else {
-            Future.successful(
-              Redirect(RemovePlaceOfLoadingPage(index).navigate(mode, request.userAnswers))
-            )
-          }
-      )
-  }
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(PlaceOfLoadingPage(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemovePlaceOfLoadingPage(index).navigate(waypoints, updatedAnswers))
+            } else {
+              Future.successful(
+                Redirect(RemovePlaceOfLoadingPage(index).navigate(waypoints, request.userAnswers))
+              )
+            }
+        )
+    }
 }

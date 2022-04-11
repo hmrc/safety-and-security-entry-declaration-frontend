@@ -19,7 +19,7 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.routes
-import models.{CheckMode, Country, NormalMode, TransportMode}
+import models.{CheckMode, Country, NormalMode}
 import models.TransportMode._
 import pages.behaviours.PageBehaviours
 

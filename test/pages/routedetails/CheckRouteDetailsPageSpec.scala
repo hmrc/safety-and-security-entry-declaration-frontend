@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package pages.routedetails
 
-import play.api.libs.json._
+import base.SpecBase
+import controllers.routes
+import pages.EmptyWaypoints
 
-case class AirIdentity(flightNumber: String)
+class CheckRouteDetailsPageSpec extends SpecBase {
 
-object AirIdentity {
-  implicit val format = Json.format[AirIdentity]
+  "must navigate when there are no waypoints" - {
+
+    val waypoints = EmptyWaypoints
+
+    "to the task list" in {
+
+      CheckRouteDetailsPage.navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
+    }
+  }
 }

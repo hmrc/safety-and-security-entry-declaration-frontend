@@ -19,6 +19,7 @@ package models.completion.downstream
 import models.completion.{CustomsOffice, Itinerary, Party}
 
 case class Submission(
+  metadata: Metadata,
   header: Header,
   goodsItems: List[GoodsItem],
   itinerary: Itinerary,

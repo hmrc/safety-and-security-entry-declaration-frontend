@@ -16,22 +16,22 @@
 
 package pages.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import controllers.consignors.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.mvc.Call
 import queries.consignors.DeriveNumberOfConsignors
 
-final case class RemoveConsignorPage(index: Index) extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
+final case class RemoveConsignorPage(index: Index) extends Page {
 
   override def toString: String = "removeConsignor"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(DeriveNumberOfConsignors) match {
-      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn)
-      case _                      => consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, index)
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.RemoveConsignorController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfConsignors).map {
+      case n if n > 0 => AddConsignorPage
+      case _ => ConsignorIdentityPage(Index(0))
+    }.getOrElse(ConsignorIdentityPage(Index(0)))
 }

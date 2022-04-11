@@ -18,48 +18,57 @@ package controllers.routedetails
 
 import controllers.actions._
 import forms.routedetails.AddCountryEnRouteFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.routedetails.AddCountryEnRoutePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.routedetails.CountryEnRouteSummary
+import viewmodels.checkAnswers.routedetails.AddCountryEnRouteSummary
 import views.html.routedetails.AddCountryEnRouteView
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddCountryEnRouteController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddCountryEnRouteFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddCountryEnRouteView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val countries = CountryEnRouteSummary.rows(request.userAnswers)
+      val countries = AddCountryEnRouteSummary.rows(request.userAnswers, waypoints, AddCountryEnRoutePage)
 
-      Ok(view(form, mode, lrn, countries))
+      Ok(view(form, waypoints, lrn, countries))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val countries = CountryEnRouteSummary.rows(request.userAnswers)
+            val countries = AddCountryEnRouteSummary.rows(request.userAnswers, waypoints, AddCountryEnRoutePage)
 
-            BadRequest(view(formWithErrors, mode, lrn, countries))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, countries)))
           },
-          value => Redirect(AddCountryEnRoutePage.navigate(mode, request.userAnswers, value))
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddCountryEnRoutePage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddCountryEnRoutePage.navigate(waypoints, updatedAnswers))
         )
     }
 }

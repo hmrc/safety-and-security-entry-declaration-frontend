@@ -52,5 +52,12 @@ class SubmissionFormatsSpec
         }
       }
     }
+
+    "should produce a payload which can be validated against the CC315A schema" in {
+      forAll(arbitrary[Submission]) { sub =>
+        val payload = sub.toXml.toString
+        XmlValidator.SubmissionValidator.validate(payload)
+      }
+    }
   }
 }

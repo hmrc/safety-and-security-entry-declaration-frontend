@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package pages.consignees
 
-import play.api.libs.json._
+import models.NormalMode
+import pages.{AddToListQuestionPage, AddToListSection, Waypoint, ConsigneeSection, QuestionPage}
 
-case class MaritimeIdentity(imo: String, conveyanceRefNum: String)
+trait ConsigneeQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
 
-object MaritimeIdentity {
-  implicit val format = Json.format[MaritimeIdentity]
+  override val addItemWaypoint: Waypoint = AddConsigneePage.waypoint(NormalMode)
+
+  override val section: AddToListSection = ConsigneeSection
 }

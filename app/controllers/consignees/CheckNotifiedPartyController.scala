@@ -19,6 +19,8 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.consignees.CheckNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,19 +38,25 @@ class CheckNotifiedPartyController @Inject() (
                                          ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          NotifiedPartyIdentitySummary.row(request.userAnswers, index),
-          NotifiedPartyEORISummary.row(request.userAnswers, index),
-          NotifiedPartyNameSummary.row(request.userAnswers, index),
-          NotifiedPartyAddressSummary.row(request.userAnswers, index)
+          NotifiedPartyIdentitySummary.row(request.userAnswers, index, waypoints, CheckNotifiedPartyPage(index)),
+          NotifiedPartyEORISummary.row(request.userAnswers, index, waypoints, CheckNotifiedPartyPage(index)),
+          NotifiedPartyNameSummary.row(request.userAnswers, index, waypoints, CheckNotifiedPartyPage(index)),
+          NotifiedPartyAddressSummary.row(request.userAnswers, index, waypoints, CheckNotifiedPartyPage(index))
         ).flatten
       )
 
-      Ok(view(list, lrn, index))
+      Ok(view(waypoints, list, lrn, index))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckNotifiedPartyPage(index).navigate(waypoints, request.userAnswers))
     }
 }
 

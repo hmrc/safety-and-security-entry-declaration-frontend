@@ -71,14 +71,7 @@ class MetadataFormatsSpec
 
   "The metadata format" - {
     "should serialise symmetrically" in {
-      val metadataGen = for {
-        messageId <- stringsWithExactLength(20)
-        messageSender <- arbitrary[MessageSender]
-        messageType <- arbitrary[MessageType]
-        dt <- minutePrecisionInstants
-      } yield Metadata(messageId, messageSender, messageType, dt)
-
-      forAll(metadataGen) { m =>
+      forAll(arbitrary[Metadata]) { m =>
         m.toXml.parseXml[Metadata] must be(m)
       }
     }

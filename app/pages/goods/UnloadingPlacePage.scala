@@ -17,7 +17,6 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
 import models.{Index, NormalMode, UnloadingPlace, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

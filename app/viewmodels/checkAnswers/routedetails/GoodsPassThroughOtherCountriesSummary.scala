@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.routedetails.GoodsPassThroughOtherCountriesPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -26,7 +26,8 @@ import viewmodels.implicits._
 
 object GoodsPassThroughOtherCountriesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(GoodsPassThroughOtherCountriesPage).map { answer =>
 
       val value = if (answer) "site.yes" else "site.no"
@@ -37,7 +38,7 @@ object GoodsPassThroughOtherCountriesSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routedetailsRoutes.GoodsPassThroughOtherCountriesController.onPageLoad(CheckMode, answers.lrn).url
+            GoodsPassThroughOtherCountriesPage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("goodsPassThroughOtherCountries.change.hidden"))
         )
       )

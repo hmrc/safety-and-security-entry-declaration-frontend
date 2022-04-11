@@ -16,15 +16,14 @@
 
 package controllers.routedetails
 
-import java.time.{LocalDate, LocalTime, ZoneOffset}
-
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.routedetails.ArrivalDateAndTimeFormProvider
-import models.{ArrivalDateAndTime, NormalMode}
+import models.ArrivalDateAndTime
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.routedetails.ArrivalDateAndTimePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -32,15 +31,17 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.routedetails.ArrivalDateAndTimeView
 
+import java.time.{LocalDate, LocalTime, ZoneOffset}
 import scala.concurrent.Future
 
 class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new ArrivalDateAndTimeFormProvider()
   val form = formProvider()
+  val waypoints = EmptyWaypoints
 
   lazy val arrivalDateAndTimeRoute =
-    routes.ArrivalDateAndTimeController.onPageLoad(NormalMode, lrn).url
+    routes.ArrivalDateAndTimeController.onPageLoad(waypoints, lrn).url
 
   val validDate = LocalDate.now(ZoneOffset.UTC)
   val validTime = LocalTime.now(ZoneOffset.UTC).withSecond(0).withNano(0)
@@ -62,7 +63,7 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -81,7 +82,7 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(arrivalDateAndTime), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill(arrivalDateAndTime), waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -114,7 +115,7 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ArrivalDateAndTimePage
-          .navigate(NormalMode, userAnswers)
+          .navigate(waypoints, userAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(userAnswers))
       }
@@ -136,7 +137,7 @@ class ArrivalDateAndTimeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(
           request,
           messages(application)
         ).toString

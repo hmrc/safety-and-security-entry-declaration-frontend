@@ -19,10 +19,12 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.ConsigneeIdentityFormProvider
-import models.{ConsigneeIdentity, NormalMode}
+import models.ConsigneeIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.ConsigneeIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,12 +36,13 @@ import views.html.consignees.ConsigneeIdentityView
 import scala.concurrent.Future
 
 class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
+  
+  private val formProvider = new ConsigneeIdentityFormProvider()
+  private val form = formProvider()
+  private val waypoints = EmptyWaypoints
 
   lazy val consigneeIdentityRoute =
-    routes.ConsigneeIdentityController.onPageLoad(NormalMode, lrn, index).url
-
-  val formProvider = new ConsigneeIdentityFormProvider()
-  val form = formProvider()
+    routes.ConsigneeIdentityController.onPageLoad(waypoints, lrn, index).url
 
   "ConsigneeIdentity Controller" - {
 
@@ -55,7 +58,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ConsigneeIdentityView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -79,7 +82,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(ConsigneeIdentity.values.head),
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -109,7 +112,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ConsigneeIdentityPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -131,7 +134,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

@@ -19,14 +19,14 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoroUnaccompaniedIdentityFormProvider
-import models.{NormalMode, RoroUnaccompaniedIdentity}
+import models.NormalMode
+import models.TransportIdentity.RoroUnaccompaniedIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transport.RoroUnaccompaniedIdentityPage
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository

@@ -14,12 +14,16 @@
  * limitations under the License.
  *@
 
+@import controllers.consignees.routes
+
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
-@(list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkConsigneesAndNotifiedParties.title"))) {
 
@@ -27,5 +31,10 @@
 
     @govukSummaryList(list)
 
-    <a href="@routes.TaskListController.onPageLoad(lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
+    @formHelper(action = routes.CheckConsigneesAndNotifiedPartiesController.onSubmit(waypoints, lrn), 'autoComplete -> "off") {
+
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }

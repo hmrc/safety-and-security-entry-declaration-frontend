@@ -17,36 +17,34 @@
 package pages.routedetails
 
 import base.SpecBase
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{PlaceOfUnloading, CheckMode, NormalMode}
+import controllers.routedetails.routes
+import models.NormalMode
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class PlaceOfUnloadingPageSpec extends SpecBase with PageBehaviours {
 
   "PlaceOfUnloadingPage" - {
 
-    beRetrievable[PlaceOfUnloading](PlaceOfUnloadingPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[PlaceOfUnloading](PlaceOfUnloadingPage(index))
-
-    beRemovable[PlaceOfUnloading](PlaceOfUnloadingPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Add Place of Unloading" in {
 
-        PlaceOfUnloadingPage(index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        PlaceOfUnloadingPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddPlaceOfUnloadingController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Add Place of Unloading" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddPlaceOfUnloadingPage.waypoint(NormalMode)))
 
-        PlaceOfUnloadingPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Add Place of Unloading with the current waypoint removed" in {
+
+        PlaceOfUnloadingPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddPlaceOfUnloadingController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

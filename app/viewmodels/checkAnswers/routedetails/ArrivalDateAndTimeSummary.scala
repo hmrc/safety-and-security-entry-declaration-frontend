@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.routedetails.ArrivalDateAndTimePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -34,7 +34,8 @@ object ArrivalDateAndTimeSummary {
 
   private def timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(ArrivalDateAndTimePage).map { answer =>
 
       val value = HtmlFormat
@@ -47,7 +48,7 @@ object ArrivalDateAndTimeSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routedetailsRoutes.ArrivalDateAndTimeController.onPageLoad(CheckMode, answers.lrn).url
+            ArrivalDateAndTimePage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("arrivalDateAndTime.change.hidden"))
         )
       )

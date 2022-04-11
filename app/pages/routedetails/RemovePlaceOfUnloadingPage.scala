@@ -16,20 +16,20 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.Page
+import controllers.routedetails.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.mvc.Call
 import queries.routedetails.DeriveNumberOfPlacesOfUnloading
 
 final case class RemovePlaceOfUnloadingPage(index: Index) extends Page {
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(DeriveNumberOfPlacesOfUnloading) match {
-      case Some(n) if n > 0 =>
-        routedetailsRoutes.AddPlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn)
-      case _ =>
-        routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(NormalMode, answers.lrn, Index(0))
-    }
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.RemovePlaceOfUnloadingController.onPageLoad(waypoints, lrn, index)
+
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfPlacesOfUnloading).map {
+      case n if n > 0 => AddPlaceOfUnloadingPage
+      case _ => PlaceOfUnloadingPage(Index(0))
+    }.getOrElse(PlaceOfUnloadingPage(Index(0)))
 }

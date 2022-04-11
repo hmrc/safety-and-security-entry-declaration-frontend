@@ -17,18 +17,20 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{Address, Index, UserAnswers}
-import pages.QuestionPage
+import models.{Address, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Waypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class NotifiedPartyAddressPage(index: Index) extends QuestionPage[Address] {
+case class NotifiedPartyAddressPage(index: Index) extends NotifiedPartyQuestionPage[Address] {
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "address"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consigneesRoutes.CheckNotifiedPartyController.onPageLoad(answers.lrn, index)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneesRoutes.NotifiedPartyAddressController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    CheckNotifiedPartyPage(index)
 }

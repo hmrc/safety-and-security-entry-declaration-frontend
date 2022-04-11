@@ -17,38 +17,47 @@
 package pages.consignors
 
 import base.SpecBase
-import controllers.consignors.{routes => consignorRoutes}
-import controllers.routes
-import models.{Address, CheckMode, NormalMode}
+import controllers.consignors.routes
+import models.{CheckMode, NormalMode}
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class ConsignorAddressPageSpec extends SpecBase with PageBehaviours {
 
   "ConsignorAddressPage" - {
 
-    beRetrievable[Address](ConsignorAddressPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Address](ConsignorAddressPage(index))
+      val waypoints = EmptyWaypoints
+      
+      "to Check Consignor" in {
 
-    beRemovable[Address](ConsignorAddressPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to `CYA`" in {
-          ConsignorAddressPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            consignorRoutes.CheckConsignorController.onPageLoad(emptyUserAnswers.lrn, index)
-          )
+        ConsignorAddressPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckConsignorController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Add Consignor" - {
 
-      "to Check Your Answers" in {
-          ConsignorAddressPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      val waypoints = Waypoints(List(AddConsignorPage.waypoint(NormalMode)))
+
+      "to Check consignor" in {
+
+        ConsignorAddressPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckConsignorController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Consignor" - {
+
+      val waypoints = Waypoints(List(CheckConsignorPage(index).waypoint))
+
+      "to Check Consignor with the current waypoint removed" in {
+        ConsignorAddressPage(index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckConsignorController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

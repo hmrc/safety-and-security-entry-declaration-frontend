@@ -17,7 +17,9 @@
 package viewmodels.checkAnswers.consignors
 
 import controllers.consignors.{routes => consignorRoutes}
-import models.{TraderWithEori, TraderWithoutEori, Index, NormalMode, UserAnswers}
+import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
+import pages.consignors.{AddConsignorPage, CheckConsignorPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignors.AllConsignorsQuery
@@ -29,7 +31,7 @@ import viewmodels.implicits._
 
 object AddConsignorSummary  {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Seq[ListItem] =
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage)(implicit messages: Messages): Seq[ListItem] =
     answers.get(AllConsignorsQuery).getOrElse(List.empty).zipWithIndex.map {
       case (consignor, index) =>
         val name = consignor match {
@@ -39,12 +41,13 @@ object AddConsignorSummary  {
 
         ListItem(
           name      = name,
-          changeUrl = consignorRoutes.CheckConsignorController.onPageLoad(answers.lrn, Index(index)).url,
-          removeUrl = consignorRoutes.RemoveConsignorController.onPageLoad(NormalMode, answers.lrn,Index(index)).url
+          changeUrl = CheckConsignorPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
+          removeUrl = consignorRoutes.RemoveConsignorController.onPageLoad(waypoints, answers.lrn,Index(index)).url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllConsignorsQuery).map {
       consignors =>
 
@@ -59,7 +62,7 @@ object AddConsignorSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn).url
+              AddConsignorPage.changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("consignors.change.hidden"))
           )
         )

@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.consignees
 
-import controllers.consignees.{routes => consigneeRoutes}
-import models.{CheckMode, Index, UserAnswers}
-import pages.consignees
+import models.{Index, UserAnswers}
+import pages.consignees.ConsigneeAddressPage
+import pages.{Waypoints, CheckAnswersPage, consignees}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +28,8 @@ import viewmodels.implicits._
 
 object ConsigneeAddressSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignees.ConsigneeAddressPage(index)).map { answer =>
 
       val address = Seq(
@@ -44,7 +45,7 @@ object ConsigneeAddressSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            consigneeRoutes.ConsigneeAddressController.onPageLoad(CheckMode, answers.lrn, index).url
+            ConsigneeAddressPage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consigneeAddress.change.hidden"))
         )
       )

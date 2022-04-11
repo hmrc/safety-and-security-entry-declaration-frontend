@@ -19,6 +19,8 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.consignees.CheckConsigneePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,19 +38,25 @@ class CheckConsigneeController @Inject() (
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          ConsigneeIdentitySummary.row(request.userAnswers, index),
-          ConsigneeEORISummary.row(request.userAnswers, index),
-          ConsigneeNameSummary.row(request.userAnswers, index),
-          ConsigneeAddressSummary.row(request.userAnswers, index)
+          ConsigneeIdentitySummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index)),
+          ConsigneeEORISummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index)),
+          ConsigneeNameSummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index)),
+          ConsigneeAddressSummary.row(request.userAnswers, index, waypoints, CheckConsigneePage(index))
         ).flatten
       )
 
-      Ok(view(list, lrn, index))
+      Ok(view(waypoints, list, lrn, index))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckConsigneePage(index).navigate(waypoints, request.userAnswers))
     }
 }
 

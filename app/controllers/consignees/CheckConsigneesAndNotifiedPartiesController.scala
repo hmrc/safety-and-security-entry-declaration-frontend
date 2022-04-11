@@ -19,6 +19,8 @@ package controllers.consignees
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
+import pages.Waypoints
+import pages.consignees.CheckConsigneesAndNotifiedPartiesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,19 +37,26 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
   view: CheckConsigneesAndNotifiedPartiesView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          AnyConsigneesKnownSummary.row(request.userAnswers),
-          AddConsigneeSummary.checkAnswersRow(request.userAnswers),
-          AddAnyNotifiedPartiesSummary.row(request.userAnswers),
-          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers)
+          AnyConsigneesKnownSummary.row(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage),
+          AddConsigneeSummary.checkAnswersRow(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage),
+          AddAnyNotifiedPartiesSummary.row(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage),
+          AddNotifiedPartySummary.checkAnswersRow(request.userAnswers, waypoints, CheckConsigneesAndNotifiedPartiesPage)
         ).flatten
       )
 
-      Ok(view(list, lrn))
+      Ok(view(waypoints, list, lrn))
+    }
+
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckConsigneesAndNotifiedPartiesPage.navigate(waypoints, request.userAnswers))
     }
 }
 

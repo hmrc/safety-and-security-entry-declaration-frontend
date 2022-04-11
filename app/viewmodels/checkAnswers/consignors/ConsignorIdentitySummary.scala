@@ -18,7 +18,8 @@ package viewmodels.checkAnswers.consignors
 
 import controllers.consignors.routes
 import models.{CheckMode, Index, UserAnswers}
-import pages.consignors
+import pages.consignors.ConsignorIdentityPage
+import pages.{CheckAnswersPage, Waypoints, consignors}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +29,8 @@ import viewmodels.implicits._
 
 object ConsignorIdentitySummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(consignors.ConsignorIdentityPage(index)).map { answer =>
 
       val value = ValueViewModel(
@@ -43,9 +45,7 @@ object ConsignorIdentitySummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.ConsignorIdentityController
-              .onPageLoad(CheckMode, answers.lrn, index)
-              .url
+            ConsignorIdentityPage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("consignorIdentity.change.hidden"))
         )
       )

@@ -18,9 +18,8 @@ package controllers.consignees
 
 import controllers.actions._
 import forms.consignees.RemoveNotifiedPartyFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.consignees.RemoveNotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.RemoveNotifiedPartyView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveNotifiedPartyController @Inject()(
@@ -44,35 +44,31 @@ class RemoveNotifiedPartyController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Ok(view(form, waypoints, lrn, index))
+    }
 
-      val preparedForm = request.userAnswers.get(RemoveNotifiedPartyPage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      Ok(view(preparedForm, mode, lrn, index))
-  }
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
-
-        value =>
-          if (value) {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.remove(NotifiedPartyQuery(index)))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(RemoveNotifiedPartyPage(index).navigate(mode, updatedAnswers))
-          } else {
-            Future.successful(
-              Redirect(RemoveNotifiedPartyPage(index).navigate(mode, request.userAnswers))
-            )
-          }
-      )
-  }
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(NotifiedPartyQuery(index)))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveNotifiedPartyPage(index).navigate(waypoints, updatedAnswers))
+            } else {
+              Future.successful(
+                Redirect(RemoveNotifiedPartyPage(index).navigate(waypoints, request.userAnswers))
+              )
+            }
+        )
+    }
 }

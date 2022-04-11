@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.routedetails.CountryOfDeparturePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,8 @@ import viewmodels.implicits._
 
 object CountryOfDepartureSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CountryOfDeparturePage).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +37,7 @@ object CountryOfDepartureSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routedetailsRoutes.CountryOfDepartureController.onPageLoad(CheckMode, answers.lrn).url
+            CountryOfDeparturePage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("countryOfDeparture.change.hidden"))
         )
       )

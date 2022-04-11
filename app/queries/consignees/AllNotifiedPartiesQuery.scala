@@ -17,12 +17,19 @@
 package queries.consignees
 
 import models.Trader
+<<<<<<< HEAD
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
 case object AllNotifiedPartiesQuery
   extends Settable[List[Trader]]
   with Gettable[List[Trader]] {
+=======
+import play.api.libs.json.{JsPath, JsValue}
+import queries.{Gettable, Settable}
+
+case object AllNotifiedPartiesQuery extends Gettable[List[Trader]] with Settable[JsValue] {
+>>>>>>> main
 
   override def path: JsPath = JsPath \ "notifiedParties"
 }

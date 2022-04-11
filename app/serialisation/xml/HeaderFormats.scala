@@ -32,13 +32,26 @@ trait HeaderFormats extends TransportFormats with TimeFormats {
         header.grossMass.map { v => <TotGroMasHEA307>{v.toXmlString}</TotGroMasHEA307> }.toSeq
       }
 
+      // Unfortunately we can't simply write using the TransportDetails format because we have to
+      // position the individual fields in the right places across the header
+      val transportNationality: NodeSeq = header.transportDetails.nationality.map { n =>
+        <NatOfMeaOfTraCroHEA87>{n.toXmlString}</NatOfMeaOfTraCroHEA87>
+      }.toSeq
+
+      val transportPaymentMethod: NodeSeq = header.transportDetails.paymentMethod.map { pm =>
+        <TraChaMetOfPayHEA1>{pm.toXmlString}</TraChaMetOfPayHEA1>
+      }.toSeq
+
       <HEAHEA>
         <RefNumHEA4>{header.lrn.toXmlString}</RefNumHEA4>
-        {header.transportDetails.toXml}
+        <TraModAtBorHEA76>{header.transportDetails.mode.toXmlString}</TraModAtBorHEA76>
+        <IdeOfMeaOfTraCroHEA85>{header.transportDetails.identity}</IdeOfMeaOfTraCroHEA85>
+        {transportNationality}
         <TotNumOfIteHEA305>{header.itemCount}</TotNumOfIteHEA305>
         <TotNumOfPacHEA306>{header.packageCount}</TotNumOfPacHEA306>
         {grossMass}
         <DecPlaHEA394>{header.declarationPlace}</DecPlaHEA394>
+        {transportPaymentMethod}
         <ConRefNumHEA>{header.conveyanceReferenceNumber}</ConRefNumHEA>
         <DecDatTimHEA114>{header.datetime.toXmlString}</DecDatTimHEA114>
       </HEAHEA>

@@ -19,12 +19,12 @@ package controllers.consignors
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignors.ConsignorAddressFormProvider
-import models.{Address, Country, NormalMode}
+import models.{Address, Country}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.consignors
+import pages.{EmptyWaypoints, consignors}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,9 +38,10 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new ConsignorAddressFormProvider()
   val form = formProvider()
   val country = arbitrary[Country].sample.value
+  private val waypoints = EmptyWaypoints
 
   lazy val consignorAddressRoute =
-    routes.ConsignorAddressController.onPageLoad(NormalMode, lrn, index).url
+    routes.ConsignorAddressController.onPageLoad(waypoints, lrn, index).url
 
   "ConsignorAddress Controller" - {
 
@@ -56,7 +57,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ConsignorAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -82,7 +83,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(Address("test", "test", "test", country)),
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -119,7 +120,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual consignors
           .ConsignorAddressPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -141,7 +142,7 @@ class ConsignorAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

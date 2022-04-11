@@ -43,6 +43,14 @@ class GoodsItemFormatsSpec extends SpecBase
     }
   }
 
+  "The special mention format" - {
+    "should work symmetrically" in {
+      forAll(arbitrary[SpecialMention]) { sm =>
+        sm.toXml.parseXml[SpecialMention] must be(sm)
+      }
+    }
+  }
+
   "The DocumentType Format" - {
     "should work symmetrically" in {
       forAll(arbitrary[DocumentType]) { c =>
@@ -109,9 +117,33 @@ class GoodsItemFormatsSpec extends SpecBase
 
   "The goods item format" - {
     "should work symmetrically" - {
-      "for any good item" in {
+      "for any goods item" in {
         forAll(arbitrary[GoodsItem]) { item =>
           item.toXml.parseXml[GoodsItem] must be(item)
+        }
+      }
+
+      "when goods item is identified by" - {
+        "commodity code" in {
+          val gen = for {
+            item <- arbitrary[GoodsItem]
+            id <- arbitrary[GoodsItemIdentity.ByCommodityCode]
+          } yield item.copy(itemIdentity = id)
+
+          forAll(gen) { item =>
+            item.toXml.parseXml[GoodsItem] must be(item)
+          }
+        }
+
+        "description" in {
+          val gen = for {
+            item <- arbitrary[GoodsItem]
+            id <- arbitrary[GoodsItemIdentity.WithDescription]
+          } yield item.copy(itemIdentity = id)
+
+          forAll(gen) { item =>
+            item.toXml.parseXml[GoodsItem] must be(item)
+          }
         }
       }
 

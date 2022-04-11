@@ -21,12 +21,9 @@ import models.requests.DataRequest
 import models.{Index, UserAnswers, WithKey}
 import pages.QuestionPage
 import play.api.libs.json.{JsPath, Json, OFormat}
-import play.api.mvc.Results.Ok
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import queries.Gettable
-
-import scala.concurrent.Future
 
 class ByKeyExtractorSpec extends SpecBase {
 
@@ -61,6 +58,20 @@ class ByKeyExtractorSpec extends SpecBase {
     "must return 1 when there are no items in the user's answers" in {
 
       implicit val request = getRequest(emptyUserAnswers)
+
+      val controller = new TestController()
+
+      controller.get(Index(0)) mustEqual 1
+    }
+
+    "must return 1 when items have been added then removed so that there are none left" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(ItemPage(Index(0)), Item(1)).success.value
+          .remove(ItemPage(Index(0))).success.value
+
+      implicit val request = getRequest(answers)
 
       val controller = new TestController()
 

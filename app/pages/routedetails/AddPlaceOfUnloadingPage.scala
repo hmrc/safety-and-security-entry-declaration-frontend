@@ -16,29 +16,41 @@
 
 package pages.routedetails
 
-import controllers.routedetails.{routes => routedetailsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import controllers.routedetails.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.routedetails.DeriveNumberOfPlacesOfUnloading
 
-case object AddPlaceOfUnloadingPage extends Page {
+case object AddPlaceOfUnloadingPage extends QuestionPage[Boolean] with AddItemPage {
+  override val normalModeUrlFragment: String = "add-place-of-unloading"
+  override val checkModeUrlFragment: String = "change-place-of-unloading"
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfPlacesOfUnloading) match {
-        case Some(size) =>
-          routedetailsRoutes.PlaceOfUnloadingController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          routedetailsRoutes.CheckRouteDetailsController.onPageLoad(answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override def path: JsPath = JsPath \ "addPlaceOfUnloading"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddPlaceOfUnloadingController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfPlacesOfUnloading)
+          .map(n => PlaceOfUnloadingPage(Index(n)))
+          .orRecover
+
+      case false =>
+        CheckRouteDetailsPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfPlacesOfUnloading)
+          .map(n => PlaceOfUnloadingPage(Index(n)))
+          .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
 }

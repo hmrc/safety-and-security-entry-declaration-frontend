@@ -18,46 +18,56 @@ package controllers.consignors
 
 import controllers.actions._
 import forms.consignors.AddConsignorFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.consignors.AddConsignorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.consignors.AddConsignorSummary
 import views.html.consignors.AddConsignorView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddConsignorController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalActionProvider,
-                                        requireData: DataRequiredAction,
-                                        formProvider: AddConsignorFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: AddConsignorView
-) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AddConsignorFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddConsignorView
+)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val consignors = AddConsignorSummary.rows(request.userAnswers)
+        val consignors = AddConsignorSummary.rows(request.userAnswers, waypoints, AddConsignorPage)
 
-      Ok(view(form, mode, lrn, consignors))
-  }
+        Ok(view(form, waypoints, lrn, consignors))
+    }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val consignors = AddConsignorSummary.rows(request.userAnswers)
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val consignors = AddConsignorSummary.rows(request.userAnswers, waypoints, AddConsignorPage)
 
-          BadRequest(view(formWithErrors, mode, lrn, consignors))
-        },
-        value => Redirect(AddConsignorPage.navigate(mode, request.userAnswers, value))
-      )
-  }
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, consignors)))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddConsignorPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddConsignorPage.navigate(waypoints, updatedAnswers))
+        )
+    }
 }

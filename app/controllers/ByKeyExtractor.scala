@@ -19,10 +19,8 @@ package controllers
 import models.requests.DataRequest
 import models.{Index, WithKey}
 import play.api.libs.json.Reads
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.AnyContent
 import queries.Gettable
-
-import scala.concurrent.Future
 
 trait ByKeyExtractor {
 
@@ -31,9 +29,13 @@ trait ByKeyExtractor {
                                            (implicit request: DataRequest[AnyContent], ev: Reads[A]): B =
     request.userAnswers.get(allItemsQuery).map {
       items =>
-        items
-          .lift(index.position)
-          .map(item => block(item.key))
-          .getOrElse(block(items.maxBy(_.key).key + 1))
+        if (items.isEmpty) {
+          block(1)
+        } else {
+          items
+            .lift(index.position)
+            .map(item => block(item.key))
+            .getOrElse(block(items.maxBy(_.key).key + 1))
+        }
     }.getOrElse { block(1) }
 }

@@ -16,19 +16,26 @@
 
 package pages.consignors
 
-import controllers.consignors.{routes => consignorRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.consignors.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ConsignorNamePage(index: Index) extends QuestionPage[String] {
+case class ConsignorNamePage(index: Index) extends ConsignorQuestionPage[String] {
 
   override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
   override def toString: String = "name"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    consignorRoutes.ConsignorAddressController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.ConsignorNameController.onPageLoad(waypoints, lrn, index)
+  
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    ConsignorAddressPage(index)
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(ConsignorAddressPage(index))
+      .map(_ => waypoints.next.page)
+      .getOrElse(ConsignorAddressPage(index))
 }

@@ -22,6 +22,7 @@ import forms.routedetails.PlaceOfUnloadingFormProvider
 
 import javax.inject.Inject
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.Waypoints
 import pages.routedetails.PlaceOfUnloadingPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,24 +47,24 @@ class PlaceOfUnloadingController @Inject() (
   with I18nSupport
   with ByKeyExtractor {
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
         getItemKey(index, AllPlacesOfUnloadingQuery) {
-          placeOfUnloadingId =>
+          placeOfUnloadingKey =>
 
-            val form = formProvider(placeOfUnloadingId)
+            val form = formProvider(placeOfUnloadingKey)
 
             val preparedForm = request.userAnswers.get(PlaceOfUnloadingPage(index)) match {
               case None => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, mode, lrn, index))
+            Ok(view(preparedForm, waypoints, lrn, index))
         }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         getItemKey(index, AllPlacesOfUnloadingQuery) {
@@ -74,12 +75,12 @@ class PlaceOfUnloadingController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfUnloadingPage(index), value))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(PlaceOfUnloadingPage(index).navigate(mode, updatedAnswers))
+                  } yield Redirect(PlaceOfUnloadingPage(index).navigate(waypoints, updatedAnswers))
               )
         }
     }

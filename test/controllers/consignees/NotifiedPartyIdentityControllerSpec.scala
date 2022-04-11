@@ -19,10 +19,12 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.NotifiedPartyIdentityFormProvider
-import models.{NormalMode, NotifiedPartyIdentity}
+import models.NotifiedPartyIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{Waypoints, EmptyWaypoints}
 import pages.consignees.NotifiedPartyIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,13 +36,14 @@ import views.html.consignees.NotifiedPartyIdentityView
 import scala.concurrent.Future
 
 class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
+  
+  private val formProvider = new NotifiedPartyIdentityFormProvider()
+  private val form = formProvider()
+  private val waypoints = EmptyWaypoints
 
   lazy val notifiedPartyIdentityRoute =
-    routes.NotifiedPartyIdentityController.onPageLoad(NormalMode, lrn, index).url
-
-  val formProvider = new NotifiedPartyIdentityFormProvider()
-  val form = formProvider()
-
+    routes.NotifiedPartyIdentityController.onPageLoad(waypoints, lrn, index).url
+  
   "NotifiedPartyIdentity Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -55,7 +58,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NotifiedPartyIdentityView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -81,7 +84,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(NotifiedPartyIdentity.values.head),
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -111,7 +114,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual NotifiedPartyIdentityPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -133,7 +136,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

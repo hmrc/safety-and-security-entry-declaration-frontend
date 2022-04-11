@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package pages.routedetails
 
-import play.api.libs.json._
+import controllers.routedetails.routes
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, TaskListPage, Waypoints}
+import play.api.mvc.Call
 
-case class RailIdentity(wagonNumber: String)
+object CheckRouteDetailsPage extends CheckAnswersPage {
 
-object RailIdentity {
-  implicit val format = Json.format[RailIdentity]
+  override val urlFragment: String = "check-route-details"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CheckRouteDetailsController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    TaskListPage
 }

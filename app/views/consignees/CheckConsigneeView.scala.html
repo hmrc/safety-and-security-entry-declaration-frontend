@@ -18,10 +18,13 @@
 
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
-@(list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkConsignee.title"))) {
 
@@ -29,5 +32,9 @@
 
     @govukSummaryList(list)
 
-    <a href="@routes.AddConsigneeController.onPageLoad(NormalMode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
+    @formHelper(action = routes.CheckConsigneeController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }

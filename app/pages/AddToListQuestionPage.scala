@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json._
+trait AddToListQuestionPage {
+  self: Page =>
 
-case class RoadIdentity(
-  vehicleRegistrationNumber: String,
-  trailerNumber: String,
-  ferryCompany: Option[String]
-)
-
-object RoadIdentity {
-  implicit val format = Json.format[RoadIdentity]
+    val section: AddToListSection
+    val addItemWaypoint: Waypoint
 }

@@ -20,9 +20,10 @@ import controllers.consignees.{routes => consigneesRoutes}
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
-import controllers.transport.{routes => transportRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
+import controllers.transport.{routes => transportRoutes}
 import models.{Index, NormalMode, UserAnswers}
+import pages.EmptyWaypoints
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import queries.DeriveNumberOfGoods
@@ -65,15 +66,15 @@ object TaskListViewModel {
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey = messages("taskList.routeDetails"),
-      link = routedetailsRoutes.CountryOfDepartureController.onPageLoad(NormalMode, answers.lrn),
+      link = routedetailsRoutes.CountryOfDepartureController.onPageLoad(EmptyWaypoints, answers.lrn),
       id = "route-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
 
   private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfConsignors) match {
-      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(NormalMode, answers.lrn)
-      case _ => consignorRoutes.ConsignorIdentityController.onPageLoad(NormalMode, answers.lrn, Index(0))
+      case Some(size) if size > 0 => consignorRoutes.AddConsignorController.onPageLoad(EmptyWaypoints, answers.lrn)
+      case _ => consignorRoutes.ConsignorIdentityController.onPageLoad(EmptyWaypoints, answers.lrn, Index(0))
     }
 
     TaskListRow(
@@ -86,10 +87,10 @@ object TaskListViewModel {
 
   private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfConsignees) match {
-      case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
+      case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
       case _ => answers.get(DeriveNumberOfNotifiedParties) match {
-          case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(answers.lrn)
-          case _ => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(NormalMode,answers.lrn)
+          case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
+          case _ => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
     }
 

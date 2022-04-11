@@ -59,10 +59,10 @@ trait GoodsItemFormats
 
   implicit val goodsItemIdentityByCodeFmt = new Format[GoodsItemIdentity.ByCommodityCode] {
     override def encode(id: GoodsItemIdentity.ByCommodityCode): NodeSeq = {
-      <COMCODGODITM>{id.code}</COMCODGODITM>
+      <COMCODGODITM><ComNomCMD1>{id.code}</ComNomCMD1></COMCODGODITM>
     }
     override def decode(data: NodeSeq): GoodsItemIdentity.ByCommodityCode = {
-      GoodsItemIdentity.ByCommodityCode((data \\ "COMCODGODITM").text)
+      GoodsItemIdentity.ByCommodityCode((data \\ "COMCODGODITM" \ "ComNomCMD1").text)
     }
   }
 
@@ -91,7 +91,10 @@ trait GoodsItemFormats
   }
 
   implicit val dangerousGoodCodeFmt: StringFormat[DangerousGoodsCode] = {
-    StringFormat.simple(_.code, c => DangerousGoodsCode(c))
+    StringFormat.simple(
+      { c: DangerousGoodsCode => f"${c.code.toInt}%04d" },
+      c => DangerousGoodsCode(c.toInt.toString)
+    )
   }
 
   implicit val loadingPlaceFmt = new StringFormat[LoadingPlace] {
@@ -108,8 +111,13 @@ trait GoodsItemFormats
     }
   }
 
-  implicit val specialMentionFmt: StringFormat[SpecialMention] = {
-    StringFormat.simple(_.code, SpecialMention(_))
+  implicit val specialMentionFmt: Format[SpecialMention] = new Format[SpecialMention] {
+    override def encode(sm: SpecialMention): NodeSeq = {
+      <AddInfCodMT23>{sm.code}</AddInfCodMT23>
+    }
+    override def decode(data: NodeSeq): SpecialMention = {
+      SpecialMention((data \\ "AddInfCodMT23").text)
+    }
   }
 
   implicit val goodsItemFmt = new Format[GoodsItem] {
@@ -125,7 +133,7 @@ trait GoodsItemFormats
       val documents: NodeSeq = item.documents map { d => <PRODOCDC2>{d.toXml}</PRODOCDC2> }
 
       val specialMentions: NodeSeq = item.specialMentions map {
-        sm => <SPEMENMT2>{sm.toXmlString}</SPEMENMT2>
+        sm => <SPEMENMT2>{sm.toXml}</SPEMENMT2>
       }
 
       val consignee: NodeSeq = item.consignee.map { c =>
@@ -185,7 +193,7 @@ trait GoodsItemFormats
       notifiedParty = (data \\ "PRTNOT640").headOption.map(goodsNotifiedPartyFormat.decode),
       containers = (data \\ "CONNR2").map { _.parseXml[Container] }.toList,
       packages = (data \\ "PACGS2").map { _.parseXml[Package] }.toList,
-      specialMentions = (data \\ "SPEMENMT2").map { _.text.parseXmlString[SpecialMention] }.toList
+      specialMentions = (data \\ "SPEMENMT2").map { _.parseXml[SpecialMention] }.toList
     )
   }
 

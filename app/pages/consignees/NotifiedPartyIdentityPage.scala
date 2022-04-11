@@ -17,26 +17,54 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import controllers.routes
 import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
-import models.{Index, NormalMode, NotifiedPartyIdentity, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, NormalMode, NotifiedPartyIdentity, UserAnswers}
+import pages.{Waypoint, Waypoints, NonEmptyWaypoints, Page}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class NotifiedPartyIdentityPage(index: Index) extends QuestionPage[NotifiedPartyIdentity] {
+import scala.util.Try
+
+case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestionPage[NotifiedPartyIdentity] {
+
+  override val addItemWaypoint: Waypoint = AddNotifiedPartyPage.waypoint(NormalMode)
 
   override def path: JsPath = JsPath \ "notifiedParties" \ index.position \ toString
 
   override def toString: String = "identity"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(NotifiedPartyIdentityPage(index)) match {
-      case Some(GBEORI) =>
-        consigneeRoutes.NotifiedPartyEORIController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(NameAddress) =>
-        consigneeRoutes.NotifiedPartyNameController.onPageLoad(NormalMode, answers.lrn, index)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    consigneeRoutes.NotifiedPartyIdentityController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(NotifiedPartyIdentityPage(index)).map {
+      case GBEORI => NotifiedPartyEORIPage(index)
+      case NameAddress => NotifiedPartyNamePage(index)
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case GBEORI =>
+        answers.get(NotifiedPartyEORIPage(index))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NotifiedPartyEORIPage(index))
+
+      case NameAddress =>
+        answers.get(NotifiedPartyNamePage(index))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NotifiedPartyNamePage(index))
+    }.orRecover
+
+
+  override def cleanup(value: Option[NotifiedPartyIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value.map {
+      case GBEORI =>
+        userAnswers
+          .remove(NotifiedPartyNamePage(index))
+          .flatMap(_.remove(NotifiedPartyAddressPage(index)))
+
+      case NameAddress =>
+        userAnswers.remove(NotifiedPartyEORIPage(index))
+    }.getOrElse(super.cleanup(value, userAnswers))
   }
 }

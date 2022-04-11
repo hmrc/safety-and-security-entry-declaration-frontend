@@ -18,8 +18,8 @@ package controllers.consignors
 
 import controllers.actions._
 import forms.consignors.ConsignorNameFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.consignors.ConsignorNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignors.ConsignorNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsignorNameController @Inject() (
@@ -44,7 +45,7 @@ class ConsignorNameController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(ConsignorNamePage(index)) match {
@@ -52,21 +53,21 @@ class ConsignorNameController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, waypoints, lrn, index))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorNamePage(index), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsignorNamePage(index).navigate(mode, updatedAnswers))
+            } yield Redirect(ConsignorNamePage(index).navigate(waypoints, updatedAnswers))
         )
     }
 }

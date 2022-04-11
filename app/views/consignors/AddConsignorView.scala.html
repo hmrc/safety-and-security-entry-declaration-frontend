@@ -27,11 +27,11 @@
     addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, consignors: Seq[ListItem])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, consignors: Seq[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addConsignor.title"))) {
 
-    @formHelper(action = routes.AddConsignorController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddConsignorController.onSubmit(waypoints, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

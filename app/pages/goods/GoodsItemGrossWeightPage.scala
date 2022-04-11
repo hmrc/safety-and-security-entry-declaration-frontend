@@ -17,12 +17,10 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
 import models.{Index, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfPackages
 
 final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[BigDecimal] {
 
