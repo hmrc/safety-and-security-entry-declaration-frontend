@@ -49,7 +49,7 @@ class RouteDetailsExtractorSpec extends SpecBase {
       .flatMap { len => Gen.listOfN(len, arbitrary[Country]) }
       .sample.value
   }
-  
+
   private val customsOfficeAnswer = arbitrary[CustomsOfficeAnswer].sample.value
   private val arrivalDatetime = arbitrary[ArrivalDateAndTime].sample.value
 
