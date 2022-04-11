@@ -19,7 +19,7 @@ package models.completion.answers
 import models.completion.Party
 
 /**
- * Models the answers given for a completed Consignor/Consignee/NotifiedParties sections.
+ * Models the answers given for the completed Consignors/Consignees/NotifiedParties sections.
  */
 case class Parties(
   consignors: Map[Int, Party],
