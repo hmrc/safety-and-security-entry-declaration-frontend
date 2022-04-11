@@ -19,10 +19,9 @@ package serialisation.xml
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-
 import base.SpecBase
 import models.{Address, Country}
-import models.completion.downstream.Party
+import models.completion.Party
 
 class PartyFormatsSpec
   extends SpecBase

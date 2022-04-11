@@ -16,11 +16,13 @@
 
 package models.completion.answers
 
-import models.{Address, GbEori}
+import models.completion.Party
 
-sealed trait ConsignorIdentity
-
-object ConsignorIdentity {
-  case class ByEori(eori: GbEori) extends ConsignorIdentity
-  case class ByAddress(name: String, address: Address) extends ConsignorIdentity
-}
+/**
+ * Models the answers given for the completed Consignors/Consignees/NotifiedParties sections.
+ */
+case class Parties(
+  consignors: Map[Int, Party],
+  consignees: Map[Int, Party],
+  notifiedParties: Map[Int, Party],
+)

@@ -16,7 +16,7 @@
 
 package models.completion.downstream
 
-import models.completion.{CustomsOffice, Itinerary}
+import models.completion.{CustomsOffice, Itinerary, Party}
 
 case class Submission(
   metadata: Metadata,
