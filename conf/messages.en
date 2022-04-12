@@ -795,3 +795,6 @@ shippingContainers.heading = Are the goods in shipping containers or trailer?
 shippingContainers.checkYourAnswersLabel = Shipping container
 shippingContainers.error.required = Select yes if you are using a shipping container
 shippingContainers.change.hidden = the shipping container
+
+submittedDeclarations.title = submittedDeclarations
+submittedDeclarations.heading = submittedDeclarations
