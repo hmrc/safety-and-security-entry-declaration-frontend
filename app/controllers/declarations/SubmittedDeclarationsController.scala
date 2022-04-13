@@ -18,7 +18,6 @@ package controllers.declarations
 
 import controllers.actions._
 import javax.inject.Inject
-import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -27,15 +26,14 @@ import views.html.declarations.SubmittedDeclarationsView
 class SubmittedDeclarationsController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   view: SubmittedDeclarationsView
-) extends FrontendBaseController
+)
+  extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
-      Ok(view(lrn))
+  def onPageLoad(): Action[AnyContent] =
+    identify { implicit request =>
+      Ok(view())
     }
 }

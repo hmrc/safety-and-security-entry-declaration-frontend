@@ -19,9 +19,11 @@
         govukButton: GovukButton
 )
 
-@(lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("submittedDeclarations.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("submittedDeclarations.heading")</h1>
+  <h1 class="govuk-heading-xl">@messages("submittedDeclarations.heading")</h1>
+  <p class="govuk-body">@messages("submittedDeclarations.body")</p>
+
 }

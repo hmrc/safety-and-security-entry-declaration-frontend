@@ -11,6 +11,8 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.startDeclaration = New ENS declaration
+site.submitteddeclaration = Submitted ENS Declarations
+site.draftDeclarations = Draft ENS Declarations
 
 date.day = Day
 date.month = Month
@@ -797,13 +799,17 @@ shippingContainers.error.required = Select yes if you are using a shipping conta
 shippingContainers.change.hidden = the shipping container
 
 submittedDeclarations.title = submittedDeclarations
-submittedDeclarations.heading = submittedDeclarations
+submittedDeclarations.heading = Submitted Declarations
+submittedDeclarations.body = place holder text
 
 amendForCompleted.title = amendForCompleted
-amendForCompleted.heading = amendForCompleted
+amendForCompleted.heading = Amend For Completed
 
 amendForRejected.title = amendForRejected
-amendForRejected.heading = amendForRejected
+amendForRejected.heading = Amend For Rejected
 
 draftDeclarations.title = draftDeclarations
-draftDeclarations.heading = draftDeclarations
+draftDeclarations.heading = Draft Declarations
+
+inProgressDeclaration.title = inProgressDeclaration
+inProgressDeclaration.heading = In Progress Declaration

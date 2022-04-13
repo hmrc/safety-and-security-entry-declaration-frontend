@@ -17,7 +17,6 @@
 package controllers.declarations
 
 import controllers.actions._
-import models.LocalReferenceNumber
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,15 +26,16 @@ import views.html.declarations.DraftDeclarationsView
 class DraftDeclarationsController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   view: DraftDeclarationsView
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
-      Ok(view(lrn))
+  def onPageLoad(): Action[AnyContent] =
+    identify { implicit request =>
+      Ok(view())
     }
+
+  //Update repo to get drafts
+  //display LRN and link them to the Check Your Answers Page for each lrn
 }
