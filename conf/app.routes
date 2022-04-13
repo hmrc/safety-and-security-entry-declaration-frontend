@@ -424,3 +424,5 @@ GET        /:lrn/changeAnyShippingContainers/:index                  controllers
 POST       /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 
 GET        /:lrn/amendForCompleted                       controllers.declarations.AmendForCompletedController.onPageLoad(lrn: LocalReferenceNumber)
+
+GET        /:lrn/amendForRejected                       controllers.declarations.AmendForRejectedController.onPageLoad(lrn: LocalReferenceNumber)
