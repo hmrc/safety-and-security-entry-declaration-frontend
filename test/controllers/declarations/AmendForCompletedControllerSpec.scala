@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.declarations
 
 import base.SpecBase
-import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SubmittedDeclarationsView
+import views.html.declarations.AmendForCompletedView
 
-class SubmittedDeclarationsControllerSpec extends SpecBase {
+class AmendForCompletedControllerSpec extends SpecBase {
 
-  "SubmittedDeclarations Controller" - {
+  "AmendForCompleted Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.SubmittedDeclarationsController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, routes.AmendForCompletedController.onPageLoad(lrn).url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[SubmittedDeclarationsView]
+        val view = application.injector.instanceOf[AmendForCompletedView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(lrn)(request, messages(application)).toString

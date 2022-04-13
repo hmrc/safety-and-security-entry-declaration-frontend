@@ -24,8 +24,8 @@ GET         /account/signed-out                          controllers.auth.Signed
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /:lrn/submittedDeclarations                       controllers.SubmittedDeclarationsController.onPageLoad(lrn: LocalReferenceNumber)
-POST       /:lrn/submittedDeclarations                       controllers.SubmittedDeclarationsController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /:lrn/submittedDeclarations                       controllers.declarations.SubmittedDeclarationsController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/submittedDeclarations                       controllers.declarations.SubmittedDeclarationsController.onPageLoad(lrn: LocalReferenceNumber)
 
 GET        /localReferenceNumber                        controllers.predec.LocalReferenceNumberController.onPageLoad(mode: Mode = NormalMode)
 POST       /localReferenceNumber                        controllers.predec.LocalReferenceNumberController.onSubmit(mode: Mode = NormalMode)
@@ -422,3 +422,5 @@ GET        /:lrn/anyShippingContainers/:index                        controllers
 POST       /:lrn/anyShippingContainers/:index                        controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /:lrn/amendForCompleted                       controllers.declarations.AmendForCompletedController.onPageLoad(lrn: LocalReferenceNumber)

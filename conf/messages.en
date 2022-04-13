@@ -798,3 +798,6 @@ shippingContainers.change.hidden = the shipping container
 
 submittedDeclarations.title = submittedDeclarations
 submittedDeclarations.heading = submittedDeclarations
+
+amendForCompleted.title = amendForCompleted
+amendForCompleted.heading = amendForCompleted

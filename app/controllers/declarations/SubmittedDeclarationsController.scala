@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.declarations
 
 import controllers.actions._
-import models.{LocalReferenceNumber, Mode}
 import javax.inject.Inject
+import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SubmittedDeclarationsView
+import views.html.declarations.SubmittedDeclarationsView
 
 class SubmittedDeclarationsController @Inject() (
   override val messagesApi: MessagesApi,
