@@ -804,3 +804,6 @@ amendForCompleted.heading = amendForCompleted
 
 amendForRejected.title = amendForRejected
 amendForRejected.heading = amendForRejected
+
+draftDeclarations.title = draftDeclarations
+draftDeclarations.heading = draftDeclarations
