@@ -19,9 +19,10 @@ package controllers.declarations
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewmodels.govuk.SummaryListFluency
 import views.html.declarations.DraftDeclarationsView
 
-class DraftDeclarationsControllerSpec extends SpecBase {
+class DraftDeclarationsControllerSpec extends SpecBase with SummaryListFluency {
 
   "DraftDeclarations Controller" - {
 
@@ -31,13 +32,12 @@ class DraftDeclarationsControllerSpec extends SpecBase {
 
       running(application) {
         val request = FakeRequest(GET, routes.DraftDeclarationsController.onPageLoad().url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[DraftDeclarationsView]
+        val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
       }
     }
   }

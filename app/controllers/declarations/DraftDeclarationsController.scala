@@ -22,6 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.declarations.DraftDeclarationsView
+import viewmodels.govuk.summarylist._
 
 class DraftDeclarationsController @Inject() (
   override val messagesApi: MessagesApi,
@@ -33,9 +34,11 @@ class DraftDeclarationsController @Inject() (
 
   def onPageLoad(): Action[AnyContent] =
     identify { implicit request =>
-      Ok(view())
-    }
 
-  //Update repo to get drafts
-  //display LRN and link them to the Check Your Answers Page for each lrn
+      val list = SummaryListViewModel(
+        rows = Seq.empty
+      )
+
+      Ok(view(list))
+    }
 }

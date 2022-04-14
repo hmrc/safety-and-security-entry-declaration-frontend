@@ -16,12 +16,14 @@
 
 @this(
         layout: templates.Layout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(list: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("draftDeclarations.title"))) {
 
     <h1 class="govuk-heading-xl">@messages("draftDeclarations.heading")</h1>
+    @govukSummaryList(list)
 }
