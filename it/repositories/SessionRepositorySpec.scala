@@ -27,10 +27,16 @@ class SessionRepositorySpec
   private val instant = Instant.now
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
-  private val userId = "id"
-  private val lrn = LocalReferenceNumber("ABC123")
-  private val userAnswers =
-    UserAnswers(userId, lrn, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val userId1 = "id1"
+  private val userId2 = "id2"
+  private val lrn1 = LocalReferenceNumber("ABC123")
+  private val lrn2 = LocalReferenceNumber("DEF456")
+  private val userAnswers1 =
+    UserAnswers(userId1, lrn1, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val userAnswers2 =
+    UserAnswers(userId1, lrn2, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(2))
+  private val userAnswers3 =
+    UserAnswers(userId2, lrn1, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1
@@ -49,15 +55,30 @@ class SessionRepositorySpec
 
   ".set" - {
 
-    "must set the last updated time on the supplied user answers to `now`, and save them" in {
+    "must insert a record when it does not already exist in Mongo, setting the last updated time to `now`" in {
 
-      val expectedResult = userAnswers copy (lastUpdated = instant)
+      val expectedResult = userAnswers1 copy (lastUpdated = instant)
 
-      val setResult = repository.set(userAnswers).futureValue
-      val updatedRecord = find(getFilter(userId, lrn)).futureValue.headOption.value
+      val setResult = repository.set(userAnswers1).futureValue
+      val updatedRecord = find(getFilter(userId1, lrn1)).futureValue.headOption.value
 
       setResult mustEqual true
       updatedRecord mustEqual expectedResult
+    }
+
+    "must update existing records with the same user id and lrn, setting the last updated time to `now`" in {
+
+      insert(userAnswers1).futureValue
+      insert(userAnswers2).futureValue
+      insert(userAnswers3).futureValue
+
+      val setResult = repository.set(userAnswers2).futureValue
+
+      setResult mustEqual true
+
+      find(getFilter(userId1, lrn1)).futureValue.headOption.value mustEqual userAnswers1
+      find(getFilter(userId1, lrn2)).futureValue.headOption.value mustEqual (userAnswers2 copy (lastUpdated = instant))
+      find(getFilter(userId2, lrn1)).futureValue.headOption.value mustEqual userAnswers3
     }
   }
 
@@ -67,10 +88,10 @@ class SessionRepositorySpec
 
       "must update the lastUpdated time and get the record" in {
 
-        insert(userAnswers).futureValue
+        insert(userAnswers1).futureValue
 
-        val result = repository.get(userId, lrn).futureValue
-        val expectedResult = userAnswers copy (lastUpdated = instant)
+        val result = repository.get(userId1, lrn1).futureValue
+        val expectedResult = userAnswers1 copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
       }
@@ -80,7 +101,7 @@ class SessionRepositorySpec
 
       "must return None" in {
 
-        repository.get("id that does not exist", lrn).futureValue must not be defined
+        repository.get("id that does not exist", lrn1).futureValue must not be defined
       }
     }
 
@@ -88,7 +109,7 @@ class SessionRepositorySpec
 
       "must return None" in {
 
-        insert(userAnswers).futureValue
+        insert(userAnswers1).futureValue
         repository
           .get("id", LocalReferenceNumber("LRN that does not exist"))
           .futureValue must not be defined
@@ -100,12 +121,12 @@ class SessionRepositorySpec
 
     "must remove a record" in {
 
-      insert(userAnswers).futureValue
+      insert(userAnswers1).futureValue
 
-      val result = repository.clear(userAnswers.id).futureValue
+      val result = repository.clear(userAnswers1.id).futureValue
 
       result mustEqual true
-      repository.get(userId, lrn).futureValue must not be defined
+      repository.get(userId1, lrn1).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
@@ -121,14 +142,14 @@ class SessionRepositorySpec
 
       "must update its lastUpdated to `now` and return true" in {
 
-        insert(userAnswers).futureValue
+        insert(userAnswers1).futureValue
 
-        val result = repository.keepAlive(userAnswers.id).futureValue
+        val result = repository.keepAlive(userAnswers1.id).futureValue
 
-        val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instant)
+        val expectedUpdatedAnswers = userAnswers1 copy (lastUpdated = instant)
 
         result mustEqual true
-        val updatedAnswers = find(getFilter(userId, lrn)).futureValue.headOption.value
+        val updatedAnswers = find(getFilter(userId1, lrn1)).futureValue.headOption.value
         updatedAnswers mustEqual expectedUpdatedAnswers
       }
     }
