@@ -97,7 +97,7 @@ class SessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter = byUserId(updatedAnswers.id),
+        filter = byUserIdAndLrn(updatedAnswers.id, updatedAnswers.lrn),
         replacement = updatedAnswers,
         options = ReplaceOptions().upsert(true)
       )

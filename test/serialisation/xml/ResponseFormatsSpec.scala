@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukSummaryList: GovukSummaryList,
-    govukButton: GovukButton
-)
+package serialisation.xml
 
-@(list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+import base.SpecBase
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
+import models.completion.downstream.CorrelationId
 
-    <h1 class="govuk-heading-xl">@messages("checkYourAnswers.heading")</h1>
+class ResponseFormatsSpec
+  extends SpecBase
+  with ResponseFormats
+  with XmlImplicits
+  with XmlPayloadFixtures {
 
-    @govukSummaryList(list)
-
-    @formHelper(action = routes.CheckYourAnswersController.onSubmit(lrn), 'autoComplete -> "off") {
-      @govukButton(ButtonViewModel(messages("site.submitDeclaration")))
+  "The correlation ID decoder" - {
+    "should successfully read correlation ID from a success response" in {
+      submissionResponse.parseXml[CorrelationId] must be(submissionCorrId)
     }
+  }
 }

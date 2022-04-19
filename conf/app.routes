@@ -15,6 +15,7 @@ GET         /there-is-a-problem                          controllers.JourneyReco
 
 GET         /:lrn/task-list                              controllers.TaskListController.onPageLoad(lrn: LocalReferenceNumber)
 GET         /:lrn/check-your-answers                     controllers.CheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST        /:lrn/check-your-answers                     controllers.CheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber)
 GET         /:lrn/check-route-details                    controllers.routedetails.CheckRouteDetailsController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 POST        /:lrn/check-route-details                    controllers.routedetails.CheckRouteDetailsController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
