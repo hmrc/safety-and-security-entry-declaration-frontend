@@ -16,6 +16,8 @@
 
 package config
 
+import java.net.URL
+
 import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
@@ -38,10 +40,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   val signOutUrl: String = configuration.get[String]("urls.signOut")
 
-  private val exitSurveyBaseUrl: String =
+  private val exitSurveyBaseUrl: URL =
     configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
+
   val exitSurveyUrl: String =
     s"$exitSurveyBaseUrl/feedback/safety-and-security-entry-declaration-frontend"
+
+  val declarationStoreUrl = configuration.get[Service]("microservice.services.iced-store").baseUrl
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")

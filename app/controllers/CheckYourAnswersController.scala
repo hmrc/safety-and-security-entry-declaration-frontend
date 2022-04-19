@@ -17,6 +17,7 @@
 package controllers
 
 import com.google.inject.Inject
+import connectors.DeclarationConnector
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +31,7 @@ class CheckYourAnswersController @Inject() (
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  client: DeclarationConnector,
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView
 ) extends FrontendBaseController
@@ -44,4 +46,10 @@ class CheckYourAnswersController @Inject() (
 
       Ok(view(list, lrn))
     }
+
+  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = {
+    (identify andThen getData(lrn) andThen requireData) { _ =>
+      Ok("OK")
+    }
+  }
 }

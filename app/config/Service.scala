@@ -16,15 +16,17 @@
 
 package config
 
+import java.net.URL
+
 import play.api.{ConfigLoader, Configuration}
 
-final case class Service(host: String, port: String, protocol: String) {
+import uk.gov.hmrc.http.StringContextOps
 
-  def baseUrl: String =
-    s"$protocol://$host:$port"
+final case class Service(host: String, port: String, protocol: String, path: String) {
 
-  override def toString: String =
-    baseUrl
+  def baseUrl: URL = url"$protocol://$host:$port/$path"
+
+  override def toString: String = baseUrl.toString
 }
 
 object Service {
@@ -35,7 +37,8 @@ object Service {
     val host = service.get[String]("host")
     val port = service.get[String]("port")
     val protocol = service.get[String]("protocol")
+    val path = service.get[String]("path")
 
-    Service(host, port, protocol)
+    Service(host, port, protocol, path)
   }
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukSummaryList: GovukSummaryList,
-    govukButton: GovukButton
-)
+package serialisation.xml
 
-@(list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+import scala.io.Source
+import scala.xml.{NodeSeq, XML}
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
+import models.completion.downstream.CorrelationId
 
-    <h1 class="govuk-heading-xl">@messages("checkYourAnswers.heading")</h1>
+/**
+ * Provide XML payload samples from test resources
+ */
+trait XmlPayloadFixtures {
+  protected def readPayload(s: String): NodeSeq = {
+    XML.loadString(Source.fromResource(s"payload/$s").mkString)
+  }
 
-    @govukSummaryList(list)
-
-    @formHelper(action = routes.CheckYourAnswersController.onSubmit(lrn), 'autoComplete -> "off") {
-      @govukButton(ButtonViewModel(messages("site.submitDeclaration")))
-    }
+  lazy val submissionResponse = readPayload("response/submission-1.xml")
+  lazy val submissionCorrId = CorrelationId("87491122139921")
 }
+
+object XmlPayloadFixtures extends XmlPayloadFixtures
