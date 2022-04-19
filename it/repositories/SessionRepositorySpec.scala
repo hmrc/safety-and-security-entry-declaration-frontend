@@ -4,6 +4,8 @@ import config.FrontendAppConfig
 import models.{LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
@@ -11,8 +13,8 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
-
 import java.time.{Clock, Instant, ZoneId}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionRepositorySpec
@@ -58,6 +60,25 @@ class SessionRepositorySpec
 
       setResult mustEqual true
       updatedRecord mustEqual expectedResult
+    }
+  }
+
+  ".getLrns" - {
+
+    "When there are draft declarations will return their lrns" - {
+
+      val refs: List[LocalReferenceNumber] = {
+        Gen.choose(1, 5) map { len => Gen.listOfN(len, arbitrary[LocalReferenceNumber]) }
+      }.sample.value
+
+      refs.foreach { lrn => insert(userAnswers.copy(lrn = lrn)).futureValue }
+
+      val result = repository.getLrns(userId).futureValue
+      result must contain theSameElementsAs (refs)
+    }
+
+    "When there are no draft declarations will return nothing" - {
+      repository.getLrns("id that does not exist").futureValue must not be defined
     }
   }
 

@@ -31,9 +31,7 @@ class SubmittedDeclarationsControllerSpec extends SpecBase {
 
       running(application) {
         val request = FakeRequest(GET, routes.SubmittedDeclarationsController.onPageLoad().url)
-
         val result = route(application, request).value
-
         val view = application.injector.instanceOf[SubmittedDeclarationsView]
 
         status(result) mustEqual OK

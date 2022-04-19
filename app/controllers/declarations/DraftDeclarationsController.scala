@@ -20,25 +20,34 @@ import controllers.actions._
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.declarations.DraftDeclarationsSummary
 import views.html.declarations.DraftDeclarationsView
 import viewmodels.govuk.summarylist._
+
+import scala.concurrent.ExecutionContext
 
 class DraftDeclarationsController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  view: DraftDeclarationsView
-) extends FrontendBaseController
+  view: DraftDeclarationsView,
+  repository: SessionRepository
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
   with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] =
-    identify { implicit request =>
+    (identify).async { implicit request =>
 
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
+      val lrns = repository.getLrns(request.userId)
 
-      Ok(view(list))
+      lrns.map { ids =>
+        val summary = SummaryListViewModel(
+          rows = ids.map(DraftDeclarationsSummary.row)
+        )
+        Ok(view(summary))
+      }
     }
 }
