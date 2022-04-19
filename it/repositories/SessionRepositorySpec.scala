@@ -102,8 +102,8 @@ class SessionRepositorySpec
       result must contain theSameElementsAs (refs)
     }
 
-    "When there are no draft declarations will return nothing" - {
-      repository.getLrns(userId = "").futureValue should have size 0
+    "When there are no draft declarations will return an empty list" - {
+      repository.getLrns(userId = "id that does not exist").futureValue should have size 0
     }
   }
 
