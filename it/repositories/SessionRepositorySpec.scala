@@ -77,7 +77,7 @@ class SessionRepositorySpec
       setResult mustEqual true
 
       find(getFilter(userId1, lrn1)).futureValue.headOption.value mustEqual userAnswers1
-      find(getFilter(userId1, lrn2)).futureValue.headOption.value mustEqual (userAnswers2 copy (lastUpdated = instant))
+      find(getFilter(userId1, lrn2)).futureValue.headOption.value mustEqual userAnswers2.copy(lastUpdated = instant)
       find(getFilter(userId2, lrn1)).futureValue.headOption.value mustEqual userAnswers3
     }
   }
