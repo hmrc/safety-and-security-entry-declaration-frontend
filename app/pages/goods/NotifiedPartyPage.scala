@@ -17,23 +17,24 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.routedetails.DeriveNumberOfPlacesOfLoading
 
-final case class NotifiedPartyPage(itemIndex: Index) extends QuestionPage[Int] {
+final case class NotifiedPartyPage(itemIndex: Index) extends GoodsItemQuestionPage[Int] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "notifiedPartyKey"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.NotifiedPartyController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfPlacesOfLoading).map {
-      n =>
-        if (n > 1) { goodsRoutes.LoadingPlaceController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
-          else     { LoadingPlacePage(itemIndex).navigate(NormalMode, answers) }
-    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
+      case n if n > 1 => LoadingPlacePage(itemIndex)
+      case _ => LoadingPlacePage(itemIndex).nextPage(waypoints, answers)
+    }.orRecover
 }

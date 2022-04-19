@@ -19,11 +19,10 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.DangerousGoodCodeFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,15 +34,12 @@ import scala.concurrent.Future
 
 class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
 
-  val application = applicationBuilder(None).build()
+  val waypoints: Waypoints = EmptyWaypoints
 
-  def service: DangerousGoodsService = application.injector.instanceOf[DangerousGoodsService]
-  val formProvider = new DangerousGoodCodeFormProvider(service)
-  val form = formProvider()
   val dangerousGood = arbitraryDangerousGood.arbitrary.sample.value
 
   lazy val dangerousGoodCodeRoute =
-    routes.DangerousGoodCodeController.onPageLoad(NormalMode, lrn, index).url
+    routes.DangerousGoodCodeController.onPageLoad(waypoints, lrn, index).url
 
   "DangerousGoodCode Controller" - {
 
@@ -57,9 +53,12 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[DangerousGoodCodeView]
+        val service = application.injector.instanceOf[DangerousGoodsService]
+        val formProvider = new DangerousGoodCodeFormProvider(service)
+        val form = formProvider()
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -77,11 +76,14 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, dangerousGoodCodeRoute)
 
         val view = application.injector.instanceOf[DangerousGoodCodeView]
+        val service = application.injector.instanceOf[DangerousGoodsService]
+        val formProvider = new DangerousGoodCodeFormProvider(service)
+        val form = formProvider()
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(dangerousGood), NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form.fill(dangerousGood), waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -110,7 +112,7 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.DangerousGoodCodePage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -125,6 +127,10 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, dangerousGoodCodeRoute)
             .withFormUrlEncodedBody(("value", ""))
 
+        val service = application.injector.instanceOf[DangerousGoodsService]
+        val formProvider = new DangerousGoodCodeFormProvider(service)
+        val form = formProvider()
+
         val boundForm = form.bind(Map("value" -> ""))
 
         val view = application.injector.instanceOf[DangerousGoodCodeView]
@@ -132,7 +138,7 @@ class DangerousGoodCodeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

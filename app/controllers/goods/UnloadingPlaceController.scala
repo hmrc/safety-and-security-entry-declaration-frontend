@@ -16,18 +16,21 @@
 
 package controllers.goods
 
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.UnloadingPlaceFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.UnloadingPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.routedetails.AllPlacesOfUnloadingQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.RadioOptions
 import views.html.goods.UnloadingPlaceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPlaceController @Inject() (
@@ -41,33 +44,48 @@ class UnloadingPlaceController @Inject() (
   view: UnloadingPlaceView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
+  with I18nSupport
+  with AnswerExtractor {
 
-  private val form = formProvider()
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        getAnswer(AllPlacesOfUnloadingQuery) {
+          placesOfUnloading =>
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+            val form = formProvider(placesOfUnloading.map(_.key))
+            val radioOptions = RadioOptions(placesOfUnloading.map(l => l.key.toString -> l.place).toMap)
 
-      val preparedForm = request.userAnswers.get(UnloadingPlacePage(itemIndex)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+            val preparedForm = request.userAnswers.get(UnloadingPlacePage(itemIndex)) match {
+              case None => form
+              case Some(value) => form.fill(value)
+            }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex))
+            Ok(view(preparedForm, waypoints, lrn, itemIndex, radioOptions))
+        }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
+        getAnswerAsync(AllPlacesOfUnloadingQuery) {
+          placesOfUnloading =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingPlacePage(itemIndex), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(UnloadingPlacePage(itemIndex).navigate(mode, updatedAnswers))
-        )
+            val form = formProvider(placesOfUnloading.map(_.key))
+
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => {
+                  val radioOptions = RadioOptions(placesOfUnloading.map(l => l.key.toString -> l.place).toMap)
+                  Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, radioOptions)))
+                },
+                value =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingPlacePage(itemIndex), value))
+                    _ <- sessionRepository.set(updatedAnswers)
+                  } yield Redirect(UnloadingPlacePage(itemIndex).navigate(waypoints, updatedAnswers))
+              )
+        }
     }
 }

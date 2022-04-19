@@ -27,11 +27,11 @@
     addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index, documents: List[ListItem])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index, documents: List[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addDocument.title"))) {
 
-    @formHelper(action = routes.AddDocumentController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddDocumentController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

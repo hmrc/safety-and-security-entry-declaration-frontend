@@ -17,24 +17,26 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 
-case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
+final case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "removePackage"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(DeriveNumberOfPackages(itemIndex)) match {
-      case Some(n) if n > 0 =>
-        goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-      case _ =>
-        goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, itemIndex, Index(0))
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.RemovePackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfPackages(itemIndex)).map {
+      case n if n > 0 => AddPackagePage(itemIndex)
+      case _ => KindOfPackagePage(itemIndex, Index(0))
+    }.getOrElse(KindOfPackagePage(itemIndex, Index(0)))
+
 }

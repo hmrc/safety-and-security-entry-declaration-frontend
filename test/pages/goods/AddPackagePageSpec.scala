@@ -18,36 +18,65 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, KindOfPackage, NormalMode, ProvideGrossWeight}
+import models.{Index, KindOfPackage}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
-import pages.predec.ProvideGrossWeightPage
+import pages.transport.AnyOverallDocumentsPage
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
   "AddPackagePage" - {
 
-    "must navigate in Normal Mode" - {
-      "to Add Any Documents" in {
-        val answers =
-          emptyUserAnswers
-            .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+    val kindOfPackage = KindOfPackage.standardKindsOfPackages.head
 
-        AddPackagePage(index)
-          .navigate(NormalMode, answers, index, addAnother = false)
-          .mustEqual(
-            goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
-          )
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "when the answer is yes" - {
+
+        "to Kind of Package for the next index" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(KindOfPackagePage(index, Index(0)), kindOfPackage).success.value
+              .set(NumberOfPackagesPage(index, Index(0)), 1).success.value
+              .set(AddMarkOrNumberPage(index, Index(0)), true).success.value
+              .set(MarkOrNumberPage(index, Index(0)), "abc").success.value
+              .set(AddPackagePage(index), true).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(waypoints, answers.lrn, index, Index(1)))
+        }
       }
-    }
 
-    "must navigate in Check Mode" - {
+      "when the answer is no" - {
 
-      "to Check Your Answers" in {
+        "to Add Any Documents when the user gave any overall documents" in {
 
-        AddPackagePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          val answers =
+            emptyUserAnswers
+              .set(AnyOverallDocumentsPage, true).success.value
+              .set(KindOfPackagePage(index, Index(0)), kindOfPackage).success.value
+              .set(NumberOfPackagesPage(index, Index(0)), 1).success.value
+              .set(AddMarkOrNumberPage(index, Index(0)), true).success.value
+              .set(MarkOrNumberPage(index, Index(0)), "abc").success.value
+              .set(AddPackagePage(index), false).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(waypoints, answers.lrn, index))
+        }
+
+        "to Document for the first index when the user did not give any overall documents" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(AnyOverallDocumentsPage, false).success.value
+              .set(AddPackagePage(index), false).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.DocumentController.onPageLoad(waypoints, answers.lrn, index, Index(0)))
+        }
       }
     }
   }

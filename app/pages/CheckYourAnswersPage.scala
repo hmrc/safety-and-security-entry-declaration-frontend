@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json.{Json, Reads}
+object CheckYourAnswersPage extends CheckAnswersPage {
 
-case class GoodItem(commodityCode: String)
-
-object GoodItem {
-  implicit val format = Json.format[GoodItem]
+  override val urlFragment: String = "check-answers"
 }

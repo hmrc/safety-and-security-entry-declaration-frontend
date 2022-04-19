@@ -19,11 +19,10 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.NumberOfPiecesFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,11 +35,12 @@ class NumberOfPiecesControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new NumberOfPiecesFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
   val validAnswer = 1
 
   lazy val numberOfPiecesRoute =
-    routes.NumberOfPiecesController.onPageLoad(NormalMode, lrn, index, index).url
+    routes.NumberOfPiecesController.onPageLoad(waypoints, lrn, index, index).url
 
   "NumberOfPieces Controller" - {
 
@@ -56,7 +56,7 @@ class NumberOfPiecesControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NumberOfPiecesView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -80,7 +80,7 @@ class NumberOfPiecesControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(validAnswer),
-          NormalMode,
+          waypoints,
           lrn,
           index,
           index
@@ -110,7 +110,7 @@ class NumberOfPiecesControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.NumberOfPiecesPage(index, index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -132,7 +132,7 @@ class NumberOfPiecesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString

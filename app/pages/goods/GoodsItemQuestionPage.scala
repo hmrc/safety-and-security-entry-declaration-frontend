@@ -16,18 +16,12 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.NormalMode
+import pages.{AddToListQuestionPage, AddToListSection, GoodsItemSection, QuestionPage, Waypoint}
 
-final case class GoodsItemCrnPage(index: Index) extends QuestionPage[String] {
+trait GoodsItemQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+  override val addItemWaypoint: Waypoint = AddGoodsPage.waypoint(NormalMode)
 
-  override def toString: String = "crn"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
+  override val section: AddToListSection = GoodsItemSection
 }

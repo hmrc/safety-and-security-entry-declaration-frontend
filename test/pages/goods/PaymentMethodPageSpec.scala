@@ -18,37 +18,21 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode, PaymentMethod}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
+
 class PaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
   "PaymentMethodPage" - {
 
-    beRetrievable[PaymentMethod](PaymentMethodPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[PaymentMethod](PaymentMethodPage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[PaymentMethod](PaymentMethodPage(index))
+      "to Check Goods item" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to CYA" in {
-
-        PaymentMethodPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-
-          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        PaymentMethodPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        PaymentMethodPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(waypoints,emptyUserAnswers.lrn,index))
       }
     }
   }

@@ -19,12 +19,13 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.ItemContainerNumberFormProvider
-import models.{Container, NormalMode}
+import models.Container
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.goods.ItemContainerNumberPage
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,8 +39,9 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new ItemContainerNumberFormProvider()
   val form = formProvider()
   val container = arbitrary[Container].sample.value
+  val waypoints: Waypoints = EmptyWaypoints
 
-  lazy val itemContainerNumberRoute = routes.ItemContainerNumberController.onPageLoad(NormalMode, lrn, index, index).url
+  lazy val itemContainerNumberRoute = routes.ItemContainerNumberController.onPageLoad(waypoints, lrn, index, index).url
 
   "ItemContainerNumber Controller" - {
 
@@ -55,7 +57,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ItemContainerNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -73,7 +75,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(container), NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(container), waypoints, lrn, index, index)(request, messages(application)).toString
       }
     }
 
@@ -97,7 +99,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(ItemContainerNumberPage(index,index), container).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ItemContainerNumberPage(index,index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual ItemContainerNumberPage(index,index).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -118,7 +120,7 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, index)(request, messages(application)).toString
       }
     }
 

@@ -17,30 +17,24 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[Boolean] {
+case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "addMarkOrNumber"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(AddMarkOrNumberPage(itemIndex, packageIndex)) match {
-      case Some(true) =>
-        goodsRoutes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
-      case Some(false) =>
-        goodsRoutes.CheckPackageItemController.onPageLoad(
-          NormalMode,
-          answers.lrn,
-          itemIndex,
-          packageIndex
-        )
-      case _ => routes.JourneyRecoveryController.onPageLoad()
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.AddMarkOrNumberController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => MarkOrNumberPage(itemIndex, packageIndex)
+      case false => CheckPackageItemPage(itemIndex, packageIndex)
+    }.orRecover
 }

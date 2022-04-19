@@ -18,7 +18,9 @@ package controllers.goods
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.goods.CheckGoodsItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,34 +39,42 @@ class CheckGoodItemController @Inject() (
   with I18nSupport {
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index
   ): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
+      val thisPage = CheckGoodsItemPage(itemIndex)
+
       val list = SummaryListViewModel(
         rows = Seq(
-          CommodityCodeKnownSummary.row(request.userAnswers, itemIndex),
-          CommodityCodeSummary.row(request.userAnswers, itemIndex),
-          GoodsDescriptionSummary.row(request.userAnswers, itemIndex),
-          ConsignorSummary.row(request.userAnswers,itemIndex),
-          ConsigneeSummary.row(request.userAnswers,itemIndex),
-          NotifiedPartySummary.row(request.userAnswers,itemIndex),
-          LoadingPlaceSummary.row(request.userAnswers,itemIndex),
-          UnloadingPlaceSummary.row(request.userAnswers,itemIndex),
-          AnyShippingContainersSummary.row(request.userAnswers,itemIndex),
-          ItemContainerNumberSummary.checkAnswersRow(request.userAnswers,itemIndex),
-          GoodsItemGrossWeightSummary.row(request.userAnswers,itemIndex),
-          PackageSummary.checkAnswersRow(request.userAnswers, itemIndex),
-          AddAnyDocumentsSummary.row(request.userAnswers,itemIndex),
-          DocumentSummary.checkAnswersRow(request.userAnswers,itemIndex),
-          DangerousGoodCodeSummary.row(request.userAnswers,itemIndex),
-          DangerousGoodSummary.row(request.userAnswers,itemIndex),
-          PaymentMethodSummary.row(request.userAnswers,itemIndex)
+          CommodityCodeKnownSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+          CommodityCodeSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+          GoodsDescriptionSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+          ConsignorSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          ConsigneeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          NotifiedPartySummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          LoadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          UnloadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          AnyShippingContainersSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          ItemContainerNumberSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
+          GoodsItemGrossWeightSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          PackageSummary.checkAnswersRow(request.userAnswers, itemIndex, waypoints, thisPage),
+          AddAnyDocumentsSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          DocumentSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
+          DangerousGoodCodeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          DangerousGoodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          PaymentMethodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage)
         ).flatten
       )
 
-      Ok(view(mode, list, lrn))
+      Ok(view(waypoints, list, lrn, itemIndex))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckGoodsItemPage(index).navigate(waypoints, request.userAnswers))
     }
 }

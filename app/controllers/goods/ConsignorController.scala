@@ -20,6 +20,7 @@ import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.ConsignorFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.Waypoints
 import pages.goods.ConsignorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,7 +47,7 @@ class ConsignorController @Inject() (
   with I18nSupport
   with AnswerExtractor {
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
         getAnswer(AllConsignorsQuery) {
@@ -60,11 +61,11 @@ class ConsignorController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, mode, lrn, itemIndex, radioOptions))
+            Ok(view(preparedForm, waypoints, lrn, itemIndex, radioOptions))
           }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         getAnswerAsync(AllConsignorsQuery) {
@@ -77,13 +78,13 @@ class ConsignorController @Inject() (
               .fold(
                 formWithErrors => {
                   val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
-                  Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, radioOptions)))
+                  Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, radioOptions)))
                 },
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsignorPage(itemIndex), value))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(ConsignorPage(itemIndex).navigate(mode, updatedAnswers))
+                  } yield Redirect(ConsignorPage(itemIndex).navigate(waypoints, updatedAnswers))
               )
           }
     }

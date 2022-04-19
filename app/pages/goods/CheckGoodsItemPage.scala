@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package pages.goods
 
-import models.{GoodItem}
-import play.api.libs.json.JsPath
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber}
+import pages.{CheckAnswersPage, Waypoints}
+import play.api.mvc.Call
 
-final case class AllGoodsQuery() extends Gettable[List[GoodItem]] {
-  override def path: JsPath = JsPath \ "goodsItems"
+final case class CheckGoodsItemPage(index: Index) extends CheckAnswersPage {
+
+  override val urlFragment: String = s"check-item-${index.position}"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index)
 }

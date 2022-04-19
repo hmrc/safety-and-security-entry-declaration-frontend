@@ -18,48 +18,31 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
   "CommodityCodeKnownPage" - {
 
-    beRetrievable[Boolean](CommodityCodeKnownPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](CommodityCodeKnownPage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[Boolean](CommodityCodeKnownPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to CommodityCodePage when answer is yes" in {
+      "to Commodity Code when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
 
-        CommodityCodeKnownPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index))
+        CommodityCodeKnownPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.CommodityCodeController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to GoodsDescriptionPage when answer is no" in {
+      "to Goods Description when the answer is no" in {
 
         val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), false).success.value
 
-        CommodityCodeKnownPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.GoodsDescriptionController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        CommodityCodeKnownPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        CommodityCodeKnownPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.GoodsDescriptionController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
   }

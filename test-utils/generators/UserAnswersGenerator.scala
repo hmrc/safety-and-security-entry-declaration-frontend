@@ -21,7 +21,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages._
-import pages.consignees._
 import pages.consignors._
 import pages.goods._
 import pages.predec._
@@ -35,7 +34,6 @@ trait UserAnswersGenerator extends TryValues {
   val generators: Seq[Gen[(QuestionPage[_], JsValue)]] =
     arbitrary[(AnyShippingContainersPage, JsValue)] ::
     arbitrary[(ItemContainerNumberPage, JsValue)] ::
-    arbitrary[(UnloadingPlacePage, JsValue)] ::
     arbitrary[(NotifiedPartyPage, JsValue)] ::
     arbitrary[(LoadingPlacePage, JsValue)] ::
     arbitrary[(ConsignorPage, JsValue)] ::
@@ -57,25 +55,10 @@ trait UserAnswersGenerator extends TryValues {
     arbitrary[(PlaceOfUnloadingPage, JsValue)] ::
     arbitrary[(PlaceOfLoadingPage, JsValue)] ::
     arbitrary[(PaymentMethodPage, JsValue)] ::
-    arbitrary[(AddPaymentMethodPage, JsValue)] ::
-//    arbitrary[(NotifiedPartyNamePage, JsValue)] ::
-//    arbitrary[(NotifiedPartyIdentityPage, JsValue)] ::
-//    arbitrary[(NotifiedPartyEORIPage, JsValue)] ::
-//    arbitrary[(NotifiedPartyAddressPage, JsValue)] ::
-//    arbitrary[(ConsigneeNamePage, JsValue)] ::
-//    arbitrary[(ConsigneeIdentityPage, JsValue)] ::
-//    arbitrary[(ConsigneeEORIPage, JsValue)] ::
-//    arbitrary[(ConsigneeAddressPage, JsValue)] ::
-//    arbitrary[(ConsignorNamePage, JsValue)] ::
-//    arbitrary[(ConsignorEORIPage, JsValue)] ::
-//    arbitrary[(ConsignorAddressPage, JsValue)] ::
-//    arbitrary[(AnyConsigneesKnownPage.type, JsValue)] ::
     arbitrary[(GoodsItemGrossWeightPage, JsValue)] ::
     arbitrary[(ConsignorIdentityPage, JsValue)] ::
     arbitrary[(DangerousGoodCodePage, JsValue)] ::
     arbitrary[(DangerousGoodPage, JsValue)] ::
-    arbitrary[(GoodsItemCrnKnownPage, JsValue)] ::
-    arbitrary[(GoodsItemCrnPage, JsValue)] ::
     arbitrary[(DocumentPage, JsValue)] ::
     arbitrary[(AddAnyDocumentsPage, JsValue)] ::
     arbitrary[(NumberOfPiecesPage, JsValue)] ::

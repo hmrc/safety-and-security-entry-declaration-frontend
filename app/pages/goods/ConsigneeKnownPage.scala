@@ -18,20 +18,23 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class ConsigneeKnownPage(itemIndex: Index) extends QuestionPage[Boolean] {
+final case class ConsigneeKnownPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "consigneeKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(ConsigneeKnownPage(itemIndex)).map {
-      case true  => goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-      case false => goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.ConsigneeKnownController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => ConsigneePage(itemIndex)
+      case false => NotifiedPartyPage(itemIndex)
+    }.orRecover
 }

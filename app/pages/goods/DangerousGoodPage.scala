@@ -17,23 +17,23 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DangerousGoodPage(index: Index) extends QuestionPage[Boolean] {
+case class DangerousGoodPage(index: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "dangerousGood"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(DangerousGoodPage(index)) match {
-      case Some(true) => goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(false) => goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode,answers.lrn,index)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.DangerousGoodController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => DangerousGoodCodePage(index)
+      case false => PaymentMethodPage(index)
+    }.orRecover
 }

@@ -14,32 +14,17 @@
  * limitations under the License.
  */
 
-package forms.goods
+package pages.goods
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import controllers.goods.{routes => goodsRoutes}
+import models.{Index, LocalReferenceNumber}
+import pages.{CheckAnswersPage, Waypoints}
+import play.api.mvc.Call
 
-class GoodsItemCrnKnownFormProviderSpec extends BooleanFieldBehaviours {
+final case class CheckPackageItemPage(itemIndex: Index, packageIndex: Index) extends CheckAnswersPage {
 
-  val requiredKey = "goodsItemCrnKnown.error.required"
-  val invalidKey = "error.boolean"
+  override val urlFragment: String = s"check-package-${itemIndex.position}-${packageIndex.position}"
 
-  val form = new GoodsItemCrnKnownFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.CheckPackageItemController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
 }

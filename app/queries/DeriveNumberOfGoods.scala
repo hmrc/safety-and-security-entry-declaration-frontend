@@ -18,7 +18,7 @@ package queries
 
 import play.api.libs.json.{JsPath, JsValue}
 
-case class DeriveNumberOfGoods() extends Derivable[List[JsValue], Int] {
+case object DeriveNumberOfGoods extends Derivable[List[JsValue], Int] {
 
   override val derive: List[JsValue] => Int = _.size
 

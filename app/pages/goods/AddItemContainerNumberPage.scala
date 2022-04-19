@@ -17,30 +17,34 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
-import pages.Page
+import models.{Index, LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
+import pages.{AddItemPage, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfContainers
 
-final case class AddItemContainerNumberPage(index: Index) extends Page {
+final case class AddItemContainerNumberPage(index: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call = {
-    if (addAnother) {
-      answers.get(DeriveNumberOfContainers(itemIndex)) match {
-        case Some(size) =>
-          goodsRoutes.ItemContainerNumberController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      answers.get(ProvideGrossWeightPage) match {
-        case Some(ProvideGrossWeight.PerItem) =>
-          goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-        case Some(ProvideGrossWeight.Overall) => goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
-        case _ =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    }
-  }
+  override val normalModeUrlFragment: String = s"add-container-number-${index.position}"
+  override val checkModeUrlFragment: String = s"change-container-number-${index.position}"
+
+  override def path: JsPath = JsPath \ "addContainerNumber"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.AddItemContainerNumberController.onPageLoad(waypoints, lrn, index)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfContainers(index))
+          .map(n => ItemContainerNumberPage(index, Index(n)))
+          .orRecover
+
+      case false =>
+        answers.get(ProvideGrossWeightPage).map {
+          case ProvideGrossWeight.PerItem => GoodsItemGrossWeightPage(index)
+          case ProvideGrossWeight.Overall => KindOfPackagePage(index, Index(0))
+        }.orRecover
+    }.orRecover
 }

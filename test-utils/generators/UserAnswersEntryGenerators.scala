@@ -46,14 +46,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryUnloadingPlaceUserAnswersEntry: Arbitrary[(UnloadingPlacePage, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[UnloadingPlacePage]
-        value <- arbitrary[UnloadingPlace].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryNotifiedPartyUserAnswersEntry: Arbitrary[(NotifiedPartyPage, JsValue)] =
     Arbitrary {
       for {
@@ -247,15 +239,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
       } yield (page, value)
     }
 
-  implicit lazy val arbitraryAddPaymentMethodUserAnswersEntry
-    : Arbitrary[(AddPaymentMethodPage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[AddPaymentMethodPage]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
   implicit lazy val arbitraryNotifiedPartyNameUserAnswersEntry
     : Arbitrary[(NotifiedPartyNamePage, JsValue)] =
     Arbitrary {
@@ -387,23 +370,6 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page <- arbitrary[DangerousGoodCodePage]
-        value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryGoodsItemCrnKnownUserAnswersEntry
-    : Arbitrary[(GoodsItemCrnKnownPage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[GoodsItemCrnKnownPage]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
-
-  implicit lazy val arbitraryGoodsItemCrnUserAnswersEntry: Arbitrary[(GoodsItemCrnPage, JsValue)] =
-    Arbitrary {
-      for {
-        page <- arbitrary[GoodsItemCrnPage]
         value <- arbitrary[String].suchThat(_.nonEmpty).map(Json.toJson(_))
       } yield (page, value)
     }

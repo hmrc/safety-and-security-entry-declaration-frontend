@@ -17,36 +17,31 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.KindOfPackage.{bulkKindsOfPackage, standardKindsOfPackages, unpackedKindsOfPackage}
-import models.{Index, KindOfPackage, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.KindOfPackage.{bulkKindsOfPackage, unpackedKindsOfPackage}
+import models.{Index, KindOfPackage, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[KindOfPackage] {
+case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends GoodsItemQuestionPage[KindOfPackage] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "kindOfPackage"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(KindOfPackagePage(itemIndex, packageIndex)) match {
-      case Some(b) if bulkKindsOfPackage.contains(b) =>
-        goodsRoutes.AddMarkOrNumberController.onPageLoad(
-          NormalMode,
-          answers.lrn,
-          itemIndex,
-          packageIndex
-        )
-      case Some(s) if standardKindsOfPackages.contains(s) =>
-        goodsRoutes.NumberOfPackagesController.onPageLoad(
-          NormalMode,
-          answers.lrn,
-          itemIndex,
-          packageIndex
-        )
-      case Some(u) if unpackedKindsOfPackage.contains(u) =>
-        goodsRoutes.NumberOfPiecesController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.KindOfPackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case b if bulkKindsOfPackage.contains(b) =>
+        AddMarkOrNumberPage(itemIndex, packageIndex)
+
+      case u if unpackedKindsOfPackage.contains(u) =>
+        NumberOfPiecesPage(itemIndex, packageIndex)
+
+      case _ =>
+        NumberOfPackagesPage(itemIndex, packageIndex)
+    }.orRecover
 }

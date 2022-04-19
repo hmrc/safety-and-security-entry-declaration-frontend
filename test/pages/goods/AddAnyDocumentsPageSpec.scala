@@ -18,48 +18,32 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.Index
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnyDocumentsPage" - {
 
-    beRetrievable[Boolean](AddAnyDocumentsPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](AddAnyDocumentsPage(index))
-
-    beRemovable[Boolean](AddAnyDocumentsPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Document for the first index when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(AddAnyDocumentsPage(index), true).success.value
 
-        AddAnyDocumentsPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, index))
+        AddAnyDocumentsPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.DocumentController.onPageLoad(waypoints, answers.lrn, index, Index(0)))
       }
 
       "to Dangerous Goods when the answer is no" in {
 
         val answers = emptyUserAnswers.set(AddAnyDocumentsPage(index), false).success.value
 
-        AddAnyDocumentsPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddAnyDocumentsPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        AddAnyDocumentsPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.DangerousGoodController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
   }

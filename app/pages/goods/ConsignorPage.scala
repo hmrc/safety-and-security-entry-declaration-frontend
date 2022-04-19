@@ -17,29 +17,31 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{JourneyRecoveryPage, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 
-final case class ConsignorPage(itemIndex: Index) extends QuestionPage[Int] {
+final case class ConsignorPage(itemIndex: Index) extends GoodsItemQuestionPage[Int] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "consignorKey"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call = {
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.ConsignorController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     val c = answers.get(DeriveNumberOfConsignees).getOrElse(0)
     val n = answers.get(DeriveNumberOfNotifiedParties).getOrElse(0)
 
-    if (c > 0 && n > 0) { goodsRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
-    else if (c > 1)     { goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
-    else if (n > 1)     { goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, itemIndex) }
-    else if (c == 1)    { ConsigneePage(itemIndex).navigate(NormalMode, answers) }
-    else if (n == 1)    { NotifiedPartyPage(itemIndex).navigate(NormalMode, answers) }
-    else                { routes.JourneyRecoveryController.onPageLoad() }
+    if (c > 0 && n > 0) ConsigneeKnownPage(itemIndex)
+    else if (c > 1)     ConsigneePage(itemIndex)
+    else if (n > 1)     NotifiedPartyPage(itemIndex)
+    else if (c == 1)    ConsigneePage(itemIndex).nextPage(waypoints, answers)
+    else if (n == 1)    NotifiedPartyPage(itemIndex).nextPage(waypoints, answers)
+    else                JourneyRecoveryPage
   }
 }

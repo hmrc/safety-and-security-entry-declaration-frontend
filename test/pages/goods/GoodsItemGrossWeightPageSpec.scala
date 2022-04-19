@@ -18,37 +18,22 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import models.Index
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GoodsItemGrossWeightPage" - {
+    
+    "must navigate when there are no waypoints" - {
 
-    beRetrievable[BigDecimal](GoodsItemGrossWeightPage(index))
-
-    beSettable[BigDecimal](GoodsItemGrossWeightPage(index))
-
-    beRemovable[BigDecimal](GoodsItemGrossWeightPage(index))
-
-    "must navigate in Normal Mode" - {
-
+      val waypoints = EmptyWaypoints
+      
       "to Item Packaging" in {
 
-        GoodsItemGrossWeightPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, Index(0)))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        GoodsItemGrossWeightPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        GoodsItemGrossWeightPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(waypoints, emptyUserAnswers.lrn, index, Index(0)))
       }
     }
   }

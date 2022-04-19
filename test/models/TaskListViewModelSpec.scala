@@ -114,14 +114,14 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(answers)(messages(application))
 
-          result.rows(goodsIdx).link mustEqual goodsRoutes.AddGoodsController.onPageLoad(NormalMode,answers.lrn)
+          result.rows(goodsIdx).link mustEqual goodsRoutes.AddGoodsController.onPageLoad(EmptyWaypoints,answers.lrn)
         }
       }
       "When have don't have any" - {
         "we go to the first good input" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(goodsIdx).link mustEqual goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, emptyUserAnswers.lrn, Index(0))
+          result.rows(goodsIdx).link mustEqual goodsRoutes.CommodityCodeKnownController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, Index(0))
         }
       }
     }

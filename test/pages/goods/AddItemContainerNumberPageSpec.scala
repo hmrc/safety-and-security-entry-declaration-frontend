@@ -18,9 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Container, Index, NormalMode, ProvideGrossWeight}
-import org.scalacheck.Arbitrary.arbitrary
+import models.{Container, Index, ProvideGrossWeight}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import pages.predec.ProvideGrossWeightPage
 
@@ -28,51 +27,49 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
   "Add Item Container Number Page" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-      "to Item Container Number for the next index if the answer is yes" in {
+      val waypoints = EmptyWaypoints
 
-        val container = arbitrary[Container].sample.value
+      "when the answer is yes" - {
 
-        val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, Index(0)), container).success.value
+        "to Item Container Number for the next index" in {
 
-        AddItemContainerNumberPage(index)
-          .navigate(NormalMode, answers, index, addAnother = true)
-          .mustEqual(goodsRoutes.ItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, index, Index(1)))
+          val answers =
+            emptyUserAnswers
+              .set(ItemContainerNumberPage(index, Index(0)), Container("abc")).success.value
+              .set(AddItemContainerNumberPage(index), true).success.value
+
+          AddItemContainerNumberPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.ItemContainerNumberController.onPageLoad(waypoints, answers.lrn, index, Index(1)))
+        }
       }
 
-      "to item packaging when weight is overall" in {
+      "when the answer is no" - {
 
-        val container = arbitrary[Container].sample.value
+        "to Goods Item Gross Weight when the user chose to give weight per item" in {
 
-        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-          .set(ItemContainerNumberPage(index, Index(0)), container).success.value
+          val answers =
+            emptyUserAnswers
+              .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
+              .set(ItemContainerNumberPage(index, Index(0)), Container("abc")).success.value
+              .set(AddItemContainerNumberPage(index), false).success.value
 
-        AddItemContainerNumberPage(index)
-          .navigate(NormalMode, answers, index, addAnother = false)
-          .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0)))
-      }
+          AddItemContainerNumberPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.GoodsItemGrossWeightController.onPageLoad(waypoints, answers.lrn, index))
+        }
 
-      "to item gross weight when weight is per item" in {
+        "to Kind of Package for the first index when the user chose to give weight overall" in {
 
-        val container = arbitrary[Container].sample.value
+          val answers =
+            emptyUserAnswers
+              .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+              .set(ItemContainerNumberPage(index, Index(0)), Container("abc")).success.value
+              .set(AddItemContainerNumberPage(index), false).success.value
 
-        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-          .set(ItemContainerNumberPage(index, Index(0)), container).success.value
-
-        AddItemContainerNumberPage(index)
-          .navigate(NormalMode, answers, index, addAnother = false)
-          .mustEqual(goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddItemContainerNumberPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          AddItemContainerNumberPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(waypoints, answers.lrn, index, Index(0)))
+        }
       }
     }
   }

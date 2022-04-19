@@ -16,13 +16,34 @@
 
 package pages.goods
 
-import models.Index
-import pages.QuestionPage
+import controllers.goods.{routes => goodsRoutes}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.transport.AnyOverallDocumentsPage
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import queries.DeriveNumberOfDocuments
 
-final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) extends QuestionPage[Boolean] {
+final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "removeDocument"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.RemoveDocumentController.onPageLoad(waypoints, lrn, itemIndex, documentIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+
+    val noDocumentsRoute: Page =
+      answers.get(AnyOverallDocumentsPage).map {
+        case true => AddAnyDocumentsPage(itemIndex)
+        case false => DocumentPage(itemIndex, Index(0))
+      }.orRecover
+
+    answers.get(DeriveNumberOfDocuments(itemIndex)).map {
+      case n if n > 0 => AddDocumentPage(itemIndex)
+      case _ => noDocumentsRoute
+    }.getOrElse(noDocumentsRoute)
+  }
 }

@@ -17,26 +17,34 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.transport.AnyOverallDocumentsPage
+import pages.{AddItemPage, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
 
-case class AddPackagePage(itemIndex: Index) extends Page {
+case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfPackages(itemIndex)) match {
-        case Some(size) =>
-          goodsRoutes.KindOfPackageController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode => goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = s"add-package-${itemIndex.position}"
+  override val checkModeUrlFragment: String = s"change-pacakge-${itemIndex.position}"
+
+  override def path: JsPath = JsPath \ "addPackage"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.AddPackageController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfPackages(itemIndex))
+          .map(n => KindOfPackagePage(itemIndex, Index(n)))
+          .orRecover
+
+      case false =>
+        answers.get(AnyOverallDocumentsPage).map {
+          case true => AddAnyDocumentsPage(itemIndex)
+          case false => DocumentPage(itemIndex, Index(0))
+        }.orRecover
+    }.orRecover
 }

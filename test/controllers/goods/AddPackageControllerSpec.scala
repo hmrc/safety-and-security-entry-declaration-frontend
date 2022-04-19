@@ -19,33 +19,35 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.AddPackageFormProvider
-import models.{KindOfPackage, NormalMode}
+import models.KindOfPackage
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{EmptyWaypoints, Waypoints}
 import pages.goods.{AddPackagePage, KindOfPackagePage, MarkOrNumberPage, NumberOfPackagesPage}
 import play.api.i18n.Messages
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import viewmodels.checkAnswers.goods.PackageSummary
 import views.html.goods.AddPackageView
+
+import scala.concurrent.Future
 
 class AddPackageControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddPackageFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
-  lazy val addPackageRoute = routes.AddPackageController.onPageLoad(NormalMode, lrn, index).url
+  lazy val addPackageRoute = routes.AddPackageController.onPageLoad(waypoints, lrn, index).url
 
   val baseAnswers =
     emptyUserAnswers
-      .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head)
-      .success
-      .value
-      .set(NumberOfPackagesPage(index, index), 1)
-      .success
-      .value
-      .set(MarkOrNumberPage(index, index), "Mark or number")
-      .success
-      .value
+      .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head).success.value
+      .set(NumberOfPackagesPage(index, index), 1).success.value
+      .set(MarkOrNumberPage(index, index), "Mark or number").success.value
 
   "AddPackage Controller" - {
 
@@ -61,19 +63,26 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddPackageView]
 
         implicit val msgs: Messages = messages(application)
-        val list = PackageSummary.rows(baseAnswers, index)
+        val list = PackageSummary.rows(baseAnswers, index, waypoints, AddPackagePage(index))
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, list)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, list)(
           request,
           implicitly
         ).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
 
       running(application) {
         val request =
@@ -81,11 +90,13 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
+        val expectedAnswers = baseAnswers.set(AddPackagePage(index), true).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AddPackagePage(index)
-          .navigate(NormalMode, baseAnswers, index, addAnother = true)
+          .navigate(waypoints, expectedAnswers)
           .url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -105,10 +116,10 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         implicit val msgs: Messages = messages(application)
-        val list = PackageSummary.rows(emptyUserAnswers, index)
+        val list = PackageSummary.rows(emptyUserAnswers, index, waypoints, AddPackagePage(index))
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, list)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, list)(
           request,
           messages(application)
         ).toString

@@ -18,48 +18,32 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.{routes => baseRoutes}
-import models.{CheckMode, NormalMode}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
   "DangerousGoodPage" - {
 
-    beRetrievable[Boolean](DangerousGoodPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](DangerousGoodPage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[Boolean](DangerousGoodPage(index))
-
-    "must navigate in Normal Mode" - {
 
       "to dangerous good code page when answer is yes" in {
 
         val answers = emptyUserAnswers.set(DangerousGoodPage(index), true).success.value
 
-        DangerousGoodPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
+        DangerousGoodPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.DangerousGoodCodeController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to goods CYA when answer is no" in {
+      "to payment method when answer is no" in {
 
         val answers = emptyUserAnswers.set(DangerousGoodPage(index), false).success.value
 
-        DangerousGoodPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        DangerousGoodPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        DangerousGoodPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.PaymentMethodController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
   }

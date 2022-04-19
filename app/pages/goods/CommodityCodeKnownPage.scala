@@ -17,23 +17,23 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class CommodityCodeKnownPage(index: Index) extends QuestionPage[Boolean] {
+case class CommodityCodeKnownPage(index: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "commodityCodeKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(CommodityCodeKnownPage(index)) match {
-      case Some(true) => goodsRoutes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(false) => goodsRoutes.GoodsDescriptionController.onPageLoad(NormalMode, answers.lrn, index)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.CommodityCodeKnownController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => CommodityCodePage(index)
+      case false => GoodsDescriptionPage(index)
+    }.orRecover
 }

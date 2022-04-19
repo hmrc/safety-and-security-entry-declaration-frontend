@@ -24,11 +24,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("removeContainer.title"))) {
 
-    @formHelper(action = routes.RemoveItemContainerNumberController.onSubmit(mode, lrn, itemIndex, containerIndex), 'autoComplete -> "off") {
+    @formHelper(action = routes.RemoveItemContainerNumberController.onSubmit(waypoints, lrn, itemIndex, containerIndex), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

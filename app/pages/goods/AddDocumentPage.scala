@@ -17,26 +17,30 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, Page, QuestionPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfDocuments
 
-final case class AddDocumentPage(index: Index) extends Page {
+final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfDocuments(itemIndex)) match {
-        case Some(size) =>
-          goodsRoutes.DocumentController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          goodsRoutes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override val normalModeUrlFragment: String = s"add-document-${index.position}"
+  override val checkModeUrlFragment: String = s"change-document-${index.position}"
+
+  override def path: JsPath = JsPath \ "addDocument"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.AddDocumentController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfDocuments(index))
+          .map(n => DocumentPage(index, Index(n)))
+          .orRecover
+
+      case false =>
+        DangerousGoodPage(index)
+    }.orRecover
 }

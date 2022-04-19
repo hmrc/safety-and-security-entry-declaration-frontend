@@ -18,8 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.NumberOfPiecesFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.NumberOfPiecesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.NumberOfPiecesView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NumberOfPiecesController @Inject() (
@@ -45,7 +46,7 @@ class NumberOfPiecesController @Inject() (
   val form = formProvider()
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
@@ -58,11 +59,11 @@ class NumberOfPiecesController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex, packageIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex, packageIndex))
     }
 
   def onSubmit(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
@@ -72,7 +73,7 @@ class NumberOfPiecesController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(
@@ -80,7 +81,7 @@ class NumberOfPiecesController @Inject() (
               )
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(
-              NumberOfPiecesPage(itemIndex, packageIndex).navigate(mode, updatedAnswers)
+              NumberOfPiecesPage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers)
             )
         )
     }

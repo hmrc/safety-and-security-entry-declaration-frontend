@@ -18,8 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.RemovePackageFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.RemovePackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemovePackageView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemovePackageController @Inject() (
@@ -46,18 +47,18 @@ class RemovePackageController @Inject() (
   val form = formProvider()
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      Ok(view(form, mode, lrn, itemIndex, packageIndex))
+      Ok(view(form, waypoints, lrn, itemIndex, packageIndex))
     }
 
   def onSubmit(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
@@ -67,16 +68,16 @@ class RemovePackageController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
           value =>
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(PackageQuery(itemIndex, packageIndex)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(mode, updatedAnswers))
+              } yield Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(mode, request.userAnswers))
+                Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, request.userAnswers))
               )
             }
         )

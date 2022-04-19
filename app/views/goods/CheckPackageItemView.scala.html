@@ -18,10 +18,12 @@
 
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
-@(mode: Mode, list: SummaryList, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkPackageItem.title"))) {
 
@@ -29,5 +31,8 @@
 
     @govukSummaryList(list)
 
-    <a href="@routes.AddPackageController.onPageLoad(mode, lrn, itemIndex)" class="govuk-button" role="button">@messages("site.continue")</a>
+    @formHelper(action = routes.CheckPackageItemController.onSubmit(waypoints, lrn, itemIndex, packageIndex)) {
+
+        @govukButton(ButtonViewModel(messages("site.continue")))
+    }
 }

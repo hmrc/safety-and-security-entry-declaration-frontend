@@ -17,22 +17,30 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, Mode, UserAnswers}
-import pages.Page
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, Page, QuestionPage, TaskListPage, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfGoods
 
-final case class AddGoodsPage() extends Page {
+case object AddGoodsPage extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfGoods()) match {
-        case Some(size) =>
-          goodsRoutes.CommodityCodeKnownController.onPageLoad(mode, answers.lrn, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      routes.IndexController.onPageLoad
-    }
+  override val normalModeUrlFragment: String = "add-goods-item"
+  override val checkModeUrlFragment: String = "change-goods-item"
+
+  override def path: JsPath = JsPath \ "addGoodsItem"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.AddGoodsController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfGoods)
+          .map(n => CommodityCodeKnownPage(Index(n)))
+        .orRecover
+
+      case false =>
+        TaskListPage
+    }.orRecover
 }

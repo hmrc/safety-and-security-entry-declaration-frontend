@@ -19,14 +19,14 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.RemoveItemContainerNumberFormProvider
-import models.{Container,Index, NormalMode, ProvideGrossWeight}
+import models.{Container, Index, ProvideGrossWeight}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
 import pages.goods.{ItemContainerNumberPage, RemoveItemContainerNumberPage}
 import pages.predec.ProvideGrossWeightPage
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,11 +41,13 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
   val container = arbitrary[Container].sample.value
   val formProvider = new RemoveItemContainerNumberFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
+
   private val baseAnswers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
     .set(ItemContainerNumberPage(index, Index(0)), container).success.value
 
   lazy val removeContainerRoute =
-    routes.RemoveItemContainerNumberController.onPageLoad(NormalMode, lrn, index, index).url
+    routes.RemoveItemContainerNumberController.onPageLoad(waypoints, lrn, index, index).url
 
   "Remove Container Controller" - {
 
@@ -61,7 +63,7 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
         val view = application.injector.instanceOf[RemoveItemContainerNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -82,7 +84,7 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -110,7 +112,7 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveItemContainerNumberPage(index,index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -137,7 +139,7 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveItemContainerNumberPage(index,index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -159,7 +161,7 @@ class RemoveItemContainerNumberControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString

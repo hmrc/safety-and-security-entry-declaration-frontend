@@ -24,3 +24,4 @@ case object ConsignorSection extends AddToListSection
 case object CountryEnRouteSection extends AddToListSection
 case object PlaceOfLoadingSection extends AddToListSection
 case object PlaceOfUnloadingSection extends AddToListSection
+case object GoodsItemSection extends AddToListSection

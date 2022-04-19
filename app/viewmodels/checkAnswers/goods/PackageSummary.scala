@@ -18,35 +18,34 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, NormalMode, UserAnswers}
+import pages.goods.{AddPackagePage, CheckPackageItemPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.AllPackageItemsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import controllers.transport.{routes => transportRoutes}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object PackageSummary {
 
-  // TODO: Introduce `Mode`
-  def rows(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): Seq[ListItem] =
+  def rows(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: AddItemPage)
+          (implicit messages: Messages): Seq[ListItem] =
     answers.get(AllPackageItemsQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
       case (packageItem, index) =>
         ListItem(
           name = HtmlFormat.escape(packageItem.kind.code + " - " + packageItem.kind.name).toString,
-          changeUrl = goodsRoutes.CheckPackageItemController
-            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
-            .url,
+          changeUrl = CheckPackageItemPage(itemIndex, Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
           removeUrl = goodsRoutes.RemovePackageController
-            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .onPageLoad(waypoints, answers.lrn, itemIndex, Index(index))
             .url
         )
     }
 
-
-  def checkAnswersRow(answers: UserAnswers,  itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers,  itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllPackageItemsQuery(itemIndex)).map {
       packages =>
         val value = packages.map(c => s"${c.kind.name} (${c.kind.code})").mkString("<br>")
@@ -57,7 +56,7 @@ object PackageSummary {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn).url
+              AddPackagePage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("kindOfPackage.change.hidden"))
           )
         )

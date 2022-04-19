@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Index, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.goods.PaymentMethodPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,7 +29,8 @@ import viewmodels.implicits._
 
 object PaymentMethodSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PaymentMethodPage(index)).map { answer =>
 
       val value = ValueViewModel(
@@ -43,7 +45,7 @@ object PaymentMethodSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.PaymentMethodController.onPageLoad(CheckMode, answers.lrn, index).url
+            PaymentMethodPage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("paymentMethod.change.hidden"))
         )
       )

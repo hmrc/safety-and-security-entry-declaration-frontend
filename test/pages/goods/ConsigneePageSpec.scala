@@ -21,33 +21,30 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
 import models.{CheckMode, Index, NormalMode, PlaceOfLoading}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import pages.routedetails.PlaceOfLoadingPage
 
-class ConsigneeSpec extends SpecBase with PageBehaviours {
+class ConsigneePageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneePage" - {
-
-    beRetrievable[Int](ConsigneePage(index))
-
-    beSettable[Int](ConsigneePage(index))
-
-    beRemovable[Int](ConsigneePage(index))
 
     val placeOfLoading1 = arbitrary[PlaceOfLoading].sample.value
     val placeOfLoading2 = arbitrary[PlaceOfLoading].sample.value
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-      "to place of loading when there is more than one place of loading" in {
+      val waypoints = EmptyWaypoints
 
-        val answers =
-          emptyUserAnswers
-            .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
-            .set(PlaceOfLoadingPage(Index(1)), placeOfLoading2).success.value
+      "to Loading Place when there is more than one place of loading" in{
 
-        ConsigneePage(index).navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.LoadingPlaceController.onPageLoad(NormalMode, answers.lrn, index))
+         val answers =
+           emptyUserAnswers
+             .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
+             .set(PlaceOfLoadingPage(Index(1)), placeOfLoading2).success.value
+
+         ConsigneePage(index).navigate(waypoints, answers)
+           .mustEqual(goodsRoutes.LoadingPlaceController.onPageLoad(waypoints, answers.lrn, index))
       }
 
       "to wherever loading place navigates to when there is one place of loading" in {
@@ -56,17 +53,8 @@ class ConsigneeSpec extends SpecBase with PageBehaviours {
           emptyUserAnswers
             .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
 
-        ConsigneePage(index).navigate(NormalMode, answers)
-          .mustEqual(LoadingPlacePage(Index(0)).navigate(NormalMode, answers))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        ConsigneePage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        ConsigneePage(index).navigate(waypoints, answers)
+          .mustEqual(LoadingPlacePage(Index(0)).navigate(waypoints, answers))
       }
     }
   }

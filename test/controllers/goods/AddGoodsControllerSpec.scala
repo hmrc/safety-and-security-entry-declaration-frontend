@@ -19,19 +19,26 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.AddGoodsFormProvider
-import models.NormalMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.{EmptyWaypoints, Waypoints}
 import pages.goods.AddGoodsPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.goods.AddGoodsView
+
+import scala.concurrent.Future
 
 class AddGoodsControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddGoodsFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
-  lazy val addGoodsRoute = routes.AddGoodsController.onPageLoad(NormalMode, lrn).url
+  lazy val addGoodsRoute = routes.AddGoodsController.onPageLoad(waypoints, lrn).url
 
   "AddGoods Controller" - {
 
@@ -47,16 +54,23 @@ class AddGoodsControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddGoodsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, List.empty)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, List.empty)(
           request,
           messages(application)
         ).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
 
       running(application) {
         val request =
@@ -64,11 +78,13 @@ class AddGoodsControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(AddGoodsPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddGoodsPage()
-          .navigate(NormalMode, emptyUserAnswers, true)
+        redirectLocation(result).value mustEqual AddGoodsPage
+          .navigate(waypoints, expectedAnswers)
           .url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -88,7 +104,7 @@ class AddGoodsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, List.empty)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, List.empty)(
           request,
           messages(application)
         ).toString

@@ -17,18 +17,21 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Document, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{Document, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class DocumentPage(itemIndex: Index, documentIndex: Index) extends QuestionPage[Document] {
+final case class DocumentPage(itemIndex: Index, documentIndex: Index) extends GoodsItemQuestionPage[Document] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "documents" \ documentIndex.position
 
   override def toString: String = "document"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.AddDocumentController.onPageLoad(NormalMode, answers.lrn, itemIndex)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.DocumentController.onPageLoad(waypoints, lrn, itemIndex, documentIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AddDocumentPage(itemIndex)
 }

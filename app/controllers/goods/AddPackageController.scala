@@ -18,51 +18,57 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddPackageFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.AddPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.PackageSummary
 import views.html.goods.AddPackageView
 
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
+
 class AddPackageController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   formProvider: AddPackageFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddPackageView
-) extends FrontendBaseController
+)(implicit ec: ExecutionContext) extends FrontendBaseController
   with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val rows = PackageSummary.rows(request.userAnswers, itemIndex)
+      val rows = PackageSummary.rows(request.userAnswers, itemIndex, waypoints, AddPackagePage(itemIndex))
 
-      Ok(view(form, mode, lrn, itemIndex, rows))
+      Ok(view(form, waypoints, lrn, itemIndex, rows))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val rows = PackageSummary.rows(request.userAnswers, itemIndex)
+            val rows = PackageSummary.rows(request.userAnswers, itemIndex, waypoints, AddPackagePage(itemIndex))
 
-            BadRequest(view(formWithErrors, mode, lrn, itemIndex, rows))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, rows)))
           },
           value =>
-            Redirect(
-              AddPackagePage(itemIndex).navigate(mode, request.userAnswers, itemIndex, value)
-            )
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPackagePage(itemIndex), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddPackagePage(itemIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

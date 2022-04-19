@@ -19,51 +19,31 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
   "AddMarkOrNumberPage" - {
 
-    beRetrievable[Boolean](AddMarkOrNumberPage(index, index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](AddMarkOrNumberPage(index, index))
-
-    beRemovable[Boolean](AddMarkOrNumberPage(index, index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Mark or Number if the answer is yes" in {
 
         val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), true).success.value
 
-        AddMarkOrNumberPage(index, index)
-          .navigate(NormalMode, answers)
-          .mustEqual(
-            goodsRoutes.MarkOrNumberController.onPageLoad(NormalMode, answers.lrn, index, index)
-          )
+        AddMarkOrNumberPage(index, index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.MarkOrNumberController.onPageLoad(waypoints, answers.lrn, index, index))
       }
 
       "to Check Package Item if the answer is no" in {
 
         val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), false).success.value
 
-        AddMarkOrNumberPage(index, index)
-          .navigate(NormalMode, answers)
-          .mustEqual(
-            goodsRoutes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, index, index)
-          )
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddMarkOrNumberPage(index, index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        AddMarkOrNumberPage(index, index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.CheckPackageItemController.onPageLoad(waypoints, answers.lrn, index, index))
       }
     }
   }

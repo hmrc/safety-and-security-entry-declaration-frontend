@@ -16,13 +16,26 @@
 
 package pages.goods
 
-import models.Index
-import pages.QuestionPage
+import controllers.goods.{routes => goodsRoutes}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import queries.DeriveNumberOfGoods
 
-final case class RemoveGoodsPage(goodItemIndex: Index) extends QuestionPage[Boolean] {
+final case class RemoveGoodsPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "removeGood"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.RemoveGoodsController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(DeriveNumberOfGoods).map {
+      case n if n > 0 => AddGoodsPage
+      case _ => CommodityCodeKnownPage(Index(0))
+    }.getOrElse(CommodityCodeKnownPage(Index(0)))
+  }
 }

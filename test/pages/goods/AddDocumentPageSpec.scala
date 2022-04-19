@@ -18,47 +18,41 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Document, Index, NormalMode}
+import models.{Document, Index}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class AddDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "AddDocumentPage" - {
 
-    "must navigate in Normal Mode" - {
+    val document = arbitrary[Document].sample.value
 
-      "to Document for the next index if the answer is yes" in {
+    "must navigate when there are no waypoints" - {
 
-        val document = arbitrary[Document].sample.value
+      val waypoints = EmptyWaypoints
 
-        val answers = emptyUserAnswers.set(DocumentPage(index, Index(0)), document).success.value
+      "to Document for the next index when the answer is yes" in {
 
-        AddDocumentPage(index)
-          .navigate(NormalMode, answers, index, addAnother = true)
-          .mustEqual(goodsRoutes.DocumentController.onPageLoad(NormalMode, answers.lrn, index, Index(1)))
+        val answers =
+          emptyUserAnswers
+            .set(DocumentPage(index, Index(0)), document).success.value
+            .set(AddDocumentPage(index), true).success.value
+
+        AddDocumentPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.DocumentController.onPageLoad(waypoints, answers.lrn, index, Index(1)))
       }
 
       "to Dangerous Goods when the answer is no" in {
 
-        val document = arbitrary[Document].sample.value
+        val answers =
+          emptyUserAnswers
+            .set(DocumentPage(index, Index(0)), document).success.value
+            .set(AddDocumentPage(index), false).success.value
 
-        val answers = emptyUserAnswers.set(DocumentPage(index, Index(0)), document).success.value
-
-        AddDocumentPage(index)
-          .navigate(NormalMode, answers, index, addAnother = false)
-          .mustEqual(goodsRoutes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddDocumentPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        AddDocumentPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.DangerousGoodController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
   }

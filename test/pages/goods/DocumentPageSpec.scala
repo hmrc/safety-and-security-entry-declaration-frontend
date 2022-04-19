@@ -18,39 +18,21 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Document, NormalMode}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class DocumentPageSpec extends SpecBase with PageBehaviours {
 
   "DocumentPage" - {
 
-    beRetrievable[Document](DocumentPage(index, index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Document](DocumentPage(index, index))
-
-    beRemovable[Document](DocumentPage(index, index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Add Document" in {
 
-        DocumentPage(index, index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            goodsRoutes.AddDocumentController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
-          )
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        DocumentPage(index, index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        DocumentPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AddDocumentController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

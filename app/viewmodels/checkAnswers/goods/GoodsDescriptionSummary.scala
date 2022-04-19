@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Index, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.goods.GoodsDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,7 +28,8 @@ import viewmodels.implicits._
 
 object GoodsDescriptionSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(GoodsDescriptionPage(index)).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +38,7 @@ object GoodsDescriptionSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.GoodsDescriptionController.onPageLoad(CheckMode, answers.lrn, index).url
+            GoodsDescriptionPage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("goodsDescription.change.hidden"))
         )
       )

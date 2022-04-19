@@ -19,12 +19,13 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.ConsignorFormProvider
-import models.{GbEori, Index, NormalMode, TraderWithEori}
+import models.{GbEori, Index, TraderWithEori}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.consignors.ConsignorEORIPage
 import pages.goods.ConsignorPage
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,7 +39,8 @@ import scala.concurrent.Future
 
 class ConsignorControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val consignorRoute = routes.ConsignorController.onPageLoad(NormalMode, lrn, index).url
+  val waypoints: Waypoints = EmptyWaypoints
+  lazy val consignorRoute = routes.ConsignorController.onPageLoad(waypoints, lrn, index).url
 
   val key1 = 1
   val key2 = 2
@@ -75,7 +77,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
         val radioOptions = RadioOptions(consignors.map(c => c.key.toString -> c.displayName).toMap)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, radioOptions)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, radioOptions)(request, implicitly).toString
       }
     }
 
@@ -97,7 +99,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(consignors.head.key),
-          NormalMode,
+          waypoints,
           lrn,
           index,
           radioOptions
@@ -125,7 +127,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = baseAnswers.set(ConsignorPage(index), consignors.head.key).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ConsignorPage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual ConsignorPage(index).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -150,7 +152,7 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
-          NormalMode,
+          waypoints,
           lrn,
           index,
           radioOptions

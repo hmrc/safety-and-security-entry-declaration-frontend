@@ -18,9 +18,9 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode, PlaceOfUnloading}
+import models.{Index, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import pages.routedetails.PlaceOfUnloadingPage
 
@@ -28,16 +28,12 @@ class LoadingPlacePageSpec extends SpecBase with PageBehaviours {
 
   "LoadingPlacePage" - {
 
-    beRetrievable[Int](LoadingPlacePage(index))
-
-    beSettable[Int](LoadingPlacePage(index))
-
-    beRemovable[Int](LoadingPlacePage(index))
-
     val placeOfUnloading1 = arbitrary[PlaceOfUnloading].sample.value
     val placeOfUnloading2 = arbitrary[PlaceOfUnloading].sample.value
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Unloading Place when there are more than one places of unloading" - {
 
@@ -46,25 +42,16 @@ class LoadingPlacePageSpec extends SpecBase with PageBehaviours {
             .set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading1).success.value
             .set(PlaceOfUnloadingPage(Index(1)), placeOfUnloading2).success.value
 
-        LoadingPlacePage(index).navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.UnloadingPlaceController.onPageLoad(NormalMode, answers.lrn, index))
+        LoadingPlacePage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.UnloadingPlaceController.onPageLoad(waypoints, answers.lrn, index))
       }
 
       "to wherever Unloading Place navigates to when there is one place of unloading" in {
 
         val answers = emptyUserAnswers.set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading1).success.value
 
-        LoadingPlacePage(index).navigate(NormalMode, answers)
-          .mustEqual(UnloadingPlacePage(index).navigate(NormalMode, answers))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        LoadingPlacePage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        LoadingPlacePage(index).navigate(waypoints, answers)
+          .mustEqual(UnloadingPlacePage(index).navigate(waypoints, answers))
       }
     }
   }

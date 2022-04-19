@@ -18,37 +18,31 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{Index, NormalMode, ProvideGrossWeight, UserAnswers}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, NormalMode, ProvideGrossWeight, UserAnswers}
+import pages.{Page, Waypoints}
 import pages.predec.ProvideGrossWeightPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfContainers
 
-case class AnyShippingContainersPage(itemIndex: Index) extends QuestionPage[Boolean] {
+case class AnyShippingContainersPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "shippingContainers"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(AnyShippingContainersPage(itemIndex)).map{
-      case true => {
-        answers.get(DeriveNumberOfContainers(itemIndex)) match {
-          case Some(size) =>
-            goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-          case None =>  goodsRoutes.ItemContainerNumberController.onPageLoad(NormalMode,answers.lrn,itemIndex,Index(0))
-        }
-      }
-      case false => {
-        answers.get(ProvideGrossWeightPage) match {
-          case Some(ProvideGrossWeight.PerItem) =>
-            goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-          case Some(ProvideGrossWeight.Overall) =>
-            goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-          case _ =>
-            routes.JourneyRecoveryController.onPageLoad()
-        }
-      }
-    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    goodsRoutes.AnyShippingContainersController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        ItemContainerNumberPage(itemIndex, Index(0))
+
+      case false =>
+        answers.get(ProvideGrossWeightPage).map {
+          case ProvideGrossWeight.Overall => KindOfPackagePage(itemIndex, Index(0))
+          case ProvideGrossWeight.PerItem => GoodsItemGrossWeightPage(itemIndex)
+        }.orRecover
+    }.orRecover
 }

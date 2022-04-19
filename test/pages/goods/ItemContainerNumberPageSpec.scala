@@ -19,25 +19,22 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, Container, NormalMode}
+import models.CheckMode
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class ItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
   "ItemContainerNumberPage" - {
 
-    beRetrievable[Container](ItemContainerNumberPage(index,index))
-
-    beSettable[Container](ItemContainerNumberPage(index, index))
-
-    beRemovable[Container](ItemContainerNumberPage(index, index))
-
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+      
+      val waypoints = EmptyWaypoints
 
       "to AddItem list" in {
 
-        ItemContainerNumberPage(index,index).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode,emptyUserAnswers.lrn,index))
+        ItemContainerNumberPage(index,index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(waypoints,emptyUserAnswers.lrn,index))
       }
     }
 

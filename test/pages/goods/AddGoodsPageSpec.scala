@@ -19,32 +19,38 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import models.Index
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class AddGoodsPageSpec extends SpecBase with PageBehaviours {
 
   "AddGoodsPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-      "to Good for the next index if the answer is yes" in {
+      val waypoints = EmptyWaypoints
 
-        val answers = emptyUserAnswers.set(CommodityCodeKnownPage(Index(0)), true).success.value
-        
-        AddGoodsPage()
-          .navigate(NormalMode, answers, addAnother = true)
-          .mustEqual(goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(1)))
+      "to Commodity Code Known for the next index if the answer is yes" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(CommodityCodeKnownPage(Index(0)), true).success.value
+            .set(AddGoodsPage, true).success.value
+
+        AddGoodsPage.navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.CommodityCodeKnownController.onPageLoad(waypoints, answers.lrn, Index(1)))
       }
-    }
 
-    "must navigate in Check Mode" - {
+      "to Task List when the answer is no" in {
 
-      "to Check Your Answers" in {
+        val answers =
+          emptyUserAnswers
+            .set(CommodityCodeKnownPage(Index(0)), true).success.value
+            .set(AddGoodsPage, false).success.value
 
-        AddGoodsPage()
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        AddGoodsPage.navigate(waypoints, answers)
+          .mustEqual(routes.TaskListController.onPageLoad(answers.lrn))
       }
     }
   }

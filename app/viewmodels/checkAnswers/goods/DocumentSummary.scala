@@ -18,38 +18,42 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, NormalMode, UserAnswers}
+import pages.goods.{AddDocumentPage, DocumentPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.AllDocumentsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import controllers.transport.{routes => transportRoutes}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 
 object DocumentSummary {
 
-  def rows(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): List[ListItem] =
+  def rows(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: AddItemPage)
+          (implicit messages: Messages): List[ListItem] =
     answers.get(AllDocumentsQuery(itemIndex)).getOrElse(List.empty).zipWithIndex.map {
       case (document, index) =>
         ListItem(
           name = HtmlFormat.escape(document.documentType.name).toString,
-          changeUrl = goodsRoutes.DocumentController
-            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
-            .url,
+          changeUrl = DocumentPage(itemIndex, Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
           removeUrl = goodsRoutes.RemoveDocumentController
-            .onPageLoad(NormalMode, answers.lrn, itemIndex, Index(index))
+            .onPageLoad(waypoints, answers.lrn, itemIndex, Index(index))
             .url
         )
     }
 
-
-  def checkAnswersRow(answers: UserAnswers,  itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers,  itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllDocumentsQuery(itemIndex)).map {
       documents =>
-        val value = documents.map(c => s"${c.documentType.name}-${c.documentType.code}(${c.reference})").mkString("<br>")
+
+        val value =
+          documents
+            .map(c => s"${c.documentType.name} - ${HtmlFormat.escape(c.reference).toString}")
+            .mkString("<br>")
 
         SummaryListRowViewModel(
           key = "addAnyDocuments.checkYourAnswersLabel",
@@ -57,7 +61,7 @@ object DocumentSummary {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn).url
+              AddDocumentPage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("addAnyDocuments.change.hidden"))
           )
         )

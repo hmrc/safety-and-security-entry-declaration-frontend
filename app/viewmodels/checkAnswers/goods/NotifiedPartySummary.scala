@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Index, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.goods.NotifiedPartyPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,7 +29,8 @@ import viewmodels.implicits._
 
 object NotifiedPartySummary  {
 
-  def row(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NotifiedPartyPage(itemIndex)).map {
       answer =>
 
@@ -44,7 +46,7 @@ object NotifiedPartySummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              goodsRoutes.NotifiedPartyController.onPageLoad(CheckMode, answers.lrn, itemIndex).url
+              NotifiedPartyPage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("notifiedParty.change.hidden"))
           )
         )

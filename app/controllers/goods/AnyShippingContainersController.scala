@@ -18,9 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AnyShippingContainersFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.AnyShippingContainersPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,22 +27,23 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.AnyShippingContainersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyShippingContainersController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 sessionRepository: SessionRepository,
-                                                 identify: IdentifierAction,
-                                                 getData: DataRetrievalActionProvider,
-                                                 requireData: DataRequiredAction,
-                                                 formProvider: AnyShippingContainersFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: AnyShippingContainersView
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: AnyShippingContainersFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AnyShippingContainersView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AnyShippingContainersPage(index)) match {
@@ -51,21 +51,21 @@ class AnyShippingContainersController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, index))
+      Ok(view(preparedForm, waypoints, lrn, index))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyShippingContainersPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AnyShippingContainersPage(index).navigate(mode, updatedAnswers))
+          } yield Redirect(AnyShippingContainersPage(index).navigate(waypoints, updatedAnswers))
       )
   }
 }

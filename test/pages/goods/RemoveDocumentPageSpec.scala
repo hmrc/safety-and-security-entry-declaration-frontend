@@ -16,32 +16,55 @@
 
 package pages.goods
 
+import controllers.goods.routes
+import org.scalacheck.Arbitrary.arbitrary
 import base.SpecBase
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import models.Document
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
+import pages.transport.AnyOverallDocumentsPage
 
 class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveDocumentPage" - {
 
-    "must navigate in Normal Mode" - {
+    val document = arbitrary[Document].sample.value
 
-      "to Index" in {
+    "must navigate when there are no waypoints" - {
 
-        RemoveDocumentPage(index, index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+      val waypoints = EmptyWaypoints
+
+      "when there is at least one document left in the user's answers" - {
+
+        "to Add Document" in {
+
+          val answers = emptyUserAnswers.set(DocumentPage(index, index), document).success.value
+
+          RemoveDocumentPage(index, index).navigate(waypoints, answers)
+            .mustEqual(routes.AddDocumentController.onPageLoad(waypoints, answers.lrn, index))
+        }
       }
-    }
 
-    "must navigate in Check Mode" - {
+      "when there are no documents left in the user's answers" - {
 
-      "to Check Your Answers" in {
+        "to Add Any Documents when the user gave an overall document" in {
 
-        RemoveDocumentPage(index, index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          val answers = emptyUserAnswers.set(AnyOverallDocumentsPage, true).success.value
+
+          RemoveDocumentPage(index, index).navigate(waypoints, answers)
+            .mustEqual(routes.AddAnyDocumentsController.onPageLoad(waypoints, answers.lrn, index))
+        }
+      }
+
+      "when there are no documents left in the user's answers" - {
+
+        "to Document for the first index when the user did not give an overall document" in {
+
+          val answers = emptyUserAnswers.set(AnyOverallDocumentsPage, false).success.value
+
+          RemoveDocumentPage(index, index).navigate(waypoints, answers)
+            .mustEqual(routes.DocumentController.onPageLoad(waypoints, answers.lrn, index, index))
+        }
       }
     }
   }

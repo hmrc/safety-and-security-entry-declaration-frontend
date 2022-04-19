@@ -19,21 +19,18 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, KindOfPackage, NormalMode}
+import models.{CheckMode, KindOfPackage}
 import org.scalacheck.Gen
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
 
   "KindOfPackagePage" - {
 
-    beRetrievable[KindOfPackage](KindOfPackagePage(index, index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[KindOfPackage](KindOfPackagePage(index, index))
-
-    beRemovable[KindOfPackage](KindOfPackagePage(index, index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Add Mark or Number when the answer is a bulk kind of package" in {
 
@@ -41,9 +38,9 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
         val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), packaging).success.value
 
         KindOfPackagePage(index, index)
-          .navigate(NormalMode, answers)
+          .navigate(waypoints, answers)
           .mustEqual(
-            goodsRoutes.AddMarkOrNumberController.onPageLoad(NormalMode, answers.lrn, index, index)
+            goodsRoutes.AddMarkOrNumberController.onPageLoad(waypoints, answers.lrn, index, index)
           )
       }
 
@@ -53,9 +50,9 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
         val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), packaging).success.value
 
         KindOfPackagePage(index, index)
-          .navigate(NormalMode, answers)
+          .navigate(waypoints, answers)
           .mustEqual(
-            goodsRoutes.NumberOfPackagesController.onPageLoad(NormalMode, answers.lrn, index, index)
+            goodsRoutes.NumberOfPackagesController.onPageLoad(waypoints, answers.lrn, index, index)
           )
       }
 
@@ -65,9 +62,9 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
         val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), packaging).success.value
 
         KindOfPackagePage(index, index)
-          .navigate(NormalMode, answers)
+          .navigate(waypoints, answers)
           .mustEqual(
-            goodsRoutes.NumberOfPiecesController.onPageLoad(NormalMode, answers.lrn, index, index)
+            goodsRoutes.NumberOfPiecesController.onPageLoad(waypoints, answers.lrn, index, index)
           )
       }
     }

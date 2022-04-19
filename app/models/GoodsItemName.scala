@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package forms.goods
+package models
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.{Reads, __}
 
-import javax.inject.Inject
+case class GoodsItemName(name: String)
 
-class GoodsItemCrnFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("goodsItemCrn.error.required")
-        .verifying(maxLength(70, "goodsItemCrn.error.length"))
-    )
+object GoodsItemName {
+  implicit val reads: Reads[GoodsItemName] =
+    (
+      (__ \ "commodityCode").read[String] orElse
+      (__ \ "goodsDescription").read[String]
+    ).map(GoodsItemName(_))
 }

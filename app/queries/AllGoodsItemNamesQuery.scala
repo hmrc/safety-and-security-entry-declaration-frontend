@@ -14,32 +14,11 @@
  * limitations under the License.
  */
 
-package forms.goods
+package queries
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import models.GoodsItemName
+import play.api.libs.json.JsPath
 
-class AddPaymentMethodFormProviderSpec extends BooleanFieldBehaviours {
-
-  val requiredKey = "addPaymentMethod.error.required"
-  val invalidKey = "error.boolean"
-
-  val form = new AddPaymentMethodFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+case object AllGoodsItemNamesQuery extends Gettable[List[GoodsItemName]] {
+  override def path: JsPath = JsPath \ "goodsItems"
 }

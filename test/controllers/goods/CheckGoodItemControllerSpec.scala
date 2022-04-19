@@ -18,13 +18,15 @@ package controllers.goods
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import models.NormalMode
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.goods.CheckGoodItemView
 
 class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
+
+  val waypoints: Waypoints = EmptyWaypoints
 
   "Check Your Answers Controller" - {
 
@@ -35,7 +37,7 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
       running(application) {
         val request = FakeRequest(
           GET,
-          routes.CheckGoodItemController.onPageLoad(NormalMode, lrn, index).url
+          routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index).url
         )
 
         val result = route(application, request).value
@@ -44,7 +46,7 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(NormalMode, list, lrn)(
+        contentAsString(result) mustEqual view(waypoints, list, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -58,7 +60,7 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
       running(application) {
         val request = FakeRequest(
           GET,
-          routes.CheckGoodItemController.onPageLoad(NormalMode, lrn, index).url
+          routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index).url
         )
 
         val result = route(application, request).value

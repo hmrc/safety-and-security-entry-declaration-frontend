@@ -19,44 +19,31 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import controllers.routes
-import models.{CheckMode, NormalMode}
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
   "ConsigneeKnownPage" - {
 
-    beRetrievable[Boolean](ConsigneeKnownPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](ConsigneeKnownPage(index))
-
-    beRemovable[Boolean](ConsigneeKnownPage(index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Consignee when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), true).success.value
 
-        ConsigneeKnownPage(index).navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, index))
+        ConsigneeKnownPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.ConsigneeController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to Notified Party when the answer is no" in {
+      "to Notified Party when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), false).success.value
 
-        ConsigneeKnownPage(index).navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        ConsigneeKnownPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        ConsigneeKnownPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
   }
