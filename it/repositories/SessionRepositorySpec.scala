@@ -1,21 +1,24 @@
 package repositories
 
 import config.FrontendAppConfig
+import generators.Generators
+import java.time.{Clock, Instant, ZoneId}
+
 import models.{LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
-import java.time.{Clock, Instant, ZoneId}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 class SessionRepositorySpec
   extends AnyFreeSpec
@@ -24,7 +27,8 @@ class SessionRepositorySpec
   with ScalaFutures
   with IntegrationPatience
   with OptionValues
-  with MockitoSugar {
+  with MockitoSugar
+  with Generators {
 
   private val instant = Instant.now
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
@@ -90,16 +94,16 @@ class SessionRepositorySpec
 
       val refs: List[LocalReferenceNumber] = {
         Gen.choose(1, 5) map { len => Gen.listOfN(len, arbitrary[LocalReferenceNumber]) }
-      }.sample.value
+      }.sample.value.sample.value
 
-      refs.foreach { lrn => insert(userAnswers.copy(lrn = lrn)).futureValue }
+      refs.foreach { lrn => insert(userAnswers1.copy(lrn = lrn)).futureValue }
 
-      val result = repository.getLrns(userId).futureValue
+      val result = repository.getLrns(userId1).futureValue
       result must contain theSameElementsAs (refs)
     }
 
     "When there are no draft declarations will return nothing" - {
-      repository.getLrns("id that does not exist").futureValue must not be defined
+      repository.getLrns(userId = "").futureValue should have size 0
     }
   }
 
