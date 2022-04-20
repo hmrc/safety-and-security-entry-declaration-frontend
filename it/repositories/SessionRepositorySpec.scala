@@ -3,7 +3,6 @@ package repositories
 import config.FrontendAppConfig
 import generators.Generators
 import java.time.{Clock, Instant, ZoneId}
-
 import models.{LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
@@ -14,11 +13,9 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
-
-import scala.concurrent.Future
 
 class SessionRepositorySpec
   extends AnyFreeSpec
