@@ -38,7 +38,7 @@ class DraftDeclarationsController @Inject() (
   extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] =
+  def onPageLoad(): Action[AnyContent] = {
     identify.async { implicit request =>
       repository.getSummaryList(request.userId).map { lrns =>
         val summary = SummaryListViewModel(
@@ -48,3 +48,4 @@ class DraftDeclarationsController @Inject() (
       }
     }
   }
+}
