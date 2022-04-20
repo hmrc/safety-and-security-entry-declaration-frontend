@@ -38,10 +38,6 @@ trait HeaderFormats extends TransportFormats with TimeFormats {
         <NatOfMeaOfTraCroHEA87>{n.toXmlString}</NatOfMeaOfTraCroHEA87>
       }.toSeq
 
-      val transportPaymentMethod: NodeSeq = header.transportDetails.paymentMethod.map { pm =>
-        <TraChaMetOfPayHEA1>{pm.toXmlString}</TraChaMetOfPayHEA1>
-      }.toSeq
-
       <HEAHEA>
         <RefNumHEA4>{header.lrn.toXmlString}</RefNumHEA4>
         <TraModAtBorHEA76>{header.transportDetails.mode.toXmlString}</TraModAtBorHEA76>
@@ -51,7 +47,6 @@ trait HeaderFormats extends TransportFormats with TimeFormats {
         <TotNumOfPacHEA306>{header.packageCount}</TotNumOfPacHEA306>
         {grossMass}
         <DecPlaHEA394>{header.declarationPlace}</DecPlaHEA394>
-        {transportPaymentMethod}
         <ConRefNumHEA>{header.conveyanceReferenceNumber}</ConRefNumHEA>
         <DecDatTimHEA114>{header.datetime.toXmlString}</DecDatTimHEA114>
       </HEAHEA>
