@@ -7,8 +7,6 @@ import java.time.{Clock, Instant, ZoneId}
 import models.{LocalReferenceNumber, UserAnswers}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -19,6 +17,8 @@ import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
+
+import scala.concurrent.Future
 
 class SessionRepositorySpec
   extends AnyFreeSpec
@@ -37,6 +37,7 @@ class SessionRepositorySpec
   private val userId2 = "id2"
   private val lrn1 = LocalReferenceNumber("ABC123")
   private val lrn2 = LocalReferenceNumber("DEF456")
+  private val lrn3 = LocalReferenceNumber("HIG789")
   private val userAnswers1 =
     UserAnswers(userId1, lrn1, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
   private val userAnswers2 =
@@ -88,22 +89,21 @@ class SessionRepositorySpec
     }
   }
 
-  ".getLrns" - {
+  ".getSummaryList" - {
 
-    "When there are draft declarations will return their lrns" - {
+    "when there are draft declarations will return their lrns" - {
 
-      val refs: List[LocalReferenceNumber] = {
-        Gen.choose(1, 5) map { len => Gen.listOfN(len, arbitrary[LocalReferenceNumber]) }
-      }.sample.value.sample.value
+      val answers = Seq(userAnswers1, userAnswers2, userAnswers3)
+      val expected = Seq(lrn1, lrn2, lrn3)
 
-      refs.foreach { lrn => insert(userAnswers1.copy(lrn = lrn)).futureValue }
+      Future.traverse(expected) { lrn => insert(userAnswers1.copy(lrn = lrn)) }.futureValue
 
-      val result = repository.getLrns(userId1).futureValue
-      result must contain theSameElementsAs (refs)
+      val actual = repository.getSummaryList(userId1).futureValue
+      actual must contain theSameElementsAs(expected)
     }
 
     "When there are no draft declarations will return an empty list" - {
-      repository.getLrns(userId = "id that does not exist").futureValue should have size 0
+      repository.getSummaryList(userId = "id that does not exist").futureValue should have size 0
     }
   }
 

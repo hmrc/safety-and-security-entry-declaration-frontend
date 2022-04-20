@@ -28,8 +28,9 @@ import viewmodels.implicits._
 
 object DraftDeclarationsSummary {
 
-  def row(localReferenceNumber: LocalReferenceNumber)
-    (implicit messages: Messages): SummaryListRow = {
+  def row(localReferenceNumber: LocalReferenceNumber)(
+    implicit messages: Messages
+  ): SummaryListRow = {
 
     val value = ValueViewModel(
       HtmlContent(

@@ -84,7 +84,7 @@ class SessionRepository @Inject() (
         .headOption
     }
 
-  def getLrns(userId: String): Future[Seq[LocalReferenceNumber]] =
+  def getSummaryList(userId: String): Future[Seq[LocalReferenceNumber]] =
     keepAlive(userId).flatMap { _ =>
       collection
         .find(byUserId(userId)).map {l => l.lrn}
