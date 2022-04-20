@@ -27,6 +27,6 @@ import play.api.libs.json._
 case class GbEori(value: String) extends AnyVal
 
 object GbEori {
-  implicit val reads: Reads[GbEori] = Reads.StringReads.map { new GbEori(_) }
+  implicit val reads: Reads[GbEori] = Reads.StringReads.map { GbEori(_) }
   implicit val writes: Writes[GbEori] = Writes.StringWrites.contramap { _.value }
 }

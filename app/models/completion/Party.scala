@@ -16,7 +16,7 @@
 
 package models.completion
 
-import models.Address
+import models.{Address, GbEori}
 
 /**
  * This identifies any party reported within the XML payload, by EORI or name + address
@@ -27,6 +27,6 @@ import models.Address
 sealed trait Party
 
 object Party {
-  case class ByEori(eori: String) extends Party
+  case class ByEori(eori: GbEori) extends Party
   case class ByAddress(name: String, address: Address) extends Party
 }

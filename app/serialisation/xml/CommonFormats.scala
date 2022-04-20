@@ -16,12 +16,23 @@
 
 package serialisation.xml
 
-import models.{Country, LocalReferenceNumber}
+import models.{Country, GbEori, LocalReferenceNumber}
 
 /**
  * XML formats for miscellaneous common or shared data types, e.g. enums, reference numbers, etc.
  */
 trait CommonFormats {
+  implicit val gbEoriFmt: StringFormat[GbEori] = new StringFormat[GbEori] {
+    override def encode(eori: GbEori): String = s"GB${eori.value}"
+    override def decode(s: String): GbEori = {
+      if (s.toUpperCase.startsWith("GB")) {
+        GbEori(s.drop(2))
+      } else {
+        throw new XmlDecodingException(s"Expected GB EORI did not start with GB: '$s'")
+      }
+    }
+  }
+
   implicit val bigDecimalFmt: StringFormat[BigDecimal] = StringFormat.simple(
     _.toString, BigDecimal(_)
   )
