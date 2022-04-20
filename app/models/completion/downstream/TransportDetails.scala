@@ -16,7 +16,7 @@
 
 package models.completion.downstream
 
-import models.{Country, PaymentMethod, TransportMode}
+import models.{Country, TransportMode}
 
 /**
  * Summary of the transport details, to be flattened into the XML header information
@@ -24,6 +24,5 @@ import models.{Country, PaymentMethod, TransportMode}
 case class TransportDetails(
   mode: TransportMode,
   identity: String,
-  nationality: Option[Country],
-  paymentMethod: Option[PaymentMethod]
+  nationality: Option[Country]
 )

@@ -314,8 +314,7 @@ trait ModelGenerators extends StringGenerators {
       mode <- arbitrary[TransportMode]
       identifier <- stringsWithMaxLength(27)
       nationality <- Gen.option(arbitrary[Country])
-      paymentMethod <- Gen.option(arbitrary[PaymentMethod])
-    } yield TransportDetails(mode, identifier, nationality, paymentMethod)
+    } yield TransportDetails(mode, identifier, nationality)
   }
 
   implicit lazy val arbitraryPayloadHeader: Arbitrary[Header] = Arbitrary {

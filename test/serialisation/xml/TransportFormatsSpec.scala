@@ -35,8 +35,7 @@ class TransportFormatsSpec
       mode <- arbitrary[TransportMode]
       identifier <- Gen.alphaNumStr
       nationality <- Gen.option(arbitrary[Country])
-      paymentMethod <- Gen.option(arbitrary[PaymentMethod])
-    } yield TransportDetails(mode, identifier, nationality, paymentMethod)
+    } yield TransportDetails(mode, identifier, nationality)
   }
 
   "The transport mode format" - {
@@ -63,25 +62,6 @@ class TransportFormatsSpec
         }
       }
 
-      "when carrier payment method" - {
-        "is specified" in {
-          val gen = for {
-            details <- transportDetailsGen
-            pm <- arbitrary[PaymentMethod]
-          } yield details.copy(paymentMethod = Some(pm))
-
-          forAll(gen) { details =>
-            details.toXml.parseXml[TransportDetails] must be(details)
-          }
-        }
-        "is missing" in {
-          val gen = transportDetailsGen map { _.copy(paymentMethod = None) }
-
-          forAll(gen) { details =>
-            details.toXml.parseXml[TransportDetails] must be(details)
-          }
-        }
-      }
       "when transport nationality" - {
         "is specified" in {
           val gen = for {

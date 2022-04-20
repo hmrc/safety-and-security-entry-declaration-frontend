@@ -83,11 +83,7 @@ trait TransportFormats extends CommonFormats {
         <NatOfMeaOfTraCroHEA87>{n.toXmlString}</NatOfMeaOfTraCroHEA87>
       }.toSeq
 
-      val paymentMethod: NodeSeq = details.paymentMethod.map { pm =>
-        <TraChaMetOfPayHEA1>{pm.toXmlString}</TraChaMetOfPayHEA1>
-      }.toSeq
-
-      requiredFields ++ nationality ++ paymentMethod
+      requiredFields ++ nationality
     }
 
     override def decode(data: NodeSeq): TransportDetails = {
@@ -96,11 +92,8 @@ trait TransportFormats extends CommonFormats {
       val nationality = (data \\ "NatOfMeaOfTraCroHEA87").headOption map {
         _.text.parseXmlString[Country]
       }
-      val paymentMethod = (data \\ "TraChaMetOfPayHEA1").headOption map {
-        _.text.parseXmlString[PaymentMethod]
-      }
 
-      TransportDetails(mode, identifier, nationality, paymentMethod)
+      TransportDetails(mode, identifier, nationality)
     }
   }
 
