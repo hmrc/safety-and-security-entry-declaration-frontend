@@ -12,6 +12,8 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.startDeclaration = New ENS declaration
 site.submitDeclaration = Submit declaration
+site.submitteddeclaration = Submitted ENS Declarations
+site.draftDeclarations = Draft ENS Declarations
 
 date.day = Day
 date.month = Month
@@ -796,3 +798,10 @@ shippingContainers.heading = Are the goods in shipping containers or trailer?
 shippingContainers.checkYourAnswersLabel = Shipping container
 shippingContainers.error.required = Select yes if you are using a shipping container
 shippingContainers.change.hidden = the shipping container
+
+submittedDeclarations.title = submittedDeclarations
+submittedDeclarations.heading = Submitted Declarations
+submittedDeclarations.body = place holder text
+
+draftDeclarations.title = draftDeclarations
+draftDeclarations.heading = Draft Declarations

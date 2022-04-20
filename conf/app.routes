@@ -420,3 +420,6 @@ GET        /:lrn/anyShippingContainers/:index                        controllers
 POST       /:lrn/anyShippingContainers/:index                        controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber, index: Index)
 GET        /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/changeAnyShippingContainers/:index                  controllers.goods.AnyShippingContainersController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber, index: Index)
+
+GET        /submittedDeclarations                   controllers.declarations.SubmittedDeclarationsController.onPageLoad()
+GET        /draftDeclarations                       controllers.declarations.DraftDeclarationsController.onPageLoad()

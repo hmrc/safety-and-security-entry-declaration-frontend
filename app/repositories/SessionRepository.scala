@@ -24,10 +24,12 @@ import play.api.libs.json.Format
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-
 import java.time.{Clock, Instant}
 import java.util.concurrent.TimeUnit
+
 import javax.inject.{Inject, Singleton}
+import views.html.declarations.DraftDeclarationsView
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -80,6 +82,13 @@ class SessionRepository @Inject() (
       collection
         .find(byUserIdAndLrn(userId, lrn))
         .headOption
+    }
+
+  def getSummaryList(userId: String): Future[Seq[LocalReferenceNumber]] =
+    keepAlive(userId).flatMap { _ =>
+      collection
+        .find(byUserId(userId)).map {l => l.lrn}
+        .toFuture()
     }
 
   def set(answers: UserAnswers): Future[Boolean] = {

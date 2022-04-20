@@ -24,8 +24,8 @@ import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import pages.{AddItemPage, Waypoint, Waypoints, CheckAnswersPage}
-import pages.consignees.{AddConsigneePage, AddNotifiedPartyPage, CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
+import pages.CheckAnswersPage
+import pages.consignees.{CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
 
 trait ModelGenerators extends StringGenerators {
   // Three decimal places, between 0.001 and 99999999.999

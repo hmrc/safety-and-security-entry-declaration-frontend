@@ -3,7 +3,7 @@ package controllers.$package$
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.$className$View
+import views.html.$package$.$className$View
 
 class $className$ControllerSpec extends SpecBase {
 
