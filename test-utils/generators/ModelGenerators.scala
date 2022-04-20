@@ -142,15 +142,26 @@ trait ModelGenerators extends StringGenerators {
       for {
         metadata <- arbitrary[Metadata]
         header <- arbitrary[Header]
-        goodsItemsLen <- Gen.choose(1, 99)
+        goodsItemsLen <- Gen.choose(1, 5)
         goodsItems <- Gen.listOfN(goodsItemsLen, arbitrary[GoodsItem])
         itinerary <- arbitrary[Itinerary]
         declarer <- arbitrary[Party.ByEori]
-        sealsLen <- Gen.choose(1, 99)
+        sealsLen <- Gen.choose(1, 5)
         seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
         customsOffice <- arbitrary[CustomsOfficePayload]
         carrier <- arbitrary[Party]
-      } yield Submission(metadata, header, goodsItems, itinerary, declarer, seals, customsOffice, carrier)
+      } yield {
+        Submission(
+          metadata,
+          header,
+          goodsItems.zipWithIndex.map { case (item, i) => item.copy(itemNumber = i) },
+          itinerary,
+          declarer,
+          seals,
+          customsOffice,
+          carrier
+        )
+      }
     }
 
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
@@ -238,7 +249,7 @@ trait ModelGenerators extends StringGenerators {
   implicit lazy val arbitraryItinerary: Arbitrary[Itinerary] =
     Arbitrary {
       for {
-        len <- Gen.choose(1, 10)
+        len <- Gen.choose(1, 5)
         countries <- Gen.listOfN(len, arbitrary[Country])
       } yield Itinerary(countries)
     }
@@ -413,23 +424,23 @@ trait ModelGenerators extends StringGenerators {
 
   implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] = Arbitrary {
     for {
-      itemNumber <- Gen.choose(1, 1000)
+      itemNumber <- Gen.choose(1, 10)
       itemId <- arbitrary[GoodsItemIdentity]
       grossMass <- Gen.option(grossMassGen)
       paymentMethod <- arbitrary[PaymentMethod]
       dangerousGoodsCode <- Gen.option(arbitrary[DangerousGoodsCode])
       placeOfLoading <- arbitrary[LoadingPlace]
       placeOfUnloading <- arbitrary[LoadingPlace]
-      documentsLen <- Gen.choose(0, 99)
+      documentsLen <- Gen.choose(0, 3)
       documents <- Gen.listOfN(documentsLen, arbitrary[Document])
       consignor <- arbitrary[Party]
       consignee <- Gen.option(arbitrary[Party])
       notifiedParty <- Gen.option(arbitrary[Party])
-      containersLen <- Gen.choose(0, 99)
+      containersLen <- Gen.choose(0, 3)
       containers <- Gen.listOfN(containersLen, arbitrary[Container])
-      packagesLen <- Gen.choose(0, 99)
+      packagesLen <- Gen.choose(0, 3)
       packages <- Gen.listOfN(packagesLen, arbitrary[Package])
-      specialMentionsLen <- Gen.choose(0, 10)
+      specialMentionsLen <- Gen.choose(0, 1)
       specialMentions <- Gen.listOfN(specialMentionsLen, arbitrary[SpecialMention])
     } yield GoodsItem(
       itemNumber,
