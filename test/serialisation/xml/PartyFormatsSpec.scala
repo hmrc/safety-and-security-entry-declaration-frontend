@@ -20,7 +20,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import base.SpecBase
-import models.{Address, Country}
+import models.{Address, GbEori}
 import models.completion.Party
 
 class PartyFormatsSpec
@@ -29,10 +29,7 @@ class PartyFormatsSpec
   with PartyFormats
   with XmlImplicits {
 
-  private val partyByEori: Gen[Party] = for {
-    country <- Gen.oneOf(Country.allCountries)
-    number <- Gen.listOfN(12, Gen.numChar)
-  } yield Party.ByEori(s"${country.code}${number.mkString}")
+  private val partyByEori: Gen[Party] = arbitrary[GbEori].map(Party.ByEori)
 
   private val partyByAddress: Gen[Party] = for {
     name <- stringsWithMaxLength(40)
@@ -50,7 +47,7 @@ class PartyFormatsSpec
       "should serialise correctly to XML" in {
         forAll(partyByEori) { p =>
           val actual = p.toXml
-          val expected = <TINCO259>{p.asInstanceOf[Party.ByEori].eori}</TINCO259>
+          val expected = <TINCO259>{p.asInstanceOf[Party.ByEori].eori.toXmlString}</TINCO259>
           actual must contain theSameElementsInOrderAs(expected)
         }
       }
@@ -91,7 +88,7 @@ class PartyFormatsSpec
       "should serialise correctly to XML" in {
         forAll(partyByEori) { p =>
           val actual = p.toXml
-          val expected = <TINCE259>{p.asInstanceOf[Party.ByEori].eori}</TINCE259>
+          val expected = <TINCE259>{p.asInstanceOf[Party.ByEori].eori.toXmlString}</TINCE259>
           actual must contain theSameElementsAs(expected)
         }
       }
@@ -132,7 +129,7 @@ class PartyFormatsSpec
       "should serialise correctly to XML" in {
         forAll(partyByEori) { p =>
           val actual = p.toXml
-          val expected = <TINPRTNOT641>{p.asInstanceOf[Party.ByEori].eori}</TINPRTNOT641>
+          val expected = <TINPRTNOT641>{p.asInstanceOf[Party.ByEori].eori.toXmlString}</TINPRTNOT641>
           actual must contain theSameElementsInOrderAs(expected)
         }
       }
@@ -173,7 +170,7 @@ class PartyFormatsSpec
       "should serialise correctly to XML" in {
         forAll(partyByEori) { p =>
           val actual = p.toXml
-          val expected = <TINPLD1>{p.asInstanceOf[Party.ByEori].eori}</TINPLD1>
+          val expected = <TINPLD1>{p.asInstanceOf[Party.ByEori].eori.toXmlString}</TINPLD1>
           actual must contain theSameElementsInOrderAs(expected)
         }
       }
@@ -214,7 +211,9 @@ class PartyFormatsSpec
       "should serialise correctly to XML" in {
         forAll(partyByEori) { p =>
           val actual = p.toXml
-          val expected = <TINTRACARENT602>{p.asInstanceOf[Party.ByEori].eori}</TINTRACARENT602>
+          val expected = {
+            <TINTRACARENT602>{p.asInstanceOf[Party.ByEori].eori.toXmlString}</TINTRACARENT602>
+          }
           actual must contain theSameElementsAs(expected)
         }
       }

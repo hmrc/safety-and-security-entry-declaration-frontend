@@ -391,10 +391,7 @@ trait ModelGenerators extends StringGenerators {
   }
 
   implicit lazy val arbitraryPartyByEori: Arbitrary[Party.ByEori] = Arbitrary {
-    for {
-      country <- Gen.oneOf(Country.allCountries)
-      number <- Gen.listOfN(12, Gen.numChar)
-    } yield Party.ByEori(s"${country.code}${number.mkString}")
+    arbitrary[GbEori].map(Party.ByEori)
   }
 
   implicit lazy val arbitraryPartyByAddress: Arbitrary[Party.ByAddress] = Arbitrary {
