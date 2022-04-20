@@ -20,7 +20,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import base.SpecBase
-import models.{Country, LocalReferenceNumber}
+import models.{Country, GbEori, LocalReferenceNumber}
 
 class CommonFormatsSpec
   extends SpecBase
@@ -48,6 +48,20 @@ class CommonFormatsSpec
     "should work symmetrically" in {
       forAll(arbitrary[BigDecimal]) { bd =>
         bd.toXmlString.parseXmlString[BigDecimal] must be(bd)
+      }
+    }
+  }
+
+  "The GbEori format" - {
+    "should work symmetrically" in {
+      forAll(arbitrary[GbEori]) { eori =>
+        eori.toXmlString.parseXmlString[GbEori] must be(eori)
+      }
+    }
+
+    "should write with a GB prefix" in {
+      forAll(arbitrary[GbEori]) { eori =>
+        eori.toXmlString must be(s"GB${eori.value}")
       }
     }
   }

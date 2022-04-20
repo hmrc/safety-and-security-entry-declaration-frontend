@@ -17,7 +17,7 @@
 package serialisation.xml
 
 import scala.xml.{Elem, NodeSeq, Null, Text, TopScope}
-import models.{Address, Country}
+import models.{Address, Country, GbEori}
 import models.completion.Party
 import serialisation.xml.XmlImplicits._
 
@@ -42,7 +42,7 @@ trait PartyFormats extends CommonFormats {
 
     override def encode(p: Party): NodeSeq = p match {
       case Party.ByEori(eori) =>
-        elem(fields.eori, eori)
+        elem(fields.eori, eori.toXmlString)
       case Party.ByAddress(name, addr) =>
         Seq(
           elem(fields.name, name),
@@ -55,7 +55,7 @@ trait PartyFormats extends CommonFormats {
 
     override def decode(data: NodeSeq): Party = {
       (data \\ fields.eori).headOption map {
-        eori => Party.ByEori(eori.text)
+        eori => Party.ByEori(eori.text.parseXmlString[GbEori])
       } getOrElse {
         Party.ByAddress(
           (data \\ fields.name).text,
