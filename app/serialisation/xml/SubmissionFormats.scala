@@ -41,15 +41,19 @@ trait SubmissionFormats
         s => <SEAID529><SeaIdSEAID530>{s}</SeaIdSEAID530></SEAID529>
       }
 
+      val carrier = sub.carrier.map {
+        c => <TRACARENT601>{carrierFormat.encode(c)}</TRACARENT601>
+      }.toSeq
+
       <ie:CC315A xmlns:ie="http://ics.dgtaxud.ec/CC315A">
         {sub.metadata.toXml}
         {sub.header.toXml}
         {goodsItems}
         {sub.itinerary.toXml}
-        <PERLODSUMDEC> {lodgingPersonFormat.encode(sub.declarer)} </PERLODSUMDEC>
+        <PERLODSUMDEC>{lodgingPersonFormat.encode(sub.declarer)}</PERLODSUMDEC>
         {seals}
-        <CUSOFFFENT730> {sub.customsOffice.toXml} </CUSOFFFENT730>
-        <TRACARENT601> {carrierFormat.encode(sub.carrier)} </TRACARENT601>
+        <CUSOFFFENT730>{sub.customsOffice.toXml}</CUSOFFFENT730>
+        {carrier}
       </ie:CC315A>
     }
 
@@ -61,7 +65,7 @@ trait SubmissionFormats
       declarer = lodgingPersonFormat.decode(data \ "PERLODSUMDEC"),
       seals = (data \ "SEAID529" \ "SeaIdSEAID530").map { _.text }.toList,
       customsOffice = (data \ "CUSOFFFENT730").parseXml[CustomsOffice],
-      carrier = carrierFormat.decode(data \ "TRACARENT601")
+      carrier = (data \ "TRACARENT601").headOption.map(carrierFormat.decode)
     )
   }
 }
