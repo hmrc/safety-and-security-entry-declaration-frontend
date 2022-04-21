@@ -53,6 +53,22 @@ class SubmissionFormatsSpec
         }
       }
 
+      "when consignor is" - {
+        "present" in {
+          val gen = for {
+            consignor <- arbitrary[Party]
+            submission <- arbitrary[Submission]
+          } yield submission.copy(consignor = Some(consignor))
+
+          forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
+        }
+
+        "absent" in {
+          val gen = arbitrary[Submission] map { _.copy(consignor = None) }
+          forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
+        }
+      }
+
       "when carrier is" - {
         "present" in {
           val gen = for {

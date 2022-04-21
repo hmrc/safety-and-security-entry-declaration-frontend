@@ -196,6 +196,22 @@ class GoodsItemFormatsSpec extends SpecBase
         }
       }
 
+      "when consignor" - {
+        "is specified" in {
+          val gen = for {
+            item <- arbitrary[GoodsItem]
+            con <- arbitrary[Party]
+          } yield item.copy(consignor = Some(con))
+
+          forAll(gen) { item => item.toXml.parseXml[GoodsItem] must be(item) }
+        }
+
+        "is missing" in {
+          val gen = arbitrary[GoodsItem] map { _.copy(consignor = None) }
+          forAll(gen) { item => item.toXml.parseXml[GoodsItem] must be(item) }
+        }
+      }
+
       "when consignee" - {
         "is specified" in {
           val gen = for {
