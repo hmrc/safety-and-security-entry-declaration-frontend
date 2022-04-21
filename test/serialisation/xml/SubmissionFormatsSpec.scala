@@ -19,6 +19,7 @@ package serialisation.xml
 import base.SpecBase
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import models.completion.Party
 import models.completion.downstream.Submission
 import org.scalacheck.Gen
 
@@ -48,6 +49,22 @@ class SubmissionFormatsSpec
         }
         "absent" in {
           val gen = arbitrary[Submission] map { _.copy(seals = Nil) }
+          forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
+        }
+      }
+
+      "when carrier is" - {
+        "present" in {
+          val gen = for {
+            carrier <- arbitrary[Party]
+            submission <- arbitrary[Submission]
+          } yield submission.copy(carrier = Some(carrier))
+
+          forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
+        }
+
+        "absent (assumed the same as declaring person)" in {
+          val gen = arbitrary[Submission] map { _.copy(carrier = None) }
           forAll(gen) { item => item.toXml.parseXml[Submission] must be(item) }
         }
       }

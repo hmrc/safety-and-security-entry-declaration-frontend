@@ -26,5 +26,5 @@ case class Submission(
   declarer: Party,
   seals: List[String],
   customsOffice: CustomsOffice,
-  carrier: Party
+  carrier: Option[Party]
 )

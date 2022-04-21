@@ -149,12 +149,12 @@ trait ModelGenerators extends StringGenerators {
         sealsLen <- Gen.choose(1, 5)
         seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
         customsOffice <- arbitrary[CustomsOfficePayload]
-        carrier <- arbitrary[Party]
+        carrier <- Gen.option(arbitrary[Party])
       } yield {
         Submission(
           metadata,
           header,
-          goodsItems.zipWithIndex.map { case (item, i) => item.copy(itemNumber = i) },
+          goodsItems.zipWithIndex.map { case (item, i) => item.copy(itemNumber = i + 1) },
           itinerary,
           declarer,
           seals,
