@@ -136,6 +136,10 @@ trait GoodsItemFormats
         sm => <SPEMENMT2>{sm.toXml}</SPEMENMT2>
       }
 
+      val consignor: NodeSeq = item.consignor.map { c =>
+        <TRACONCO2>{goodsConsignorFormat.encode(c)}</TRACONCO2>
+      }.toSeq
+
       val consignee: NodeSeq = item.consignee.map { c =>
         <TRACONCE2>{goodsConsigneeFormat.encode(c)}</TRACONCE2>
       }.toSeq
@@ -170,7 +174,7 @@ trait GoodsItemFormats
         <PlaUnlGOOITE333>{item.placeOfUnloading.toXmlString}</PlaUnlGOOITE333>,
         documents,
         specialMentions,
-        <TRACONCO2>{goodsConsignorFormat.encode(item.consignor)}</TRACONCO2>,
+        consignor,
         commCode,
         consignee,
         containers,
@@ -188,7 +192,7 @@ trait GoodsItemFormats
       placeOfLoading = (data \\ "PlaLoaGOOITE333").text.parseXmlString[LoadingPlace],
       placeOfUnloading = (data \\ "PlaUnlGOOITE333").text.parseXmlString[LoadingPlace],
       documents = (data \\ "PRODOCDC2").map { _.parseXml[Document] }.toList,
-      consignor = goodsConsignorFormat.decode(data \\ "TRACONCO2"),
+      consignor = (data \\ "TRACONCO2").headOption.map(goodsConsignorFormat.decode),
       consignee = (data \\ "TRACONCE2").headOption.map(goodsConsigneeFormat.decode),
       notifiedParty = (data \\ "PRTNOT640").headOption.map(goodsNotifiedPartyFormat.decode),
       containers = (data \\ "CONNR2").map { _.parseXml[Container] }.toList,

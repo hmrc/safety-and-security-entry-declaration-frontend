@@ -107,6 +107,10 @@ trait PartyFormats extends CommonFormats {
       )
     )
   }
+
+  val rootConsignorFormat = {
+    partyFmt(Fields("TINCO159", "NamCO17", "StrAndNumCO122", "CitCO124", "PosCodCO123", "CouCO125"))
+  }
 }
 
 object PartyFormats extends PartyFormats {

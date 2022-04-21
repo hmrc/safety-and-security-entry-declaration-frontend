@@ -150,6 +150,7 @@ trait ModelGenerators extends StringGenerators {
         seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
         customsOffice <- arbitrary[CustomsOfficePayload]
         carrier <- Gen.option(arbitrary[Party])
+        consignor <- Gen.option(arbitrary[Party])
       } yield {
         Submission(
           metadata,
@@ -159,7 +160,8 @@ trait ModelGenerators extends StringGenerators {
           declarer,
           seals,
           customsOffice,
-          carrier
+          carrier,
+          consignor
         )
       }
     }
@@ -429,7 +431,7 @@ trait ModelGenerators extends StringGenerators {
       placeOfUnloading <- arbitrary[LoadingPlace]
       documentsLen <- Gen.choose(0, 3)
       documents <- Gen.listOfN(documentsLen, arbitrary[Document])
-      consignor <- arbitrary[Party]
+      consignor <- Gen.option(arbitrary[Party])
       consignee <- Gen.option(arbitrary[Party])
       notifiedParty <- Gen.option(arbitrary[Party])
       containersLen <- Gen.choose(0, 3)

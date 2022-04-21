@@ -31,7 +31,7 @@ case class GoodsItem(
   placeOfLoading: LoadingPlace,
   placeOfUnloading: LoadingPlace,
   documents: List[Document],
-  consignor: Party,
+  consignor: Option[Party],
   consignee: Option[Party],
   notifiedParty: Option[Party],
   containers: List[Container],
