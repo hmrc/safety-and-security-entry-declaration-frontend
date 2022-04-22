@@ -16,19 +16,30 @@
 
 package generators
 
-import models.TransportIdentity._
-import models._
-import models.completion.downstream._
-import models.completion.{CustomsOffice => CustomsOfficePayload, _}
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
-import pages.CheckAnswersPage
-import pages.consignees.{CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
-
 import java.time.temporal.ChronoUnit
 import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
-trait ModelGenerators extends StringGenerators {
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
+
+import models._
+import models.TransportIdentity._
+import models.completion.answers.{Parties, RouteDetails}
+import models.completion.{CustomsOffice => CustomsOfficePayload, _}
+import models.completion.downstream._
+import pages.CheckAnswersPage
+import pages.consignees.{
+  CheckConsigneePage,
+  CheckConsigneesAndNotifiedPartiesPage,
+  CheckNotifiedPartyPage
+}
+import utils.{PartiesUtils, RouteDetailsUtils}
+
+
+trait ModelGenerators extends StringGenerators
+  with RouteDetailsUtils
+  with PartiesUtils {
+
   // Three decimal places, between 0.001 and 99999999.999
   val grossMassGen: Gen[BigDecimal] = Gen.choose(1L, 99999999999L).map { l => BigDecimal(l, 3) }
 
@@ -467,6 +478,70 @@ trait ModelGenerators extends StringGenerators {
       numPieces <- Gen.option(Gen.choose(0, 99999))
       mark <- Gen.option(Gen.listOfN(2, Gen.alphaChar) map { _.mkString })
     } yield Package(kindPackage, numPackages, numPieces, mark)
+  }
+
+  implicit lazy val arbitraryPackageItem: Arbitrary[PackageItem] = Arbitrary {
+    Gen.oneOf(arbitrary[BulkPackageItem], arbitrary[UnpackedPackageItem], arbitrary[StandardPackageItem])
+  }
+
+  implicit lazy val arbitraryBulkPackageItem: Arbitrary[BulkPackageItem] = Arbitrary{
+    for {
+      kindPackage <- arbitrary[KindOfPackage]
+      mark <- Gen.option(Gen.listOfN(2, Gen.alphaChar) map { _.mkString })
+    } yield BulkPackageItem(kindPackage, mark)
+  }
+
+  implicit lazy val arbitraryUnpackedPackageItem: Arbitrary[UnpackedPackageItem] = Arbitrary {
+    for {
+      kindPackage <- arbitrary[KindOfPackage]
+      numPieces <- Gen.choose(0, 99999)
+      mark <- Gen.option(Gen.listOfN(2, Gen.alphaChar) map { _.mkString })
+    } yield UnpackedPackageItem(kindPackage, numPieces, mark)
+  }
+
+  implicit lazy val arbitraryStandardPackageItem : Arbitrary[StandardPackageItem] = Arbitrary {
+    //TODO check if mark or number is optional or not.
+    for {
+      kindPackage <- arbitrary[KindOfPackage]
+      numPieces <- Gen.choose(0, 99999)
+      mark <- Gen.listOfN(2, Gen.alphaChar) map { _.mkString }
+    } yield StandardPackageItem(kindPackage, numPieces, mark)
+  }
+
+  implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] = Arbitrary {
+    implicit val min = 1
+    implicit val max = 10
+
+    val genPlaceOfLoading = for {
+      length <- Gen.choose(min,max)
+      listOfPlaces <- Gen.listOfN(length, arbitrary[LoadingPlace])
+      mapLoadingPlace <- listOfPlaces.zipWithIndex.map{ case(a,b) => (b,a) }.toMap
+    } yield mapLoadingPlace
+
+    for {
+      placesOfLoading <- genPlaceOfLoading
+      placesOfUnloading <- genPlaceOfLoading  // TODO update when UnloadingPlace fixed
+      originCountry <- arbitrary[Country]
+      extraCountries <- Gen.choose(min, max).flatMap { len => Gen.listOfN(len, arbitrary[Country]) }
+      customsOffice <- arbitrary[CustomsOfficePayload]
+    } yield {
+      val itinerary = Itinerary(originCountry +: extraCountries)
+      RouteDetails(placesOfLoading, placesOfUnloading, itinerary, customsOffice)
+    }
+  }
+
+  implicit lazy val arbitraryParties: Arbitrary[Parties] = Arbitrary {
+    val genParties: Gen[Map[Int, Party]] =
+      for {
+        count <- Gen.choose(1, 3)
+        partyList <- Gen.listOfN(count, arbitrary[Party])
+      } yield partyList.zipWithIndex.map { case (p, i) => i -> p }.toMap
+
+    for {
+      consignors <- genParties
+      consignees <- genParties
+      notifiedParties <- genParties
+    } yield Parties(consignors, consignees, notifiedParties)
   }
 
   implicit lazy val arbitraryGoodsItem: Arbitrary[GoodsItem] = Arbitrary {

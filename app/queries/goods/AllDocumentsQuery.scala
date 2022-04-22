@@ -21,6 +21,5 @@ import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
 final case class AllDocumentsQuery(index: Index) extends Gettable[List[Document]] with Settable[List[Document]] {
-
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ "documents"
 }

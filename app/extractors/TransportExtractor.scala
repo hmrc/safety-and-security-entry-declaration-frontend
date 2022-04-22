@@ -47,23 +47,23 @@ class TransportExtractor(
       tm match {
         case TransportMode.Air =>
           requireAnswer(AirIdentityPage) map { id =>  (id, tm, None) }
-  
+
         case TransportMode.Rail =>
           requireAnswer(RailIdentityPage) map { id => (id, tm, None) }
-  
+
         case TransportMode.Maritime =>
           requireAnswer(MaritimeIdentityPage) map { id => (id, tm, None) }
-  
+
         case TransportMode.Road =>
           val nationality = requireAnswer(NationalityOfTransportPage)
           val id = requireAnswer(RoadIdentityPage)
           (id, nationality).mapN { (ident, n) => (ident, tm, Some(n)) }
-  
+
         case TransportMode.RoroAccompanied =>
           val nationality = requireAnswer(NationalityOfTransportPage)
           val id = requireAnswer(RoroAccompaniedIdentityPage)
           (id, nationality).mapN { (ident, n) => (ident, tm, Some(n)) }
-  
+
         case TransportMode.RoroUnaccompanied =>
           val nationality = requireAnswer(NationalityOfTransportPage)
           val id = requireAnswer(RoroUnaccompaniedIdentityPage)

@@ -17,6 +17,7 @@
 package models.completion.answers
 
 import models.completion.{CustomsOffice, Itinerary, LoadingPlace}
+import play.api.libs.json.Json
 
 case class RouteDetails(
   placesOfLoading: Map[Int, LoadingPlace],
@@ -24,3 +25,5 @@ case class RouteDetails(
   itinerary: Itinerary,
   customsOffice: CustomsOffice
 )
+
+

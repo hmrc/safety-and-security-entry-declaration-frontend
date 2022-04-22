@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package queries
+package utils
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import models.PlaceOfLoading
+import models.completion.LoadingPlace
 
-import scala.util.{Success, Try}
+trait RouteDetailsUtils {
 
-sealed trait Query {
+  def placeOfLoadingToMap(placeOfLoading: List[PlaceOfLoading]): Map[Int, LoadingPlace] = {
+    placeOfLoading.map {
+      place => place.key -> LoadingPlace(place.country, place.place)
+    }.toMap
+  }
 
-  def path: JsPath
-}
-trait Gettable[A] extends Query
 
-trait Settable[A] extends Query {
+  def convertToList(loadingPlace: Map[Int, LoadingPlace]): List[PlaceOfLoading] = {
+    loadingPlace.map {
+      case (key, loadPlace) => PlaceOfLoading(key, loadPlace.country, loadPlace.desc)
+    }.toList
+  }
 
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
 }

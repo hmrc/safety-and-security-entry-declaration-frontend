@@ -16,10 +16,11 @@
 
 package queries.goods
 
-import models.GoodsItemName
 import play.api.libs.json.JsPath
-import queries.Gettable
 
-case object AllGoodsItemNamesQuery extends Gettable[List[GoodsItemName]] {
+import models.GoodsItemName
+import queries.{Gettable, Settable}
+
+case object AllGoodsItemNamesQuery extends Gettable[List[GoodsItemName]] with Settable[List[GoodsItemName]] {
   override def path: JsPath = JsPath \ "goodsItems"
 }

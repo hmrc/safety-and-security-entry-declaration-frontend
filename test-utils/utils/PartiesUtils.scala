@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package utils
 
-import models.UserAnswers
-import play.api.libs.json.JsPath
+import models.{GbEori, Trader, TraderWithEori, TraderWithoutEori}
+import models.completion.Party
 
-import scala.util.{Success, Try}
+trait PartiesUtils {
 
-sealed trait Query {
-
-  def path: JsPath
-}
-trait Gettable[A] extends Query
-
-trait Settable[A] extends Query {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  def tradersToParties(traders: List[Trader]): Map[Int, Party] = {
+    traders.map {
+      case TraderWithEori(key, eori) => key -> Party.ByEori(GbEori(eori))
+      case TraderWithoutEori(key, name, addr) => key -> Party.ByAddress(name, addr)
+    }.toMap
+  }
 }

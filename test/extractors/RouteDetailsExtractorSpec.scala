@@ -62,7 +62,7 @@ class RouteDetailsExtractorSpec extends SpecBase {
       LocalDateTime.of(arrivalDatetime.date, arrivalDatetime.time).toInstant(ZoneOffset.UTC)
     )
   )
-
+val routeDetails = arbitrary[RouteDetails].sample.get
   private val validAnswers = {
     arbitrary[UserAnswers].sample.value
       .set(CountryOfDeparturePage, originCountry).success.value
