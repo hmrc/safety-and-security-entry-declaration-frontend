@@ -21,33 +21,38 @@ import pages.goods.ConsigneePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import queries.consignees.AllConsigneesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ConsigneeSummary  {
+object ConsigneeSummary {
 
   def row(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ConsigneePage(itemIndex)).map {
-      answer =>
+    for {
+      consignees <- answers.get(AllConsigneesQuery)
+      key        <- answers.get(ConsigneePage(itemIndex))
+      consignee  <- consignees.find(_.key == key)
+    } yield {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"consignee.$answer"))
-          )
-        )
+      val value = ValueViewModel(HtmlFormat.escape(consignee.displayName).toString)
 
-        SummaryListRowViewModel(
-          key     = "consignee.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              ConsigneePage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
-            ).withVisuallyHiddenText(messages("consignee.change.hidden"))
-          )
+      val actions = if (consignees.size > 1) {
+        Seq(
+          ActionItemViewModel(
+            "site.change",
+            ConsigneePage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("consignee.change.hidden"))
         )
+      } else {
+        Nil
+      }
+
+      SummaryListRowViewModel(
+        key = "consignee.checkYourAnswersLabel",
+        value = value,
+        actions = actions
+      )
     }
 }

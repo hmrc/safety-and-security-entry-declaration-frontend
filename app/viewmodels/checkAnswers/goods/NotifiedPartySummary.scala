@@ -21,7 +21,7 @@ import pages.goods.NotifiedPartyPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import queries.consignees.AllNotifiedPartiesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -29,25 +29,31 @@ import viewmodels.implicits._
 object NotifiedPartySummary  {
 
   def row(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
-         (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NotifiedPartyPage(itemIndex)).map {
-      answer =>
+         (implicit messages: Messages): Option[SummaryListRow] = {
+    for {
+      notifiedParties <- answers.get(AllNotifiedPartiesQuery)
+      key             <- answers.get(NotifiedPartyPage(itemIndex))
+      notifiedParty  <- notifiedParties.find(_.key == key)
+    } yield {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"notifiedParty.$answer"))
-          )
-        )
+      val value = ValueViewModel(HtmlFormat.escape(notifiedParty.displayName).toString)
 
-        SummaryListRowViewModel(
-          key     = "notifiedParty.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              NotifiedPartyPage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
-            ).withVisuallyHiddenText(messages("notifiedParty.change.hidden"))
-          )
+      val actions = if (notifiedParties.size > 1) {
+        Seq(
+          ActionItemViewModel(
+            "site.change",
+            NotifiedPartyPage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("notifiedParty.change.hidden"))
         )
-    }
+      } else {
+        Nil
+      }
+
+      SummaryListRowViewModel(
+        key     = "notifiedParty.checkYourAnswersLabel",
+        value   = value,
+        actions = actions
+      )
+  }
+  }
 }

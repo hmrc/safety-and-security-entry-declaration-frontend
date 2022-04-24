@@ -21,7 +21,7 @@ import pages.goods.LoadingPlacePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import queries.routedetails.AllPlacesOfLoadingQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -30,24 +30,30 @@ object LoadingPlaceSummary  {
 
   def row(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LoadingPlacePage(itemIndex)).map {
-      answer =>
+    for {
+      placesOfLoading <- answers.get(AllPlacesOfLoadingQuery)
+      key             <- answers.get(LoadingPlacePage(itemIndex))
+      placeOfLoading  <- placesOfLoading.find(_.key == key)
+    } yield {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"loadingPlace.$answer"))
-          )
-        )
+      val value = ValueViewModel(HtmlFormat.escape(placeOfLoading.place).toString)
 
-        SummaryListRowViewModel(
-          key     = "loadingPlace.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              LoadingPlacePage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
-            ).withVisuallyHiddenText(messages("loadingPlace.change.hidden"))
-          )
+      val actions = if (placesOfLoading.size > 1) {
+        Seq(
+          ActionItemViewModel(
+            "site.change",
+            LoadingPlacePage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("loadingPlace.change.hidden"))
         )
-    }
+      } else {
+        Nil
+      }
+
+      SummaryListRowViewModel(
+        key = "loadingPlace.checkYourAnswersLabel",
+        value = value,
+        actions = actions
+      )
+  }
+
 }

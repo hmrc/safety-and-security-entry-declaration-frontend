@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package viewmodels
 
 import base.SpecBase
 import controllers.consignees.{routes => consigneeRoutes}
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
+import models.{GbEori, Index}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -30,7 +31,6 @@ import pages.consignors.ConsignorEORIPage
 import pages.goods.CommodityCodeKnownPage
 import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 import queries.consignors.ConsignorKeyQuery
-import viewmodels.TaskListViewModel
 
 class TaskListViewModelSpec
   extends AnyFreeSpec
