@@ -23,7 +23,7 @@ import pages.Waypoints
 import pages.goods.RemovePackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.PackageQuery
+import queries.goods
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemovePackageView
@@ -72,7 +72,7 @@ class RemovePackageController @Inject() (
           value =>
             if (value) {
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(PackageQuery(itemIndex, packageIndex)))
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(goods.PackageQuery(itemIndex, packageIndex)))
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers))
             } else {

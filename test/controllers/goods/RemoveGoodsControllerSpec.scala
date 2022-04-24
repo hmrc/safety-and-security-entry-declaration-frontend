@@ -22,12 +22,11 @@ import forms.goods.RemoveGoodsFormProvider
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, Waypoints, goods}
 import pages.goods.{CommodityCodePage, RemoveGoodsPage}
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.GoodItemQuery
 import repositories.SessionRepository
 import views.html.goods.RemoveGoodsView
 
@@ -82,7 +81,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = baseAnswers.remove(GoodItemQuery(index)).success.value
+        val expectedAnswers = baseAnswers.remove(queries.goods.GoodItemQuery(index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveGoodsPage(index)

@@ -23,9 +23,9 @@ import models.{GbEori, Index, TraderWithEori}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, Waypoints}
 import pages.consignees.ConsigneeEORIPage
 import pages.goods.ConsigneePage
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest

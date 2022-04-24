@@ -21,7 +21,7 @@ import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfGoods
+import queries.goods.DeriveNumberOfGoods
 
 final case class RemoveGoodsPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 

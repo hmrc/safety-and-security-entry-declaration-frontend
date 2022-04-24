@@ -16,13 +16,13 @@
 
 package pages.goods
 
-import controllers.goods.routes
-import org.scalacheck.Arbitrary.arbitrary
 import base.SpecBase
+import controllers.goods.routes
 import models.{Document, NormalMode}
-import pages.{EmptyWaypoints, Waypoints}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.transport.AnyOverallDocumentsPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemoveDocumentPageSpec extends SpecBase with PageBehaviours {
 

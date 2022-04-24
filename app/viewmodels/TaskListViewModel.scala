@@ -26,9 +26,9 @@ import models.{Index, NormalMode, UserAnswers}
 import pages.EmptyWaypoints
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import queries.DeriveNumberOfGoods
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 import queries.consignors.DeriveNumberOfConsignors
+import queries.goods.DeriveNumberOfGoods
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 final case class TaskListViewModel(rows: Seq[TaskListRow])(implicit messages: Messages)

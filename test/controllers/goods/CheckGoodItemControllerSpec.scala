@@ -18,6 +18,7 @@ package controllers.goods
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
+import pages.goods.CheckGoodsItemPage
 import pages.{EmptyWaypoints, Waypoints}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -28,7 +29,7 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
 
   val waypoints: Waypoints = EmptyWaypoints
 
-  "Check Your Answers Controller" - {
+  "Check Goods Item Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -67,6 +68,21 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to the next page for a POST" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.CheckGoodItemController.onSubmit(waypoints, lrn, index).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value
+          .mustEqual(CheckGoodsItemPage(index).navigate(waypoints, emptyUserAnswers).url)
       }
     }
   }

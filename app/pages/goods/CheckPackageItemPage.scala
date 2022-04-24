@@ -17,8 +17,8 @@
 package pages.goods
 
 import controllers.goods.routes
-import models.{Index, LocalReferenceNumber}
-import pages.{CheckAnswersPage, Waypoint, Waypoints}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, Waypoint, Waypoints}
 import play.api.mvc.Call
 
 final case class CheckPackageItemPage(itemIndex: Index, packageIndex: Index) extends CheckAnswersPage {
@@ -27,6 +27,9 @@ final case class CheckPackageItemPage(itemIndex: Index, packageIndex: Index) ext
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.CheckPackageItemController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AddPackagePage(itemIndex)
 }
 
 object CheckPackageItemPage {

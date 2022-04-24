@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
-import models.{Container, Index}
+import models.{Document, Index}
 import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-case class DeriveNumberOfContainers(itemIndex: Index) extends Derivable[List[Container], Int] {
+final case class AllDocumentsQuery(index: Index) extends Gettable[List[Document]] with Settable[List[Document]] {
 
-  override val derive: List[Container] => Int = _.size
-
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers"
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ "documents"
 }

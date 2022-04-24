@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Index, KindOfPackage, NormalMode}
 import org.scalacheck.Gen
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.transport.AnyOverallDocumentsPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 

@@ -21,7 +21,7 @@ import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{AddItemPage, Page, QuestionPage, TaskListPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfGoods
+import queries.goods.DeriveNumberOfGoods
 
 case object AddGoodsPage extends QuestionPage[Boolean] with AddItemPage {
 

@@ -22,7 +22,7 @@ import pages.goods.CommodityCodeKnownPage
 import pages.{AddItemPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.AllGoodsItemNamesQuery
+import queries.goods.AllGoodsItemNamesQuery
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object GoodsSummary {

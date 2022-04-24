@@ -28,7 +28,6 @@ import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.PackageQuery
 import repositories.SessionRepository
 import views.html.goods.RemovePackageView
 
@@ -90,7 +89,7 @@ class RemovePackageControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = baseAnswers.remove(PackageQuery(index, index)).success.value
+        val expectedAnswers = baseAnswers.remove(queries.goods.PackageQuery(index, index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemovePackagePage(index, index)

@@ -22,7 +22,7 @@ import pages.predec.ProvideGrossWeightPage
 import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.{AllContainersQuery, DeriveNumberOfContainers}
+import queries.goods.{AllContainersQuery, DeriveNumberOfContainers}
 
 import scala.util.Try
 

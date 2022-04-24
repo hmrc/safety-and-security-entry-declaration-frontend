@@ -23,7 +23,7 @@ import pages.Waypoints
 import pages.goods.RemoveDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.DocumentQuery
+import queries.goods.DocumentQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemoveDocumentView

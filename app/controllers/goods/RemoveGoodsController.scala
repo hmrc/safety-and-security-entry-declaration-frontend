@@ -23,7 +23,7 @@ import pages.Waypoints
 import pages.goods.RemoveGoodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.GoodItemQuery
+import queries.goods.GoodItemQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemoveGoodsView

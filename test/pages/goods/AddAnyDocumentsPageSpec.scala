@@ -19,10 +19,10 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{Document, Index, NormalMode}
-import org.scalacheck.Arbitrary.{arbFunction0, arbitrary}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.{EmptyWaypoints, Waypoints}
-import queries.AllDocumentsQuery
+import queries.goods.AllDocumentsQuery
 
 class AddAnyDocumentsPageSpec extends SpecBase with PageBehaviours {
 

@@ -21,7 +21,7 @@ import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.{AllDocumentsQuery, DeriveNumberOfDocuments}
+import queries.goods.{AllDocumentsQuery, DeriveNumberOfDocuments}
 
 import scala.util.Try
 

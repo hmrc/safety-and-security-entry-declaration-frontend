@@ -20,10 +20,10 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{Container, Index, NormalMode, ProvideGrossWeight}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.predec.ProvideGrossWeightPage
-import queries.AllContainersQuery
+import pages.{EmptyWaypoints, Waypoints}
+import queries.goods.AllContainersQuery
 
 class AnyShippingContainersPageSpec extends SpecBase with PageBehaviours {
 

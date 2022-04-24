@@ -17,18 +17,17 @@
 package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.goods.{AddDocumentPage, DocumentPage}
 import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.AllDocumentsQuery
+import queries.goods.AllDocumentsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-
 
 object DocumentSummary {
 

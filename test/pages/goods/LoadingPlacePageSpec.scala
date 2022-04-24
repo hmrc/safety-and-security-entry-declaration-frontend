@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.routedetails.PlaceOfUnloadingPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class LoadingPlacePageSpec extends SpecBase with PageBehaviours {
 

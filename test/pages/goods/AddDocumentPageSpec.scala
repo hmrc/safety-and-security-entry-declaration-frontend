@@ -21,8 +21,8 @@ import controllers.goods.{routes => goodsRoutes}
 import models.{CheckMode, Document, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddDocumentPageSpec extends SpecBase with PageBehaviours {
 

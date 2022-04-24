@@ -19,7 +19,7 @@ package controllers.goods
 import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.ConsignorFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.ConsignorPage
 import play.api.i18n.{I18nSupport, MessagesApi}

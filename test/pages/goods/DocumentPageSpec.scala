@@ -19,8 +19,8 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.CheckMode
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class DocumentPageSpec extends SpecBase with PageBehaviours {
 

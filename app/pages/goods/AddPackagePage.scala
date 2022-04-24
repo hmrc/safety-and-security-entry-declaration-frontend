@@ -22,7 +22,7 @@ import pages.transport.AnyOverallDocumentsPage
 import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfPackages
+import queries.goods.DeriveNumberOfPackages
 
 case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 

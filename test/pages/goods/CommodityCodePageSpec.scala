@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{GbEori, Index}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.consignors.ConsignorEORIPage
+import pages.{EmptyWaypoints, Waypoints}
 import queries.consignors.ConsignorKeyQuery
 
 class CommodityCodePageSpec extends SpecBase with PageBehaviours {

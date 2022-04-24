@@ -18,8 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
 import models.Index
 import play.api.libs.json.{JsObject, JsPath}
+import queries.Settable
 
 final case class GoodItemQuery(itemIndex: Index) extends Settable[JsObject] {
 

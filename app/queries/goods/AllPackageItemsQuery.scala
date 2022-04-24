@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
 import models.{Index, PackageItem}
 import play.api.libs.json.JsPath
+import queries.Gettable
 
-case class DeriveNumberOfPackages(itemIndex: Index) extends Derivable[List[PackageItem], Int] {
-
-  override val derive: List[PackageItem] => Int = _.size
+final case class AllPackageItemsQuery(itemIndex: Index) extends Gettable[List[PackageItem]] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages"
 }

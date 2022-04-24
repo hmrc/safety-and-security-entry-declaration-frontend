@@ -22,7 +22,7 @@ import pages.transport.AnyOverallDocumentsPage
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfDocuments
+import queries.goods.DeriveNumberOfDocuments
 
 final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 

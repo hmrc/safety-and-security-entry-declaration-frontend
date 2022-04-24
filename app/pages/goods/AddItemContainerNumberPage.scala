@@ -22,7 +22,7 @@ import pages.predec.ProvideGrossWeightPage
 import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfContainers
+import queries.goods.DeriveNumberOfContainers
 
 final case class AddItemContainerNumberPage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 

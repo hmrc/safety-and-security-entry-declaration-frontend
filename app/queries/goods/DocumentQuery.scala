@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
-import models.GoodsItemName
-import play.api.libs.json.JsPath
+import models.Index
+import play.api.libs.json.{JsObject, JsPath}
+import queries.Settable
 
-case object AllGoodsItemNamesQuery extends Gettable[List[GoodsItemName]] {
-  override def path: JsPath = JsPath \ "goodsItems"
+final case class DocumentQuery(itemIndex: Index, documentIndex: Index) extends Settable[JsObject] {
+
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "documents" \ documentIndex.position
 }

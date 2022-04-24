@@ -19,8 +19,8 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.Index
-import pages.{EmptyWaypoints, Waypoints, goods}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 

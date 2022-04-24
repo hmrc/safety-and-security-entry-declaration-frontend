@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
-import play.api.libs.json.{JsPath, JsValue}
+import models.{Container, Index}
+import play.api.libs.json.JsPath
+import queries.Derivable
 
-case object DeriveNumberOfGoods extends Derivable[List[JsValue], Int] {
+case class DeriveNumberOfContainers(itemIndex: Index) extends Derivable[List[Container], Int] {
 
-  override val derive: List[JsValue] => Int = _.size
+  override val derive: List[Container] => Int = _.size
 
-  override def path: JsPath = JsPath \ "goodsItems"
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers"
 }

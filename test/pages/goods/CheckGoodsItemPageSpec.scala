@@ -17,10 +17,12 @@
 package pages.goods
 
 import base.SpecBase
+import controllers.goods.routes
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.EmptyWaypoints
 
 class CheckGoodsItemPageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -49,4 +51,14 @@ class CheckGoodsItemPageSpec extends SpecBase with ScalaCheckPropertyChecks with
     }
   }
 
+  "must navigate when there are no waypoints" - {
+
+    val waypoints = EmptyWaypoints
+
+    "to add goods" in {
+
+      CheckGoodsItemPage(index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddGoodsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+    }
+  }
 }

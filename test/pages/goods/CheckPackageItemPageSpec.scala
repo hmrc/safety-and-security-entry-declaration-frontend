@@ -17,10 +17,12 @@
 package pages.goods
 
 import base.SpecBase
+import controllers.goods.routes
 import generators.Generators
-import models.Index
+import models.{Index, NormalMode}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.{EmptyWaypoints, Waypoints}
 
 class CheckPackageItemPageSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -46,6 +48,28 @@ class CheckPackageItemPageSpec extends SpecBase with ScalaCheckPropertyChecks wi
             CheckPackageItemPage.waypointFromString(s) must not be defined
           }
       }
+    }
+  }
+
+  "must navigate when there are no waypoints" - {
+
+    val waypoints = EmptyWaypoints
+
+    "to Add Package" in {
+
+      CheckPackageItemPage(index, index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddPackageController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
+    }
+  }
+
+  "must navigate when the current waypoint is Add Package" - {
+
+    val waypoints = Waypoints(List(AddPackagePage(index).waypoint(NormalMode)))
+
+    "to Add Package with the current waypoint removed" in {
+
+      CheckPackageItemPage(index, index).navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.AddPackageController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
     }
   }
 }

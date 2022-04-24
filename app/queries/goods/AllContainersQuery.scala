@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
-import models.{Index, PackageItem}
+import models.{Container, Index}
 import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-final case class AllPackageItemsQuery(itemIndex: Index) extends Gettable[List[PackageItem]] {
+final case class AllContainersQuery(index: Index) extends Gettable[List[Container]] with Settable[List[Container]] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages"
+  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ "containers"
 }

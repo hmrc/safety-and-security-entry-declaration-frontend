@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package queries.goods
 
-import models.Index
-import play.api.libs.json.{JsObject, JsPath}
+import play.api.libs.json.{JsPath, JsValue}
+import queries.Derivable
 
-final case class DocumentQuery(itemIndex: Index, documentIndex: Index) extends Settable[JsObject] {
+case object DeriveNumberOfGoods extends Derivable[List[JsValue], Int] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "documents" \ documentIndex.position
+  override val derive: List[JsValue] => Int = _.size
+
+  override def path: JsPath = JsPath \ "goodsItems"
 }

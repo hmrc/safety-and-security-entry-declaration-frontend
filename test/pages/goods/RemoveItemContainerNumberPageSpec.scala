@@ -20,8 +20,8 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.Container
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemoveItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
