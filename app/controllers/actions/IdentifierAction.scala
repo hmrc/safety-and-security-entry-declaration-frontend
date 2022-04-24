@@ -22,7 +22,7 @@ import controllers.routes
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.{CredentialStrength, _}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -49,10 +49,26 @@ class AuthenticatedIdentifierAction @Inject() (
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.internalId) {
-      _.map { internalId =>
-        block(IdentifierRequest(request, internalId))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
+    authorised(AuthProviders(AuthProvider.GovernmentGateway) and
+      CredentialStrength(CredentialStrength.strong)).retrieve(Retrievals.allEnrolments) {
+      {
+        case userEnrolments => {
+          val enrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
+
+          val eoris = for {
+            enrolment <- enrolments
+            eoriId    <- enrolment.getIdentifier("EORINumber")
+          } yield eoriId.value
+
+          eoris.headOption match {
+            case Some(eori) => block(IdentifierRequest(request,eori))
+            case None => throw InsufficientEnrolments()
+          }
+
+        }
+        /*internalId =>
+        block(IdentifierRequest(request, internalId))*/
+      }//.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
     } recover {
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
