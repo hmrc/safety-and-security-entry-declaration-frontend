@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -30,7 +30,7 @@ final case class RemoveGoodsPage(itemIndex: Index) extends GoodsItemQuestionPage
   override def toString: String = "removeGood"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.RemoveGoodsController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.RemoveGoodsController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
     answers.get(DeriveNumberOfGoods).map {

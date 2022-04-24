@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.transport.AnyOverallDocumentsPage
 import pages.{Page, Waypoints}
@@ -31,7 +31,7 @@ final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) exte
   override def toString: String = "removeDocument"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.RemoveDocumentController.onPageLoad(waypoints, lrn, itemIndex, documentIndex)
+    routes.RemoveDocumentController.onPageLoad(waypoints, lrn, itemIndex, documentIndex)
 
   override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page = {
 

@@ -16,13 +16,12 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.routedetails.{DeriveNumberOfCountriesEnRoute, DeriveNumberOfPlacesOfLoading}
+import queries.routedetails.DeriveNumberOfPlacesOfLoading
 
 final case class ConsigneePage(itemIndex: Index) extends GoodsItemQuestionPage[Int] {
 
@@ -31,7 +30,7 @@ final case class ConsigneePage(itemIndex: Index) extends GoodsItemQuestionPage[I
   override def toString: String = "consigneeKey"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.ConsigneeController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.ConsigneeController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfPlacesOfLoading).map {

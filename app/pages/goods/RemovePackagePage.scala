@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ final case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extend
   override def toString: String = "removePackage"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.RemovePackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+    routes.RemovePackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
 
   override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfPackages(itemIndex)).map {

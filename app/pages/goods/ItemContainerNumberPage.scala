@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Container, Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -30,7 +30,7 @@ case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index)
     override def toString: String = "itemContainerNumber"
 
     override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-      goodsRoutes.ItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
+      routes.ItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
 
     override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
       AddItemContainerNumberPage(itemIndex)

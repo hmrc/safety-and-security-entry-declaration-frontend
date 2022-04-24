@@ -16,9 +16,9 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{NonEmptyWaypoints, Page, Waypoints}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignors.DeriveNumberOfConsignors
@@ -30,7 +30,7 @@ case class CommodityCodePage(index: Index) extends GoodsItemQuestionPage[String]
   override def toString: String = "commodityCode"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.CommodityCodeController.onPageLoad(waypoints, lrn, index)
+    routes.CommodityCodeController.onPageLoad(waypoints, lrn, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfConsignors).map {

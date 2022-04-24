@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{JourneyRecoveryPage, Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -30,7 +30,7 @@ final case class ConsignorPage(itemIndex: Index) extends GoodsItemQuestionPage[I
   override def toString: String = "consignorKey"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.ConsignorController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.ConsignorController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
 

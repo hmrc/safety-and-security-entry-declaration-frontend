@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ final case class RemoveItemContainerNumberPage(itemIndex: Index, containerIndex:
   override def toString: String = "removeContainer"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.RemoveItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
+    routes.RemoveItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
 
   override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfContainers(itemIndex)).map {

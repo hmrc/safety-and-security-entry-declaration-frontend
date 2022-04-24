@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -29,7 +29,7 @@ final case class GoodsItemGrossWeightPage(index: Index) extends GoodsItemQuestio
   override def toString: String = "grossWeight"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.GoodsItemGrossWeightController.onPageLoad(waypoints, lrn, index)
+    routes.GoodsItemGrossWeightController.onPageLoad(waypoints, lrn, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     KindOfPackagePage(index, Index(0))

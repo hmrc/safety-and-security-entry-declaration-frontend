@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] wit
   override def path: JsPath = JsPath \ "addDocument"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.AddDocumentController.onPageLoad(waypoints, lrn, index)
+    routes.AddDocumentController.onPageLoad(waypoints, lrn, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {

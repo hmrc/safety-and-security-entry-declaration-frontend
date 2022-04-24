@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.KindOfPackage.{bulkKindsOfPackage, unpackedKindsOfPackage}
 import models.{Index, KindOfPackage, LocalReferenceNumber, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, Waypoints}
@@ -33,7 +33,7 @@ case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends Pack
   override def toString: String = "kindOfPackage"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.KindOfPackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+    routes.KindOfPackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {

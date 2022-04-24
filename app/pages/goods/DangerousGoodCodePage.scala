@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{DangerousGood, Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -29,7 +29,7 @@ case class DangerousGoodCodePage(index: Index) extends GoodsItemQuestionPage[Dan
   override def toString: String = "dangerousGoodCode"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.DangerousGoodCodeController.onPageLoad(waypoints, lrn, index)
+    routes.DangerousGoodCodeController.onPageLoad(waypoints, lrn, index)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     PaymentMethodPage(index)

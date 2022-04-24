@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -29,7 +29,7 @@ final case class UnloadingPlacePage(itemIndex: Index) extends GoodsItemQuestionP
   override def toString: String = "unloadingPlace"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.UnloadingPlaceController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.UnloadingPlaceController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     AnyShippingContainersPage(itemIndex)

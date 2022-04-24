@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
 import pages.{NonEmptyWaypoints, Page, Waypoints}
@@ -33,7 +33,7 @@ case class AnyShippingContainersPage(itemIndex: Index) extends GoodsItemQuestion
   override def toString: String = "shippingContainers"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.AnyShippingContainersController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.AnyShippingContainersController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {

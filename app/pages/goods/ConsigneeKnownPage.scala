@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ final case class ConsigneeKnownPage(itemIndex: Index) extends GoodsItemQuestionP
   override def toString: String = "consigneeKnown"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.ConsigneeKnownController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.ConsigneeKnownController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {

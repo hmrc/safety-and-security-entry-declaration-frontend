@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
@@ -30,7 +30,7 @@ case class NumberOfPiecesPage(itemIndex: Index, packageIndex: Index) extends Pac
   override def toString: String = "numberOfPieces"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.NumberOfPiecesController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+    routes.NumberOfPiecesController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     AddMarkOrNumberPage(itemIndex, packageIndex)

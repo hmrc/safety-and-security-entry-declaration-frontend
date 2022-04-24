@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber}
 import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
@@ -26,7 +26,7 @@ final case class CheckPackageItemPage(itemIndex: Index, packageIndex: Index) ext
   override val urlFragment: String = s"check-package-${itemIndex.position}-${packageIndex.position}"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.CheckPackageItemController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+    routes.CheckPackageItemController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
 }
 
 object CheckPackageItemPage {

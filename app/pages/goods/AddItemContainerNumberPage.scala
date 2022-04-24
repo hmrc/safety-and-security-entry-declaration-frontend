@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
 import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
@@ -32,7 +32,7 @@ final case class AddItemContainerNumberPage(itemIndex: Index) extends QuestionPa
   override def path: JsPath = JsPath \ "addContainerNumber"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.AddItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.AddItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex)
 
   override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {

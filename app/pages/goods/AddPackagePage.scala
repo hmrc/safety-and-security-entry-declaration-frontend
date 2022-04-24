@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import pages.transport.AnyOverallDocumentsPage
 import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
@@ -32,7 +32,7 @@ case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with A
   override def path: JsPath = JsPath \ "addPackage"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.AddPackageController.onPageLoad(waypoints, lrn, itemIndex)
+    routes.AddPackageController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {

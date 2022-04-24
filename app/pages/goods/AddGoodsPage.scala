@@ -16,7 +16,7 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
+import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{AddItemPage, Page, QuestionPage, TaskListPage, Waypoints}
 import play.api.libs.json.JsPath
@@ -31,7 +31,7 @@ case object AddGoodsPage extends QuestionPage[Boolean] with AddItemPage {
   override def path: JsPath = JsPath \ "addGoodsItem"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.AddGoodsController.onPageLoad(waypoints, lrn)
+    routes.AddGoodsController.onPageLoad(waypoints, lrn)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {
