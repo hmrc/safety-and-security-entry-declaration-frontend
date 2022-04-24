@@ -19,7 +19,7 @@ package pages.goods
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.Index
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints, goods}
 import pages.behaviours.PageBehaviours
 
 class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
@@ -34,6 +34,17 @@ class GoodsItemGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
         GoodsItemGrossWeightPage(index).navigate(waypoints, emptyUserAnswers)
           .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(waypoints, emptyUserAnswers.lrn, index, Index(0)))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        GoodsItemGrossWeightPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

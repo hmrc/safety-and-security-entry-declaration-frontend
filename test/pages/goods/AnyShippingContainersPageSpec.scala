@@ -18,15 +18,18 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import models.{Container, Index, ProvideGrossWeight}
+import models.{Container, Index, NormalMode, ProvideGrossWeight}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.predec.ProvideGrossWeightPage
+import queries.AllContainersQuery
 
 class AnyShippingContainersPageSpec extends SpecBase with PageBehaviours {
 
   "ShippingContainersPage" - {
+
+    val container = arbitrary[Container].sample.value
 
     "must navigate when there are no waypoints" - {
 
@@ -67,6 +70,70 @@ class AnyShippingContainersPageSpec extends SpecBase with PageBehaviours {
             .mustEqual(goodsRoutes.GoodsItemGrossWeightController.onPageLoad(waypoints, answers.lrn, index))
         }
       }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "when the answer is yes" - {
+
+        "and there are already some shipping containers" - {
+
+          "to Check Goods Item with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(ItemContainerNumberPage(index, Index(0)), container).success.value
+                .set(AnyShippingContainersPage(index), true).success.value
+
+            AnyShippingContainersPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+          }
+        }
+
+        "and there are no shipping containers" - {
+
+          "to Item Container Number for index 0 with Add Item Container Number added to the waypoints" in {
+
+            val answers = emptyUserAnswers.set(AnyShippingContainersPage(index), true).success.value
+
+            val expectedWaypoints = waypoints.setNextWaypoint(AddItemContainerNumberPage(index).waypoint(NormalMode))
+
+            AnyShippingContainersPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.ItemContainerNumberController.onPageLoad(expectedWaypoints, answers.lrn, index, Index(0)))
+          }
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Goods Item with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AnyShippingContainersPage(index), false).success.value
+
+          AnyShippingContainersPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+      }
+    }
+
+    "must remove all containers when the answer is no" in {
+
+      val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, Index(0)), container).success.value
+
+      val result = AnyShippingContainersPage(index).cleanup(Some(false), answers).success.value
+
+      result mustEqual answers.remove(AllContainersQuery(index)).success.value
+    }
+
+    "must not change the user's answers when the answer is yes" in {
+
+      val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, Index(0)), container).success.value
+
+      val result = AnyShippingContainersPage(index).cleanup(Some(true), answers).success.value
+
+      result mustEqual answers
     }
   }
 }

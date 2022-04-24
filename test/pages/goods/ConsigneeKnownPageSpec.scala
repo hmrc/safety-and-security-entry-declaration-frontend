@@ -18,9 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
 
@@ -45,6 +44,73 @@ class ConsigneeKnownPageSpec extends SpecBase with PageBehaviours {
         ConsigneeKnownPage(index).navigate(waypoints, answers)
           .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(waypoints, answers.lrn, index))
       }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "when the answer is yes" - {
+
+        "to Check Goods Item with the current waypoint removed when the consignee has already been chosen" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(ConsigneePage(index), 1).success.value
+              .set(ConsigneeKnownPage(index), true).success.value
+
+          ConsigneeKnownPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+
+        "to Consignee when the consignee has not already been chosen" in {
+
+          val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), true).success.value
+
+          ConsigneeKnownPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.ConsigneeController.onPageLoad(waypoints, answers.lrn, index))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Goods Item with the current waypoint removed when the notified party has already been chosen" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(NotifiedPartyPage(index), 1).success.value
+              .set(ConsigneeKnownPage(index), false).success.value
+
+          ConsigneeKnownPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+
+        "to Notified Party when the notified party has not already been chosen" in {
+
+          val answers = emptyUserAnswers.set(ConsigneeKnownPage(index), false).success.value
+
+          ConsigneeKnownPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(waypoints, answers.lrn, index))
+        }
+      }
+    }
+
+    "must remove the notified party when the answer is yes" in {
+
+      val answers = emptyUserAnswers.set(NotifiedPartyPage(index), 1).success.value
+
+      val result = answers.set(ConsigneeKnownPage(index), true).success.value
+
+      result.get(NotifiedPartyPage(index)) must not be defined
+    }
+
+    "must remove consignee when the answer is no" in {
+
+      val answers = emptyUserAnswers.set(ConsigneePage(index), 1).success.value
+
+      val result = answers.set(ConsigneeKnownPage(index), false).success.value
+
+      result.get(ConsigneePage(index)) must not be defined
     }
   }
 }

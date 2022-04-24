@@ -17,13 +17,14 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, LocalReferenceNumber, NormalMode, ProvideGrossWeight, UserAnswers}
-import pages.{Page, Waypoints}
+import models.{Index, LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfContainers
+import queries.{AllContainersQuery, DeriveNumberOfContainers}
+
+import scala.util.Try
 
 case class AnyShippingContainersPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
@@ -45,4 +46,24 @@ case class AnyShippingContainersPage(itemIndex: Index) extends GoodsItemQuestion
           case ProvideGrossWeight.PerItem => GoodsItemGrossWeightPage(itemIndex)
         }.orRecover
     }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers
+          .get(DeriveNumberOfContainers(itemIndex)).map {
+            case n if n > 0 => waypoints.next.page
+            case _ => ItemContainerNumberPage(itemIndex, Index(0))
+        }.getOrElse(ItemContainerNumberPage(itemIndex, Index(0)))
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(AllContainersQuery(itemIndex))
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

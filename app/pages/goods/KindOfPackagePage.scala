@@ -19,11 +19,13 @@ package pages.goods
 import controllers.goods.{routes => goodsRoutes}
 import models.KindOfPackage.{bulkKindsOfPackage, unpackedKindsOfPackage}
 import models.{Index, KindOfPackage, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends GoodsItemQuestionPage[KindOfPackage] {
+import scala.util.Try
+
+case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends PackageQuestionPage[KindOfPackage] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
@@ -44,4 +46,38 @@ case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends Good
       case _ =>
         NumberOfPackagesPage(itemIndex, packageIndex)
     }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case b if bulkKindsOfPackage.contains(b) =>
+        answers.get(AddMarkOrNumberPage(itemIndex, packageIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(AddMarkOrNumberPage(itemIndex, packageIndex))
+
+      case u if unpackedKindsOfPackage.contains(u) =>
+        answers.get(NumberOfPiecesPage(itemIndex, packageIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NumberOfPiecesPage(itemIndex, packageIndex))
+
+      case _ =>
+        answers.get(NumberOfPackagesPage(itemIndex, packageIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NumberOfPackagesPage(itemIndex, packageIndex))
+    }.orRecover
+
+  override def cleanup(value: Option[KindOfPackage], userAnswers: UserAnswers): Try[UserAnswers] =
+    value.map {
+      case b if bulkKindsOfPackage.contains(b) =>
+        userAnswers
+          .remove(NumberOfPackagesPage(itemIndex, packageIndex))
+          .flatMap(_.remove(NumberOfPiecesPage(itemIndex, packageIndex)))
+
+      case u if unpackedKindsOfPackage.contains(u) =>
+        userAnswers.remove(NumberOfPackagesPage(itemIndex, packageIndex))
+
+      case _ =>
+        userAnswers
+          .remove(NumberOfPiecesPage(itemIndex, packageIndex))
+          .flatMap(_.remove(AddMarkOrNumberPage(itemIndex, packageIndex)))
+    }.getOrElse(super.cleanup(value, userAnswers))
 }

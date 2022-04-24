@@ -18,7 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import pages.EmptyWaypoints
+import models.CheckMode
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class DocumentPageSpec extends SpecBase with PageBehaviours {
@@ -33,6 +34,17 @@ class DocumentPageSpec extends SpecBase with PageBehaviours {
 
         DocumentPage(index, index).navigate(waypoints, emptyUserAnswers)
           .mustEqual(goodsRoutes.AddDocumentController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
+      }
+    }
+
+    "must navigate when the current waypoint is Add Document" - {
+
+      val waypoints = Waypoints(List(AddDocumentPage(index).waypoint(CheckMode)))
+
+      "to Add Document with the current waypoint removed" in {
+
+        DocumentPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AddDocumentController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

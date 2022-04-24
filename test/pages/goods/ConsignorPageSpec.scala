@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{GbEori, Index}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
@@ -152,6 +152,18 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
           ConsignorPage(index).navigate(waypoints, answers)
             .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(waypoints, answers.lrn, index))
         }
+      }
+    }
+
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        ConsignorPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

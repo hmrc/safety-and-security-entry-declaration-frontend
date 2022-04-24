@@ -33,7 +33,7 @@ final case class RemoveItemContainerNumberPage(itemIndex: Index, containerIndex:
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     goodsRoutes.RemoveItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfContainers(itemIndex)).map {
       case n if n > 0 => AddItemContainerNumberPage(itemIndex)
       case _ => AnyShippingContainersPage(itemIndex)

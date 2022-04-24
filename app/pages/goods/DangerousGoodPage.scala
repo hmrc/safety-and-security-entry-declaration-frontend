@@ -18,9 +18,11 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class DangerousGoodPage(index: Index) extends GoodsItemQuestionPage[Boolean] {
 
@@ -36,4 +38,22 @@ case class DangerousGoodPage(index: Index) extends GoodsItemQuestionPage[Boolean
       case true => DangerousGoodCodePage(index)
       case false => PaymentMethodPage(index)
     }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DangerousGoodCodePage(index))
+          .map(_ => waypoints.next.page)
+          .getOrElse(DangerousGoodCodePage(index))
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(DangerousGoodCodePage(index))
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

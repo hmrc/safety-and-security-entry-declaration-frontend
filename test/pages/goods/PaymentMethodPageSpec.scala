@@ -18,7 +18,7 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class PaymentMethodPageSpec extends SpecBase with PageBehaviours {
@@ -33,6 +33,17 @@ class PaymentMethodPageSpec extends SpecBase with PageBehaviours {
 
         PaymentMethodPage(index).navigate(waypoints, emptyUserAnswers)
           .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(waypoints,emptyUserAnswers.lrn,index))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        PaymentMethodPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

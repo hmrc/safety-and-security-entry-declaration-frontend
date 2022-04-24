@@ -17,8 +17,8 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{DangerousGood, Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{Page, QuestionPage, Waypoints}
+import models.{DangerousGood, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

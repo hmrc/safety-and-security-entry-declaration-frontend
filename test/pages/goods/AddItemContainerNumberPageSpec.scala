@@ -18,14 +18,17 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import models.{Container, Index, ProvideGrossWeight}
-import pages.EmptyWaypoints
+import models.{Container, Index, NormalMode, ProvideGrossWeight}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.predec.ProvideGrossWeightPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
   "Add Item Container Number Page" - {
+
+    val container = arbitrary[Container].sample.value
 
     "must navigate when there are no waypoints" - {
 
@@ -69,6 +72,40 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
           AddItemContainerNumberPage(index).navigate(waypoints, answers)
             .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(waypoints, answers.lrn, index, Index(0)))
+        }
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "when the answer is yes" - {
+
+        "to Item Container Number for the next index with Add Item Container Number added to the waypoints" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(ItemContainerNumberPage(index, index), container).success.value
+              .set(AddItemContainerNumberPage(index), true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddItemContainerNumberPage(index).waypoint(NormalMode))
+
+          AddItemContainerNumberPage(index).navigate(waypoints, answers)
+            .mustEqual(
+              goodsRoutes.ItemContainerNumberController.onPageLoad(expectedWaypoints, answers.lrn, index, Index(1))
+            )
+        }
+
+        "when the answer is no" - {
+
+          "to Check Goods Item with the current waypoint removed" in {
+
+            val answers = emptyUserAnswers.set(AddItemContainerNumberPage(index), false).success.value
+
+            AddItemContainerNumberPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+          }
         }
       }
     }

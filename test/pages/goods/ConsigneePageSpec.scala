@@ -18,12 +18,11 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode, PlaceOfLoading}
+import models.{Index, PlaceOfLoading}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import pages.routedetails.PlaceOfLoadingPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class ConsigneePageSpec extends SpecBase with PageBehaviours {
 
@@ -55,6 +54,17 @@ class ConsigneePageSpec extends SpecBase with PageBehaviours {
 
         ConsigneePage(index).navigate(waypoints, answers)
           .mustEqual(LoadingPlacePage(Index(0)).navigate(waypoints, answers))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        ConsigneePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

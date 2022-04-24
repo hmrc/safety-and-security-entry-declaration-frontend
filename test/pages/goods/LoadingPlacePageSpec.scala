@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.routedetails.PlaceOfUnloadingPage
 
@@ -52,6 +52,17 @@ class LoadingPlacePageSpec extends SpecBase with PageBehaviours {
 
         LoadingPlacePage(index).navigate(waypoints, answers)
           .mustEqual(UnloadingPlacePage(index).navigate(waypoints, answers))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        LoadingPlacePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

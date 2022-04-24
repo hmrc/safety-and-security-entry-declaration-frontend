@@ -33,7 +33,7 @@ final case class RemoveDocumentPage(itemIndex: Index, documentIndex: Index) exte
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     goodsRoutes.RemoveDocumentController.onPageLoad(waypoints, lrn, itemIndex, documentIndex)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     val noDocumentsRoute: Page =
       answers.get(AnyOverallDocumentsPage).map {

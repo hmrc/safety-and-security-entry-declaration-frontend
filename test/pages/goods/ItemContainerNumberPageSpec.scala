@@ -18,10 +18,9 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
 import models.CheckMode
-import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class ItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
@@ -38,12 +37,14 @@ class ItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Add Container" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddItemContainerNumberPage(index).waypoint(CheckMode)))
 
-        ItemContainerNumberPage(index,index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Add Container with the current waypoint removed" in {
+
+        GoodsDescriptionPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
 import models.{GbEori, Index}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.consignors.ConsignorEORIPage
 import queries.consignors.ConsignorKeyQuery
@@ -60,6 +60,17 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
         CommodityCodePage(Index(0)).navigate(waypoints, answers)
           .mustEqual(ConsignorPage(Index(0)).navigate(waypoints, answers))
+      }
+    }
+
+    "when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        CommodityCodePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

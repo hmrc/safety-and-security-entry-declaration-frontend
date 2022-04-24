@@ -18,7 +18,7 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignors.DeriveNumberOfConsignors

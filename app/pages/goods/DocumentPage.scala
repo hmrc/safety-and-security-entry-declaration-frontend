@@ -22,7 +22,7 @@ import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class DocumentPage(itemIndex: Index, documentIndex: Index) extends GoodsItemQuestionPage[Document] {
+final case class DocumentPage(itemIndex: Index, documentIndex: Index) extends DocumentQuestionPage[Document] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "documents" \ documentIndex.position

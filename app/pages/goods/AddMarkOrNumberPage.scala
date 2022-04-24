@@ -18,11 +18,13 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends GoodsItemQuestionPage[Boolean] {
+import scala.util.Try
+
+case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends PackageQuestionPage[Boolean] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
@@ -37,4 +39,22 @@ case class AddMarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends Go
       case true => MarkOrNumberPage(itemIndex, packageIndex)
       case false => CheckPackageItemPage(itemIndex, packageIndex)
     }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(MarkOrNumberPage(itemIndex, packageIndex))
+        .map(_ => waypoints.next.page)
+        .getOrElse(MarkOrNumberPage(itemIndex, packageIndex))
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(MarkOrNumberPage(itemIndex, packageIndex))
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

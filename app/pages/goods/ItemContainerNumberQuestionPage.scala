@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package pages.goods
 
-import models.{Container, Index}
-import play.api.libs.json.JsPath
+import models.{Index, NormalMode}
+import pages.{AddToListQuestionPage, AddToListSection, ContainerSection, QuestionPage, Waypoint}
 
-final case class AllContainersQuery(index: Index) extends Gettable[List[Container]] with Settable[List[Container]] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ "containers"
+trait ItemContainerNumberQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
+
+  val itemIndex: Index
+
+  override val addItemWaypoint: Waypoint = AddItemContainerNumberPage(itemIndex).waypoint(NormalMode)
+
+  override val section: AddToListSection = ContainerSection
 }

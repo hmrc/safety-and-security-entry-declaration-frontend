@@ -18,7 +18,7 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Page, QuestionPage, Waypoints}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfDocuments
@@ -42,5 +42,16 @@ final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] wit
 
       case false =>
         DangerousGoodPage(index)
+    }.orRecover
+
+  override def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfDocuments(index))
+        .map(n => DocumentPage(index, Index(n)))
+        .orRecover
+
+      case false =>
+        waypoints.next.page
     }.orRecover
 }

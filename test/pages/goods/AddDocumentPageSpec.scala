@@ -18,9 +18,9 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import models.{Document, Index}
+import models.{Document, Index, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.EmptyWaypoints
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class AddDocumentPageSpec extends SpecBase with PageBehaviours {
@@ -53,6 +53,38 @@ class AddDocumentPageSpec extends SpecBase with PageBehaviours {
 
         AddDocumentPage(index).navigate(waypoints, answers)
           .mustEqual(goodsRoutes.DangerousGoodController.onPageLoad(waypoints, answers.lrn, index))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "when the answer is yes" - {
+
+        "to Document for the next index with AddDocument added to the waypoints" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(DocumentPage(index, Index(0)), document).success.value
+              .set(AddDocumentPage(index), true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddDocumentPage(index).waypoint(NormalMode))
+
+          AddDocumentPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.DocumentController.onPageLoad(expectedWaypoints, answers.lrn, index, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Goods Item with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddDocumentPage(index), false).success.value
+
+          AddDocumentPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
       }
     }
   }

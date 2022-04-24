@@ -22,7 +22,7 @@ import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class MarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends GoodsItemQuestionPage[String] {
+case class MarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends PackageQuestionPage[String] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString

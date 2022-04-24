@@ -18,8 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
@@ -37,6 +37,17 @@ class MarkOrNumberPageSpec extends SpecBase with PageBehaviours {
             goodsRoutes.CheckPackageItemController
               .onPageLoad(waypoints, emptyUserAnswers.lrn, index, index)
           )
+      }
+    }
+
+    "must navigate when the current waypoint is Check Package" - {
+
+      val waypoints = Waypoints(List(CheckPackageItemPage(index, index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        MarkOrNumberPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckPackageItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index, index))
       }
     }
   }

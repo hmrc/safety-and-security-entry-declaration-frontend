@@ -18,22 +18,44 @@ package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.{AllDocumentsQuery, DeriveNumberOfDocuments}
 
-final case class AddAnyDocumentsPage(index: Index) extends GoodsItemQuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
+final case class AddAnyDocumentsPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "addAnyDocuments"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.AddAnyDocumentsController.onPageLoad(waypoints, lrn, index)
+    goodsRoutes.AddAnyDocumentsController.onPageLoad(waypoints, lrn, itemIndex)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(this).map {
-      case true => DocumentPage(index, Index(0))
-      case false => DangerousGoodPage(index)
+      case true => DocumentPage(itemIndex, Index(0))
+      case false => DangerousGoodPage(itemIndex)
     }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfDocuments(itemIndex)).map {
+          case n if n > 0 => waypoints.next.page
+          case _ => DocumentPage(itemIndex, Index(0))
+        }.getOrElse(DocumentPage(itemIndex, Index(0)))
+
+      case false =>
+        CheckGoodsItemPage(itemIndex)
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(AllDocumentsQuery(itemIndex))
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

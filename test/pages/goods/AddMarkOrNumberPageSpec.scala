@@ -18,9 +18,9 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import pages.EmptyWaypoints
+import models.Index
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
 
@@ -45,6 +45,72 @@ class AddMarkOrNumberPageSpec extends SpecBase with PageBehaviours {
         AddMarkOrNumberPage(index, index).navigate(waypoints, answers)
           .mustEqual(goodsRoutes.CheckPackageItemController.onPageLoad(waypoints, answers.lrn, index, index))
       }
+    }
+
+    "must navigate when the current waypoint is Check Package Item" - {
+
+      val waypoints = Waypoints(List(CheckPackageItemPage(index, index).waypoint))
+
+      "when the answer is yes" - {
+
+        "and there is already a mark or number for this package" - {
+
+          "to Check Package Item with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(AddMarkOrNumberPage(index, index), true).success.value
+                .set(MarkOrNumberPage(index, index), "abc").success.value
+
+            AddMarkOrNumberPage(index, index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.CheckPackageItemController.onPageLoad(EmptyWaypoints, answers.lrn, index, index))
+          }
+        }
+
+        "when there is not already a mark or number for this package" - {
+
+          "to Mark or Number for this package" in {
+
+            val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), true).success.value
+
+            AddMarkOrNumberPage(index, index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.MarkOrNumberController.onPageLoad(waypoints, answers.lrn, index, index))
+          }
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Package Item with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddMarkOrNumberPage(index, index), false).success.value
+
+          AddMarkOrNumberPage(index, index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckPackageItemController.onPageLoad(EmptyWaypoints, answers.lrn, index, index))
+        }
+      }
+    }
+
+    "must not alter the user's answers when the answer is yes" in {
+
+      val answers = emptyUserAnswers.set(MarkOrNumberPage(index, index), "mark").success.value
+
+      val result = AddMarkOrNumberPage(index, index).cleanup(Some(true), answers).success.value
+
+      result mustEqual answers
+    }
+
+    "must remove the mark or number for this package when the answer is no" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(MarkOrNumberPage(Index(0), Index(0)), "mark1").success.value
+          .set(MarkOrNumberPage(Index(0), Index(1)), "mark2").success.value
+          .set(MarkOrNumberPage(Index(1), Index(0)), "mark3").success.value
+
+      val result = AddMarkOrNumberPage(Index(0), Index(1)).cleanup(Some(false), answers).success.value
+
+      result mustEqual answers.remove(MarkOrNumberPage(Index(0), Index(1))).success.value
     }
   }
 }

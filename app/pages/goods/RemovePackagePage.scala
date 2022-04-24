@@ -33,7 +33,7 @@ final case class RemovePackagePage(itemIndex: Index, packageIndex: Index) extend
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     goodsRoutes.RemovePackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfPackages(itemIndex)).map {
       case n if n > 0 => AddPackagePage(itemIndex)
       case _ => KindOfPackagePage(itemIndex, Index(0))

@@ -22,15 +22,16 @@ import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends GoodsItemQuestionPage[Container] {
+case class ItemContainerNumberPage(itemIndex: Index, containerIndex: Index)
+  extends ItemContainerNumberQuestionPage[Container] {
 
-  override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers" \ containerIndex.position
+    override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "containers" \ containerIndex.position
 
-  override def toString: String = "itemContainerNumber"
+    override def toString: String = "itemContainerNumber"
 
-  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    goodsRoutes.ItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
+    override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+      goodsRoutes.ItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    AddItemContainerNumberPage(itemIndex)
+    override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+      AddItemContainerNumberPage(itemIndex)
 }

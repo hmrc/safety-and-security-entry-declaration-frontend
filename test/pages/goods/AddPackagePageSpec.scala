@@ -18,8 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, KindOfPackage}
-import pages.EmptyWaypoints
+import models.{Index, KindOfPackage, NormalMode}
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.transport.AnyOverallDocumentsPage
 
@@ -76,6 +76,41 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
           AddPackagePage(index).navigate(waypoints, answers)
             .mustEqual(goodsRoutes.DocumentController.onPageLoad(waypoints, answers.lrn, index, Index(0)))
+        }
+      }
+    }
+
+    "must navigate when the current waypoint is Check Goods Item" - {
+
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "when the answer is yes" - {
+
+        "to Kind of Package for the next index with Add Package added to the waypoints" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(KindOfPackagePage(index, Index(0)), kindOfPackage).success.value
+              .set(NumberOfPackagesPage(index, Index(0)), 1).success.value
+              .set(AddMarkOrNumberPage(index, Index(0)), true).success.value
+              .set(MarkOrNumberPage(index, Index(0)), "abc").success.value
+              .set(AddPackagePage(index), true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddPackagePage(index).waypoint(NormalMode))
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(expectedWaypoints, answers.lrn, index, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Goods Item with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddPackagePage(index), false).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
         }
       }
     }

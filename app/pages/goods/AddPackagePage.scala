@@ -19,7 +19,7 @@ package pages.goods
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.transport.AnyOverallDocumentsPage
-import pages.{AddItemPage, Page, QuestionPage, Waypoints}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
@@ -46,5 +46,16 @@ case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with A
           case true => AddAnyDocumentsPage(itemIndex)
           case false => DocumentPage(itemIndex, Index(0))
         }.orRecover
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfPackages(itemIndex))
+          .map(n => KindOfPackagePage(itemIndex, Index(n)))
+          .orRecover
+
+      case false =>
+        waypoints.next.page
     }.orRecover
 }
