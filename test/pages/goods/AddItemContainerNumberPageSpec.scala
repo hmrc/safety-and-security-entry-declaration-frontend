@@ -18,8 +18,9 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import models.{Container, Index, NormalMode, ProvideGrossWeight}
+import models.{CheckMode, Container, Index, NormalMode, ProvideGrossWeight}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 import pages.predec.ProvideGrossWeightPage
 import pages.{EmptyWaypoints, Waypoints}
@@ -106,6 +107,34 @@ class AddItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
             AddItemContainerNumberPage(index).navigate(waypoints, answers)
               .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
           }
+        }
+      }
+    }
+
+    ".waypointFromString" - {
+
+      "must read from a valid waypoint" in {
+
+        forAll(Gen.choose(1, 999)) {
+          index =>
+            val normalModeWaypoint = s"add-container-$index"
+            val checkModeWaypoint = s"change-container-$index"
+
+            AddItemContainerNumberPage.waypointFromString(normalModeWaypoint).value
+              .mustEqual(AddItemContainerNumberPage(Index(index - 1)).waypoint(NormalMode))
+
+            AddItemContainerNumberPage.waypointFromString(checkModeWaypoint).value
+              .mustEqual(AddItemContainerNumberPage(Index(index - 1)).waypoint(CheckMode))
+        }
+      }
+
+      "must not read from an invalid waypoint" in {
+
+        forAll(nonEmptyString) {
+          s =>
+            whenever(!s.startsWith("add-container-") && !s.startsWith("change-container-")) {
+              AddItemContainerNumberPage.waypointFromString(s) must not be defined
+            }
         }
       }
     }

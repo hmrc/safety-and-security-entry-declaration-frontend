@@ -48,7 +48,6 @@ class KindOfPackagePageSpec extends SpecBase with PageBehaviours {
 
       "to Number of Packages when the answer is a standard kind of package" in {
 
-        val packaging = Gen.oneOf(KindOfPackage.standardKindsOfPackages).sample.value
         val answers = emptyUserAnswers.set(KindOfPackagePage(index, index), standardPackage).success.value
 
         KindOfPackagePage(index, index)

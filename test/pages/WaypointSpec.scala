@@ -20,6 +20,7 @@ import base.SpecBase
 import models.{CheckMode, Index, NormalMode}
 import pages.consignees._
 import pages.consignors._
+import pages.goods.{AddDocumentPage, AddItemContainerNumberPage, AddPackagePage, CheckGoodsItemPage, CheckPackageItemPage}
 import pages.routedetails._
 
 class WaypointSpec extends SpecBase {
@@ -110,6 +111,46 @@ class WaypointSpec extends SpecBase {
     "must return AddPlaceOfUnloadingPage when given its check-mode waypoint" in {
 
       Waypoint.fromString("change-place-of-unloading").value mustEqual AddPlaceOfUnloadingPage.waypoint(CheckMode)
+    }
+
+    "must return Check Goods Item when given its waypoint" in {
+
+      Waypoint.fromString("check-item-1").value mustEqual CheckGoodsItemPage(Index(0)).waypoint
+    }
+
+    "must return Check Package Item when given its waypoint" in {
+
+      Waypoint.fromString("check-package-1-1").value mustEqual CheckPackageItemPage(Index(0), Index(0)).waypoint
+    }
+
+    "must return Add Document when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-document-1").value mustEqual AddDocumentPage(Index(0)).waypoint(NormalMode)
+    }
+
+    "must return Add Document when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-document-1").value mustEqual AddDocumentPage(Index(0)).waypoint(CheckMode)
+    }
+
+    "must return Add Container when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-container-1").value mustEqual AddItemContainerNumberPage(Index(0)).waypoint(NormalMode)
+    }
+
+    "must return Add Container when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-container-1").value mustEqual AddItemContainerNumberPage(Index(0)).waypoint(CheckMode)
+    }
+
+    "must return Add Package when given its normal-mode waypoint" in {
+
+      Waypoint.fromString("add-package-1").value mustEqual AddPackagePage(Index(0)).waypoint(NormalMode)
+    }
+
+    "must return Add Package when given its check-mode waypoint" in {
+
+      Waypoint.fromString("change-package-1").value mustEqual AddPackagePage(Index(0)).waypoint(CheckMode)
     }
   }
 }

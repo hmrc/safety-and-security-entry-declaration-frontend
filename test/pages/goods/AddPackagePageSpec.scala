@@ -18,7 +18,8 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, KindOfPackage, NormalMode}
+import models.{CheckMode, Index, KindOfPackage, NormalMode}
+import org.scalacheck.Gen
 import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 import pages.transport.AnyOverallDocumentsPage
@@ -111,6 +112,34 @@ class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
           AddPackagePage(index).navigate(waypoints, answers)
             .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+      }
+    }
+
+    ".waypointFromString" - {
+
+      "must read from a valid waypoint" in {
+
+        forAll(Gen.choose(1, 999)) {
+          index =>
+            val normalModeWaypoint = s"add-package-$index"
+            val checkModeWaypoint = s"change-package-$index"
+
+            AddPackagePage.waypointFromString(normalModeWaypoint).value
+              .mustEqual(AddPackagePage(Index(index - 1)).waypoint(NormalMode))
+
+            AddPackagePage.waypointFromString(checkModeWaypoint).value
+              .mustEqual(AddPackagePage(Index(index - 1)).waypoint(CheckMode))
+        }
+      }
+
+      "must not read from an invalid waypoint" in {
+
+        forAll(nonEmptyString) {
+          s =>
+            whenever(!s.startsWith("add-package-") && !s.startsWith("change-package-")) {
+              AddPackagePage.waypointFromString(s) must not be defined
+            }
         }
       }
     }

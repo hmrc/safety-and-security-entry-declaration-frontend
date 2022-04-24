@@ -17,17 +17,17 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
-import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfContainers
 
 final case class AddItemContainerNumberPage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  override val normalModeUrlFragment: String = s"add-container-number-${itemIndex.position}"
-  override val checkModeUrlFragment: String = s"change-container-number-${itemIndex.position}"
+  override val normalModeUrlFragment: String = s"add-container-${itemIndex.position}"
+  override val checkModeUrlFragment: String = s"change-container-${itemIndex.position}"
 
   override def path: JsPath = JsPath \ "addContainerNumber"
 
@@ -58,4 +58,24 @@ final case class AddItemContainerNumberPage(itemIndex: Index) extends QuestionPa
       case false =>
         waypoints.next.page
     }.orRecover
+}
+
+object AddItemContainerNumberPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val normalModePattern = """add-container-(\d{1,3})""".r.anchored
+    val checkModePattern = """change-container-(\d{1,3})""".r.anchored
+
+    s match {
+      case normalModePattern(indexDisplay) =>
+        Some(AddItemContainerNumberPage(Index(indexDisplay.toInt - 1)).waypoint(NormalMode))
+
+      case checkModePattern(indexDisplay) =>
+        Some(AddItemContainerNumberPage(Index(indexDisplay.toInt - 1)).waypoint(CheckMode))
+
+      case _ =>
+        None
+    }
+  }
 }

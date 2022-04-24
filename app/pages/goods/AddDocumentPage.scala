@@ -17,8 +17,8 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfDocuments
@@ -54,4 +54,24 @@ final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] wit
       case false =>
         waypoints.next.page
     }.orRecover
+}
+
+object AddDocumentPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val normalModePattern = """add-document-(\d{1,3})""".r.anchored
+    val checkModePattern = """change-document-(\d{1,3})""".r.anchored
+
+    s match {
+      case normalModePattern(indexDisplay) =>
+        Some(AddDocumentPage(Index(indexDisplay.toInt - 1)).waypoint(NormalMode))
+
+      case checkModePattern(indexDisplay) =>
+        Some(AddDocumentPage(Index(indexDisplay.toInt - 1)).waypoint(CheckMode))
+
+      case _ =>
+        None
+    }
+  }
 }

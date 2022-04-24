@@ -17,9 +17,9 @@
 package pages.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, LocalReferenceNumber, UserAnswers}
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
 import pages.transport.AnyOverallDocumentsPage
-import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.DeriveNumberOfPackages
@@ -27,7 +27,7 @@ import queries.DeriveNumberOfPackages
 case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 
   override val normalModeUrlFragment: String = s"add-package-${itemIndex.position}"
-  override val checkModeUrlFragment: String = s"change-pacakge-${itemIndex.position}"
+  override val checkModeUrlFragment: String = s"change-package-${itemIndex.position}"
 
   override def path: JsPath = JsPath \ "addPackage"
 
@@ -58,4 +58,24 @@ case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with A
       case false =>
         waypoints.next.page
     }.orRecover
+}
+
+object AddPackagePage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val normalModePattern = """add-package-(\d{1,3})""".r.anchored
+    val checkModePattern = """change-package-(\d{1,3})""".r.anchored
+
+    s match {
+      case normalModePattern(indexDisplay) =>
+        Some(AddPackagePage(Index(indexDisplay.toInt - 1)).waypoint(NormalMode))
+
+      case checkModePattern(indexDisplay) =>
+        Some(AddPackagePage(Index(indexDisplay.toInt - 1)).waypoint(CheckMode))
+
+      case _ =>
+        None
+    }
+  }
 }

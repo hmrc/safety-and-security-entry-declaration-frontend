@@ -18,7 +18,7 @@ package pages.goods
 
 import controllers.goods.routes
 import models.{Index, LocalReferenceNumber}
-import pages.{CheckAnswersPage, Waypoints}
+import pages.{CheckAnswersPage, Waypoint, Waypoints}
 import play.api.mvc.Call
 
 final case class CheckGoodsItemPage(index: Index) extends CheckAnswersPage {
@@ -27,4 +27,20 @@ final case class CheckGoodsItemPage(index: Index) extends CheckAnswersPage {
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index)
+}
+
+object CheckGoodsItemPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val pattern = """check-item-(\d{1,3})""".r.anchored
+
+    s match {
+      case pattern(indexDisplay) =>
+        Some(CheckGoodsItemPage(Index(indexDisplay.toInt - 1)).waypoint)
+
+      case _ =>
+        None
+    }
+  }
 }
