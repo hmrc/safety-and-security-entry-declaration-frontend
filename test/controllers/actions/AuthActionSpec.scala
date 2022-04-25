@@ -27,7 +27,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Action, AnyContent, BodyParsers, DefaultActionBuilder, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
+import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
@@ -59,8 +59,31 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
   "Auth Action" - {
-    "when the user is logged in as Organisation With strong credentials, enrolment HMRC-SS-ORG and EORI" - {
-      "must succeed" in {
+    "Will succeed" - {
+      "when the user is logged in as Organisation With strong credentials, enrolment HMRC-SS-ORG and EORI" in {
+          val application = applicationBuilder(None).build()
+
+          running(application) {
+            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+            val appConfig = application.injector.instanceOf[FrontendAppConfig]
+            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustEqual OK
+          }
+        }
+
+      "when the user is logged in as Individual With strong credentials, confidence level 250, enrolment HMRC-SS-ORG and EORI" in {
         val application = applicationBuilder(None).build()
 
         running(application) {
@@ -70,7 +93,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+            .thenReturn(Future.successful(ssEnrolment ~ Some(Individual) ~ ConfidenceLevel.L250))
 
           val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
             appConfig,
@@ -84,108 +107,111 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
       }
     }
 
-    "When looking at the enrolments" - {
-      "if the user has enrolments but not the required HMRC-SS-ORG" - {
-        "must redirect to Enrolment Required Page" in {
-          val application = applicationBuilder(None).build()
+    "Will fail" - {
 
-          running(application) {
-            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-            val appConfig = application.injector.instanceOf[FrontendAppConfig]
-            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+      "When looking at the enrolments" - {
+        "if the user has enrolments but not the required HMRC-SS-ORG" - {
+          "must redirect to Enrolment Required Page" in {
+            val application = applicationBuilder(None).build()
+
+            running(application) {
+              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+              val appConfig = application.injector.instanceOf[FrontendAppConfig]
+              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
 
 
-            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+              when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+                .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
-            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+                appConfig,
+                bodyParsers
+              )
+              val controller = new Harness(authAction, actionBuilder)
+              val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+            }
           }
         }
-      }
 
 
-      "if the user does have any enrolments" - {
-        "must redirect to Enrolment Required Page" in {
-          val application = applicationBuilder(None).build()
+        "if the user does have any enrolments" - {
+          "must redirect to Enrolment Required Page" in {
+            val application = applicationBuilder(None).build()
 
-          running(application) {
-            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-            val appConfig = application.injector.instanceOf[FrontendAppConfig]
-            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+            running(application) {
+              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+              val appConfig = application.injector.instanceOf[FrontendAppConfig]
+              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
 
 
-            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation) ~ ConfidenceLevel.L50))
+              when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+                .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
-            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+                appConfig,
+                bodyParsers
+              )
+              val controller = new Harness(authAction, actionBuilder)
+              val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+            }
           }
         }
-      }
 
-      "if the user has HMRC-SS-ORG enrolment but there is no EORI" - {
-        "must redirect to EORI Required Page" in {
-          val application = applicationBuilder(None).build()
+        "if the user has HMRC-SS-ORG enrolment but there is no EORI" - {
+          "must redirect to EORI Required Page" in {
+            val application = applicationBuilder(None).build()
 
-          running(application) {
-            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-            val appConfig = application.injector.instanceOf[FrontendAppConfig]
-            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+            running(application) {
+              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+              val appConfig = application.injector.instanceOf[FrontendAppConfig]
+              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
 
 
-            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation) ~ ConfidenceLevel.L50))
+              when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+                .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
-            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+                appConfig,
+                bodyParsers
+              )
+              val controller = new Harness(authAction, actionBuilder)
+              val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
+            }
           }
         }
-      }
 
-      "if the user has HMRC-SS-ORG but not active" - {
-        "must redirect to Enrolment Required Page" in {
-          val application = applicationBuilder(None).build()
+        "if the user has HMRC-SS-ORG but not active" - {
+          "must redirect to Enrolment Required Page" in {
+            val application = applicationBuilder(None).build()
 
-          running(application) {
-            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-            val appConfig = application.injector.instanceOf[FrontendAppConfig]
-            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+            running(application) {
+              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+              val appConfig = application.injector.instanceOf[FrontendAppConfig]
+              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
 
 
-            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+              when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+                .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
-            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+                appConfig,
+                bodyParsers
+              )
+              val controller = new Harness(authAction, actionBuilder)
+              val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+            }
           }
         }
       }
