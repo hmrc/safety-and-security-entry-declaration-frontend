@@ -24,6 +24,7 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.{CredentialStrength, _}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -50,25 +51,26 @@ class AuthenticatedIdentifierAction @Inject() (
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(AuthProviders(AuthProvider.GovernmentGateway) and
-      CredentialStrength(CredentialStrength.strong)).retrieve(Retrievals.allEnrolments) {
+      CredentialStrength(CredentialStrength.strong)
+    ).retrieve(Retrievals.allEnrolments and
+      Retrievals.affinityGroup and
+      Retrievals.confidenceLevel) {
+      case userEnrolments  ~ Some(_)  ~ _ =>
+          val ssEnrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
 
-      userEnrolments => {
-           val ssEnrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
+          if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
 
-           if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
+          ssEnrolments.flatMap(enrolment => enrolment.getIdentifier("EORINumber").map(EORI => EORI.value))
+            .headOption.fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request,EORI)))
 
-           ssEnrolments.flatMap(enrolment => enrolment.getIdentifier("EORINumber").map(EORI => EORI.value))
-             .headOption.fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request,EORI)))
-        }
-      //.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
+
     } recover {
-      case error : InsufficientEnrolments => {
+      case error : InsufficientEnrolments =>
         if (error.msg == "EORI_missing") {
           Redirect(routes.EORIRequiredController.onPageLoad)
         } else {
           Redirect(routes.EnrolmentRequiredController.onPageLoad)
         }
-      }
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>

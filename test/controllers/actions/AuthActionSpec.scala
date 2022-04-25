@@ -32,13 +32,15 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http
+import auth.Retrievals._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  private type RetrievalsType = Enrolments
+  private type RetrievalsType = Enrolments ~ Option[AffinityGroup] ~ ConfidenceLevel
   private val ssEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
   private val inactiveSSEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")))
   private val ssEnrolmentNoEORI = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")))
@@ -57,7 +59,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
   "Auth Action" - {
-    "when the user is logged in with strong credentials" - {
+    "when the user is logged in as Organisation With strong credentials, enrolment HMRC-SS-ORG and EORI" - {
       "must succeed" in {
         val application = applicationBuilder(None).build()
 
@@ -68,7 +70,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(ssEnrolment))
+            .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
           val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
             appConfig,
@@ -94,7 +96,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
             when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(incorectEnrolment))
+              .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
             val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
               appConfig,
@@ -121,7 +123,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
             when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(Enrolments(Set.empty)))
+              .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
             val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
               appConfig,
@@ -147,7 +149,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
             when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(ssEnrolmentNoEORI))
+              .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
             val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
               appConfig,
@@ -173,7 +175,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
             when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(inactiveSSEnrolment))
+              .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
 
             val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
               appConfig,
