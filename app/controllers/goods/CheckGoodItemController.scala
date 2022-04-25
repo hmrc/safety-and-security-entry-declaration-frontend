@@ -53,6 +53,7 @@ class CheckGoodItemController @Inject() (
           CommodityCodeSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
           GoodsDescriptionSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
           ConsignorSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          ConsigneeKnownSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
           ConsigneeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
           NotifiedPartySummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
           LoadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
@@ -63,8 +64,8 @@ class CheckGoodItemController @Inject() (
           PackageSummary.checkAnswersRow(request.userAnswers, itemIndex, waypoints, thisPage),
           AddAnyDocumentsSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
           DocumentSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
-          DangerousGoodCodeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
           DangerousGoodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+          DangerousGoodCodeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
           PaymentMethodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage)
         ).flatten
       )
