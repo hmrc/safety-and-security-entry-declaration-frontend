@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
 import models.{Index, UserAnswers}
-import pages.goods.CommodityCodeKnownPage
+import pages.goods.CheckGoodsItemPage
 import pages.{AddItemPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -33,7 +33,7 @@ object GoodsSummary {
       case (good, index) =>
         ListItem(
           name = HtmlFormat.escape(good.name).toString,
-          changeUrl = CommodityCodeKnownPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
+          changeUrl = CheckGoodsItemPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
           removeUrl = goodsRoutes.RemoveGoodsController
             .onPageLoad(waypoints, answers.lrn, Index(index))
             .url

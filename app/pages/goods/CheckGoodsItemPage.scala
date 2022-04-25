@@ -23,7 +23,7 @@ import play.api.mvc.Call
 
 final case class CheckGoodsItemPage(index: Index) extends CheckAnswersPage {
 
-  override val urlFragment: String = s"check-item-${index.position}"
+  override val urlFragment: String = s"check-item-${index.display}"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index)
