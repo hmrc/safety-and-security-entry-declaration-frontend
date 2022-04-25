@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models.completion.downstream
+package models.completion
 
-import play.api.libs.json.Json
+import play.api.libs.json._
 
-case class CorrelationId(id: String)
+import models.completion.downstream.{MessageType, Outcome}
 
-object CorrelationId {
-  implicit val format = Json.format[CorrelationId]
+/**
+ * Represents details of a declaration which has been made to the API
+ */
+case class DeclarationEvent(messageType: MessageType, outcome: Option[Outcome])
+
+object DeclarationEvent {
+  implicit val declarationEventFormat = Json.format[DeclarationEvent]
 }
