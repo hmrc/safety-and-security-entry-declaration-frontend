@@ -805,3 +805,6 @@ submittedDeclarations.body = place holder text
 
 draftDeclarations.title = draftDeclarations
 draftDeclarations.heading = Draft Declarations
+
+enrolmentRequired.title = enrolmentRequired
+enrolmentRequired.heading = enrolmentRequired
