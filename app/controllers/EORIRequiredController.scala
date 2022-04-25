@@ -17,16 +17,18 @@
 package controllers
 
 
+
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.EnrolmentRequiredView
+import views.html.EORIRequiredView
+
 import javax.inject.Inject
 
-class EnrolmentRequiredController @Inject() (
+class EORIRequiredController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
-  view: EnrolmentRequiredView
+  view: EORIRequiredView
 ) extends FrontendBaseController
   with I18nSupport {
 

@@ -424,4 +424,5 @@ POST       /:lrn/changeAnyShippingContainers/:index                  controllers
 GET        /submittedDeclarations                   controllers.declarations.SubmittedDeclarationsController.onPageLoad()
 GET        /draftDeclarations                       controllers.declarations.DraftDeclarationsController.onPageLoad()
 
-GET        /:lrn/enrolmentRequired                       controllers.EnrolmentRequiredController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /enrolmentRequired                       controllers.EnrolmentRequiredController.onPageLoad()
+GET        /EORIRequired                            controllers.EORIRequiredController.onPageLoad()

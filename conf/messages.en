@@ -808,3 +808,6 @@ draftDeclarations.heading = Draft Declarations
 
 enrolmentRequired.title = enrolmentRequired
 enrolmentRequired.heading = enrolmentRequired
+
+eORIRequired.title = eORIRequired
+eORIRequired.heading = eORIRequired
