@@ -20,25 +20,177 @@ import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
-import play.api.mvc.{BodyParsers, Results}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.mockito.{Mockito, MockitoSugar}
+import org.scalatest.BeforeAndAfterEach
+import play.api.mvc.{Action, AnyContent, BodyParsers, DefaultActionBuilder, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionSpec extends SpecBase {
+class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  class Harness(authAction: IdentifierAction) {
-    def onPageLoad() = authAction { _ => Results.Ok }
+  private type RetrievalsType = Enrolments
+  private val ssEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
+  private val inactiveSSEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")))
+  private val ssEnrolmentNoEORI = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")))
+  private val incorectEnrolment = Enrolments(Set(Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
+
+
+  class Harness(authAction: IdentifierAction, defaultAction: DefaultActionBuilder) {
+    def onPageLoad(): Action[AnyContent] = (defaultAction andThen authAction) { _ => Results.Ok }
   }
 
-  "Auth Action" - {
+  val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
+  override def beforeEach(): Unit = {
+    Mockito.reset(mockAuthConnector)
+  }
+
+
+  "Auth Action" - {
+    "when the user is logged in with strong credentials" - {
+      "must succeed" in {
+        val application = applicationBuilder(None).build()
+
+        running(application) {
+          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
+          val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+          when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+            .thenReturn(Future.successful(ssEnrolment))
+
+          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+            appConfig,
+            bodyParsers
+          )
+          val controller = new Harness(authAction, actionBuilder)
+          val result = controller.onPageLoad()(FakeRequest())
+
+          status(result) mustEqual OK
+        }
+      }
+    }
+
+    "When looking at the enrolments" - {
+      "if the user has enrolments but not the required HMRC-SS-ORG" - {
+        "must redirect to Enrolment Required Page" in {
+          val application = applicationBuilder(None).build()
+
+          running(application) {
+            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+            val appConfig = application.injector.instanceOf[FrontendAppConfig]
+            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(incorectEnrolment))
+
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+          }
+        }
+      }
+
+
+      "if the user does have any enrolments" - {
+        "must redirect to Enrolment Required Page" in {
+          val application = applicationBuilder(None).build()
+
+          running(application) {
+            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+            val appConfig = application.injector.instanceOf[FrontendAppConfig]
+            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(Enrolments(Set.empty)))
+
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+          }
+        }
+      }
+
+      "if the user has HMRC-SS-ORG enrolment but there is no EORI" - {
+        "must redirect to EORI Required Page" in {
+          val application = applicationBuilder(None).build()
+
+          running(application) {
+            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+            val appConfig = application.injector.instanceOf[FrontendAppConfig]
+            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(ssEnrolmentNoEORI))
+
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
+          }
+        }
+      }
+
+      "if the user has HMRC-SS-ORG but not active" - {
+        "must redirect to Enrolment Required Page" in {
+          val application = applicationBuilder(None).build()
+
+          running(application) {
+            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+            val appConfig = application.injector.instanceOf[FrontendAppConfig]
+            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(inactiveSSEnrolment))
+
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+          }
+        }
+      }
+    }
+
+
+/*
     "when the user hasn't logged in" - {
 
       "must redirect the user to log in " in {
@@ -205,7 +357,7 @@ class AuthActionSpec extends SpecBase {
           redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
         }
       }
-    }
+    }*/
   }
 }
 

@@ -51,25 +51,24 @@ class AuthenticatedIdentifierAction @Inject() (
 
     authorised(AuthProviders(AuthProvider.GovernmentGateway) and
       CredentialStrength(CredentialStrength.strong)).retrieve(Retrievals.allEnrolments) {
-      {
-        case userEnrolments => {
-          val enrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
 
-          val eoris = for {
-            enrolment <- enrolments
-            eoriId    <- enrolment.getIdentifier("EORINumber")
-          } yield eoriId.value
+      userEnrolments => {
+           val ssEnrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
 
-          eoris.headOption match {
-            case Some(eori) => block(IdentifierRequest(request,eori))
-            case None => throw InsufficientEnrolments()
-          }
+           if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
 
+           ssEnrolments.flatMap(enrolment => enrolment.getIdentifier("EORINumber").map(EORI => EORI.value))
+             .headOption.fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request,EORI)))
         }
-        /*internalId =>
-        block(IdentifierRequest(request, internalId))*/
-      }//.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
+      //.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
     } recover {
+      case error : InsufficientEnrolments => {
+        if (error.msg == "EORI_missing") {
+          Redirect(routes.EORIRequiredController.onPageLoad)
+        } else {
+          Redirect(routes.EnrolmentRequiredController.onPageLoad)
+        }
+      }
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
