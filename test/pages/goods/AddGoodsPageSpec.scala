@@ -31,7 +31,7 @@ class AddGoodsPageSpec extends SpecBase with PageBehaviours {
 
       val waypoints = EmptyWaypoints
 
-      "to Commodity Code Known for the next index if the answer is yes" in {
+      "to Initialise Goods Item for the next index if the answer is yes" in {
 
         val answers =
           emptyUserAnswers
@@ -39,7 +39,7 @@ class AddGoodsPageSpec extends SpecBase with PageBehaviours {
             .set(AddGoodsPage, true).success.value
 
         AddGoodsPage.navigate(waypoints, answers)
-          .mustEqual(goodsRoutes.CommodityCodeKnownController.onPageLoad(waypoints, answers.lrn, Index(1)))
+          .mustEqual(goodsRoutes.InitialiseGoodsItemController.initialise(waypoints, answers.lrn, Index(1)))
       }
 
       "to Task List when the answer is no" in {

@@ -18,29 +18,14 @@ package pages.goods
 
 import controllers.goods.routes
 import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{AddItemPage, Page, QuestionPage, TaskListPage, Waypoints}
-import play.api.libs.json.JsPath
+import pages.{Page, Waypoints}
 import play.api.mvc.Call
-import queries.goods.DeriveNumberOfGoods
 
-case object AddGoodsPage extends QuestionPage[Boolean] with AddItemPage {
-
-  override val normalModeUrlFragment: String = "add-goods-item"
-  override val checkModeUrlFragment: String = "change-goods-item"
-
-  override def path: JsPath = JsPath \ "addGoodsItem"
+final case class InitialiseGoodsItemPage(itemIndex: Index) extends Page {
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.AddGoodsController.onPageLoad(waypoints, lrn)
+    routes.InitialiseGoodsItemController.initialise(waypoints, lrn, itemIndex)
 
-  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(this).map {
-      case true =>
-        answers.get(DeriveNumberOfGoods)
-          .map(n => InitialiseGoodsItemPage(Index(n)))
-        .orRecover
-
-      case false =>
-        TaskListPage
-    }.orRecover
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
+    CommodityCodeKnownPage(itemIndex)
 }

@@ -105,7 +105,7 @@ object TaskListViewModel {
   private def goodsRow(answers: UserAnswers)(implicit messages: Messages) : TaskListRow = {
     val url = answers.get(DeriveNumberOfGoods) match {
       case Some(size) if size > 0 => goodsRoutes.AddGoodsController.onPageLoad(EmptyWaypoints, answers.lrn)
-      case _ => goodsRoutes.CommodityCodeKnownController.onPageLoad(EmptyWaypoints, answers.lrn, Index(0))
+      case _ => goodsRoutes.InitialiseGoodsItemController.initialise(EmptyWaypoints, answers.lrn, Index(0))
     }
 
     TaskListRow(

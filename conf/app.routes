@@ -349,3 +349,5 @@ POST       /:lrn/anyShippingContainers/:index                        controllers
 
 GET        /submittedDeclarations                   controllers.declarations.SubmittedDeclarationsController.onPageLoad()
 GET        /draftDeclarations                       controllers.declarations.DraftDeclarationsController.onPageLoad()
+
+GET        /:lrn/start-goods-item/:index                 controllers.goods.InitialiseGoodsItemController.initialise(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)

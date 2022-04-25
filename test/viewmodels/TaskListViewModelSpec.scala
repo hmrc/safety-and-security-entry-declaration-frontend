@@ -121,7 +121,7 @@ class TaskListViewModelSpec
         "we go to the first good input" in {
           val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
-          result.rows(goodsIdx).link mustEqual goodsRoutes.CommodityCodeKnownController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, Index(0))
+          result.rows(goodsIdx).link mustEqual goodsRoutes.InitialiseGoodsItemController.initialise(EmptyWaypoints, emptyUserAnswers.lrn, Index(0))
         }
       }
     }
