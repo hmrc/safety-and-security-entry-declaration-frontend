@@ -16,13 +16,12 @@
 
 package serialisation.xml
 
+import base.SpecBase
+import models.LocalReferenceNumber
+import models.completion.downstream.{AmendmentTimePlace, Header, SubmissionTimePlace, TransportDetails}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-
-import base.SpecBase
-import models.LocalReferenceNumber
-import models.completion.downstream.{Header, TransportDetails}
 
 class HeaderFormatsSpec
   extends SpecBase
@@ -37,9 +36,8 @@ class HeaderFormatsSpec
       itemCount <- Gen.choose(1, 3)
       packageCount <- Gen.choose(1, 3)
       grossMass <- Gen.option(Gen.choose(BigDecimal(0.001), BigDecimal(99999999.999)))
-      declarationPlace <- Gen.alphaNumStr
       conveyanceReferenceNumber <- Gen.alphaNumStr
-      datetime <- minutePrecisionInstants
+      timePlace <- arbitrary[SubmissionTimePlace]
     } yield {
       Header(
         lrn,
@@ -47,18 +45,27 @@ class HeaderFormatsSpec
         itemCount,
         packageCount,
         grossMass,
-        declarationPlace,
         conveyanceReferenceNumber,
-        datetime
+        timePlace
       )
     }
   }
 
-
   "The header format" - {
     "should work symmetrically" - {
-      "for any header" in {
+      "for any header with a SubmissionTimePlace" in {
         forAll(headerGen) { h =>
+          h.toXml.parseXml[Header] must be(h)
+        }
+      }
+
+      "for any header with a AmendmentTimePlace" in {
+        val header = for {
+          header <- headerGen
+          atp <- arbitrary[AmendmentTimePlace]
+        } yield header.copy(timePlace = atp)
+
+        forAll(header) { h =>
           h.toXml.parseXml[Header] must be(h)
         }
       }

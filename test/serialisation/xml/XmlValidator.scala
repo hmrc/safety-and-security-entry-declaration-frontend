@@ -57,4 +57,14 @@ object XmlValidator {
       "CC315A-v11-2.xsd"
     )
   )
+
+  object AmendmentValidator extends XmlValidator(
+    Seq(
+      "doc-v11-2.xsd",
+      "tcl-v11-2.xsd",
+      "simple_types-v11-2.xsd",
+      "complex_types_ics-v11-2.xsd",
+      "CC313A-v11-2.xsd"
+    )
+  )
 }

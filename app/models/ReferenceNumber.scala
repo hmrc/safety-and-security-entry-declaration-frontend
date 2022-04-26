@@ -16,12 +16,25 @@
 
 package models
 
-import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc.PathBindable
 
 import scala.util.matching.Regex
 
-final case class LocalReferenceNumber(value: String)
+sealed trait ReferenceNumber {
+  val value: String
+}
+
+/**
+ * Movement Reference Number (MRN) is the remote unique identifier for the ENS declaration
+ */
+case class MovementReferenceNumber(value: String) extends ReferenceNumber
+
+object MovementReferenceNumber {
+  implicit val format = Json.format[MovementReferenceNumber]
+}
+
+final case class LocalReferenceNumber(value: String) extends ReferenceNumber
 
 object LocalReferenceNumber {
 
