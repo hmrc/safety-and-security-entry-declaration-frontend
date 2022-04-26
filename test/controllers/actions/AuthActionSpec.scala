@@ -157,8 +157,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
             }
           }
         }
-
-
+        
         "if the user does have any enrolments" - {
           "must redirect to Enrolment Required Page" in {
             val application = applicationBuilder(None).build()
