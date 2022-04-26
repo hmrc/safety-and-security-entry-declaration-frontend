@@ -22,6 +22,7 @@ import controllers.routes
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.{CredentialStrength, _}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -53,31 +54,33 @@ class AuthenticatedIdentifierAction @Inject() (
     authorised(AuthProviders(AuthProvider.GovernmentGateway) and
       CredentialStrength(CredentialStrength.strong)
     ).retrieve(Retrievals.allEnrolments and
-      Retrievals.affinityGroup and
-      Retrievals.confidenceLevel) {
-      case userEnrolments  ~ Some(_)  ~ _ =>
+      Retrievals.affinityGroup) {
+      case userEnrolments  ~ Some(Organisation) =>
           val ssEnrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
 
           if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
 
           ssEnrolments.flatMap(enrolment => enrolment.getIdentifier("EORINumber").map(EORI => EORI.value))
             .headOption.fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request,EORI)))
-
-
+      case _  ~ Some(_) => throw UnsupportedAffinityGroup()
     } recover {
-      case error : InsufficientEnrolments =>
-        if (error.msg == "EORI_missing") {
+      case failedAuthentication : InsufficientEnrolments =>
+        if (failedAuthentication.msg == "EORI_missing") {
           Redirect(routes.EORIRequiredController.onPageLoad)
         } else {
           Redirect(routes.EnrolmentRequiredController.onPageLoad)
         }
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+
+      case _: InsufficientConfidenceLevel => Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
         Redirect(routes.UnauthorisedController.onPageLoad)
     }
   }
 }
+
+
 
 class SessionIdentifierAction @Inject() (
   val parser: BodyParsers.Default

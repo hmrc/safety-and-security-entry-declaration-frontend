@@ -27,7 +27,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Action, AnyContent, BodyParsers, DefaultActionBuilder, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  private type RetrievalsType = Enrolments ~ Option[AffinityGroup] ~ ConfidenceLevel
+  private type RetrievalsType = Enrolments ~ Option[AffinityGroup]
   private val ssEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
   private val inactiveSSEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")))
   private val ssEnrolmentNoEORI = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")))
@@ -70,7 +70,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
             when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+              .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation)))
 
             val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
               appConfig,
@@ -82,8 +82,11 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
             status(result) mustEqual OK
           }
         }
+    }
 
-      "when the user is logged in as Individual With strong credentials, confidence level 250, enrolment HMRC-SS-ORG and EORI" in {
+    "Will fail" - {
+
+      "when the user is logged in as Individual" in {
         val application = applicationBuilder(None).build()
 
         running(application) {
@@ -93,7 +96,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(ssEnrolment ~ Some(Individual) ~ ConfidenceLevel.L250))
+            .thenReturn(Future.successful(ssEnrolment ~ Some(Individual)))
 
           val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
             appConfig,
@@ -102,13 +105,32 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           val controller = new Harness(authAction, actionBuilder)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustEqual OK
+          status(result) mustEqual SEE_OTHER
         }
       }
-    }
 
-    "Will fail" - {
+      "when the user is logged in as Agent" in {
+        val application = applicationBuilder(None).build()
 
+        running(application) {
+          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
+          val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+          when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+            .thenReturn(Future.successful(ssEnrolment ~ Some(Agent)))
+
+          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
+            appConfig,
+            bodyParsers
+          )
+          val controller = new Harness(authAction, actionBuilder)
+          val result = controller.onPageLoad()(FakeRequest())
+
+          status(result) mustEqual SEE_OTHER
+        }
+      }
       "When looking at the enrolments" - {
         "if the user has enrolments but not the required HMRC-SS-ORG" - {
           "must redirect to Enrolment Required Page" in {
@@ -121,7 +143,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+                .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
                 appConfig,
@@ -148,7 +170,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation) ~ ConfidenceLevel.L50))
+                .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
                 appConfig,
@@ -174,7 +196,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation) ~ ConfidenceLevel.L50))
+                .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
                 appConfig,
@@ -200,7 +222,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation) ~ ConfidenceLevel.L50))
+                .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
                 appConfig,
@@ -216,7 +238,6 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
         }
       }
     }
-
 
 /*
     "when the user hasn't logged in" - {
