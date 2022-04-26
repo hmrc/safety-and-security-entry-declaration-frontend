@@ -45,30 +45,25 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
   private val inactiveSSEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")))
   private val ssEnrolmentNoEORI = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")))
   private val incorectEnrolment = Enrolments(Set(Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
-
+  private val application = applicationBuilder(None).build()
+  private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  private val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+  private val appConfig = application.injector.instanceOf[FrontendAppConfig]
+  private val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
 
   class Harness(authAction: IdentifierAction, defaultAction: DefaultActionBuilder) {
     def onPageLoad(): Action[AnyContent] = (defaultAction andThen authAction) { _ => Results.Ok }
   }
-
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   override def beforeEach(): Unit = {
     Mockito.reset(mockAuthConnector)
   }
 
 
-  "Auth Action" - {
-    "Will succeed" - {
-      "when the user is logged in as Organisation With strong credentials, enrolment HMRC-SS-ORG and EORI" in {
-          val application = applicationBuilder(None).build()
-
+  "A user being authenticated" - {
+    "Will successfully login" - {
+      "When the user is logged in as Organisation with strong credentials, enrolment HMRC-SS-ORG and EORI" in {
           running(application) {
-            val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-            val appConfig = application.injector.instanceOf[FrontendAppConfig]
-            val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
             when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
               .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation)))
 
@@ -83,18 +78,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           }
         }
     }
-
-    "Will fail" - {
-
-      "when the user is logged in as Individual" in {
-        val application = applicationBuilder(None).build()
-
+    "Will fail authentication" - {
+      "When the user is an Individual" in {
         running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-          val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
             .thenReturn(Future.successful(ssEnrolment ~ Some(Individual)))
 
@@ -108,16 +94,8 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           status(result) mustEqual SEE_OTHER
         }
       }
-
-      "when the user is logged in as Agent" in {
-        val application = applicationBuilder(None).build()
-
+      "When the user is an Agent" in {
         running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-          val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
             .thenReturn(Future.successful(ssEnrolment ~ Some(Agent)))
 
@@ -131,17 +109,10 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           status(result) mustEqual SEE_OTHER
         }
       }
-      "When looking at the enrolments" - {
-        "if the user has enrolments but not the required HMRC-SS-ORG" - {
-          "must redirect to Enrolment Required Page" in {
-            val application = applicationBuilder(None).build()
-
+      "When the enrolments" - {
+        "Do not contain HMRC-SS-ORG" - {
+          "And will redirect to Enrolment Required Page" in {
             running(application) {
-              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-              val appConfig = application.injector.instanceOf[FrontendAppConfig]
-              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation)))
 
@@ -157,17 +128,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
             }
           }
         }
-        
-        "if the user does have any enrolments" - {
-          "must redirect to Enrolment Required Page" in {
-            val application = applicationBuilder(None).build()
-
+        "Are not present" - {
+          "And will redirect to Enrolment Required Page" in {
             running(application) {
-              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-              val appConfig = application.injector.instanceOf[FrontendAppConfig]
-              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation)))
 
@@ -183,17 +146,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
             }
           }
         }
-
-        "if the user has HMRC-SS-ORG enrolment but there is no EORI" - {
-          "must redirect to EORI Required Page" in {
-            val application = applicationBuilder(None).build()
-
+        "Contain HMRC-SS-ORG but the EORI is missing" - {
+          "And will redirect to EORI Required Page" in {
             running(application) {
-              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-              val appConfig = application.injector.instanceOf[FrontendAppConfig]
-              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation)))
 
@@ -209,17 +164,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
             }
           }
         }
-
-        "if the user has HMRC-SS-ORG but not active" - {
-          "must redirect to Enrolment Required Page" in {
-            val application = applicationBuilder(None).build()
-
+        "Contain HMRC-SS-ORG but it is inactive" - {
+          "And will redirect to Enrolment Required Page" in {
             running(application) {
-              val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-              val appConfig = application.injector.instanceOf[FrontendAppConfig]
-              val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation)))
 
@@ -236,18 +183,38 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           }
         }
       }
+      "When the user is not logged in" in {
+          running(application) {
+            val authAction = new AuthenticatedIdentifierAction(
+              new FakeFailingAuthConnector(new MissingBearerToken),
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).value must startWith(appConfig.loginUrl)
+          }
+      }
+      "When the user's session has expired" in {
+          running(application) {
+            val authAction = new AuthenticatedIdentifierAction(
+              new FakeFailingAuthConnector(new BearerTokenExpired),
+              appConfig,
+              bodyParsers
+            )
+            val controller = new Harness(authAction,actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).value must startWith(appConfig.loginUrl)
+          }
+      }
     }
-
-    "Will enforce multi factor authenciation" - {
-      "When the user has weak credentials" in {
-        val application = applicationBuilder(None).build()
-
+    "When the user has weak credentials" - {
+      "Will be redirected to enable Multi Factor Authentication" in {
         running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-          val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
-
-
           val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new IncorrectCredentialStrength), appConfig, bodyParsers)
 
           val controller = new Harness(authAction, actionBuilder)
@@ -258,174 +225,6 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
         }
       }
     }
-/*
-    "when the user hasn't logged in" - {
-
-      "must redirect the user to log in " in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new MissingBearerToken),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appConfig.loginUrl)
-        }
-      }
-    }
-
-    "the user's session has expired" - {
-
-      "must redirect the user to log in " in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new BearerTokenExpired),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appConfig.loginUrl)
-        }
-      }
-    }
-
-    "the user doesn't have sufficient enrolments" - {
-
-      "must redirect the user to the unauthorised page" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new InsufficientEnrolments),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-        }
-      }
-    }
-
-    "the user doesn't have sufficient confidence level" - {
-
-      "must redirect the user to the unauthorised page" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new InsufficientConfidenceLevel),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-        }
-      }
-    }
-
-    "the user used an unaccepted auth provider" - {
-
-      "must redirect the user to the unauthorised page" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new UnsupportedAuthProvider),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe routes.UnauthorisedController.onPageLoad.url
-        }
-      }
-    }
-
-    "the user has an unsupported affinity group" - {
-
-      "must redirect the user to the unauthorised page" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new UnsupportedAffinityGroup),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
-        }
-      }
-    }
-
-    "the user has an unsupported credential role" - {
-
-      "must redirect the user to the unauthorised page" in {
-
-        val application = applicationBuilder(userAnswers = None).build()
-
-        running(application) {
-          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
-          val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-          val authAction = new AuthenticatedIdentifierAction(
-            new FakeFailingAuthConnector(new UnsupportedCredentialRole),
-            appConfig,
-            bodyParsers
-          )
-          val controller = new Harness(authAction)
-          val result = controller.onPageLoad()(FakeRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
-        }
-      }
-    }*/
   }
 }
 
