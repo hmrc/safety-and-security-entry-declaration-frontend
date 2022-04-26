@@ -21,7 +21,6 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.mockito.{Mockito, MockitoSugar}
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Action, AnyContent, BodyParsers, DefaultActionBuilder, Results}
@@ -30,9 +29,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames}
-import uk.gov.hmrc.http
 import auth.Retrievals._
 
 import scala.concurrent.ExecutionContext.Implicits.global
