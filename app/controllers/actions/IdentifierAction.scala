@@ -73,10 +73,32 @@ class AuthenticatedIdentifierAction @Inject() (
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
 
+      case _: IncorrectCredentialStrength => upliftCredentialStrength(request)
+
       case _: InsufficientConfidenceLevel => Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
         Redirect(routes.UnauthorisedController.onPageLoad)
     }
+  }
+
+  private def upliftCredentialStrength[A](request: Request[A]): Result =
+    Redirect(
+      config.mfaUpliftUrl,
+      Map(
+        "origin"      -> Seq(config.origin),
+        "continueUrl" -> Seq(loginContinueUrl(request))
+      )
+    )
+
+  def loginContinueUrl(request: Request[_]): String = {
+    val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    request.queryString
+      .get("k")
+      .flatMap(_.headOption)
+      .orElse(hc.sessionId.map(_.value))
+      .map(sessionId => config.loginContinueUrl + request.path + "?k=" + sessionId)
+      .getOrElse(request.uri)
   }
 }
 

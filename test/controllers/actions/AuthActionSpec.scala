@@ -31,7 +31,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames}
 import uk.gov.hmrc.http
 import auth.Retrievals._
 
@@ -239,6 +239,26 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
       }
     }
 
+    "Will enforce multi factor authenciation" - {
+      "When the user has weak credentials" in {
+        val application = applicationBuilder(None).build()
+
+        running(application) {
+          val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
+          val appConfig = application.injector.instanceOf[FrontendAppConfig]
+          val actionBuilder = application.injector.instanceOf[DefaultActionBuilder]
+
+
+          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new IncorrectCredentialStrength), appConfig, bodyParsers)
+
+          val controller = new Harness(authAction, actionBuilder)
+          val result = controller.onPageLoad()(FakeRequest().withHeaders(HeaderNames.xSessionId -> "123"))
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe "http://localhost:9553/bas-gateway/uplift-mfa?origin=SNS&continueUrl=http%3A%2F%2Flocalhost%3A11200%2Fsafety-and-security-entry-declaration%2F%3Fk%3D123"
+        }
+      }
+    }
 /*
     "when the user hasn't logged in" - {
 
