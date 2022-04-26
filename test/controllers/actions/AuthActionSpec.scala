@@ -41,10 +41,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private type RetrievalsType = Enrolments ~ Option[AffinityGroup]
-  private val ssEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
-  private val inactiveSSEnrolment = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")))
-  private val ssEnrolmentNoEORI = Enrolments(Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")))
-  private val incorectEnrolment = Enrolments(Set(Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")))
+  private val ssEnrolment = Enrolments(
+    Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated"))
+  )
+  private val inactiveSSEnrolment = Enrolments(
+    Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive"))
+  )
+  private val ssEnrolmentNoEORI = Enrolments(
+    Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated"))
+  )
+  private val incorectEnrolment = Enrolments(
+    Set(Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated"))
+  )
   private val application = applicationBuilder(None).build()
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
   private val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
@@ -59,24 +67,20 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
     Mockito.reset(mockAuthConnector)
   }
 
-
   "A user being authenticated" - {
     "Will successfully login" - {
       "When the user is logged in as Organisation with strong credentials, enrolment HMRC-SS-ORG and EORI" in {
-          running(application) {
-            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation)))
+        running(application) {
+          when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+            .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation)))
 
-            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+          val controller = new Harness(authAction, actionBuilder)
+          val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustEqual OK
-          }
+          status(result) mustEqual OK
         }
+      }
     }
     "Will fail authentication" - {
       "When the user is an Individual" in {
@@ -84,10 +88,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
             .thenReturn(Future.successful(ssEnrolment ~ Some(Individual)))
 
-          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-            appConfig,
-            bodyParsers
-          )
+          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
           val controller = new Harness(authAction, actionBuilder)
           val result = controller.onPageLoad()(FakeRequest())
 
@@ -99,10 +100,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
             .thenReturn(Future.successful(ssEnrolment ~ Some(Agent)))
 
-          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-            appConfig,
-            bodyParsers
-          )
+          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
           val controller = new Harness(authAction, actionBuilder)
           val result = controller.onPageLoad()(FakeRequest())
 
@@ -116,10 +114,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation)))
 
-              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-                appConfig,
-                bodyParsers
-              )
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
               val result = controller.onPageLoad()(FakeRequest())
 
@@ -134,10 +129,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation)))
 
-              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-                appConfig,
-                bodyParsers
-              )
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
               val result = controller.onPageLoad()(FakeRequest())
 
@@ -152,10 +144,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation)))
 
-              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-                appConfig,
-                bodyParsers
-              )
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
               val result = controller.onPageLoad()(FakeRequest())
 
@@ -170,10 +159,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation)))
 
-              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector,
-                appConfig,
-                bodyParsers
-              )
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
               val result = controller.onPageLoad()(FakeRequest())
 
@@ -184,44 +170,50 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
         }
       }
       "When the user is not logged in" in {
-          running(application) {
-            val authAction = new AuthenticatedIdentifierAction(
-              new FakeFailingAuthConnector(new MissingBearerToken),
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+        running(application) {
+          val authAction = new AuthenticatedIdentifierAction(
+            new FakeFailingAuthConnector(new MissingBearerToken),
+            appConfig,
+            bodyParsers
+          )
+          val controller = new Harness(authAction, actionBuilder)
+          val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result).value must startWith(appConfig.loginUrl)
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value must startWith(appConfig.loginUrl)
+        }
       }
       "When the user's session has expired" in {
-          running(application) {
-            val authAction = new AuthenticatedIdentifierAction(
-              new FakeFailingAuthConnector(new BearerTokenExpired),
-              appConfig,
-              bodyParsers
-            )
-            val controller = new Harness(authAction,actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+        running(application) {
+          val authAction = new AuthenticatedIdentifierAction(
+            new FakeFailingAuthConnector(new BearerTokenExpired),
+            appConfig,
+            bodyParsers
+          )
+          val controller = new Harness(authAction, actionBuilder)
+          val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result).value must startWith(appConfig.loginUrl)
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value must startWith(appConfig.loginUrl)
+        }
       }
     }
     "When the user has weak credentials" - {
       "Will be redirected to enable Multi Factor Authentication" in {
         running(application) {
-          val authAction = new AuthenticatedIdentifierAction(new FakeFailingAuthConnector(new IncorrectCredentialStrength), appConfig, bodyParsers)
+          val authAction = new AuthenticatedIdentifierAction(
+            new FakeFailingAuthConnector(new IncorrectCredentialStrength),
+            appConfig,
+            bodyParsers
+          )
 
           val controller = new Harness(authAction, actionBuilder)
           val result = controller.onPageLoad()(FakeRequest().withHeaders(HeaderNames.xSessionId -> "123"))
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe "http://localhost:9553/bas-gateway/uplift-mfa?origin=SNS&continueUrl=http%3A%2F%2Flocalhost%3A11200%2Fsafety-and-security-entry-declaration%2F%3Fk%3D123"
+          redirectLocation(
+            result
+          ).value mustBe "http://localhost:9553/bas-gateway/uplift-mfa?origin=SNS&continueUrl=http%3A%2F%2Flocalhost%3A11200%2Fsafety-and-security-entry-declaration%2F%3Fk%3D123"
         }
       }
     }

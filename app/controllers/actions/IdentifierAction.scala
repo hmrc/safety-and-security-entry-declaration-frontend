@@ -51,20 +51,26 @@ class AuthenticatedIdentifierAction @Inject() (
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(AuthProviders(AuthProvider.GovernmentGateway) and
-      CredentialStrength(CredentialStrength.strong)
-    ).retrieve(Retrievals.allEnrolments and
-      Retrievals.affinityGroup) {
-      case userEnrolments  ~ Some(Organisation) =>
-          val ssEnrolments = userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == "HMRC-SS-ORG")
+    authorised(
+      AuthProviders(AuthProvider.GovernmentGateway) and
+        CredentialStrength(CredentialStrength.strong)
+    ).retrieve(
+      Retrievals.allEnrolments and
+        Retrievals.affinityGroup
+    ) {
+      case userEnrolments ~ Some(Organisation) =>
+        val ssEnrolments =
+          userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == config.enrolment)
 
-          if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
+        if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
 
-          ssEnrolments.flatMap(enrolment => enrolment.getIdentifier("EORINumber").map(EORI => EORI.value))
-            .headOption.fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request,EORI)))
-      case _  ~ Some(_) => throw UnsupportedAffinityGroup()
+        ssEnrolments
+          .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(EORI => EORI.value))
+          .headOption
+          .fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request, EORI)))
+      case _ ~ Some(_) => throw UnsupportedAffinityGroup()
     } recover {
-      case failedAuthentication : InsufficientEnrolments =>
+      case failedAuthentication: InsufficientEnrolments =>
         if (failedAuthentication.msg == "EORI_missing") {
           Redirect(routes.EORIRequiredController.onPageLoad)
         } else {
@@ -85,12 +91,12 @@ class AuthenticatedIdentifierAction @Inject() (
     Redirect(
       config.mfaUpliftUrl,
       Map(
-        "origin"      -> Seq(config.origin),
+        "origin" -> Seq(config.origin),
         "continueUrl" -> Seq(loginContinueUrl(request))
       )
     )
 
-  def loginContinueUrl(request: Request[_]): String = {
+  private def loginContinueUrl(request: Request[_]): String = {
     val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     request.queryString
@@ -101,8 +107,6 @@ class AuthenticatedIdentifierAction @Inject() (
       .getOrElse(request.uri)
   }
 }
-
-
 
 class SessionIdentifierAction @Inject() (
   val parser: BodyParsers.Default
