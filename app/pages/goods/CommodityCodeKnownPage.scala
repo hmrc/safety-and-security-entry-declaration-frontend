@@ -16,24 +16,45 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class CommodityCodeKnownPage(index: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
+
+case class CommodityCodeKnownPage(index: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "commodityCodeKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(CommodityCodeKnownPage(index)) match {
-      case Some(true) => goodsRoutes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index)
-      case Some(false) => goodsRoutes.GoodsDescriptionController.onPageLoad(NormalMode, answers.lrn, index)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CommodityCodeKnownController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => CommodityCodePage(index)
+      case false => GoodsDescriptionPage(index)
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(CommodityCodePage(index))
+          .map(_ => waypoints.next.page)
+          .getOrElse(CommodityCodePage(index))
+
+      case false =>
+        answers.get(GoodsDescriptionPage(index))
+          .map(_ => waypoints.next.page)
+          .getOrElse(GoodsDescriptionPage(index))
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value.map {
+      case true => userAnswers.remove(GoodsDescriptionPage(index))
+      case false => userAnswers.remove(CommodityCodePage(index))
+    }.getOrElse(super.cleanup(value, userAnswers))
 }

@@ -18,15 +18,17 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, KindOfPackage, NormalMode}
+import models.{KindOfPackage, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemovePackagePageSpec extends SpecBase with PageBehaviours {
 
   "RemovePackagePage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Add Package when there is at least one package in user answers" in {
 
@@ -37,28 +39,48 @@ class RemovePackagePageSpec extends SpecBase with PageBehaviours {
             .set(MarkOrNumberPage(index, index), "Mark or number").success.value
 
         RemovePackagePage(index, index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn, index))
+          .navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.AddPackageController.onPageLoad(waypoints, answers.lrn, index))
       }
 
       "to Kind of Package for index 0 when there are no packages in user answers" in {
 
         RemovePackagePage(index, index)
-          .navigate(NormalMode, emptyUserAnswers)
+          .navigate(waypoints, emptyUserAnswers)
           .mustEqual(
             goodsRoutes.KindOfPackageController
-              .onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
+              .onPageLoad(waypoints, emptyUserAnswers.lrn, index, index)
           )
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Add Package when there is at least one package in user answers" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(KindOfPackagePage(index, index), KindOfPackage.standardKindsOfPackages.head).success.value
+            .set(NumberOfPackagesPage(index, index), 1).success.value
+            .set(MarkOrNumberPage(index, index), "Mark or number").success.value
 
         RemovePackagePage(index, index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+          .navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.AddPackageController.onPageLoad(waypoints, answers.lrn, index))
+      }
+
+      "to Kind of Package with Add Package added to the waypoints when there are no packages in user answers" in {
+
+        val expectedWaypoints = waypoints.setNextWaypoint(AddPackagePage(index).waypoint(NormalMode))
+
+        RemovePackagePage(index, index)
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(
+            goodsRoutes.KindOfPackageController
+              .onPageLoad(expectedWaypoints, emptyUserAnswers.lrn, index, index)
+          )
       }
     }
   }

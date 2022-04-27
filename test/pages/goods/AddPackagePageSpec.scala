@@ -18,36 +18,129 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, KindOfPackage, NormalMode, ProvideGrossWeight}
+import models.{CheckMode, Index, KindOfPackage, NormalMode}
+import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
-import pages.predec.ProvideGrossWeightPage
+import pages.transport.AnyOverallDocumentsPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddPackagePageSpec extends SpecBase with PageBehaviours {
 
   "AddPackagePage" - {
 
-    "must navigate in Normal Mode" - {
-      "to Add Any Documents" in {
-        val answers =
-          emptyUserAnswers
-            .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+    val kindOfPackage = KindOfPackage.standardKindsOfPackages.head
 
-        AddPackagePage(index)
-          .navigate(NormalMode, answers, index, addAnother = false)
-          .mustEqual(
-            goodsRoutes.AddAnyDocumentsController.onPageLoad(NormalMode, answers.lrn, index)
-          )
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "when the answer is yes" - {
+
+        "to Kind of Package for the next index" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(KindOfPackagePage(index, Index(0)), kindOfPackage).success.value
+              .set(NumberOfPackagesPage(index, Index(0)), 1).success.value
+              .set(AddMarkOrNumberPage(index, Index(0)), true).success.value
+              .set(MarkOrNumberPage(index, Index(0)), "abc").success.value
+              .set(AddPackagePage(index), true).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(waypoints, answers.lrn, index, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Add Any Documents when the user gave any overall documents" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(AnyOverallDocumentsPage, true).success.value
+              .set(KindOfPackagePage(index, Index(0)), kindOfPackage).success.value
+              .set(NumberOfPackagesPage(index, Index(0)), 1).success.value
+              .set(AddMarkOrNumberPage(index, Index(0)), true).success.value
+              .set(MarkOrNumberPage(index, Index(0)), "abc").success.value
+              .set(AddPackagePage(index), false).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.AddAnyDocumentsController.onPageLoad(waypoints, answers.lrn, index))
+        }
+
+        "to Document for the first index when the user did not give any overall documents" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(AnyOverallDocumentsPage, false).success.value
+              .set(AddPackagePage(index), false).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.DocumentController.onPageLoad(waypoints, answers.lrn, index, Index(0)))
+        }
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        AddPackagePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "to Kind of Package for the next index with Add Package added to the waypoints" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(KindOfPackagePage(index, Index(0)), kindOfPackage).success.value
+              .set(NumberOfPackagesPage(index, Index(0)), 1).success.value
+              .set(AddMarkOrNumberPage(index, Index(0)), true).success.value
+              .set(MarkOrNumberPage(index, Index(0)), "abc").success.value
+              .set(AddPackagePage(index), true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddPackagePage(index).waypoint(NormalMode))
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.KindOfPackageController.onPageLoad(expectedWaypoints, answers.lrn, index, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Goods Item with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(AddPackagePage(index), false).success.value
+
+          AddPackagePage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+      }
+    }
+
+    ".waypointFromString" - {
+
+      "must read from a valid waypoint" in {
+
+        forAll(Gen.choose(1, 999)) {
+          index =>
+            val normalModeWaypoint = s"add-package-$index"
+            val checkModeWaypoint = s"change-package-$index"
+
+            AddPackagePage.waypointFromString(normalModeWaypoint).value
+              .mustEqual(AddPackagePage(Index(index - 1)).waypoint(NormalMode))
+
+            AddPackagePage.waypointFromString(checkModeWaypoint).value
+              .mustEqual(AddPackagePage(Index(index - 1)).waypoint(CheckMode))
+        }
+      }
+
+      "must not read from an invalid waypoint" in {
+
+        forAll(nonEmptyString) {
+          s =>
+            whenever(!s.startsWith("add-package-") && !s.startsWith("change-package-")) {
+              AddPackagePage.waypointFromString(s) must not be defined
+            }
+        }
       }
     }
   }

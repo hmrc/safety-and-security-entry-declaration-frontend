@@ -19,11 +19,11 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.PaymentMethodFormProvider
-import models.{NormalMode, PaymentMethod}
+import models.PaymentMethod
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,8 +34,8 @@ import scala.concurrent.Future
 
 class PaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val paymentMethodRoute =
-    routes.PaymentMethodController.onPageLoad(NormalMode, lrn, index).url
+  val waypoints: Waypoints = EmptyWaypoints
+  lazy val paymentMethodRoute = routes.PaymentMethodController.onPageLoad(waypoints, lrn, index).url
 
   val formProvider = new PaymentMethodFormProvider()
   val form = formProvider()
@@ -54,7 +54,7 @@ class PaymentMethodControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[PaymentMethodView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -80,7 +80,7 @@ class PaymentMethodControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(PaymentMethod.values.head),
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -111,7 +111,7 @@ class PaymentMethodControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.PaymentMethodPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -133,7 +133,7 @@ class PaymentMethodControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

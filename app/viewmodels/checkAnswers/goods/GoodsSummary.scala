@@ -17,26 +17,26 @@
 package viewmodels.checkAnswers.goods
 
 import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
+import pages.goods.CheckGoodsItemPage
+import pages.{AddItemPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.AllGoodsQuery
+import queries.goods.AllGoodsItemNamesQuery
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object GoodsSummary {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): List[ListItem] =
-    answers.get(AllGoodsQuery()).getOrElse(List.empty).zipWithIndex.map {
-      case (good, index) => {
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage)
+          (implicit messages: Messages): List[ListItem] =
+    answers.get(AllGoodsItemNamesQuery).getOrElse(List.empty).zipWithIndex.map {
+      case (good, index) =>
         ListItem(
-          name = HtmlFormat.escape(good.commodityCode).toString,
-          changeUrl = goodsRoutes.CommodityCodeKnownController
-            .onPageLoad(NormalMode, answers.lrn, Index(index))
-            .url,
+          name = HtmlFormat.escape(good.name).toString,
+          changeUrl = CheckGoodsItemPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
           removeUrl = goodsRoutes.RemoveGoodsController
-            .onPageLoad(NormalMode, answers.lrn, Index(index))
+            .onPageLoad(waypoints, answers.lrn, Index(index))
             .url
         )
       }
-    }
 }

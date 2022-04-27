@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.goods.MarkOrNumberPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,9 +27,13 @@ import viewmodels.implicits._
 
 object MarkOrNumberSummary {
 
-  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] =
+  def row(
+    answers: UserAnswers,
+    itemIndex: Index,
+    packageIndex: Index,
+    waypoints: Waypoints,
+    sourcePage: CheckAnswersPage
+  )(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MarkOrNumberPage(itemIndex, packageIndex)).map { answer =>
 
       SummaryListRowViewModel(
@@ -38,9 +42,7 @@ object MarkOrNumberSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.MarkOrNumberController
-              .onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex)
-              .url
+            MarkOrNumberPage(itemIndex, packageIndex).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("markOrNumber.change.hidden"))
         )
       )

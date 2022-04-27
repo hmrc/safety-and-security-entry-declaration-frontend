@@ -60,7 +60,10 @@ trait SummaryListFluency {
       SummaryListRow(
         key = key,
         value = value,
-        actions = Some(Actions(items = actions))
+        actions = actions match {
+          case Nil => None
+          case list => Some(Actions(items = list))
+        }
       )
   }
 

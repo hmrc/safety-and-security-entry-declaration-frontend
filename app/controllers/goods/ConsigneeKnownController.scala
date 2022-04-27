@@ -18,9 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.ConsigneeKnownFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.ConsigneeKnownPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.ConsigneeKnownView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeKnownController @Inject()(
@@ -43,7 +43,7 @@ class ConsigneeKnownController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
 
@@ -52,22 +52,22 @@ class ConsigneeKnownController @Inject()(
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, mode, lrn, itemIndex))
+        Ok(view(preparedForm, waypoints, lrn, itemIndex))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
 
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex))),
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex))),
 
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneeKnownPage(itemIndex), value))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ConsigneeKnownPage(itemIndex).navigate(mode, updatedAnswers))
+            } yield Redirect(ConsigneeKnownPage(itemIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.goods.CommodityCodePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,8 @@ import viewmodels.implicits._
 
 object CommodityCodeSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CommodityCodePage(index)).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +37,7 @@ object CommodityCodeSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.CommodityCodeController.onPageLoad(CheckMode, answers.lrn, index).url
+            CommodityCodePage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("commodityCode.change.hidden"))
         )
       )

@@ -18,8 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.DocumentFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.DocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.DocumentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DocumentController @Inject() (
@@ -45,7 +46,7 @@ class DocumentController @Inject() (
   val form = formProvider()
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     documentIndex: Index
@@ -57,11 +58,11 @@ class DocumentController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex, documentIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex, documentIndex))
     }
 
   def onSubmit(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     documentIndex: Index
@@ -73,14 +74,14 @@ class DocumentController @Inject() (
         .fold(
           formWithErrors =>
             Future
-              .successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, documentIndex))),
+              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documentIndex))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(
                 request.userAnswers.set(DocumentPage(itemIndex, documentIndex), value)
               )
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(DocumentPage(itemIndex, documentIndex).navigate(mode, updatedAnswers))
+            } yield Redirect(DocumentPage(itemIndex, documentIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

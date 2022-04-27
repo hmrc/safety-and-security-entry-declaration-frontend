@@ -16,39 +16,54 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, ProvideGrossWeight, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfContainers
+import queries.goods.{AllContainersQuery, DeriveNumberOfContainers}
 
-case class AnyShippingContainersPage(itemIndex: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
+
+case class AnyShippingContainersPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "shippingContainers"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(AnyShippingContainersPage(itemIndex)).map{
-      case true => {
-        answers.get(DeriveNumberOfContainers(itemIndex)) match {
-          case Some(size) =>
-            goodsRoutes.AddItemContainerNumberController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-          case None =>  goodsRoutes.ItemContainerNumberController.onPageLoad(NormalMode,answers.lrn,itemIndex,Index(0))
-        }
-      }
-      case false => {
-        answers.get(ProvideGrossWeightPage) match {
-          case Some(ProvideGrossWeight.PerItem) =>
-            goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-          case Some(ProvideGrossWeight.Overall) =>
-            goodsRoutes.AddPackageController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-          case _ =>
-            routes.JourneyRecoveryController.onPageLoad()
-        }
-      }
-    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AnyShippingContainersController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        ItemContainerNumberPage(itemIndex, Index(0))
+
+      case false =>
+        answers.get(ProvideGrossWeightPage).map {
+          case ProvideGrossWeight.Overall => KindOfPackagePage(itemIndex, Index(0))
+          case ProvideGrossWeight.PerItem => GoodsItemGrossWeightPage(itemIndex)
+        }.orRecover
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers
+          .get(DeriveNumberOfContainers(itemIndex)).map {
+            case n if n > 0 => waypoints.next.page
+            case _ => ItemContainerNumberPage(itemIndex, Index(0))
+        }.getOrElse(ItemContainerNumberPage(itemIndex, Index(0)))
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(AllContainersQuery(itemIndex))
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

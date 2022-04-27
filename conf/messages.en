@@ -353,19 +353,6 @@ document.error.reference.length = Reference or identification number must be 35 
 document.documentType.change.hidden = the document type
 document.reference.change.hidden = the reference or identification number
 
-goodsItemCrn.title = What is the Commercial Reference Number (CRN)?
-goodsItemCrn.heading = What is the Commercial Reference Number (CRN)?
-goodsItemCrn.checkYourAnswersLabel = Commercial Reference Number (CRN)
-goodsItemCrn.error.required = Enter the Commercial Reference Number (CRN)
-goodsItemCrn.error.length = GoodsItemCrn must be 70 characters or less
-goodsItemCrn.change.hidden = the Commercial Reference Number
-
-goodsItemCrnKnown.title = Can you provide a Commercial Reference Number (CRN)?
-goodsItemCrnKnown.heading = Can you provide a Commercial Reference Number (CRN)?
-goodsItemCrnKnown.checkYourAnswersLabel = CRN known
-goodsItemCrnKnown.error.required = Select yes if you can provide a Commercial Reference Number (CRN)
-goodsItemCrnKnown.change.hidden = if you can provide a Commercial Reference Number
-
 removeDocument.title = Do you need to remove this document?
 removeDocument.heading = Do you need to remove this document?
 removeDocument.error.required = Select yes if you need to remove this document
@@ -457,12 +444,6 @@ notifiedPartyName.change.hidden = the notified party’s name
 
 notifiedParties.checkYourAnswersLabel = Notified parties
 notifiedParties.change.hidden = the notified parties
-
-addPaymentMethod.title = Do you want to add a payment method?
-addPaymentMethod.heading = Do you want to add a payment method?
-addPaymentMethod.checkYourAnswersLabel = Payment method added
-addPaymentMethod.error.required = Select if you want to add a payment method
-addPaymentMethod.change.hidden = add a payment method
 
 paymentMethod.title = How will the carrier be paid?
 paymentMethod.heading = How will the carrier be paid?
@@ -780,11 +761,9 @@ notifiedParty.change.hidden = the notified party
 
 unloadingPlace.title = Your unloading places
 unloadingPlace.heading = Your unloading places
-unloadingPlace.option1 = Option 1
-unloadingPlace.option2 = Option 2
 unloadingPlace.checkYourAnswersLabel = Your unloading places
-unloadingPlace.error.required = Select unloadingPlace
-unloadingPlace.change.hidden = UnloadingPlace
+unloadingPlace.error.required = Select the unloading place
+unloadingPlace.change.hidden = the unloading place
 
 itemContainerNumber.title = What is the container/trailer number?
 itemContainerNumber.heading = What is the container/trailer number?

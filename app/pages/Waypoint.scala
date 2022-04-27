@@ -19,6 +19,7 @@ package pages
 import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 import pages.consignors.{AddConsignorPage, CheckConsignorPage}
+import pages.goods.{AddDocumentPage, AddGoodsPage, AddItemContainerNumberPage, AddPackagePage, CheckGoodsItemPage, CheckPackageItemPage}
 import pages.routedetails.{AddCountryEnRoutePage, AddPlaceOfLoadingPage, AddPlaceOfUnloadingPage, CheckRouteDetailsPage}
 
 case class Waypoint (
@@ -67,6 +68,12 @@ object Waypoint {
       case AddPlaceOfUnloadingPage.checkModeUrlFragment =>
         Some(AddPlaceOfUnloadingPage.waypoint(CheckMode))
 
+      case AddGoodsPage.normalModeUrlFragment =>
+        Some(AddGoodsPage.waypoint(NormalMode))
+
+      case AddGoodsPage.checkModeUrlFragment =>
+        Some(AddGoodsPage.waypoint(CheckMode))
+
       case CheckRouteDetailsPage.urlFragment =>
         Some(CheckRouteDetailsPage.waypoint)
 
@@ -77,5 +84,10 @@ object Waypoint {
         CheckConsigneePage.waypointFromString(other)
           .orElse(CheckNotifiedPartyPage.waypointFromString(other))
           .orElse(CheckConsignorPage.waypointFromString(other))
+          .orElse(CheckGoodsItemPage.waypointFromString(other))
+          .orElse(CheckPackageItemPage.waypointFromString(other))
+          .orElse(AddItemContainerNumberPage.waypointFromString(other))
+          .orElse(AddPackagePage.waypointFromString(other))
+          .orElse(AddDocumentPage.waypointFromString(other))
     }
 }

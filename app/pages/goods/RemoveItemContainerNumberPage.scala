@@ -16,13 +16,26 @@
 
 package pages.goods
 
-import models.Index
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
+import queries.goods.DeriveNumberOfContainers
 
-final case class RemoveItemContainerNumberPage(itemIndex: Index, containerIndex: Index) extends QuestionPage[Boolean] {
+final case class RemoveItemContainerNumberPage(itemIndex: Index, containerIndex: Index)
+  extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "removeContainer"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.RemoveItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex, containerIndex)
+
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfContainers(itemIndex)).map {
+      case n if n > 0 => AddItemContainerNumberPage(itemIndex)
+      case _ => AnyShippingContainersPage(itemIndex)
+    }.getOrElse(AnyShippingContainersPage(itemIndex))
 }

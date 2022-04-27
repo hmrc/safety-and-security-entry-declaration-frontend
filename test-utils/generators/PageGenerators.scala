@@ -109,9 +109,6 @@ trait PageGenerators {
   implicit lazy val arbitraryPaymentMethodPage: Arbitrary[PaymentMethodPage] =
     Arbitrary(goods.PaymentMethodPage(Index(0)))
 
-  implicit lazy val arbitraryAddPaymentMethodPage: Arbitrary[AddPaymentMethodPage] =
-    Arbitrary(goods.AddPaymentMethodPage(Index(0)))
-
   implicit lazy val arbitraryNotifiedPartyNamePage: Arbitrary[NotifiedPartyNamePage] =
     Arbitrary(consignees.NotifiedPartyNamePage(Index(0)))
 
@@ -159,12 +156,6 @@ trait PageGenerators {
 
   implicit lazy val arbitraryDangerousGoodPage: Arbitrary[DangerousGoodPage] =
     Arbitrary(goods.DangerousGoodPage(Index(0)))
-
-  implicit lazy val arbitraryGoodsItemCrnKnownPage: Arbitrary[GoodsItemCrnKnownPage] =
-    Arbitrary(goods.GoodsItemCrnKnownPage(Index(0)))
-
-  implicit lazy val arbitraryGoodsItemCrnPage: Arbitrary[GoodsItemCrnPage] =
-    Arbitrary(goods.GoodsItemCrnPage(Index(0)))
 
   implicit lazy val arbitraryDocumentPage: Arbitrary[DocumentPage] =
     Arbitrary(goods.DocumentPage(Index(0), Index(0)))

@@ -25,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("goodsItemGrossWeight.title"))) {
 
-    @formHelper(action = routes.GoodsItemGrossWeightController.onSubmit(mode, lrn, index), 'autoComplete -> "off") {
+    @formHelper(action = routes.GoodsItemGrossWeightController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

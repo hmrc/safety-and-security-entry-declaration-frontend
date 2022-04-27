@@ -19,9 +19,8 @@ package controllers.goods
 import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.NotifiedPartyFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.NotifiedPartyPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOptions
 import views.html.goods.NotifiedPartyView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotifiedPartyController @Inject() (
@@ -47,7 +47,7 @@ class NotifiedPartyController @Inject() (
     with I18nSupport
     with AnswerExtractor {
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
         getAnswer(AllNotifiedPartiesQuery) {
@@ -61,11 +61,11 @@ class NotifiedPartyController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, mode, lrn, itemIndex, radioOptions))
+            Ok(view(preparedForm, waypoints, lrn, itemIndex, radioOptions))
         }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         getAnswerAsync(AllNotifiedPartiesQuery) {
@@ -78,13 +78,13 @@ class NotifiedPartyController @Inject() (
             .fold(
               formWithErrors => {
                 val radioOptions = RadioOptions(notifiedParties.map(n => n.key.toString -> n.displayName).toMap)
-                Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, radioOptions)))
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, radioOptions)))
               },
               value =>
                 for {
                   updatedAnswers <- Future.fromTry(request.userAnswers.set(NotifiedPartyPage(itemIndex), value))
                   _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(NotifiedPartyPage(itemIndex).navigate(mode, updatedAnswers))
+                } yield Redirect(NotifiedPartyPage(itemIndex).navigate(waypoints, updatedAnswers))
             )
         }
     }

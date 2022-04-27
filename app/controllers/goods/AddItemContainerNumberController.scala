@@ -18,7 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddItemContainerNumberFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.AddItemContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,7 +29,7 @@ import viewmodels.checkAnswers.goods.ItemContainerNumberSummary
 import views.html.goods.AddItemContainerNumberView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddItemContainerNumberController @Inject()(
       override val messagesApi: MessagesApi,
@@ -45,26 +46,30 @@ class AddItemContainerNumberController @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val containers = ItemContainerNumberSummary.rows(request.userAnswers, index)
+      val containers = ItemContainerNumberSummary.rows(request.userAnswers, index, waypoints, AddItemContainerNumberPage(index))
 
-      Ok(view(form, mode, lrn, index, containers))
+      Ok(view(form, waypoints, lrn, index, containers))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val containers = ItemContainerNumberSummary.rows(request.userAnswers, index)
+            val containers = ItemContainerNumberSummary.rows(request.userAnswers, index, waypoints, AddItemContainerNumberPage(index))
 
-            BadRequest(view(formWithErrors, mode, lrn, index, containers))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index, containers)))
           },
-          value => Redirect(AddItemContainerNumberPage(index).navigate(mode, request.userAnswers, index, value))
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddItemContainerNumberPage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddItemContainerNumberPage(index).navigate(waypoints, updatedAnswers))
         )
     }
 }

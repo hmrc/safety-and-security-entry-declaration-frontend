@@ -16,37 +16,44 @@
 
 package viewmodels.checkAnswers.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.goods.UnloadingPlacePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import queries.routedetails.AllPlacesOfUnloadingQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object UnloadingPlaceSummary  {
 
-  def row(answers: UserAnswers, itemIndex: Index)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnloadingPlacePage(itemIndex)).map {
-      answer =>
+  def row(answers: UserAnswers, itemIndex: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    for {
+      placesOfUnloading <- answers.get(AllPlacesOfUnloadingQuery)
+      key               <- answers.get(UnloadingPlacePage(itemIndex))
+      placeOfUnloading  <- placesOfUnloading.find(_.key == key)
+    } yield {
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"unloadingPlace.$answer"))
-          )
-        )
+      val value = ValueViewModel(HtmlFormat.escape(placeOfUnloading.place).toString)
 
-        SummaryListRowViewModel(
-          key     = "unloadingPlace.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              goodsRoutes.UnloadingPlaceController.onPageLoad(CheckMode, answers.lrn, itemIndex).url
-            ).withVisuallyHiddenText(messages("unloadingPlace.change.hidden"))
-          )
+      val actions = if (placesOfUnloading.size > 1) {
+        Seq(
+          ActionItemViewModel(
+            "site.change",
+            UnloadingPlacePage(itemIndex).changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("unloadingPlace.change.hidden"))
         )
-    }
+      } else {
+        Nil
+      }
+
+      SummaryListRowViewModel(
+        key = "unloadingPlace.checkYourAnswersLabel",
+        value = value,
+        actions = actions
+      )
+  }
+
 }

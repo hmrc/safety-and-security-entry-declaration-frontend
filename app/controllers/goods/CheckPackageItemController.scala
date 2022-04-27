@@ -18,7 +18,9 @@ package controllers.goods
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.goods.CheckPackageItemPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,23 +39,31 @@ class CheckPackageItemController @Inject() (
   with I18nSupport {
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
+      val thisPage = CheckPackageItemPage(itemIndex, packageIndex)
+
       val list = SummaryListViewModel(
         rows = Seq(
-          KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex),
-          NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex),
-          NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex),
-          AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex),
-          MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex)
+          KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+          NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+          NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+          AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+          MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage)
         ).flatten
       )
 
-      Ok(view(mode, list, lrn, itemIndex, packageIndex))
+      Ok(view(waypoints, list, lrn, itemIndex, packageIndex))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckPackageItemPage(itemIndex, packageIndex).navigate(waypoints, request.userAnswers))
     }
 }

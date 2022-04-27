@@ -16,31 +16,66 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, Mode, NormalMode, ProvideGrossWeight, UserAnswers}
-import pages.Page
+import controllers.goods.routes
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, ProvideGrossWeight, UserAnswers}
 import pages.predec.ProvideGrossWeightPage
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfContainers
+import queries.goods.DeriveNumberOfContainers
 
-final case class AddItemContainerNumberPage(index: Index) extends Page {
+final case class AddItemContainerNumberPage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call = {
-    if (addAnother) {
-      answers.get(DeriveNumberOfContainers(itemIndex)) match {
-        case Some(size) =>
-          goodsRoutes.ItemContainerNumberController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      answers.get(ProvideGrossWeightPage) match {
-        case Some(ProvideGrossWeight.PerItem) =>
-          goodsRoutes.GoodsItemGrossWeightController.onPageLoad(NormalMode, answers.lrn,itemIndex)
-        case Some(ProvideGrossWeight.Overall) => goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
-        case _ =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
+  override val normalModeUrlFragment: String = s"add-container-${itemIndex.position}"
+  override val checkModeUrlFragment: String = s"change-container-${itemIndex.position}"
+
+  override def path: JsPath = JsPath \ "addContainerNumber"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddItemContainerNumberController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfContainers(itemIndex))
+          .map(n => ItemContainerNumberPage(itemIndex, Index(n)))
+          .orRecover
+
+      case false =>
+        answers.get(ProvideGrossWeightPage).map {
+          case ProvideGrossWeight.PerItem => GoodsItemGrossWeightPage(itemIndex)
+          case ProvideGrossWeight.Overall => KindOfPackagePage(itemIndex, Index(0))
+        }.orRecover
+    }.orRecover
+
+  override def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfContainers(itemIndex))
+        .map(n => ItemContainerNumberPage(itemIndex, Index(n)))
+        .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+}
+
+object AddItemContainerNumberPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val normalModePattern = """add-container-(\d{1,3})""".r.anchored
+    val checkModePattern = """change-container-(\d{1,3})""".r.anchored
+
+    s match {
+      case normalModePattern(indexDisplay) =>
+        Some(AddItemContainerNumberPage(Index(indexDisplay.toInt - 1)).waypoint(NormalMode))
+
+      case checkModePattern(indexDisplay) =>
+        Some(AddItemContainerNumberPage(Index(indexDisplay.toInt - 1)).waypoint(CheckMode))
+
+      case _ =>
+        None
     }
   }
 }

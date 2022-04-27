@@ -26,9 +26,9 @@ import models.{Index, NormalMode, UserAnswers}
 import pages.EmptyWaypoints
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import queries.DeriveNumberOfGoods
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
 import queries.consignors.DeriveNumberOfConsignors
+import queries.goods.DeriveNumberOfGoods
 import uk.gov.hmrc.govukfrontend.views.viewmodels.tag.Tag
 
 final case class TaskListViewModel(rows: Seq[TaskListRow])(implicit messages: Messages)
@@ -103,9 +103,9 @@ object TaskListViewModel {
   }
 
   private def goodsRow(answers: UserAnswers)(implicit messages: Messages) : TaskListRow = {
-    val url = answers.get(DeriveNumberOfGoods()) match {
-      case Some(size) if size > 0 => goodsRoutes.AddGoodsController.onPageLoad(NormalMode, answers.lrn)
-      case _ => goodsRoutes.CommodityCodeKnownController.onPageLoad(NormalMode, answers.lrn, Index(0))
+    val url = answers.get(DeriveNumberOfGoods) match {
+      case Some(size) if size > 0 => goodsRoutes.AddGoodsController.onPageLoad(EmptyWaypoints, answers.lrn)
+      case _ => goodsRoutes.InitialiseGoodsItemController.initialise(EmptyWaypoints, answers.lrn, Index(0))
     }
 
     TaskListRow(

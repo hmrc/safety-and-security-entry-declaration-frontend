@@ -19,31 +19,46 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.UnloadingPlaceFormProvider
-import models.{NormalMode, UnloadingPlace}
+import models.{Index, PlaceOfUnloading}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.goods.UnloadingPlacePage
+import pages.routedetails.PlaceOfUnloadingPage
+import pages.{EmptyWaypoints, Waypoints}
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import viewmodels.RadioOptions
 import views.html.goods.UnloadingPlaceView
 
 import scala.concurrent.Future
 
 class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val unloadingPlaceRoute = routes.UnloadingPlaceController.onPageLoad(NormalMode, lrn, index).url
+  lazy val unloadingPlaceRoute = routes.UnloadingPlaceController.onPageLoad(waypoints, lrn, index).url
+  val waypoints: Waypoints = EmptyWaypoints
+
+  val placeOfUnloading1 = arbitrary[PlaceOfUnloading].sample.value
+  val placeOfUnloading2 = arbitrary[PlaceOfUnloading].sample.value
+  val placesOfUnloading = List(placeOfUnloading1, placeOfUnloading2)
+
+  val baseAnswers =
+    emptyUserAnswers
+      .set(PlaceOfUnloadingPage(Index(0)), placeOfUnloading1).success.value
+      .set(PlaceOfUnloadingPage(Index(1)), placeOfUnloading2).success.value
 
   val formProvider = new UnloadingPlaceFormProvider()
-  val form = formProvider()
+  val form = formProvider(placesOfUnloading.map(_.key))
 
   "UnloadingPlace Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, unloadingPlaceRoute)
@@ -51,15 +66,17 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[UnloadingPlaceView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(placesOfUnloading.map(l => l.key.toString -> l.place).toMap)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, radioOptions)(request, msgs).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(UnloadingPlacePage(index), UnloadingPlace.values.head).success.value
+      val userAnswers = baseAnswers.set(UnloadingPlacePage(index), placeOfUnloading1.key).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -67,11 +84,19 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, unloadingPlaceRoute)
 
         val view = application.injector.instanceOf[UnloadingPlaceView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(placesOfUnloading.map(l => l.key.toString -> l.place).toMap)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(UnloadingPlace.values.head), NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          form.fill(placeOfUnloading1.key),
+          waypoints,
+          lrn,
+          index,
+          radioOptions
+        )(request, msgs).toString
       }
     }
 
@@ -82,27 +107,27 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, unloadingPlaceRoute)
-            .withFormUrlEncodedBody(("value", UnloadingPlace.values.head.toString))
+            .withFormUrlEncodedBody(("value", placeOfUnloading1.key.toString))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(UnloadingPlacePage(index), UnloadingPlace.values.head).success.value
+        val expectedAnswers = baseAnswers.set(UnloadingPlacePage(index), placeOfUnloading1.key).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnloadingPlacePage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual UnloadingPlacePage(index).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request =
@@ -112,11 +137,13 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[UnloadingPlaceView]
+        implicit val msgs: Messages = messages(application)
+        val radioOptions = RadioOptions(placesOfUnloading.map(l => l.key.toString -> l.place).toMap)
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, radioOptions)(request, msgs).toString
       }
     }
 
@@ -141,7 +168,7 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, unloadingPlaceRoute)
-            .withFormUrlEncodedBody(("value", UnloadingPlace.values.head.toString))
+            .withFormUrlEncodedBody(("value", placeOfUnloading1.key.toString))
 
         val result = route(application, request).value
 

@@ -18,17 +18,17 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.RemoveDocumentFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.RemoveDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.DocumentQuery
+import queries.goods.DocumentQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemoveDocumentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveDocumentController @Inject() (
@@ -47,7 +47,7 @@ class RemoveDocumentController @Inject() (
   val form = formProvider()
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     documentIndex: Index
@@ -60,11 +60,11 @@ class RemoveDocumentController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex, documentIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex, documentIndex))
     }
 
   def onSubmit(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     documentIndex: Index
@@ -76,20 +76,16 @@ class RemoveDocumentController @Inject() (
         .fold(
           formWithErrors =>
             Future
-              .successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, documentIndex))),
+              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documentIndex))),
           value =>
             if (value) {
               for {
-                updatedAnswers <- Future.fromTry(
-                  request.userAnswers.remove(DocumentQuery(itemIndex, documentIndex))
-                )
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(DocumentQuery(itemIndex, documentIndex)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(
-                RemoveDocumentPage(itemIndex, documentIndex).navigate(mode, updatedAnswers)
-              )
+              } yield Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(mode, request.userAnswers))
+                Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(waypoints, request.userAnswers))
               )
             }
         )

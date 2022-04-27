@@ -19,13 +19,14 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.LoadingPlaceFormProvider
-import models.{Index, NormalMode, PlaceOfLoading}
+import models.{Index, PlaceOfLoading}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.goods.LoadingPlacePage
 import pages.routedetails.PlaceOfLoadingPage
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,7 +39,8 @@ import scala.concurrent.Future
 
 class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val loadingPlaceRoute = routes.LoadingPlaceController.onPageLoad(NormalMode, lrn, index).url
+  val waypoints: Waypoints = EmptyWaypoints
+  lazy val loadingPlaceRoute = routes.LoadingPlaceController.onPageLoad(waypoints, lrn, index).url
 
   val placeOfLoading1 = arbitrary[PlaceOfLoading].sample.value
   val placeOfLoading2 = arbitrary[PlaceOfLoading].sample.value
@@ -68,7 +70,7 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val radioOptions = RadioOptions(placesOfLoading.map(l => l.key.toString -> l.place).toMap)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, radioOptions)(request, implicitly).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, radioOptions)(request, implicitly).toString
       }
     }
 
@@ -90,7 +92,7 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(placeOfLoading1.key),
-          NormalMode,
+          waypoints,
           lrn,
           index,
           radioOptions
@@ -118,7 +120,7 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = baseAnswers.set(LoadingPlacePage(index), placeOfLoading1.key).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual LoadingPlacePage(index).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual LoadingPlacePage(index).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -144,7 +146,7 @@ class LoadingPlaceControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
-          NormalMode,
+          waypoints,
           lrn,
           index,
           radioOptions

@@ -16,22 +16,47 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class ConsigneeKnownPage(itemIndex: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
+
+final case class ConsigneeKnownPage(itemIndex: Index) extends GoodsItemQuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "consigneeKnown"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(ConsigneeKnownPage(itemIndex)).map {
-      case true  => goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-      case false => goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.ConsigneeKnownController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => ConsigneePage(itemIndex)
+      case false => NotifiedPartyPage(itemIndex)
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(ConsigneePage(itemIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(ConsigneePage(itemIndex))
+
+      case false =>
+        answers.get(NotifiedPartyPage(itemIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NotifiedPartyPage(itemIndex))
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value.map {
+      case true => userAnswers.remove(NotifiedPartyPage(itemIndex))
+      case false => userAnswers.remove(ConsigneePage(itemIndex))
+    }.getOrElse(
+      super.cleanup(value, userAnswers)
+    )
 }

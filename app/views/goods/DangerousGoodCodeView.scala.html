@@ -28,11 +28,11 @@
     dangerousGoodsService: DangerousGoodsService
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("dangerousGoodCode.title"))) {
 
-    @formHelper(action = routes.DangerousGoodCodeController.onSubmit(mode, lrn, index), 'autocomplete -> "off") {
+    @formHelper(action = routes.DangerousGoodCodeController.onSubmit(waypoints, lrn, index), 'autocomplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

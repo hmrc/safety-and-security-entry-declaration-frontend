@@ -16,19 +16,21 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{DangerousGood, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{DangerousGood, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class DangerousGoodCodePage(index: Index) extends QuestionPage[DangerousGood] {
+case class DangerousGoodCodePage(index: Index) extends GoodsItemQuestionPage[DangerousGood] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "dangerousGoodCode"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    goodsRoutes.PaymentMethodController.onPageLoad(NormalMode, answers.lrn, index)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.DangerousGoodCodeController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    PaymentMethodPage(index)
 }

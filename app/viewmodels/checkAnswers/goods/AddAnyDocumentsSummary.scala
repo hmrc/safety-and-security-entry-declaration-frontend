@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.goods.AddAnyDocumentsPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -26,7 +26,8 @@ import viewmodels.implicits._
 
 object AddAnyDocumentsSummary {
 
-  def row(answers: UserAnswers, index: Index)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AddAnyDocumentsPage(index)).map { answer =>
 
       val value = if (answer) "site.yes" else "site.no"
@@ -37,7 +38,7 @@ object AddAnyDocumentsSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.AddAnyDocumentsController.onPageLoad(CheckMode, answers.lrn, index).url
+            AddAnyDocumentsPage(index).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("addAnyDocuments.change.hidden"))
         )
       )

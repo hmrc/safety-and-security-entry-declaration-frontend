@@ -19,19 +19,26 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.AddItemContainerNumberFormProvider
-import models.NormalMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
+import pages.goods.AddItemContainerNumberPage
+import pages.{EmptyWaypoints, Waypoints, goods}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.goods.AddItemContainerNumberView
+
+import scala.concurrent.Future
 
 class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddItemContainerNumberFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
-  lazy val addContainerRoute = routes.AddItemContainerNumberController.onPageLoad(NormalMode, lrn, index).url
+  lazy val addContainerRoute = routes.AddItemContainerNumberController.onPageLoad(waypoints, lrn, index).url
 
   "Add Item Container Number Controller" - {
 
@@ -47,16 +54,23 @@ class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddItemContainerNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, List.empty)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, List.empty)(
           request,
           messages(application)
         ).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must save the answer and redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
 
       running(application) {
         val request =
@@ -64,11 +78,13 @@ class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
+        val expectedAnswers = emptyUserAnswers.set(AddItemContainerNumberPage(index), true).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.AddItemContainerNumberPage(index)
-          .navigate(NormalMode, emptyUserAnswers, index, true)
+          .navigate(waypoints, expectedAnswers)
           .url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -88,7 +104,7 @@ class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, List.empty)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, List.empty)(
           request,
           messages(application)
         ).toString

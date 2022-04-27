@@ -25,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("commodityCode.title"))) {
 
-    @formHelper(action = routes.CommodityCodeController.onSubmit(mode, lrn, index)) {
+    @formHelper(action = routes.CommodityCodeController.onSubmit(waypoints, lrn, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -16,19 +16,21 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UnloadingPlace, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class UnloadingPlacePage(itemIndex: Index) extends QuestionPage[UnloadingPlace] {
+final case class UnloadingPlacePage(itemIndex: Index) extends GoodsItemQuestionPage[Int] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ toString
 
   override def toString: String = "unloadingPlace"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    goodsRoutes.AnyShippingContainersController.onPageLoad(NormalMode,answers.lrn,itemIndex)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.UnloadingPlaceController.onPageLoad(waypoints, lrn, itemIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AnyShippingContainersPage(itemIndex)
 }

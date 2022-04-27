@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers.consignees
 
 import controllers.consignees.{routes => consigneesRoutes}
-import models.{CheckMode, Index, TraderWithEori, TraderWithoutEori, UserAnswers}
-import pages.{AddItemPage, Waypoints, CheckAnswersPage}
+import models.{Index, TraderWithEori, TraderWithoutEori, UserAnswers}
 import pages.consignees.{AddAnyNotifiedPartiesPage, CheckNotifiedPartyPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.consignees.AllNotifiedPartiesQuery
@@ -38,8 +38,6 @@ object AddNotifiedPartySummary  {
           case t: TraderWithEori    => HtmlFormat.escape(t.eori).toString
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
-
-        val changeLinkWaypoints = waypoints.setNextWaypoint(sourcePage.waypoint(CheckMode))
 
         ListItem(
           name      = name,
