@@ -39,18 +39,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private type RetrievalsType = Enrolments ~ Option[AffinityGroup]
-  private val ssEnrolment = Enrolments(
-    Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated"))
-  )
-  private val inactiveSSEnrolment = Enrolments(
-    Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive"))
-  )
-  private val ssEnrolmentNoEORI = Enrolments(
-    Set(Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated"))
-  )
-  private val incorectEnrolment = Enrolments(
-    Set(Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated"))
-  )
+  private val SNSenrolmentWithEORI =
+    Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")
+  private val inactiveSNSEnrolment =
+    Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")
+  private val SNSenrolmentNoEORI = Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")
+  private val nonSNSEnrolmentWithEORI =
+    Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")
+  private val nonSNSEnrolmentNoEORI =
+    Enrolment("HMRC-BB-ORG", Seq(EnrolmentIdentifier("Test", "123456789")), "Activated")
+  private val anotherNonSNSEnrolmentNoEORI =
+    Enrolment("HMRC-CC-ORG", Seq(EnrolmentIdentifier("Test", "123456789")), "Activated")
   private val application = applicationBuilder(None).build()
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
   private val bodyParsers = application.injector.instanceOf[BodyParsers.Default]
@@ -70,7 +69,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
       "When the user is logged in as Organisation with strong credentials, enrolment HMRC-SS-ORG and EORI" in {
         running(application) {
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(ssEnrolment ~ Some(Organisation)))
+            .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Organisation)))
 
           val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
           val controller = new Harness(authAction, actionBuilder)
@@ -84,7 +83,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
       "When the user is an Individual" in {
         running(application) {
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(ssEnrolment ~ Some(Individual)))
+            .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Individual)))
 
           val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
           val controller = new Harness(authAction, actionBuilder)
@@ -96,7 +95,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
       "When the user is an Agent" in {
         running(application) {
           when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(ssEnrolment ~ Some(Agent)))
+            .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Agent)))
 
           val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
           val controller = new Harness(authAction, actionBuilder)
@@ -105,12 +104,31 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           status(result) mustEqual SEE_OTHER
         }
       }
+      "When none of the enrolments are SNS or contain EORI" - {
+        "And will redirect to EORI Required Page" in {
+          running(application) {
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(
+                Future.successful(
+                  Enrolments(Set(nonSNSEnrolmentNoEORI, anotherNonSNSEnrolmentNoEORI)) ~ Some(Organisation)
+                )
+              )
+
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
+          }
+        }
+      }
       "When the enrolments" - {
         "Do not contain HMRC-SS-ORG" - {
           "And will redirect to Enrolment Required Page" in {
             running(application) {
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(incorectEnrolment ~ Some(Organisation)))
+                .thenReturn(Future.successful(Enrolments(Set(nonSNSEnrolmentWithEORI)) ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
@@ -140,7 +158,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           "And will redirect to EORI Required Page" in {
             running(application) {
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(ssEnrolmentNoEORI ~ Some(Organisation)))
+                .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentNoEORI)) ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
@@ -155,7 +173,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           "And will redirect to Enrolment Required Page" in {
             running(application) {
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-                .thenReturn(Future.successful(inactiveSSEnrolment ~ Some(Organisation)))
+                .thenReturn(Future.successful(Enrolments(Set(inactiveSNSEnrolment)) ~ Some(Organisation)))
 
               val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
               val controller = new Harness(authAction, actionBuilder)
