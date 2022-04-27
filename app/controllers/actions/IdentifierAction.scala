@@ -67,7 +67,7 @@ class AuthenticatedIdentifierAction @Inject() (
           .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(EORI => EORI.value))
           .headOption
           .fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request, EORI)))
-      case _ ~ Some(_) => throw UnsupportedAffinityGroup()
+      case _ => throw UnsupportedAffinityGroup()
     } recover {
       case failedAuthentication: InsufficientEnrolments =>
         if (failedAuthentication.msg == "EORI_missing") {
