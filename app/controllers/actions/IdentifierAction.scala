@@ -84,7 +84,7 @@ class AuthenticatedIdentifierAction @Inject() (
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
 
       case _: IncorrectCredentialStrength => upliftCredentialStrength(request)
-
+      case _: UnsupportedAffinityGroup => Redirect(routes.OrganisationAccountRequiredController.onPageLoad)
       case _: InsufficientConfidenceLevel => Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
         Redirect(routes.UnauthorisedController.onPageLoad)

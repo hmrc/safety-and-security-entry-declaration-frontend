@@ -80,28 +80,34 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
       }
     }
     "Will fail authentication" - {
-      "When the user is an Individual" in {
-        running(application) {
-          when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Individual)))
+      "When the user is an Individual" - {
+        "And will redirect to Organisation Required Page" in {
+          running(application) {
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Individual)))
 
-          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
-          val controller = new Harness(authAction, actionBuilder)
-          val result = controller.onPageLoad()(FakeRequest())
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustEqual SEE_OTHER
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.OrganisationAccountRequiredController.onPageLoad().url
+          }
         }
       }
-      "When the user is an Agent" in {
-        running(application) {
-          when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-            .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Agent)))
+      "When the user is an Agent" - {
+        "And will redirect to Organisation Required Page" in {
+          running(application) {
+            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+              .thenReturn(Future.successful(Enrolments(Set(SNSenrolmentWithEORI)) ~ Some(Agent)))
 
-          val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
-          val controller = new Harness(authAction, actionBuilder)
-          val result = controller.onPageLoad()(FakeRequest())
+            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+            val controller = new Harness(authAction, actionBuilder)
+            val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustEqual SEE_OTHER
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe routes.OrganisationAccountRequiredController.onPageLoad().url
+          }
         }
       }
       "When the enrolments" - {
