@@ -7,7 +7,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import base.SpecBase
-import models.completion.downstream.Submission
+import models.MovementReferenceNumber
+import models.completion.downstream.{CorrelationId, Outcome, Submission}
 import serialisation.xml.XmlPayloadFixtures
 
 class DeclarationConnectorSpec
@@ -19,7 +20,9 @@ class DeclarationConnectorSpec
 
   private def app = applicationBuilder().configure(
     "microservice.services.iced-store.host" -> wireMockHost,
-    "microservice.services.iced-store.port" -> wireMockPort
+    "microservice.services.iced-store.port" -> wireMockPort,
+    "microservice.services.iced-outcome.host" -> wireMockHost,
+    "microservice.services.iced-outcome.port" -> wireMockPort
   ).build()
 
   "The declaration connector" - {
@@ -35,6 +38,8 @@ class DeclarationConnectorSpec
           )
 
           client.submitDeclaration(dec).futureValue must be(submissionCorrId)
+
+          verify(postRequestedFor(urlEqualTo("/")))
         }
       }
 
@@ -51,6 +56,8 @@ class DeclarationConnectorSpec
           client.submitDeclaration(dec).failed.futureValue must be(
             a[DeclarationConnecting.BadRequestException]
           )
+
+          verify(postRequestedFor(urlEqualTo("/")))
         }
       }
 
@@ -67,6 +74,133 @@ class DeclarationConnectorSpec
           client.submitDeclaration(dec).failed.futureValue must be(
             a[DeclarationConnecting.RequestFailedException]
           )
+
+          verify(postRequestedFor(urlEqualTo("/")))
+        }
+      }
+    }
+
+    "when listing outcomes" - {
+      "should extract a list of correlation IDs from the response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+
+          stubFor(
+            get(urlEqualTo("/"))
+              .willReturn(aResponse().withStatus(200).withBody(listOutcomesResponse.toString))
+          )
+
+          client.listOutcomes().futureValue must be(outcomeCorrIds)
+
+          verify(getRequestedFor(urlEqualTo("/")))
+        }
+      }
+
+      "should extract an empty list of correlation IDs from a 204 response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+
+          stubFor(
+            get(urlEqualTo("/"))
+              .willReturn(aResponse().withStatus(204))
+          )
+
+          client.listOutcomes().futureValue must be(Nil)
+
+          verify(getRequestedFor(urlEqualTo("/")))
+        }
+      }
+
+      "should report a request failed exception for an unexpected response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+
+          stubFor(
+            get(urlEqualTo("/"))
+              .willReturn(aResponse().withStatus(500))
+          )
+
+          client.listOutcomes().failed.futureValue must be(
+            a[DeclarationConnecting.RequestFailedException]
+          )
+
+          verify(getRequestedFor(urlEqualTo("/")))
+        }
+      }
+    }
+
+    "when retrieving one outcome" - {
+      "should extract the outcome from the response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val corrId = CorrelationId("123_456")
+          val outcome = Outcome.Accepted(
+            CorrelationId("0JRF7UncK0t004"),
+            MovementReferenceNumber("10GB08I01234567891")
+          )
+
+          stubFor(
+            get(urlEqualTo(s"/${corrId.id}"))
+              .willReturn(aResponse().withStatus(200).withBody(acceptedSubmissionOutcome.toString))
+          )
+
+          client.fetchOutcome(corrId).futureValue must be(outcome)
+
+          verify(getRequestedFor(urlEqualTo(s"/${corrId.id}")))
+        }
+      }
+
+      "should report a request failed exception for some unexpected response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val corrId = CorrelationId("123_456")
+
+          stubFor(
+            get(urlEqualTo(s"/${corrId.id}"))
+              .willReturn(aResponse().withStatus(500))
+          )
+
+          client.fetchOutcome(corrId).failed.futureValue must be(
+            a[DeclarationConnecting.RequestFailedException]
+          )
+
+          verify(getRequestedFor(urlEqualTo(s"/${corrId.id}")))
+        }
+      }
+    }
+
+    "when acknowledging one outcome" - {
+      "should successfully make a DELETE request" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val corrId = CorrelationId("123_456")
+
+          stubFor(
+            delete(urlEqualTo(s"/${corrId.id}"))
+              .willReturn(aResponse().withStatus(200))
+          )
+
+          client.ackOutcome(corrId).futureValue must be(())
+
+          verify(deleteRequestedFor(urlEqualTo(s"/${corrId.id}")))
+        }
+      }
+
+      "should report a request failed exception for some unexpected response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val corrId = CorrelationId("123_456")
+
+          stubFor(
+            delete(urlEqualTo(s"/${corrId.id}"))
+              .willReturn(aResponse().withStatus(500))
+          )
+
+          client.ackOutcome(corrId).failed.futureValue must be(
+            a[DeclarationConnecting.RequestFailedException]
+          )
+
+          verify(deleteRequestedFor(urlEqualTo(s"/${corrId.id}")))
         }
       }
     }

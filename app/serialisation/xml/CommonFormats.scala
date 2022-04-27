@@ -16,7 +16,7 @@
 
 package serialisation.xml
 
-import models.{Country, GbEori, LocalReferenceNumber}
+import models.{Country, GbEori, LocalReferenceNumber, MovementReferenceNumber}
 
 /**
  * XML formats for miscellaneous common or shared data types, e.g. enums, reference numbers, etc.
@@ -39,6 +39,10 @@ trait CommonFormats {
 
   implicit val lrnFmt: StringFormat[LocalReferenceNumber] = {
     StringFormat.simple(_.value, LocalReferenceNumber.apply)
+  }
+
+  implicit val mrnFmt: StringFormat[MovementReferenceNumber] = {
+    StringFormat.simple(_.value, MovementReferenceNumber.apply)
   }
 
   implicit val countryFmt: StringFormat[Country] = new StringFormat[Country] {

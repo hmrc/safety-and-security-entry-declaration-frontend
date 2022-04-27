@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<outcomeResponse xmlns:cc3="http://ics.dgtaxud.ec/CC316A">
+  <response>
+    <cc3:CC316A>
+      <MesSenMES3>GB000012340003/1234567890</MesSenMES3>
+      <MesRecMES6>GB000012340003/1234567890</MesRecMES6>
+      <DatOfPreMES9>190114</DatOfPreMES9>
+      <TimOfPreMES10>0945</TimOfPreMES10>
+      <MesIdeMES19>MSUI21335227</MesIdeMES19>
+      <MesTypMES20>CC316A</MesTypMES20>
+      <CorIdeMES25>7J1F7gngK0200k</CorIdeMES25>
+      <HEAHEA>
+        <RefNumHEA4>172678_187192</RefNumHEA4>
+        <DecRejReaHEA252>Rejection explanation</DecRejReaHEA252>
+        <DecRejDatTimHEA116>201901140945</DecRejDatTimHEA116>
+      </HEAHEA>
+    </cc3:CC316A>
+  </response>
+  <acknowledgement method="DELETE" href="/customs/imports/outcomes/0JRF7UncK0t004"/>
+</outcomeResponse>
