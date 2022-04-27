@@ -78,6 +78,10 @@ EORIRequired.title = You need to have an EORI
 EORIRequired.heading = You need to have an EORI
 EORIRequired.guidance = In order for you to access this service, your account needs to have an EORI associated to it.
 
+organisationAccountRequired.title = You need to have an Organisation account
+organisationAccountRequired.heading = You need an Organisation account
+organisationAccountRequired.guidance = In order for you to access this service, you need an organisation account.
+
 localReferenceNumber.title = Name your entry summary declaration (ENS)
 localReferenceNumber.heading = Name your entry summary declaration (ENS)
 localReferenceNumber.hint = For example, Apples from New Zealand or Shoes 23/3/22.

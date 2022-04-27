@@ -354,3 +354,4 @@ GET        /:lrn/start-goods-item/:index                 controllers.goods.Initi
 
 GET        /enrolmentRequired                       controllers.EnrolmentRequiredController.onPageLoad()
 GET        /EORIRequired                            controllers.EORIRequiredController.onPageLoad()
+GET        /organisationAccountRequired             controllers.OrganisationAccountRequiredController.onPageLoad()
