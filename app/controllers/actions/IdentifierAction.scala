@@ -63,15 +63,15 @@ class AuthenticatedIdentifierAction @Inject() (
 
         if (eoris.isEmpty) throw InsufficientEnrolments("EORI_missing")
 
-        val SNSenrolments =
+        val snsEnrolments =
           userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == config.enrolment)
 
-        if (SNSenrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
+        if (snsEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
 
-        SNSenrolments
-          .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(EORI => EORI.value))
+        snsEnrolments
+          .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(eori => eori.value))
           .headOption
-          .fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request, EORI)))
+          .fold(throw InsufficientEnrolments("EORI_missing"))(eori => block(IdentifierRequest(request, eori)))
       case _ => throw UnsupportedAffinityGroup()
     } recover {
       case failedAuthentication: InsufficientEnrolments =>
