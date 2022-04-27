@@ -19,16 +19,14 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.RemoveGoodsFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
 import pages.goods.{CommodityCodePage, RemoveGoodsPage}
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.GoodItemQuery
 import repositories.SessionRepository
 import views.html.goods.RemoveGoodsView
 
@@ -38,9 +36,10 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveGoodsFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
   lazy val removeGoodsRoute =
-    routes.RemoveGoodsController.onPageLoad(NormalMode, lrn, index).url
+    routes.RemoveGoodsController.onPageLoad(waypoints, lrn, index).url
 
   private val baseAnswers = emptyUserAnswers.set(CommodityCodePage(index), "1111").success.value
 
@@ -58,7 +57,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveGoodsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -82,11 +81,11 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = baseAnswers.remove(GoodItemQuery(index)).success.value
+        val expectedAnswers = baseAnswers.remove(queries.goods.GoodItemQuery(index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveGoodsPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -113,7 +112,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.RemoveGoodsPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -135,7 +134,7 @@ class RemoveGoodsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

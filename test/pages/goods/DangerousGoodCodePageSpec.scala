@@ -17,40 +17,33 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.{routes => baseRoutes}
 import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, DangerousGood, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class DangerousGoodCodePageSpec extends SpecBase with PageBehaviours {
 
   "DangerousGoodCodePage" - {
 
-    beRetrievable[DangerousGood](DangerousGoodCodePage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[DangerousGood](DangerousGoodCodePage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[DangerousGood](DangerousGoodCodePage(index))
+      "to Payment Method" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to payment method page" in {
-
-        DangerousGoodCodePage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            goodsRoutes.PaymentMethodController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index)
-          )
+        DangerousGoodCodePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.PaymentMethodController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        DangerousGoodCodePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Goods Item with the current waypoint removed" in {
+
+        DangerousGoodCodePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

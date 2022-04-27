@@ -20,12 +20,16 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.UnloadingPlace
 
 class UnloadingPlaceFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[UnloadingPlace] =
+  def apply(placeOfUnloadingKeys: List[Int]): Form[Int] =
     Form(
-      "value" -> enumerable[UnloadingPlace]("unloadingPlace.error.required")
+      "value" ->
+        inList[Int](
+          allowedValues = placeOfUnloadingKeys,
+          allowedValuesAsString = _.toString,
+          requiredKey = "unloadingPlace.error.required"
+        )
     )
 }

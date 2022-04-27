@@ -18,9 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.ItemContainerNumberFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.ItemContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.ItemContainerNumberView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ItemContainerNumberController @Inject() (
@@ -45,7 +45,7 @@ class ItemContainerNumberController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(ItemContainerNumberPage(itemIndex, containerIndex)) match {
@@ -53,21 +53,21 @@ class ItemContainerNumberController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex, containerIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex, containerIndex))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, containerIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, containerIndex))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(ItemContainerNumberPage(itemIndex, containerIndex), value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(ItemContainerNumberPage(itemIndex, containerIndex).navigate(mode, updatedAnswers))
+            } yield Redirect(ItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

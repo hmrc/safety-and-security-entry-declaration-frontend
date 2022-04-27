@@ -18,11 +18,12 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.RemoveItemContainerNumberFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
-import pages.goods.{RemoveItemContainerNumberPage}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.goods.RemoveItemContainerNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{ContainerQuery}
+import queries.ContainerQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemoveItemContainerNumberView
@@ -31,14 +32,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveItemContainerNumberController @Inject()(
-                                                     override val messagesApi: MessagesApi,
-                                                     sessionRepository: SessionRepository,
-                                                     identify: IdentifierAction,
-                                                     getData: DataRetrievalActionProvider,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: RemoveItemContainerNumberFormProvider,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     view: RemoveItemContainerNumberView
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalActionProvider,
+  requireData: DataRequiredAction,
+  formProvider: RemoveItemContainerNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveItemContainerNumberView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
@@ -46,10 +47,10 @@ class RemoveItemContainerNumberController @Inject()(
   val form = formProvider()
 
   def onPageLoad(
-                  mode: Mode,
-                  lrn: LocalReferenceNumber,
-                  itemIndex: Index,
-                  containerIndex: Index
+    waypoints: Waypoints,
+    lrn: LocalReferenceNumber,
+    itemIndex: Index,
+    containerIndex: Index
   ): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
@@ -59,14 +60,14 @@ class RemoveItemContainerNumberController @Inject()(
           case Some(value) => form.fill(value)
         }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex, containerIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex, containerIndex))
     }
 
   def onSubmit(
-                mode: Mode,
-                lrn: LocalReferenceNumber,
-                itemIndex: Index,
-                containerIndex: Index
+    waypoints: Waypoints,
+    lrn: LocalReferenceNumber,
+    itemIndex: Index,
+    containerIndex: Index
   ): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
@@ -75,7 +76,7 @@ class RemoveItemContainerNumberController @Inject()(
         .fold(
           formWithErrors =>
             Future
-              .successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, containerIndex))),
+              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, containerIndex))),
           value =>
             if (value) {
               for {
@@ -84,11 +85,11 @@ class RemoveItemContainerNumberController @Inject()(
                 )
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(
-                RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(mode, updatedAnswers)
+                RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, updatedAnswers)
               )
             } else {
               Future.successful(
-                Redirect(RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(mode, request.userAnswers))
+                Redirect(RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, request.userAnswers))
               )
             }
         )

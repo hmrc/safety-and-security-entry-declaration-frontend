@@ -18,49 +18,111 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class CommodityCodeKnownPageSpec extends SpecBase with PageBehaviours {
 
   "CommodityCodeKnownPage" - {
 
-    beRetrievable[Boolean](CommodityCodeKnownPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Boolean](CommodityCodeKnownPage(index))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[Boolean](CommodityCodeKnownPage(index))
-
-    "must navigate in Normal Mode" - {
-
-      "to CommodityCodePage when answer is yes" in {
+      "to Commodity Code when the answer is yes" in {
 
         val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
 
-        CommodityCodeKnownPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.CommodityCodeController.onPageLoad(NormalMode, answers.lrn, index))
+        CommodityCodeKnownPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.CommodityCodeController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to GoodsDescriptionPage when answer is no" in {
+      "to Goods Description when the answer is no" in {
 
         val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), false).success.value
 
-        CommodityCodeKnownPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.GoodsDescriptionController.onPageLoad(NormalMode, answers.lrn, index))
+        CommodityCodeKnownPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.GoodsDescriptionController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        CommodityCodeKnownPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "and commodity code has already been answered" - {
+
+          "to Check Goods Item with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(CommodityCodePage(index), "00102030").success.value
+                .set(CommodityCodeKnownPage(index), true).success.value
+
+            CommodityCodeKnownPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+          }
+        }
+
+        "and commodity code has not already been answered" - {
+
+          "to Commodity Code" in {
+
+            val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), true).success.value
+
+            CommodityCodeKnownPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.CommodityCodeController.onPageLoad(waypoints, answers.lrn, index))
+          }
+        }
       }
+
+      "when the answer is no" - {
+
+        "and goods description has already been answered" - {
+
+          "to Check Goods Item with the current waypoint removed" in {
+
+            val answers =
+              emptyUserAnswers
+                .set(GoodsDescriptionPage(index), "description").success.value
+                .set(CommodityCodeKnownPage(index), false).success.value
+
+            CommodityCodeKnownPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+          }
+        }
+
+        "and goods description has not already been answered" - {
+
+          "to Goods Description" in {
+
+            val answers = emptyUserAnswers.set(CommodityCodeKnownPage(index), false).success.value
+
+            CommodityCodeKnownPage(index).navigate(waypoints, answers)
+              .mustEqual(goodsRoutes.GoodsDescriptionController.onPageLoad(waypoints, answers.lrn, index))
+          }
+        }
+      }
+    }
+
+    "must remove goods description when the answer is yes" in {
+
+      val answers = emptyUserAnswers.set(GoodsDescriptionPage(index), "description").success.value
+
+      val result = answers.set(CommodityCodeKnownPage(index), true).success.value
+
+      result.get(GoodsDescriptionPage(index)) must not be defined
+    }
+
+    "must remove commodity code when the answer is no" in {
+
+      val answers = emptyUserAnswers.set(CommodityCodePage(index), "00102030").success.value
+
+      val result = answers.set(CommodityCodeKnownPage(index), false).success.value
+
+      result.get(CommodityCodePage(index)) must not be defined
     }
   }
 }

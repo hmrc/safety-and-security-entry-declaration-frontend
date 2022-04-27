@@ -18,8 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddDocumentFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.AddDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,7 +28,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.DocumentSummary
 import views.html.goods.AddDocumentView
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddDocumentController @Inject() (
   override val messagesApi: MessagesApi,
@@ -45,26 +46,30 @@ class AddDocumentController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
-      val documents = DocumentSummary.rows(request.userAnswers, index)
+      val documents = DocumentSummary.rows(request.userAnswers, index, waypoints, AddDocumentPage(index))
 
-      Ok(view(form, mode, lrn, index, documents))
+      Ok(view(form, waypoints, lrn, index, documents))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val documents = DocumentSummary.rows(request.userAnswers, index)
+            val documents = DocumentSummary.rows(request.userAnswers, index, waypoints, AddDocumentPage(index))
 
-            BadRequest(view(formWithErrors, mode, lrn, index, documents))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index, documents)))
           },
-          value => Redirect(AddDocumentPage(index).navigate(mode, request.userAnswers, index, value))
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentPage(index), value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddDocumentPage(index).navigate(waypoints, updatedAnswers))
         )
     }
 }

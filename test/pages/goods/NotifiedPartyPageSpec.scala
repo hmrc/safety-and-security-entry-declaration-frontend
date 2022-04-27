@@ -18,26 +18,22 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode, PlaceOfLoading}
+import models.{Index, PlaceOfLoading}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.routedetails.PlaceOfLoadingPage
+import pages.{EmptyWaypoints, Waypoints}
 
 class NotifiedPartyPageSpec extends SpecBase with PageBehaviours {
 
   "NotifiedPartyPage" - {
 
-    beRetrievable[Int](NotifiedPartyPage(index))
-
-    beSettable[Int](NotifiedPartyPage(index))
-
-    beRemovable[Int](NotifiedPartyPage(index))
-
     val placeOfLoading1 = arbitrary[PlaceOfLoading].sample.value
     val placeOfLoading2 = arbitrary[PlaceOfLoading].sample.value
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to place of loading when there is more than one place of loading" in {
 
@@ -46,8 +42,8 @@ class NotifiedPartyPageSpec extends SpecBase with PageBehaviours {
             .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
             .set(PlaceOfLoadingPage(Index(1)), placeOfLoading2).success.value
 
-        NotifiedPartyPage(index).navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.LoadingPlaceController.onPageLoad(NormalMode, answers.lrn, index))
+        NotifiedPartyPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.LoadingPlaceController.onPageLoad(waypoints, answers.lrn, index))
       }
 
       "to wherever loading place navigates to when there is one place of loading" in {
@@ -56,17 +52,19 @@ class NotifiedPartyPageSpec extends SpecBase with PageBehaviours {
           emptyUserAnswers
             .set(PlaceOfLoadingPage(Index(0)), placeOfLoading1).success.value
 
-        NotifiedPartyPage(index).navigate(NormalMode, answers)
-          .mustEqual(LoadingPlacePage(Index(0)).navigate(NormalMode, answers))
+        NotifiedPartyPage(index).navigate(waypoints, answers)
+          .mustEqual(LoadingPlacePage(Index(0)).navigate(waypoints, answers))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        NotifiedPartyPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Goods Item with the current waypoint removed" in {
+
+        NotifiedPartyPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

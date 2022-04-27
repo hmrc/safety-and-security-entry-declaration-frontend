@@ -18,19 +18,22 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.AddGoodsFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.goods.AddGoodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.GoodsSummary
 import views.html.goods.AddGoodsView
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddGoodsController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
@@ -43,25 +46,30 @@ class AddGoodsController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
-      val goods = GoodsSummary.rows(request.userAnswers)
 
-      Ok(view(form, mode, lrn, goods))
+      val goods = GoodsSummary.rows(request.userAnswers, waypoints, AddGoodsPage)
+
+      Ok(view(form, waypoints, lrn, goods))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val goods = GoodsSummary.rows(request.userAnswers)
+            val goods = GoodsSummary.rows(request.userAnswers, waypoints, AddGoodsPage)
 
-            BadRequest(view(formWithErrors, mode, lrn, goods))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, goods)))
           },
-          value => Redirect(AddGoodsPage().navigate(mode, request.userAnswers, value))
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddGoodsPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddGoodsPage.navigate(waypoints, updatedAnswers))
         )
     }
 }

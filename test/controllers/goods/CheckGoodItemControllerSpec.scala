@@ -18,7 +18,8 @@ package controllers.goods
 
 import base.SpecBase
 import controllers.{routes => baseRoutes}
-import models.NormalMode
+import pages.goods.CheckGoodsItemPage
+import pages.{EmptyWaypoints, Waypoints}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
@@ -26,7 +27,9 @@ import views.html.goods.CheckGoodItemView
 
 class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
 
-  "Check Your Answers Controller" - {
+  val waypoints: Waypoints = EmptyWaypoints
+
+  "Check Goods Item Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -35,7 +38,7 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
       running(application) {
         val request = FakeRequest(
           GET,
-          routes.CheckGoodItemController.onPageLoad(NormalMode, lrn, index).url
+          routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index).url
         )
 
         val result = route(application, request).value
@@ -44,7 +47,7 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(NormalMode, list, lrn)(
+        contentAsString(result) mustEqual view(waypoints, list, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -58,13 +61,28 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
       running(application) {
         val request = FakeRequest(
           GET,
-          routes.CheckGoodItemController.onPageLoad(NormalMode, lrn, index).url
+          routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index).url
         )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to the next page for a POST" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.CheckGoodItemController.onSubmit(waypoints, lrn, index).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value
+          .mustEqual(CheckGoodsItemPage(index).navigate(waypoints, emptyUserAnswers).url)
       }
     }
   }

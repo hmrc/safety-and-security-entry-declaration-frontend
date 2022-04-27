@@ -16,37 +16,68 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.KindOfPackage.{bulkKindsOfPackage, standardKindsOfPackages, unpackedKindsOfPackage}
-import models.{Index, KindOfPackage, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.KindOfPackage.{bulkKindsOfPackage, unpackedKindsOfPackage}
+import models.{Index, KindOfPackage, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends QuestionPage[KindOfPackage] {
+import scala.util.Try
+
+case class KindOfPackagePage(itemIndex: Index, packageIndex: Index) extends PackageQuestionPage[KindOfPackage] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "kindOfPackage"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(KindOfPackagePage(itemIndex, packageIndex)) match {
-      case Some(b) if bulkKindsOfPackage.contains(b) =>
-        goodsRoutes.AddMarkOrNumberController.onPageLoad(
-          NormalMode,
-          answers.lrn,
-          itemIndex,
-          packageIndex
-        )
-      case Some(s) if standardKindsOfPackages.contains(s) =>
-        goodsRoutes.NumberOfPackagesController.onPageLoad(
-          NormalMode,
-          answers.lrn,
-          itemIndex,
-          packageIndex
-        )
-      case Some(u) if unpackedKindsOfPackage.contains(u) =>
-        goodsRoutes.NumberOfPiecesController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.KindOfPackageController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case b if bulkKindsOfPackage.contains(b) =>
+        AddMarkOrNumberPage(itemIndex, packageIndex)
+
+      case u if unpackedKindsOfPackage.contains(u) =>
+        NumberOfPiecesPage(itemIndex, packageIndex)
+
+      case _ =>
+        NumberOfPackagesPage(itemIndex, packageIndex)
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case b if bulkKindsOfPackage.contains(b) =>
+        answers.get(AddMarkOrNumberPage(itemIndex, packageIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(AddMarkOrNumberPage(itemIndex, packageIndex))
+
+      case u if unpackedKindsOfPackage.contains(u) =>
+        answers.get(NumberOfPiecesPage(itemIndex, packageIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NumberOfPiecesPage(itemIndex, packageIndex))
+
+      case _ =>
+        answers.get(NumberOfPackagesPage(itemIndex, packageIndex))
+          .map(_ => waypoints.next.page)
+          .getOrElse(NumberOfPackagesPage(itemIndex, packageIndex))
+    }.orRecover
+
+  override def cleanup(value: Option[KindOfPackage], userAnswers: UserAnswers): Try[UserAnswers] =
+    value.map {
+      case b if bulkKindsOfPackage.contains(b) =>
+        userAnswers
+          .remove(NumberOfPackagesPage(itemIndex, packageIndex))
+          .flatMap(_.remove(NumberOfPiecesPage(itemIndex, packageIndex)))
+
+      case u if unpackedKindsOfPackage.contains(u) =>
+        userAnswers.remove(NumberOfPackagesPage(itemIndex, packageIndex))
+
+      case _ =>
+        userAnswers
+          .remove(NumberOfPiecesPage(itemIndex, packageIndex))
+          .flatMap(_.remove(AddMarkOrNumberPage(itemIndex, packageIndex)))
+    }.getOrElse(super.cleanup(value, userAnswers))
 }

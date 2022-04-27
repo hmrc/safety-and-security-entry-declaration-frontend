@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.goods.KindOfPackagePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,9 +27,13 @@ import viewmodels.implicits._
 
 object KindOfPackageSummary {
 
-  def row(answers: UserAnswers, itemIndex: Index, packageIndex: Index)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] =
+  def row(
+    answers: UserAnswers,
+    itemIndex: Index,
+    packageIndex: Index,
+    waypoints: Waypoints,
+    sourcePage: CheckAnswersPage
+  )(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(KindOfPackagePage(itemIndex, packageIndex)).map { answer =>
 
       SummaryListRowViewModel(
@@ -38,9 +42,7 @@ object KindOfPackageSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            goodsRoutes.KindOfPackageController
-              .onPageLoad(CheckMode, answers.lrn, itemIndex, packageIndex)
-              .url
+            KindOfPackagePage(itemIndex, packageIndex).changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("kindOfPackage.change.hidden"))
         )
       )

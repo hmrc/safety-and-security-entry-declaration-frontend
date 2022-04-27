@@ -27,11 +27,11 @@
     addToList: components.addToList
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packages: Seq[ListItem])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, packages: Seq[ListItem])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("addPackage.title"))) {
 
-    @formHelper(action = routes.AddPackageController.onSubmit(mode, lrn, itemIndex), 'autoComplete -> "off") {
+    @formHelper(action = routes.AddPackageController.onSubmit(waypoints, lrn, itemIndex), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

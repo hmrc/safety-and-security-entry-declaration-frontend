@@ -16,16 +16,17 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
-import java.time.temporal.ChronoUnit
-import models._
 import models.TransportIdentity._
-import models.completion.{CustomsOffice => CustomsOfficePayload, _}
+import models._
 import models.completion.downstream._
+import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import pages.CheckAnswersPage
 import pages.consignees.{CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
+
+import java.time.temporal.ChronoUnit
+import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
 
 trait ModelGenerators extends StringGenerators {
   // Three decimal places, between 0.001 and 99999999.999
@@ -72,11 +73,6 @@ trait ModelGenerators extends StringGenerators {
       Instant.EPOCH.plusSeconds(seconds).truncatedTo(ChronoUnit.MINUTES)
     }
   }
-
-  implicit lazy val arbitraryUnloadingPlace: Arbitrary[UnloadingPlace] =
-    Arbitrary {
-      Gen.oneOf(UnloadingPlace.values)
-    }
 
   implicit lazy val arbitraryRoroUnaccompaniedIdentity: Arbitrary[RoroUnaccompaniedIdentity] =
     Arbitrary {
@@ -228,9 +224,9 @@ trait ModelGenerators extends StringGenerators {
       stringsWithMaxLength(17).map(Container.apply)
     }
 
-  implicit lazy val arbitraryGoodItem: Arbitrary[GoodItem] =
+  implicit lazy val arbitraryGoodItem: Arbitrary[GoodsItemName] =
     Arbitrary {
-      Gen.listOfN(8, Gen.numChar) map { num => GoodItem(num.mkString) }
+      Gen.listOfN(8, Gen.numChar) map { num => GoodsItemName(num.mkString) }
     }
 
   implicit lazy val arbitraryDocumentType: Arbitrary[DocumentType] =

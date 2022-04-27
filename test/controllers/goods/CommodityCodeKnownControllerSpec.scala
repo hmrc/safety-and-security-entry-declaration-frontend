@@ -19,11 +19,10 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.CommodityCodeKnownFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,9 +35,10 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new CommodityCodeKnownFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
   lazy val commodityCodeKnownRoute =
-    routes.CommodityCodeKnownController.onPageLoad(NormalMode, lrn, index).url
+    routes.CommodityCodeKnownController.onPageLoad(waypoints, lrn, index).url
 
   "CommodityCodeKnown Controller" - {
 
@@ -54,7 +54,7 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CommodityCodeKnownView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -75,7 +75,7 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, lrn, index)(
           request,
           messages(application)
         ).toString
@@ -104,7 +104,7 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.CommodityCodeKnownPage(index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -126,7 +126,7 @@ class CommodityCodeKnownControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(
           request,
           messages(application)
         ).toString

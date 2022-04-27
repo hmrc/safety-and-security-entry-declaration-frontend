@@ -18,49 +18,93 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.{routes => baseRoutes}
-import models.{CheckMode, NormalMode}
+import models.DangerousGood
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class DangerousGoodPageSpec extends SpecBase with PageBehaviours {
 
   "DangerousGoodPage" - {
 
-    beRetrievable[Boolean](DangerousGoodPage(index))
+    val dangerousGoodsCode = arbitrary[DangerousGood].sample.value
 
-    beSettable[Boolean](DangerousGoodPage(index))
+    "must navigate when there are no waypoints" - {
 
-    beRemovable[Boolean](DangerousGoodPage(index))
+      val waypoints = EmptyWaypoints
 
-    "must navigate in Normal Mode" - {
 
       "to dangerous good code page when answer is yes" in {
 
         val answers = emptyUserAnswers.set(DangerousGoodPage(index), true).success.value
 
-        DangerousGoodPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.DangerousGoodCodeController.onPageLoad(NormalMode, answers.lrn, index))
+        DangerousGoodPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.DangerousGoodCodeController.onPageLoad(waypoints, answers.lrn, index))
       }
 
-      "to goods CYA when answer is no" in {
+      "to payment method when answer is no" in {
 
         val answers = emptyUserAnswers.set(DangerousGoodPage(index), false).success.value
 
-        DangerousGoodPage(index)
-          .navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(NormalMode, answers.lrn, index))
+        DangerousGoodPage(index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.PaymentMethodController.onPageLoad(waypoints, answers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        DangerousGoodPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(baseRoutes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "when the answer is yes" - {
+
+        "to Check Goods item with the current waypoint removed when Dangerous Goods Code is already answered" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(DangerousGoodCodePage(index), dangerousGoodsCode).success.value
+              .set(DangerousGoodPage(index), true).success.value
+
+          DangerousGoodPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+
+        "to Dangerous Goods Code when it is not already answered" in {
+
+          val answers = emptyUserAnswers.set(DangerousGoodPage(index), true).success.value
+
+          DangerousGoodPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.DangerousGoodCodeController.onPageLoad(waypoints, answers.lrn, index))
+        }
       }
+
+      "when the answer is no" - {
+
+        "to Check Goods Item with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(DangerousGoodPage(index), false).success.value
+
+          DangerousGoodPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, answers.lrn, index))
+        }
+      }
+    }
+
+    "must not alter the user's answers when the answer is yes" in {
+
+      val answers = emptyUserAnswers.set(DangerousGoodCodePage(index), dangerousGoodsCode).success.value
+
+      val result = answers.set(DangerousGoodPage(index), true).success.value
+
+      result.get(DangerousGoodCodePage(index)).value mustEqual dangerousGoodsCode
+    }
+
+    "must remove Dangerous Goods Code when the answer is no" in {
+
+      val answers = emptyUserAnswers.set(DangerousGoodCodePage(index), dangerousGoodsCode).success.value
+
+      val result = answers.set(DangerousGoodPage(index), false).success.value
+
+      result.get(DangerousGoodCodePage(index)) must not be defined
     }
   }
 }

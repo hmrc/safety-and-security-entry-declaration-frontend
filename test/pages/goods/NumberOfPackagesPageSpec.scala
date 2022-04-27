@@ -18,39 +18,32 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class NumberOfPackagesPageSpec extends SpecBase with PageBehaviours {
 
   "NumberOfPackagesPage" - {
 
-    beRetrievable[Int](NumberOfPackagesPage(index, index))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Int](NumberOfPackagesPage(index, index))
-
-    beRemovable[Int](NumberOfPackagesPage(index, index))
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Mark or Number" in {
 
-        NumberOfPackagesPage(index, index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            goodsRoutes.MarkOrNumberController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index, index)
-          )
+        NumberOfPackagesPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.MarkOrNumberController.onPageLoad(waypoints, emptyUserAnswers.lrn, index, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Package" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckPackageItemPage(index, index).waypoint))
 
-        NumberOfPackagesPage(index, index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Goods Item with the current waypoint removed" in {
+
+        NumberOfPackagesPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckPackageItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index, index))
       }
     }
   }

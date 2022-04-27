@@ -18,22 +18,16 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori, Index, NormalMode}
+import models.{GbEori, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
+import pages.{EmptyWaypoints, Waypoints}
 import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 
 class ConsignorPageSpec extends SpecBase with PageBehaviours {
 
   "ConsignorPage" - {
-
-    beRetrievable[Int](ConsignorPage(index))
-
-    beSettable[Int](ConsignorPage(index))
-
-    beRemovable[Int](ConsignorPage(index))
 
     val consignee1Eori = arbitrary[GbEori].sample.value
     val consignee2Eori = arbitrary[GbEori].sample.value
@@ -44,7 +38,9 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
     val notifiedParty1Key = 1
     val notifiedParty2Key = 2
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "when there is one consignee and no notified parties" - {
 
@@ -55,8 +51,8 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(ConsigneeKeyQuery(Index(0)), consignee1Key).success.value
               .set(ConsigneeEORIPage(Index(0)), consignee1Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(ConsigneePage(index).navigate(NormalMode, answers))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(ConsigneePage(index).navigate(waypoints, answers))
         }
       }
 
@@ -69,8 +65,8 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(0)), notifiedParty1Key).success.value
               .set(NotifiedPartyEORIPage(Index(0)), notifiedParty1Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(NotifiedPartyPage(index).navigate(NormalMode, answers))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(NotifiedPartyPage(index).navigate(waypoints, answers))
         }
       }
 
@@ -85,8 +81,8 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(0)), notifiedParty1Key).success.value
               .set(NotifiedPartyEORIPage(Index(0)), notifiedParty1Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(goodsRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.ConsigneeKnownController.onPageLoad(waypoints, answers.lrn, index))
         }
       }
 
@@ -103,8 +99,8 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(0)), notifiedParty1Key).success.value
               .set(NotifiedPartyEORIPage(Index(0)), notifiedParty1Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(goodsRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.ConsigneeKnownController.onPageLoad(waypoints, answers.lrn, index))
         }
       }
 
@@ -121,8 +117,8 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(1)), notifiedParty2Key).success.value
               .set(NotifiedPartyEORIPage(Index(1)), notifiedParty2Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(goodsRoutes.ConsigneeKnownController.onPageLoad(NormalMode, answers.lrn, index))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.ConsigneeKnownController.onPageLoad(waypoints, answers.lrn, index))
         }
       }
 
@@ -137,8 +133,8 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(ConsigneeKeyQuery(Index(1)), consignee2Key).success.value
               .set(ConsigneeEORIPage(Index(1)), consignee2Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(goodsRoutes.ConsigneeController.onPageLoad(NormalMode, answers.lrn, index))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.ConsigneeController.onPageLoad(waypoints, answers.lrn, index))
         }
       }
 
@@ -153,18 +149,21 @@ class ConsignorPageSpec extends SpecBase with PageBehaviours {
               .set(NotifiedPartyKeyQuery(Index(1)), notifiedParty2Key).success.value
               .set(NotifiedPartyEORIPage(Index(1)), notifiedParty2Eori).success.value
 
-          ConsignorPage(index).navigate(NormalMode, answers)
-            .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(NormalMode, answers.lrn, index))
+          ConsignorPage(index).navigate(waypoints, answers)
+            .mustEqual(goodsRoutes.NotifiedPartyController.onPageLoad(waypoints, answers.lrn, index))
         }
       }
     }
 
-    "must navigate in Check Mode" - {
 
-      "to Check Your Answers" in {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-        ConsignorPage(index).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
+
+      "to Check Goods Item with the current waypoint removed" in {
+
+        ConsignorPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

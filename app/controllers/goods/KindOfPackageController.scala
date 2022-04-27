@@ -18,8 +18,8 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.KindOfPackageFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.KindOfPackagePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.KindOfPackageView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class KindOfPackageController @Inject() (
@@ -45,7 +46,7 @@ class KindOfPackageController @Inject() (
   val form = formProvider()
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
@@ -57,11 +58,11 @@ class KindOfPackageController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn, itemIndex, packageIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex, packageIndex))
     }
 
   def onSubmit(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index,
     packageIndex: Index
@@ -71,7 +72,7 @@ class KindOfPackageController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, packageIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(
@@ -79,7 +80,7 @@ class KindOfPackageController @Inject() (
               )
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(
-              KindOfPackagePage(itemIndex, packageIndex).navigate(mode, updatedAnswers)
+              KindOfPackagePage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers)
             )
         )
     }

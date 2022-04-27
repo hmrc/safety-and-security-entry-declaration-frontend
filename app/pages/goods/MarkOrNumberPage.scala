@@ -16,19 +16,22 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class MarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends QuestionPage[String] {
+case class MarkOrNumberPage(itemIndex: Index, packageIndex: Index) extends PackageQuestionPage[String] {
 
   override def path: JsPath =
     JsPath \ "goodsItems" \ itemIndex.position \ "packages" \ packageIndex.position \ toString
 
   override def toString: String = "markOrNumber"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.CheckPackageItemController.onPageLoad(NormalMode, answers.lrn, itemIndex, packageIndex)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.MarkOrNumberController.onPageLoad(waypoints, lrn, itemIndex, packageIndex)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    CheckPackageItemPage(itemIndex, packageIndex)
 }

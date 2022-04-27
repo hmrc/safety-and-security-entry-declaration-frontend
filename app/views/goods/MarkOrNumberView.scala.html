@@ -25,11 +25,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("markOrNumber.title"))) {
 
-    @formHelper(action = routes.MarkOrNumberController.onSubmit(mode, lrn, itemIndex, packageIndex)) {
+    @formHelper(action = routes.MarkOrNumberController.onSubmit(waypoints, lrn, itemIndex, packageIndex)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

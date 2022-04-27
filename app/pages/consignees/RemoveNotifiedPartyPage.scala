@@ -32,7 +32,7 @@ final case class RemoveNotifiedPartyPage(index: Index) extends QuestionPage[Bool
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     consigneesRoutes.RemoveNotifiedPartyController.onPageLoad(waypoints, lrn, index)
 
-  override protected def nextPage(waypoints: Waypoints, answers: UserAnswers): Page = {
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page = {
 
     lazy val noNotifiedPartiesRoute =
       answers.get(AnyConsigneesKnownPage).map {

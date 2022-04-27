@@ -17,31 +17,57 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.goods.{routes => goodsRoutes}
+import models.Container
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemoveItemContainerNumberPageSpec extends SpecBase with PageBehaviours {
 
   "Remove Item Container Number Page" - {
 
-    "must navigate in Normal Mode" - {
+    val container = arbitrary[Container].sample.value
 
-      "to Index" in {
+    "must navigate when there are no waypoints" - {
 
-        RemoveItemContainerNumberPage(index, index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+      val waypoints = EmptyWaypoints
+
+      "to Add Item container Number when there is still at least one in the user's answers" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(ItemContainerNumberPage(index, index), container).success.value
+
+        RemoveItemContainerNumberPage(index, index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(waypoints, answers.lrn, index))
+      }
+
+      "to Any Containers when there are none left in the user's answers" in {
+
+        RemoveItemContainerNumberPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AnyShippingContainersController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        RemoveItemContainerNumberPage(index, index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Add Item container Number when there is still at least one in the user's answers" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(ItemContainerNumberPage(index, index), container).success.value
+
+        RemoveItemContainerNumberPage(index, index).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.AddItemContainerNumberController.onPageLoad(waypoints, answers.lrn, index))
+      }
+
+      "to Any Containers when there are none left in the user's answers" in {
+
+        RemoveItemContainerNumberPage(index, index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.AnyShippingContainersController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

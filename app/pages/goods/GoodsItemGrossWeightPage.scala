@@ -16,18 +16,21 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-final case class GoodsItemGrossWeightPage(index: Index) extends QuestionPage[BigDecimal] {
+final case class GoodsItemGrossWeightPage(index: Index) extends GoodsItemQuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "grossWeight"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    goodsRoutes.KindOfPackageController.onPageLoad(NormalMode, answers.lrn, index, Index(0))
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.GoodsItemGrossWeightController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    KindOfPackagePage(index, Index(0))
 }

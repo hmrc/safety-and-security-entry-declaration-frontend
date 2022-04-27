@@ -19,11 +19,10 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.AddMarkOrNumberFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,9 +35,10 @@ class AddMarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new AddMarkOrNumberFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
 
   lazy val addMarkOrNumberRoute =
-    routes.AddMarkOrNumberController.onPageLoad(NormalMode, lrn, index, index).url
+    routes.AddMarkOrNumberController.onPageLoad(waypoints, lrn, index, index).url
 
   "AddMarkOrNumber Controller" - {
 
@@ -54,7 +54,7 @@ class AddMarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddMarkOrNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -75,7 +75,7 @@ class AddMarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -104,7 +104,7 @@ class AddMarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.AddMarkOrNumberPage(index, index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -126,7 +126,7 @@ class AddMarkOrNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString

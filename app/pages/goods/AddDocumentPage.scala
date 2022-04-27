@@ -16,27 +16,62 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.Page
+import controllers.goods.routes
+import models.{CheckMode, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoint, Waypoints}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfDocuments
+import queries.goods.DeriveNumberOfDocuments
 
-final case class AddDocumentPage(index: Index) extends Page {
+final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  def navigate(mode: Mode, answers: UserAnswers, itemIndex: Index, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfDocuments(itemIndex)) match {
-        case Some(size) =>
-          goodsRoutes.DocumentController.onPageLoad(mode, answers.lrn, itemIndex, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          goodsRoutes.DangerousGoodController.onPageLoad(NormalMode, answers.lrn, itemIndex)
-        case CheckMode => routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
+  override val normalModeUrlFragment: String = s"add-document-${index.position}"
+  override val checkModeUrlFragment: String = s"change-document-${index.position}"
+
+  override def path: JsPath = JsPath \ "addDocument"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddDocumentController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfDocuments(index))
+          .map(n => DocumentPage(index, Index(n)))
+          .orRecover
+
+      case false =>
+        DangerousGoodPage(index)
+    }.orRecover
+
+  override def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfDocuments(index))
+        .map(n => DocumentPage(index, Index(n)))
+        .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+}
+
+object AddDocumentPage {
+
+  def waypointFromString(s: String): Option[Waypoint] = {
+
+    val normalModePattern = """add-document-(\d{1,3})""".r.anchored
+    val checkModePattern = """change-document-(\d{1,3})""".r.anchored
+
+    s match {
+      case normalModePattern(indexDisplay) =>
+        Some(AddDocumentPage(Index(indexDisplay.toInt - 1)).waypoint(NormalMode))
+
+      case checkModePattern(indexDisplay) =>
+        Some(AddDocumentPage(Index(indexDisplay.toInt - 1)).waypoint(CheckMode))
+
+      case _ =>
+        None
     }
+  }
 }

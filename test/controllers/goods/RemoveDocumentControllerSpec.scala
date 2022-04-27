@@ -19,16 +19,15 @@ package controllers.goods
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.goods.RemoveDocumentFormProvider
-import models.{Document, DocumentType, NormalMode}
+import models.{Document, DocumentType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods
 import pages.goods.{DocumentPage, GoodsItemGrossWeightPage, RemoveDocumentPage}
+import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.DocumentQuery
 import repositories.SessionRepository
 import views.html.goods.RemoveDocumentView
 
@@ -38,11 +37,13 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new RemoveDocumentFormProvider()
   val form = formProvider()
+  val waypoints: Waypoints = EmptyWaypoints
+
   private val baseAnswers = emptyUserAnswers.set(GoodsItemGrossWeightPage(index),BigDecimal(5)).success.value
     .set(DocumentPage(index,index),Document(DocumentType("test","test"),"test")).success.value
 
   lazy val removeDocumentRoute =
-    routes.RemoveDocumentController.onPageLoad(NormalMode, lrn, index, index).url
+    routes.RemoveDocumentController.onPageLoad(waypoints, lrn, index, index).url
 
   "RemoveDocument Controller" - {
 
@@ -58,7 +59,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveDocumentView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -79,7 +80,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString
@@ -103,11 +104,11 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = baseAnswers.remove(DocumentQuery(index,index)).success.value
+        val expectedAnswers = baseAnswers.remove(queries.goods.DocumentQuery(index,index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveDocumentPage(index,index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -134,7 +135,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveDocumentPage(index,index)
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, never()).set(any())
       }
@@ -156,7 +157,7 @@ class RemoveDocumentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, index, index)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, index)(
           request,
           messages(application)
         ).toString

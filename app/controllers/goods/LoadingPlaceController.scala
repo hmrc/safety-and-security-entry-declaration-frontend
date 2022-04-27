@@ -19,9 +19,8 @@ package controllers.goods
 import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.LoadingPlaceFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.LoadingPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOptions
 import views.html.goods.LoadingPlaceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LoadingPlaceController @Inject() (
@@ -47,7 +47,7 @@ class LoadingPlaceController @Inject() (
     with I18nSupport
     with AnswerExtractor {
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) {
       implicit request =>
         getAnswer(AllPlacesOfLoadingQuery) {
@@ -61,11 +61,11 @@ class LoadingPlaceController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, mode, lrn, itemIndex, radioOptions))
+            Ok(view(preparedForm, waypoints, lrn, itemIndex, radioOptions))
         }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async {
       implicit request =>
         getAnswerAsync(AllPlacesOfLoadingQuery) {
@@ -78,13 +78,13 @@ class LoadingPlaceController @Inject() (
               .fold(
                 formWithErrors => {
                   val radioOptions = RadioOptions(placesOfLoading.map(l => l.key.toString -> l.place).toMap)
-                  Future.successful(BadRequest(view(formWithErrors, mode, lrn, itemIndex, radioOptions)))
+                  Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, radioOptions)))
                 },
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(LoadingPlacePage(itemIndex), value))
                     _ <- sessionRepository.set(updatedAnswers)
-                  } yield Redirect(LoadingPlacePage(itemIndex).navigate(mode, updatedAnswers))
+                  } yield Redirect(LoadingPlacePage(itemIndex).navigate(waypoints, updatedAnswers))
               )
         }
     }

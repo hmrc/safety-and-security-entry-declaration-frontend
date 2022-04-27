@@ -18,10 +18,12 @@
 
 @this(
         layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
-@(mode: Mode, list: SummaryList, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(waypoints: Waypoints, list: SummaryList, lrn: LocalReferenceNumber, index: Index)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkGoodItem.title"))) {
 
@@ -29,5 +31,8 @@
 
     @govukSummaryList(list)
 
-    <a href="@routes.AddGoodsController.onPageLoad(mode, lrn)" class="govuk-button" role="button">@messages("site.continue")</a>
+    @formHelper(action = routes.CheckGoodItemController.onSubmit(waypoints, lrn, index), 'autoComplete -> "off") {
+
+        @govukButton(ButtonViewModel(messages("site.continue")))
+    }
 }

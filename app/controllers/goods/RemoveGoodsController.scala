@@ -18,16 +18,17 @@ package controllers.goods
 
 import controllers.actions._
 import forms.goods.RemoveGoodsFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.goods.RemoveGoodsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.GoodItemQuery
+import queries.goods.GoodItemQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.RemoveGoodsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveGoodsController @Inject() (
@@ -46,7 +47,7 @@ class RemoveGoodsController @Inject() (
   val form = formProvider()
 
   def onPageLoad(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     goodItemIndex: Index
   ): Action[AnyContent] =
@@ -58,11 +59,11 @@ class RemoveGoodsController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-      Ok(view(preparedForm, mode, lrn, goodItemIndex))
+      Ok(view(preparedForm, waypoints, lrn, goodItemIndex))
     }
 
   def onSubmit(
-    mode: Mode,
+    waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     goodItemIndex: Index
   ): Action[AnyContent] =
@@ -73,16 +74,16 @@ class RemoveGoodsController @Inject() (
         .fold(
           formWithErrors =>
             Future
-              .successful(BadRequest(view(formWithErrors, mode, lrn, goodItemIndex))),
+              .successful(BadRequest(view(formWithErrors, waypoints, lrn, goodItemIndex))),
           value =>
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(GoodItemQuery(goodItemIndex)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, updatedAnswers))
+              } yield Redirect(RemoveGoodsPage(goodItemIndex).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemoveGoodsPage(goodItemIndex).navigate(mode, request.userAnswers))
+                Redirect(RemoveGoodsPage(goodItemIndex).navigate(waypoints, request.userAnswers))
               )
             }
         )

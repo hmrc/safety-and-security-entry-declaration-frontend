@@ -18,29 +18,25 @@ package pages.goods
 
 import base.SpecBase
 import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{CheckMode, GbEori, Index, NormalMode}
+import models.{GbEori, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.consignors.ConsignorEORIPage
+import pages.{EmptyWaypoints, Waypoints}
 import queries.consignors.ConsignorKeyQuery
 
 class CommodityCodePageSpec extends SpecBase with PageBehaviours {
 
   "CommodityCodePage" - {
 
-    beRetrievable[String](CommodityCodePage(index))
-
-    beSettable[String](CommodityCodePage(index))
-
-    beRemovable[String](CommodityCodePage(index))
-
     val consignor1Eori = arbitrary[GbEori].sample.value
     val consignor2Eori = arbitrary[GbEori].sample.value
     val consignor1Key = 1
     val consignor2Key = 2
 
-    "must navigate in Normal Mode" - {
+    "when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
 
       "to Consignor when there is more than one consignor" in {
 
@@ -51,8 +47,8 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
             .set(ConsignorKeyQuery(Index(1)), consignor2Key).success.value
             .set(ConsignorEORIPage(Index(1)), consignor2Eori).success.value
 
-        CommodityCodePage(Index(0)).navigate(NormalMode, answers)
-          .mustEqual(goodsRoutes.ConsignorController.onPageLoad(NormalMode, emptyUserAnswers.lrn, index))
+        CommodityCodePage(Index(0)).navigate(waypoints, answers)
+          .mustEqual(goodsRoutes.ConsignorController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
 
       "to wherever Consignor navigates to when there is only one consignor" in {
@@ -62,18 +58,19 @@ class CommodityCodePageSpec extends SpecBase with PageBehaviours {
             .set(ConsignorKeyQuery(Index(0)), consignor1Key).success.value
             .set(ConsignorEORIPage(Index(0)), consignor1Eori).success.value
 
-        CommodityCodePage(Index(0)).navigate(NormalMode, answers)
-          .mustEqual(ConsignorPage(Index(0)).navigate(NormalMode, answers))
+        CommodityCodePage(Index(0)).navigate(waypoints, answers)
+          .mustEqual(ConsignorPage(Index(0)).navigate(waypoints, answers))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "when the current waypoint is Check Goods Item" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckGoodsItemPage(index).waypoint))
 
-        CommodityCodePage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Goods Item with the current waypoint removed" in {
+
+        CommodityCodePage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(goodsRoutes.CheckGoodItemController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

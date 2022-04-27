@@ -17,31 +17,32 @@
 package pages.goods
 
 import base.SpecBase
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.goods.routes
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class RemoveGoodsPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveGoodsPage" - {
 
-    "must navigate in Normal Mode" - {
+    val commodityCode = "00102030"
 
-      "to Index" in {
+    "must navigate when there are no waypoints" - {
 
-        RemoveGoodsPage(index)
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+      val waypoints = EmptyWaypoints
+
+      "to Add Goods when there is at least one goods item in the user's answers" in {
+
+        val answers = emptyUserAnswers.set(CommodityCodePage(index), commodityCode).success.value
+
+        RemoveGoodsPage(index).navigate(waypoints, answers)
+          .mustEqual(routes.AddGoodsController.onPageLoad(waypoints, answers.lrn))
       }
-    }
 
-    "must navigate in Check Mode" - {
+      "to Commodity Code Known for the first index when there are no items in the user's answers" in {
 
-      "to Check Your Answers" in {
-
-        RemoveGoodsPage(index)
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        RemoveGoodsPage(index).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CommodityCodeKnownController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
       }
     }
   }

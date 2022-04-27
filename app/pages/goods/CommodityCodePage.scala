@@ -16,24 +16,25 @@
 
 package pages.goods
 
-import controllers.goods.{routes => goodsRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.goods.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.consignors.DeriveNumberOfConsignors
 
-case class CommodityCodePage(index: Index) extends QuestionPage[String] {
+case class CommodityCodePage(index: Index) extends GoodsItemQuestionPage[String] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ index.position \ toString
 
   override def toString: String = "commodityCode"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CommodityCodeController.onPageLoad(waypoints, lrn, index)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     answers.get(DeriveNumberOfConsignors).map {
-      n =>
-        if (n > 1) { goodsRoutes.ConsignorController.onPageLoad(NormalMode, answers.lrn, index) }
-        else       { ConsignorPage(index).navigate(NormalMode, answers) }
-    }.getOrElse(routes.JourneyRecoveryController.onPageLoad())
+      case n if n > 1 => ConsignorPage(index)
+      case _ => ConsignorPage(index).nextPage(waypoints, answers)
+    }.orRecover
 }
