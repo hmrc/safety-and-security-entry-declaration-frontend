@@ -235,7 +235,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           status(result) mustEqual SEE_OTHER
           redirectLocation(
             result
-          ).value mustBe "http://localhost:9553/bas-gateway/uplift-mfa?origin=SNS&continueUrl=http%3A%2F%2Flocalhost%3A11200%2Fsafety-and-security-entry-declaration%2F%3Fk%3D123"
+          ).value mustBe "http://localhost:9553/bas-gateway/uplift-mfa?origin=SNS&continueUrl=http%3A%2F%2Flocalhost%3A11200%2Fsafety-and-security-entry-declaration"
         }
       }
     }
