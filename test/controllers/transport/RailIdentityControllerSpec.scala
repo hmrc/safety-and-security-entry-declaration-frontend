@@ -45,6 +45,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers = UserAnswers(
     userAnswersId,
     lrn,
+    Map.empty,
     Json.obj(
       RailIdentityPage.toString -> Json.obj(
         "wagonNumber" -> wagonNumber
