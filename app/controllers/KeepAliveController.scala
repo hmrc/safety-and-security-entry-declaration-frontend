@@ -35,7 +35,7 @@ class KeepAliveController @Inject() (
   def keepAlive: Action[AnyContent] =
     identify.async { implicit request =>
       sessionRepository
-        .keepAlive(request.userId)
+        .keepAlive(request.eori)
         .map(_ => Ok)
     }
 }

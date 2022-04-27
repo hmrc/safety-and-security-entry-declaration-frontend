@@ -40,7 +40,7 @@ class DraftDeclarationsController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = {
     identify.async { implicit request =>
-      repository.getSummaryList(request.userId).map { lrns =>
+      repository.getSummaryList(request.eori).map { lrns =>
         val summary = SummaryListViewModel(
           rows = lrns.map(DraftDeclarationsSummary.row)
         )

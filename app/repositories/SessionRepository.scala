@@ -50,9 +50,9 @@ class SessionRepository @Inject() (
           .expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
       ),
       IndexModel(
-        Indexes.ascending("userId", "lrn"),
+        Indexes.ascending("eori", "lrn"),
         IndexOptions()
-          .name("userIdAndLrnIdx")
+          .name("eoriAndLrnIdx")
           .unique(true)
       )
     )
@@ -60,34 +60,35 @@ class SessionRepository @Inject() (
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
-  private def byUserId(userId: String): Bson = Filters.equal("userId", userId)
+  private def byEORI(eori: String): Bson = Filters.equal("eori", eori)
 
-  private def byUserIdAndLrn(userId: String, lrn: LocalReferenceNumber): Bson =
+  private def byEORIandLrn(eori: String, lrn: LocalReferenceNumber): Bson =
     Filters.and(
-      Filters.equal("userId", userId),
+      Filters.equal("eori", eori),
       Filters.equal("lrn", lrn.value)
     )
 
-  def keepAlive(userId: String): Future[Boolean] =
+  def keepAlive(eori: String): Future[Boolean] =
     collection
       .updateOne(
-        filter = byUserId(userId),
+        filter = byEORI(eori),
         update = Updates.set("lastUpdated", Instant.now(clock))
       )
       .toFuture
       .map(_ => true)
 
-  def get(userId: String, lrn: LocalReferenceNumber): Future[Option[UserAnswers]] =
-    keepAlive(userId).flatMap { _ =>
+  def get(eori: String, lrn: LocalReferenceNumber): Future[Option[UserAnswers]] =
+    keepAlive(eori).flatMap { _ =>
       collection
-        .find(byUserIdAndLrn(userId, lrn))
+        .find(byEORIandLrn(eori, lrn))
         .headOption
     }
 
-  def getSummaryList(userId: String): Future[Seq[LocalReferenceNumber]] =
-    keepAlive(userId).flatMap { _ =>
+  def getSummaryList(eori: String): Future[Seq[LocalReferenceNumber]] =
+    keepAlive(eori).flatMap { _ =>
       collection
-        .find(byUserId(userId)).map {l => l.lrn}
+        .find(byEORI(eori))
+        .map { l => l.lrn }
         .toFuture()
     }
 
@@ -97,7 +98,7 @@ class SessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter = byUserIdAndLrn(updatedAnswers.id, updatedAnswers.lrn),
+        filter = byEORIandLrn(updatedAnswers.id, updatedAnswers.lrn),
         replacement = updatedAnswers,
         options = ReplaceOptions().upsert(true)
       )
@@ -105,9 +106,9 @@ class SessionRepository @Inject() (
       .map(_ => true)
   }
 
-  def clear(userId: String): Future[Boolean] =
+  def clear(eori: String): Future[Boolean] =
     collection
-      .deleteMany(byUserId(userId))
+      .deleteMany(byEORI(eori))
       .toFuture
       .map(_ => true)
 }

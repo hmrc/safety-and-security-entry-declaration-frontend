@@ -31,8 +31,8 @@ class DataRetrievalAction(lrn: LocalReferenceNumber, repository: SessionReposito
   override protected def transform[A](
     request: IdentifierRequest[A]
   ): Future[OptionalDataRequest[A]] =
-    repository.get(request.userId, lrn).map {
-      OptionalDataRequest(request.request, request.userId, _)
+    repository.get(request.eori, lrn).map {
+      OptionalDataRequest(request.request, request.eori, _)
     }
 }
 

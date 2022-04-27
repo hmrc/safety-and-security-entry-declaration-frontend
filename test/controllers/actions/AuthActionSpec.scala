@@ -40,12 +40,12 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
 
   private type RetrievalsType = Enrolments ~ Option[AffinityGroup]
   private val SNSenrolmentWithEORI =
-    Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")
+    Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "GB205672212000")), "Activated")
   private val inactiveSNSEnrolment =
-    Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Inactive")
+    Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("EORINumber", "GB205672212001")), "Inactive")
   private val SNSenrolmentNoEORI = Enrolment("HMRC-SS-ORG", Seq(EnrolmentIdentifier("ARN", "123456789")), "Activated")
   private val nonSNSEnrolmentWithEORI =
-    Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "123456789")), "Activated")
+    Enrolment("HMRC-AA-ORG", Seq(EnrolmentIdentifier("EORINumber", "GB205672212002")), "Activated")
   private val nonSNSEnrolmentNoEORI =
     Enrolment("HMRC-BB-ORG", Seq(EnrolmentIdentifier("Test", "123456789")), "Activated")
   private val anotherNonSNSEnrolmentNoEORI =
