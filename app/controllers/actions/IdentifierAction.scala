@@ -58,12 +58,17 @@ class AuthenticatedIdentifierAction @Inject() (
         Retrievals.affinityGroup
     ) {
       case userEnrolments ~ Some(Organisation) =>
-        val ssEnrolments =
+        val eoris: Set[String] = userEnrolments.enrolments
+          .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(EORI => EORI.value))
+
+        if (eoris.isEmpty) throw InsufficientEnrolments("EORI_missing")
+
+        val SNSenrolments =
           userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == config.enrolment)
 
-        if (ssEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
+        if (SNSenrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
 
-        ssEnrolments
+        SNSenrolments
           .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(EORI => EORI.value))
           .headOption
           .fold(throw InsufficientEnrolments("EORI_missing"))(EORI => block(IdentifierRequest(request, EORI)))

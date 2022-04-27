@@ -104,27 +104,27 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
           status(result) mustEqual SEE_OTHER
         }
       }
-      "When none of the enrolments are SNS or contain EORI" - {
-        "And will redirect to EORI Required Page" in {
-          running(application) {
-            when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
-              .thenReturn(
-                Future.successful(
-                  Enrolments(Set(nonSNSEnrolmentNoEORI, anotherNonSNSEnrolmentNoEORI)) ~ Some(Organisation)
+      "When the enrolments" - {
+        "Do not contain HMRC-SS-ORG and do not contain EORI" - {
+          "And will redirect to EORI Required Page" in {
+            running(application) {
+              when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
+                .thenReturn(
+                  Future.successful(
+                    Enrolments(Set(nonSNSEnrolmentNoEORI, anotherNonSNSEnrolmentNoEORI)) ~ Some(Organisation)
+                  )
                 )
-              )
 
-            val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
-            val controller = new Harness(authAction, actionBuilder)
-            val result = controller.onPageLoad()(FakeRequest())
+              val authAction = new AuthenticatedIdentifierAction(mockAuthConnector, appConfig, bodyParsers)
+              val controller = new Harness(authAction, actionBuilder)
+              val result = controller.onPageLoad()(FakeRequest())
 
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
+              status(result) mustEqual SEE_OTHER
+              redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
+            }
           }
         }
-      }
-      "When the enrolments" - {
-        "Do not contain HMRC-SS-ORG" - {
+        "Do not contain HMRC-SS-ORG but contain EORI" - {
           "And will redirect to Enrolment Required Page" in {
             running(application) {
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
@@ -139,8 +139,8 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
             }
           }
         }
-        "Are not present" - {
-          "And will redirect to Enrolment Required Page" in {
+        "When there are no enrolments at all" - {
+          "And will redirect to EORI Required Page" in {
             running(application) {
               when(mockAuthConnector.authorise[RetrievalsType](any(), any())(any(), any()))
                 .thenReturn(Future.successful(Enrolments(Set.empty) ~ Some(Organisation)))
@@ -150,7 +150,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach 
               val result = controller.onPageLoad()(FakeRequest())
 
               status(result) mustEqual SEE_OTHER
-              redirectLocation(result).value mustBe routes.EnrolmentRequiredController.onPageLoad().url
+              redirectLocation(result).value mustBe routes.EORIRequiredController.onPageLoad().url
             }
           }
         }
