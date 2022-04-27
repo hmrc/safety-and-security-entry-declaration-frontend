@@ -16,7 +16,13 @@
 
 package models
 
+import play.api.libs.json.Json
+
 /**
  * Movement Reference Number (MRN) is the remote unique identifier for the ENS declaration
  */
 case class MovementReferenceNumber(value: String) extends AnyVal
+
+object MovementReferenceNumber {
+  implicit val format = Json.format[MovementReferenceNumber]
+}

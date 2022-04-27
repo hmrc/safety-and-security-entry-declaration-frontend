@@ -3,7 +3,10 @@ package repositories
 import config.FrontendAppConfig
 import generators.Generators
 import java.time.{Clock, Instant, ZoneId}
-import models.{LocalReferenceNumber, UserAnswers}
+import java.time.temporal.ChronoUnit
+import models.{LocalReferenceNumber, MovementReferenceNumber, UserAnswers}
+import models.completion.DeclarationEvent
+import models.completion.downstream.{CorrelationId, MessageType, Outcome}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -27,7 +30,7 @@ class SessionRepositorySpec
   with MockitoSugar
   with Generators {
 
-  private val instant = Instant.now
+  private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
   private val userId1 = "id1"
@@ -37,13 +40,19 @@ class SessionRepositorySpec
   private val lrn3 = LocalReferenceNumber("HIG789")
 
   private val user1Answers1 =
-    UserAnswers(userId1, lrn1, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+    UserAnswers(userId1, lrn1, Map.empty, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
   private val user1Answers2 =
-    UserAnswers(userId1, lrn2, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(2))
+    UserAnswers(userId1, lrn2, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(2))
   private val user1Answers3 =
-    UserAnswers(userId1, lrn3, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
+    UserAnswers(userId1, lrn3, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
   private val user2Answers1 =
-    UserAnswers(userId2, lrn1, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
+    UserAnswers(userId2, lrn1, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
+
+  private val corrId1 = CorrelationId("abcdef")
+  private val event1 = DeclarationEvent(MessageType.Submission, outcome = None)
+  private val outcome1 = {
+    Outcome.Accepted(corrId1, event1.messageType, instant, MovementReferenceNumber("123"))
+  }
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1
@@ -183,6 +192,24 @@ class SessionRepositorySpec
 
         repository.keepAlive("id that does not exist").futureValue mustEqual true
       }
+    }
+  }
+
+  ".storeDeclarationEvent" - {
+    "should add a declaration event for a valid document" in {
+      insert(user1Answers1).futureValue
+      repository.storeDeclarationEvent(userId1, lrn1, corrId1, event1).futureValue
+
+      val expected = user1Answers1.withDeclarationEvent(corrId1, event1).copy(lastUpdated = instant)
+      val actual = repository.get(userId1, lrn1).futureValue.value
+
+      actual must be(expected)
+    }
+
+    "should fail with an illegal state exception if the document does not exist" in {
+      repository.storeDeclarationEvent(userId1, lrn1, corrId1, event1).failed.futureValue must be(
+        an[IllegalStateException]
+      )
     }
   }
 }

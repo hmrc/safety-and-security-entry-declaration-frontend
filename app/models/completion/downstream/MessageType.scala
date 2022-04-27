@@ -16,9 +16,27 @@
 
 package models.completion.downstream
 
+import play.api.libs.json._
+
 sealed trait MessageType
 
 object MessageType {
   case object Submission extends MessageType
   case object Amendment extends MessageType
+
+  implicit object MessageTypeWrites extends Writes[MessageType] {
+    override def writes(mt: MessageType): JsValue = mt match {
+      case Submission => JsString("submission")
+      case Amendment => JsString("amendment")
+    }
+  }
+
+  implicit object MessageTypeReads extends Reads[MessageType] {
+    override def reads(v: JsValue): JsResult[MessageType] = v match {
+      case JsString("submission") => JsSuccess(Submission)
+      case JsString("amendment") => JsSuccess(Amendment)
+      case s => JsError(s"Unexpected event type: '$s'")
+    }
+  }
+
 }

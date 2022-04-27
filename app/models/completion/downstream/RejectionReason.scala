@@ -18,8 +18,8 @@ package models.completion.downstream
 
 import play.api.libs.json.Json
 
-case class CorrelationId(id: String)
+case class RejectionReason(code: Option[Int], desc: String)
 
-object CorrelationId {
-  implicit val format = Json.format[CorrelationId]
+object RejectionReason {
+  implicit val format = Json.format[RejectionReason]
 }

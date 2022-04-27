@@ -16,25 +16,27 @@
 
 package repositories
 
-import config.FrontendAppConfig
-import models.{LocalReferenceNumber, UserAnswers}
+import java.time.{Clock, Instant}
+import java.util.concurrent.TimeUnit
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
+
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import java.time.{Clock, Instant}
-import java.util.concurrent.TimeUnit
+import uk.gov.hmrc.mongo.transaction.{TransactionConfiguration, Transactions}
 
-import javax.inject.{Inject, Singleton}
-import views.html.declarations.DraftDeclarationsView
-
-import scala.concurrent.{ExecutionContext, Future}
+import config.FrontendAppConfig
+import models.{LocalReferenceNumber, UserAnswers}
+import models.completion.DeclarationEvent
+import models.completion.downstream.CorrelationId
 
 @Singleton
 class SessionRepository @Inject() (
-  mongoComponent: MongoComponent,
+  val mongoComponent: MongoComponent,
   appConfig: FrontendAppConfig,
   clock: Clock
 )(implicit ec: ExecutionContext)
@@ -56,9 +58,12 @@ class SessionRepository @Inject() (
           .unique(true)
       )
     )
-  ) {
+  )
+  with Transactions {
 
-  implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+  private implicit val transactionConfig = TransactionConfiguration.strict
+
+  private implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
   private def byUserId(userId: String): Bson = Filters.equal("userId", userId)
 
@@ -70,7 +75,7 @@ class SessionRepository @Inject() (
 
   def keepAlive(userId: String): Future[Boolean] =
     collection
-      .updateOne(
+      .updateMany(
         filter = byUserId(userId),
         update = Updates.set("lastUpdated", Instant.now(clock))
       )
@@ -87,13 +92,13 @@ class SessionRepository @Inject() (
   def getSummaryList(userId: String): Future[Seq[LocalReferenceNumber]] =
     keepAlive(userId).flatMap { _ =>
       collection
-        .find(byUserId(userId)).map {l => l.lrn}
+        .find(byUserId(userId)).map { l => l.lrn }
         .toFuture()
     }
 
   def set(answers: UserAnswers): Future[Boolean] = {
 
-    val updatedAnswers = answers copy (lastUpdated = Instant.now(clock))
+    val updatedAnswers = answers.copy(lastUpdated = Instant.now(clock))
 
     collection
       .replaceOne(
@@ -103,6 +108,34 @@ class SessionRepository @Inject() (
       )
       .toFuture
       .map(_ => true)
+  }
+
+  /**
+   * Perform a transactional read and update of a document
+   */
+  private def update(
+    userId: String,
+    lrn: LocalReferenceNumber
+  )(f: UserAnswers => UserAnswers): Future[Unit] = {
+    withSessionAndTransaction { session =>
+      collection.find[UserAnswers](byUserIdAndLrn(userId, lrn)).headOption flatMap {
+        case Some(answers) =>
+          set(f(answers))
+        case _ =>
+          throw new IllegalStateException(
+            s"Tried to update a non-existent document, user $userId, lrn $lrn"
+          )
+      } map { _ => () }
+    }
+  }
+
+  def storeDeclarationEvent(
+    userId: String,
+    lrn: LocalReferenceNumber,
+    correlationId: CorrelationId,
+    event: DeclarationEvent
+  ): Future[Unit] = {
+    update(userId, lrn) { _.withDeclarationEvent(correlationId, event) }
   }
 
   def clear(userId: String): Future[Boolean] =

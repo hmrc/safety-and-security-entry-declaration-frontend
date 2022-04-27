@@ -45,6 +45,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers = UserAnswers(
     userAnswersId,
     lrn,
+    Map.empty,
     Json.obj(
       MaritimeIdentityPage.toString -> Json.obj(
         "imo" -> "123",
