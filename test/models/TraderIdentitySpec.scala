@@ -16,6 +16,7 @@
 
 package models
 
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -24,45 +25,41 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class NotifiedPartyIdentitySpec
+class TraderIdentitySpec
   extends AnyFreeSpec
   with Matchers
   with ScalaCheckPropertyChecks
+  with Generators
   with OptionValues {
 
-  "NotifiedPartyIdentity" - {
+  "TraderIdentity" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(NotifiedPartyIdentity.values.toSeq)
+      forAll(arbitrary[TraderIdentity]) { traderIdentity =>
 
-      forAll(gen) { notifiedPartyIdentity =>
-
-        JsString(notifiedPartyIdentity.toString)
-          .validate[NotifiedPartyIdentity]
+        JsString(traderIdentity.toString)
+          .validate[TraderIdentity]
           .asOpt
-          .value mustEqual notifiedPartyIdentity
+          .value mustEqual traderIdentity
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen =
-        arbitrary[String] suchThat (!NotifiedPartyIdentity.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!TraderIdentity.values.map(_.toString).contains(_))
 
       forAll(gen) { invalidValue =>
 
-        JsString(invalidValue).validate[NotifiedPartyIdentity] mustEqual JsError("error.invalid")
+        JsString(invalidValue).validate[TraderIdentity] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(NotifiedPartyIdentity.values.toSeq)
+      forAll(arbitrary[TraderIdentity]) { consigneeIdentity =>
 
-      forAll(gen) { notifiedPartyIdentity =>
-
-        Json.toJson(notifiedPartyIdentity) mustEqual JsString(notifiedPartyIdentity.toString)
+        Json.toJson(consigneeIdentity) mustEqual JsString(consigneeIdentity.toString)
       }
     }
   }

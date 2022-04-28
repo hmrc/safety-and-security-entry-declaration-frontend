@@ -19,12 +19,11 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.NotifiedPartyIdentityFormProvider
-import models.NotifiedPartyIdentity
+import models.TraderIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Waypoints, EmptyWaypoints}
+import pages.EmptyWaypoints
 import pages.consignees.NotifiedPartyIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -68,7 +67,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.values.head)
+        .set(NotifiedPartyIdentityPage(index), TraderIdentity.values.head)
         .success
         .value
 
@@ -83,7 +82,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          form.fill(NotifiedPartyIdentity.values.head),
+          form.fill(TraderIdentity.values.head),
           waypoints,
           lrn,
           index
@@ -105,11 +104,11 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyIdentityRoute)
-            .withFormUrlEncodedBody(("value", NotifiedPartyIdentity.values.head.toString))
+            .withFormUrlEncodedBody(("value", TraderIdentity.values.head.toString))
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.values.head).success.value
+          .set(NotifiedPartyIdentityPage(index), TraderIdentity.values.head).success.value
           .set(NotifiedPartyKeyQuery(index), 1).success.value
 
         status(result) mustEqual SEE_OTHER
@@ -164,7 +163,7 @@ class NotifiedPartyIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, notifiedPartyIdentityRoute)
-            .withFormUrlEncodedBody(("value", NotifiedPartyIdentity.values.head.toString))
+            .withFormUrlEncodedBody(("value", TraderIdentity.values.head.toString))
 
         val result = route(application, request).value
 

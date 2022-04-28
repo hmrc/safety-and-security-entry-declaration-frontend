@@ -19,7 +19,7 @@ package controllers.consignees
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.consignees.ConsigneeIdentityFormProvider
-import models.ConsigneeIdentity
+import models.TraderIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -68,7 +68,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(ConsigneeIdentityPage(index), ConsigneeIdentity.values.head).success.value
+        .set(ConsigneeIdentityPage(index), TraderIdentity.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -81,7 +81,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          form.fill(ConsigneeIdentity.values.head),
+          form.fill(TraderIdentity.values.head),
           waypoints,
           lrn,
           index
@@ -103,11 +103,11 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consigneeIdentityRoute)
-            .withFormUrlEncodedBody(("value", ConsigneeIdentity.values.head.toString))
+            .withFormUrlEncodedBody(("value", TraderIdentity.values.head.toString))
 
         val result = route(application, request).value
         val expectedAnswers = emptyUserAnswers
-          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.values.head).success.value
+          .set(ConsigneeIdentityPage(index), TraderIdentity.values.head).success.value
           .set(ConsigneeKeyQuery(index), 1).success.value
 
         status(result) mustEqual SEE_OTHER
@@ -162,7 +162,7 @@ class ConsigneeIdentityControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, consigneeIdentityRoute)
-            .withFormUrlEncodedBody(("value", ConsigneeIdentity.values.head.toString))
+            .withFormUrlEncodedBody(("value", TraderIdentity.values.head.toString))
 
         val result = route(application, request).value
 

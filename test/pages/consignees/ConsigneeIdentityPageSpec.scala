@@ -18,8 +18,8 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.ConsigneeIdentity.{GBEORI, NameAddress}
-import models.{Address, ConsigneeIdentity, Country, GbEori, NormalMode}
+import models.TraderIdentity.{GBEORI, NameAddress}
+import models.{Address, TraderIdentity, Country, GbEori, NormalMode}
 import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 
@@ -82,7 +82,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
             val answers =
               emptyUserAnswers
                 .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
-                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeIdentityPage(index), TraderIdentity.GBEORI).success.value
 
             ConsigneeIdentityPage(index).navigate(waypoints, answers)
               .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
@@ -93,7 +93,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
           "to Consignee EORI" in {
 
-            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), TraderIdentity.GBEORI).success.value
 
             ConsigneeIdentityPage(index).navigate(waypoints, answers)
               .mustEqual(routes.ConsigneeEORIController.onPageLoad(waypoints, answers.lrn, index))
@@ -110,7 +110,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
             val answers =
               emptyUserAnswers
                 .set(ConsigneeNamePage(index), "Name").success.value
-                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+                .set(ConsigneeIdentityPage(index), TraderIdentity.NameAddress).success.value
 
             ConsigneeIdentityPage(index).navigate(waypoints, answers)
               .mustEqual(routes.CheckConsigneeController.onPageLoad(EmptyWaypoints, answers.lrn, index))
@@ -121,7 +121,7 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
           "to Consignee Name" in {
 
-            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+            val answers = emptyUserAnswers.set(ConsigneeIdentityPage(index), TraderIdentity.NameAddress).success.value
 
             ConsigneeIdentityPage(index).navigate(waypoints, answers)
               .mustEqual(routes.ConsigneeNameController.onPageLoad(waypoints, answers.lrn, index))
@@ -134,10 +134,10 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
       val answers =
         emptyUserAnswers
-          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.NameAddress).success.value
+          .set(ConsigneeIdentityPage(index), TraderIdentity.NameAddress).success.value
           .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
 
-      val result = ConsigneeIdentityPage(index).cleanup(Some(ConsigneeIdentity.NameAddress), answers).success.value
+      val result = ConsigneeIdentityPage(index).cleanup(Some(TraderIdentity.NameAddress), answers).success.value
 
       result mustEqual answers.remove(ConsigneeEORIPage(index)).success.value
     }
@@ -146,11 +146,11 @@ class ConsigneeIdentityPageSpec extends SpecBase with PageBehaviours {
 
       val answers =
         emptyUserAnswers
-          .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeIdentityPage(index), TraderIdentity.GBEORI).success.value
           .set(ConsigneeNamePage(index), "name").success.value
           .set(ConsigneeAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom"))).success.value
 
-      val result = ConsigneeIdentityPage(index).cleanup(Some(ConsigneeIdentity.GBEORI), answers).success.value
+      val result = ConsigneeIdentityPage(index).cleanup(Some(TraderIdentity.GBEORI), answers).success.value
 
       result.mustEqual(
         answers

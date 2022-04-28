@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
+import models.{GbEori, Index, NormalMode, TraderIdentity}
 import pages.behaviours.PageBehaviours
 import pages.{EmptyWaypoints, Waypoints}
 import queries.consignees._
@@ -60,7 +60,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
             val answers =
               emptyUserAnswers
-                .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyIdentityPage(index), TraderIdentity.GBEORI).success.value
                 .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
                 .set(NotifiedPartyKeyQuery(index), 1).success.value
                 .set(AddAnyNotifiedPartiesPage, true).success.value
@@ -91,7 +91,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
             val answers =
               emptyUserAnswers
-                .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyIdentityPage(index), TraderIdentity.GBEORI).success.value
                 .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
                 .set(NotifiedPartyKeyQuery(index), 1).success.value
                 .set(AddAnyNotifiedPartiesPage, true).success.value
@@ -113,7 +113,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
             val answers =
               emptyUserAnswers
-                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeIdentityPage(index), TraderIdentity.GBEORI).success.value
                 .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
                 .set(ConsigneeKeyQuery(index), 1).success.value
                 .set(AddAnyNotifiedPartiesPage, false).success.value
@@ -140,7 +140,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
             val answers =
               emptyUserAnswers
-                .set(ConsigneeIdentityPage(index), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeIdentityPage(index), TraderIdentity.GBEORI).success.value
                 .set(ConsigneeEORIPage(index), GbEori("123456789000")).success.value
                 .set(ConsigneeKeyQuery(index), 1).success.value
                 .set(AddAnyNotifiedPartiesPage, false).success.value
@@ -157,7 +157,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
       val answers =
         emptyUserAnswers
-          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyIdentityPage(index), TraderIdentity.GBEORI).success.value
           .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
           .set(NotifiedPartyKeyQuery(index), 1).success.value
           .set(AddAnyNotifiedPartiesPage, true).success.value
@@ -171,7 +171,7 @@ class AddAnyNotifiedPartiesPageSpec extends SpecBase with PageBehaviours {
 
       val answers =
         emptyUserAnswers
-          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyIdentityPage(index), TraderIdentity.GBEORI).success.value
           .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
           .set(NotifiedPartyKeyQuery(index), 1).success.value
           .set(AddAnyNotifiedPartiesPage, false).success.value

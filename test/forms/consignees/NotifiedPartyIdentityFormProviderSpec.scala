@@ -17,7 +17,7 @@
 package forms.consignees
 
 import forms.behaviours.OptionFieldBehaviours
-import models.NotifiedPartyIdentity
+import models.TraderIdentity
 import play.api.data.FormError
 
 class NotifiedPartyIdentityFormProviderSpec extends OptionFieldBehaviours {
@@ -29,10 +29,10 @@ class NotifiedPartyIdentityFormProviderSpec extends OptionFieldBehaviours {
     val fieldName = "value"
     val requiredKey = "notifiedPartyIdentity.error.required"
 
-    behave like optionsField[NotifiedPartyIdentity](
+    behave like optionsField[TraderIdentity](
       form,
       fieldName,
-      validValues = NotifiedPartyIdentity.values,
+      validValues = TraderIdentity.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

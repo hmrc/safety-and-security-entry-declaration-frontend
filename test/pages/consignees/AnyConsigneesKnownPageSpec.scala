@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{ConsigneeIdentity, GbEori, Index, NormalMode, NotifiedPartyIdentity}
+import models.{GbEori, Index, NormalMode, TraderIdentity}
 import pages.behaviours.PageBehaviours
 import pages.{EmptyWaypoints, Waypoints}
 import queries.consignees._
@@ -63,7 +63,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
             val answers =
               emptyUserAnswers
                 .set(AnyConsigneesKnownPage, true).success.value
-                .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
                 .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
                 .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
@@ -79,7 +79,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
             val answers =
               emptyUserAnswers
                 .set(AnyConsigneesKnownPage, true).success.value
-                .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+                .set(ConsigneeIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
                 .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
                 .set(ConsigneeKeyQuery(Index(0)), 1).success.value
                 .remove(ConsigneeQuery(Index(0))).success.value
@@ -114,7 +114,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
             val answers =
               emptyUserAnswers
                 .set(AnyConsigneesKnownPage, false).success.value
-                .set(NotifiedPartyIdentityPage(Index(0)), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
                 .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
                 .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
 
@@ -142,7 +142,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
             val answers =
               emptyUserAnswers
                 .set(AnyConsigneesKnownPage, false).success.value
-                .set(NotifiedPartyIdentityPage(Index(0)), NotifiedPartyIdentity.GBEORI).success.value
+                .set(NotifiedPartyIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
                 .set(NotifiedPartyEORIPage(Index(0)), GbEori("123456789000")).success.value
                 .set(NotifiedPartyKeyQuery(Index(0)), 1).success.value
                 .remove(NotifiedPartyQuery(Index(0))).success.value
@@ -161,7 +161,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
       val answers =
         emptyUserAnswers
           .set(AnyConsigneesKnownPage, true).success.value
-          .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
           .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
           .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 
@@ -175,7 +175,7 @@ class AnyConsigneesKnownPageSpec extends SpecBase with PageBehaviours {
       val answers =
         emptyUserAnswers
           .set(AnyConsigneesKnownPage, false).success.value
-          .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+          .set(ConsigneeIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
           .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
           .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 

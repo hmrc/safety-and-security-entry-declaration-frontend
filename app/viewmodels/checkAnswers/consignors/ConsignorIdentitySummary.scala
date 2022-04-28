@@ -16,8 +16,7 @@
 
 package viewmodels.checkAnswers.consignors
 
-import controllers.consignors.routes
-import models.{CheckMode, Index, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.consignors.ConsignorIdentityPage
 import pages.{CheckAnswersPage, Waypoints, consignors}
 import play.api.i18n.Messages
@@ -35,7 +34,7 @@ object ConsignorIdentitySummary {
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"consignorIdentity.$answer"))
+          HtmlFormat.escape(messages(s"traderIdentity.$answer"))
         )
       )
 

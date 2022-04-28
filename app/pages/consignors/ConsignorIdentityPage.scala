@@ -17,15 +17,15 @@
 package pages.consignors
 
 import controllers.consignors.routes
-import models.ConsignorIdentity.{GBEORI, NameAddress}
-import models.{ConsignorIdentity, Index, LocalReferenceNumber, UserAnswers}
+import models.TraderIdentity.{GBEORI, NameAddress}
+import models.{Index, LocalReferenceNumber, TraderIdentity, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class ConsignorIdentityPage(index: Index) extends ConsignorQuestionPage[ConsignorIdentity] {
+case class ConsignorIdentityPage(index: Index) extends ConsignorQuestionPage[TraderIdentity] {
 
   override def path: JsPath = JsPath \ "consignors" \ index.position \ toString
 
@@ -53,8 +53,7 @@ case class ConsignorIdentityPage(index: Index) extends ConsignorQuestionPage[Con
         .getOrElse(ConsignorNamePage(index))
     }.orRecover
 
-
-  override def cleanup(value: Option[ConsignorIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[TraderIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
     value.map {
       case GBEORI =>
         userAnswers
