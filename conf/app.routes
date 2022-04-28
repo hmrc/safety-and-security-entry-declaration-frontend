@@ -351,3 +351,7 @@ GET        /submittedDeclarations                   controllers.declarations.Sub
 GET        /draftDeclarations                       controllers.declarations.DraftDeclarationsController.onPageLoad()
 
 GET        /:lrn/start-goods-item/:index                 controllers.goods.InitialiseGoodsItemController.initialise(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)
+
+GET        /enrolmentRequired                       controllers.EnrolmentRequiredController.onPageLoad()
+GET        /EORIRequired                            controllers.EORIRequiredController.onPageLoad()
+GET        /organisationAccountRequired             controllers.OrganisationAccountRequiredController.onPageLoad()

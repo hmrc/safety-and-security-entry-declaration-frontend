@@ -22,11 +22,12 @@ import controllers.routes
 import models.requests.IdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
+import uk.gov.hmrc.auth.core.{CredentialStrength, _}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-
 import scala.concurrent.{ExecutionContext, Future}
 
 trait IdentifierAction
@@ -49,13 +50,48 @@ class AuthenticatedIdentifierAction @Inject() (
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.internalId) {
-      _.map { internalId =>
-        block(IdentifierRequest(request, internalId))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
+    authorised(
+      AuthProviders(AuthProvider.GovernmentGateway) and
+        CredentialStrength(CredentialStrength.strong)
+    ).retrieve(
+      Retrievals.allEnrolments and
+        Retrievals.affinityGroup
+    ) {
+      case userEnrolments ~ Some(Organisation) =>
+        val eoris: Set[String] = userEnrolments.enrolments
+          .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(EORI => EORI.value))
+
+        if (eoris.isEmpty) throw InsufficientEnrolments("EORI_missing")
+
+        val snsEnrolments =
+          userEnrolments.enrolments.filter(enrolment => enrolment.isActivated && enrolment.key == config.enrolment)
+
+        if (snsEnrolments.isEmpty) throw InsufficientEnrolments("HMRC-SS-ORG_missing")
+
+        snsEnrolments
+          .flatMap(enrolment => enrolment.getIdentifier(config.eoriNumber).map(eori => eori.value))
+          .headOption
+          .fold(throw InsufficientEnrolments("EORI_missing"))(eori => block(IdentifierRequest(request, eori)))
+      case _ => throw UnsupportedAffinityGroup()
     } recover {
+      case failedAuthentication: InsufficientEnrolments =>
+        if (failedAuthentication.msg == "EORI_missing") {
+          Redirect(routes.EORIRequiredController.onPageLoad)
+        } else {
+          Redirect(routes.EnrolmentRequiredController.onPageLoad)
+        }
       case _: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+
+      case _: IncorrectCredentialStrength =>
+        Redirect(
+          config.mfaUpliftUrl,
+          Map(
+            "origin" -> Seq(config.origin),
+            "continueUrl" -> Seq(config.loginContinueUrl)
+          )
+        )
+      case _: UnsupportedAffinityGroup => Redirect(routes.OrganisationAccountRequiredController.onPageLoad)
       case _: AuthorisationException =>
         Redirect(routes.UnauthorisedController.onPageLoad)
     }

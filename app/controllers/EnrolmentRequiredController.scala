@@ -14,38 +14,24 @@
  * limitations under the License.
  */
 
-package controllers.declarations
+package controllers
 
-import controllers.actions._
-import javax.inject.Inject
+
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.declarations.DraftDeclarationsSummary
-import views.html.declarations.DraftDeclarationsView
-import viewmodels.govuk.summarylist._
+import views.html.EnrolmentRequiredView
+import javax.inject.Inject
 
-import scala.concurrent.ExecutionContext
-
-class DraftDeclarationsController @Inject() (
+class EnrolmentRequiredController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
   val controllerComponents: MessagesControllerComponents,
-  view: DraftDeclarationsView,
-  repository: SessionRepository
-)(implicit ec: ExecutionContext)
-  extends FrontendBaseController
+  view: EnrolmentRequiredView
+) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = {
-    identify.async { implicit request =>
-      repository.getSummaryList(request.eori).map { lrns =>
-        val summary = SummaryListViewModel(
-          rows = lrns.map(DraftDeclarationsSummary.row)
-        )
-        Ok(view(summary))
-      }
+  def onPageLoad: Action[AnyContent] =
+    Action { implicit request =>
+      Ok(view())
     }
-  }
 }

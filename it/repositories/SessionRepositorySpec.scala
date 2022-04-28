@@ -33,20 +33,20 @@ class SessionRepositorySpec
   private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
-  private val userId1 = "id1"
-  private val userId2 = "id2"
+  private val eori1 = "GB205672212000"
+  private val eori2 = "GB205672212001"
   private val lrn1 = LocalReferenceNumber("ABC123")
   private val lrn2 = LocalReferenceNumber("DEF456")
   private val lrn3 = LocalReferenceNumber("HIG789")
 
   private val user1Answers1 =
-    UserAnswers(userId1, lrn1, Map.empty, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+    UserAnswers(eori1, lrn1, Map.empty, Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
   private val user1Answers2 =
-    UserAnswers(userId1, lrn2, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(2))
+    UserAnswers(eori1, lrn2, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(2))
   private val user1Answers3 =
-    UserAnswers(userId1, lrn3, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
+    UserAnswers(eori1, lrn3, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
   private val user2Answers1 =
-    UserAnswers(userId2, lrn1, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
+    UserAnswers(eori2, lrn1, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
 
   private val corrId1 = CorrelationId("abcdef")
   private val event1 = DeclarationEvent(MessageType.Submission, outcome = None)
@@ -57,9 +57,9 @@ class SessionRepositorySpec
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1
 
-  private def getFilter(userId: String, lrn: LocalReferenceNumber) =
+  private def getFilter(eori: String, lrn: LocalReferenceNumber) =
     Filters.and(
-      Filters.equal("userId", userId),
+      Filters.equal("eori", eori),
       Filters.equal("lrn", lrn.value)
     )
 
@@ -76,7 +76,7 @@ class SessionRepositorySpec
       val expectedResult = user1Answers1.copy(lastUpdated = instant)
 
       val setResult = repository.set(user1Answers1).futureValue
-      val updatedRecord = find(getFilter(userId1, lrn1)).futureValue.headOption.value
+      val updatedRecord = find(getFilter(eori1, lrn1)).futureValue.headOption.value
 
       setResult mustEqual true
       updatedRecord mustEqual expectedResult
@@ -90,9 +90,9 @@ class SessionRepositorySpec
 
       setResult mustEqual true
 
-      find(getFilter(userId1, lrn1)).futureValue.headOption.value mustEqual user1Answers1
-      find(getFilter(userId1, lrn2)).futureValue.headOption.value mustEqual user1Answers2.copy(lastUpdated = instant)
-      find(getFilter(userId2, lrn1)).futureValue.headOption.value mustEqual user2Answers1
+      find(getFilter(eori1, lrn1)).futureValue.headOption.value mustEqual user1Answers1
+      find(getFilter(eori1, lrn2)).futureValue.headOption.value mustEqual user1Answers2.copy(lastUpdated = instant)
+      find(getFilter(eori2, lrn1)).futureValue.headOption.value mustEqual user2Answers1
     }
   }
 
@@ -105,12 +105,12 @@ class SessionRepositorySpec
 
       Future.traverse(answers)(insert).futureValue
 
-      val actual = repository.getSummaryList(userId1).futureValue
-      actual must contain theSameElementsAs(expected)
+      val actual = repository.getSummaryList(eori1).futureValue
+      actual must contain theSameElementsAs (expected)
     }
 
     "When there are no draft declarations will return an empty list" - {
-      repository.getSummaryList(userId = "id that does not exist").futureValue should have size 0
+      repository.getSummaryList(eori = "id that does not exist").futureValue should have size 0
     }
   }
 
@@ -122,7 +122,7 @@ class SessionRepositorySpec
 
         insert(user1Answers1).futureValue
 
-        val result = repository.get(userId1, lrn1).futureValue
+        val result = repository.get(eori1, lrn1).futureValue
         val expectedResult = user1Answers1.copy(lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -158,7 +158,7 @@ class SessionRepositorySpec
       val result = repository.clear(user1Answers1.id).futureValue
 
       result mustEqual true
-      repository.get(userId1, lrn1).futureValue must not be defined
+      repository.get(eori1, lrn1).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
@@ -181,7 +181,7 @@ class SessionRepositorySpec
         val expectedUpdatedAnswers = user1Answers1.copy(lastUpdated = instant)
 
         result mustEqual true
-        val updatedAnswers = find(getFilter(userId1, lrn1)).futureValue.headOption.value
+        val updatedAnswers = find(getFilter(eori1, lrn1)).futureValue.headOption.value
         updatedAnswers mustEqual expectedUpdatedAnswers
       }
     }
@@ -198,16 +198,16 @@ class SessionRepositorySpec
   ".storeDeclarationEvent" - {
     "should add a declaration event for a valid document" in {
       insert(user1Answers1).futureValue
-      repository.storeDeclarationEvent(userId1, lrn1, corrId1, event1).futureValue
+      repository.storeDeclarationEvent(eori1, lrn1, corrId1, event1).futureValue
 
       val expected = user1Answers1.withDeclarationEvent(corrId1, event1).copy(lastUpdated = instant)
-      val actual = repository.get(userId1, lrn1).futureValue.value
+      val actual = repository.get(eori1, lrn1).futureValue.value
 
       actual must be(expected)
     }
 
     "should fail with an illegal state exception if the document does not exist" in {
-      repository.storeDeclarationEvent(userId1, lrn1, corrId1, event1).failed.futureValue must be(
+      repository.storeDeclarationEvent(eori1, lrn1, corrId1, event1).failed.futureValue must be(
         an[IllegalStateException]
       )
     }

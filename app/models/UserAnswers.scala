@@ -73,24 +73,27 @@ final case class UserAnswers(
   /**
    * Record a submission or amendment request associated with these answers, by correlation ID
    */
-  def withDeclarationEvent(corrId: CorrelationId, event: DeclarationEvent): UserAnswers = copy(
-    declarationEvents = declarationEvents + (corrId -> event)
-  )
+  def withDeclarationEvent(corrId: CorrelationId, event: DeclarationEvent): UserAnswers =
+    copy(
+      declarationEvents = declarationEvents + (corrId -> event)
+    )
 }
 
 object UserAnswers {
   implicit val declarationsReads = new Reads[Map[CorrelationId, DeclarationEvent]] {
-    override def reads(v: JsValue): JsResult[Map[CorrelationId, DeclarationEvent]] = JsSuccess(
-      v.as[Map[String, JsValue]].map {
-        case (k, v) => CorrelationId(k) -> v.as[DeclarationEvent]
-      }
-    )
+    override def reads(v: JsValue): JsResult[Map[CorrelationId, DeclarationEvent]] =
+      JsSuccess(
+        v.as[Map[String, JsValue]].map {
+          case (k, v) => CorrelationId(k) -> v.as[DeclarationEvent]
+        }
+      )
   }
 
   implicit val declarationsWrites = new Writes[Map[CorrelationId, DeclarationEvent]] {
-    override def writes(m: Map[CorrelationId, DeclarationEvent]): JsValue = JsObject(
-      m.map { case (k, v) => k.id -> Json.toJson(v) }
-    )
+    override def writes(m: Map[CorrelationId, DeclarationEvent]): JsValue =
+      JsObject(
+        m.map { case (k, v) => k.id -> Json.toJson(v) }
+      )
   }
 
   val reads: Reads[UserAnswers] = {
@@ -98,11 +101,11 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "userId").read[String] and
-      (__ \ "lrn").read[LocalReferenceNumber] and
-      (__ \ "declarationEvents").read[Map[CorrelationId, DeclarationEvent]] and
-      (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
+      (__ \ "eori").read[String] and
+        (__ \ "lrn").read[LocalReferenceNumber] and
+        (__ \ "declarationEvents").read[Map[CorrelationId, DeclarationEvent]] and
+        (__ \ "data").read[JsObject] and
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
     )(UserAnswers.apply _)
   }
 
@@ -111,11 +114,11 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "userId").write[String] and
-      (__ \ "lrn").write[LocalReferenceNumber] and
-      (__ \ "declarationEvents").write[Map[CorrelationId, DeclarationEvent]] and
-      (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
+      (__ \ "eori").write[String] and
+        (__ \ "lrn").write[LocalReferenceNumber] and
+        (__ \ "declarationEvents").write[Map[CorrelationId, DeclarationEvent]] and
+        (__ \ "data").write[JsObject] and
+        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
     )(unlift(UserAnswers.unapply))
   }
 

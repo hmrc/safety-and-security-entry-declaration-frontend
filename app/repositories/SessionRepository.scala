@@ -20,7 +20,6 @@ import java.time.{Clock, Instant}
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
@@ -28,7 +27,6 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.mongo.transaction.{TransactionConfiguration, Transactions}
-
 import config.FrontendAppConfig
 import models.{LocalReferenceNumber, UserAnswers}
 import models.completion.DeclarationEvent
@@ -52,9 +50,9 @@ class SessionRepository @Inject() (
           .expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
       ),
       IndexModel(
-        Indexes.ascending("userId", "lrn"),
+        Indexes.ascending("eori", "lrn"),
         IndexOptions()
-          .name("userIdAndLrnIdx")
+          .name("eoriAndLrnIdx")
           .unique(true)
       )
     )
@@ -65,34 +63,35 @@ class SessionRepository @Inject() (
 
   private implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
-  private def byUserId(userId: String): Bson = Filters.equal("userId", userId)
+  private def byEORI(eori: String): Bson = Filters.equal("eori", eori)
 
-  private def byUserIdAndLrn(userId: String, lrn: LocalReferenceNumber): Bson =
+  private def byEORIandLrn(eori: String, lrn: LocalReferenceNumber): Bson =
     Filters.and(
-      Filters.equal("userId", userId),
+      Filters.equal("eori", eori),
       Filters.equal("lrn", lrn.value)
     )
 
-  def keepAlive(userId: String): Future[Boolean] =
+  def keepAlive(eori: String): Future[Boolean] =
     collection
       .updateMany(
-        filter = byUserId(userId),
+        filter = byEORI(eori),
         update = Updates.set("lastUpdated", Instant.now(clock))
       )
       .toFuture
       .map(_ => true)
 
-  def get(userId: String, lrn: LocalReferenceNumber): Future[Option[UserAnswers]] =
-    keepAlive(userId).flatMap { _ =>
+  def get(eori: String, lrn: LocalReferenceNumber): Future[Option[UserAnswers]] =
+    keepAlive(eori).flatMap { _ =>
       collection
-        .find(byUserIdAndLrn(userId, lrn))
+        .find(byEORIandLrn(eori, lrn))
         .headOption
     }
 
-  def getSummaryList(userId: String): Future[Seq[LocalReferenceNumber]] =
-    keepAlive(userId).flatMap { _ =>
+  def getSummaryList(eori: String): Future[Seq[LocalReferenceNumber]] =
+    keepAlive(eori).flatMap { _ =>
       collection
-        .find(byUserId(userId)).map { l => l.lrn }
+        .find(byEORI(eori))
+        .map { l => l.lrn }
         .toFuture()
     }
 
@@ -102,7 +101,7 @@ class SessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter = byUserIdAndLrn(updatedAnswers.id, updatedAnswers.lrn),
+        filter = byEORIandLrn(updatedAnswers.id, updatedAnswers.lrn),
         replacement = updatedAnswers,
         options = ReplaceOptions().upsert(true)
       )
@@ -114,33 +113,33 @@ class SessionRepository @Inject() (
    * Perform a transactional read and update of a document
    */
   private def update(
-    userId: String,
+    eori: String,
     lrn: LocalReferenceNumber
   )(f: UserAnswers => UserAnswers): Future[Unit] = {
     withSessionAndTransaction { session =>
-      collection.find[UserAnswers](byUserIdAndLrn(userId, lrn)).headOption flatMap {
+      collection.find[UserAnswers](byEORIandLrn(eori, lrn)).headOption flatMap {
         case Some(answers) =>
           set(f(answers))
         case _ =>
           throw new IllegalStateException(
-            s"Tried to update a non-existent document, user $userId, lrn $lrn"
+            s"Tried to update a non-existent document, eori $eori, lrn $lrn"
           )
       } map { _ => () }
     }
   }
 
   def storeDeclarationEvent(
-    userId: String,
+    eori: String,
     lrn: LocalReferenceNumber,
     correlationId: CorrelationId,
     event: DeclarationEvent
   ): Future[Unit] = {
-    update(userId, lrn) { _.withDeclarationEvent(correlationId, event) }
+    update(eori, lrn) { _.withDeclarationEvent(correlationId, event) }
   }
 
-  def clear(userId: String): Future[Boolean] =
+  def clear(eori: String): Future[Boolean] =
     collection
-      .deleteMany(byUserId(userId))
+      .deleteMany(byEORI(eori))
       .toFuture
       .map(_ => true)
 }

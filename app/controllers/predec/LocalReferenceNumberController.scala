@@ -55,7 +55,7 @@ class LocalReferenceNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
           value => {
-            val updatedAnswers = UserAnswers(request.userId, value)
+            val updatedAnswers = UserAnswers(request.eori, value)
 
             sessionRepository.set(updatedAnswers).map { _ =>
               Redirect(LocalReferenceNumberPage.navigate(mode, updatedAnswers))

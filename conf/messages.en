@@ -68,6 +68,19 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+unauthorised.guidance = In order for you to access this service, you need an organisation account.
+
+enrolmentRequired.title = Enrolment missing or not yet activated
+enrolmentRequired.heading = HMRC-SS-ORG enrolment is missing or not yet activated
+enrolmentRequired.guidance = In order for you to access this service, you need to be enrolled with HMRC-SS-ORG and an EORI
+
+EORIRequired.title = You need to have an EORI
+EORIRequired.heading = You need to have an EORI
+EORIRequired.guidance = In order for you to access this service, your account needs to have an EORI associated to it.
+
+organisationAccountRequired.title = You need to have an Organisation account
+organisationAccountRequired.heading = You need an Organisation account
+organisationAccountRequired.guidance = In order for you to access this service, you need an organisation account.
 
 localReferenceNumber.title = Name your entry summary declaration (ENS)
 localReferenceNumber.heading = Name your entry summary declaration (ENS)
