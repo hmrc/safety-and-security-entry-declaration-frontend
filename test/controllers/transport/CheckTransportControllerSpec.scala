@@ -17,12 +17,12 @@
 package controllers.transport
 
 import base.SpecBase
-import controllers.{routes=>baseRoutes}
 import controllers.transport.{routes => transportRoutes}
+import controllers.{routes => baseRoutes}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
-import views.html.predec.CheckPredecView
+import views.html.transport.CheckTransportView
 
 class CheckTransportControllerSpec extends SpecBase with SummaryListFluency {
 
@@ -37,7 +37,7 @@ class CheckTransportControllerSpec extends SpecBase with SummaryListFluency {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CheckPredecView]
+        val view = application.injector.instanceOf[CheckTransportView]
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK

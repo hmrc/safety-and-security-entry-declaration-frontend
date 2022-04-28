@@ -29,11 +29,4 @@ case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "lodgingPersonType"
-
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(LodgingPersonTypePage) match {
-      case Some(Carrier)        => predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn)
-      case Some(Representative) => predecRoutes.CarrierEORIController.onPageLoad(NormalMode, answers.lrn)
-      case None                 => routes.JourneyRecoveryController.onPageLoad()
-    }
 }

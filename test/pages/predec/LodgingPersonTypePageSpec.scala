@@ -26,41 +26,35 @@ class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
   "LodgingPersonTypePage" - {
 
-    beRetrievable[LodgingPersonType](LodgingPersonTypePage)
-
-    beSettable[LodgingPersonType](LodgingPersonTypePage)
-
-    beRemovable[LodgingPersonType](LodgingPersonTypePage)
-
     "must navigate in Normal Mode" - {
-
-      "to Carrier EORI when the answer is Representative" in {
-
-        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
-
-        LodgingPersonTypePage
-          .navigate(NormalMode, answers)
-          .mustEqual(predecRoutes.CarrierEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-      }
-
-      "to Gross Weight when the answer is Carrier" in {
-
-        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
-
-        LodgingPersonTypePage
-          .navigate(NormalMode, answers)
-          .mustEqual(predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        LodgingPersonTypePage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
+//
+//      "to Carrier EORI when the answer is Representative" in {
+//
+//        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+//
+//        LodgingPersonTypePage
+//          .navigate(NormalMode, answers)
+//          .mustEqual(predecRoutes.CarrierEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+//      }
+//
+//      "to Gross Weight when the answer is Carrier" in {
+//
+//        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+//
+//        LodgingPersonTypePage
+//          .navigate(NormalMode, answers)
+//          .mustEqual(predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        LodgingPersonTypePage
+//          .navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
     }
   }
 }

@@ -26,32 +26,26 @@ class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
   "DeclarationPlacePage" - {
 
-    beRetrievable[String](DeclarationPlacePage)
-
-    beSettable[String](DeclarationPlacePage)
-
-    beRemovable[String](DeclarationPlacePage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Lodging Person" in {
-
-        DeclarationPlacePage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            predecRoutes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
-          )
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        DeclarationPlacePage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to Lodging Person" in {
+//
+//        DeclarationPlacePage
+//          .navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(
+//            predecRoutes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
+//          )
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        DeclarationPlacePage
+//          .navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

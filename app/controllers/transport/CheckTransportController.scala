@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transport._
 import viewmodels.govuk.summarylist._
-import views.html.predec.CheckPredecView
+import views.html.transport.CheckTransportView
 
 class CheckTransportController @Inject()(
   override val messagesApi: MessagesApi,
@@ -32,7 +32,7 @@ class CheckTransportController @Inject()(
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
-  view: CheckPredecView
+  view: CheckTransportView
 ) extends FrontendBaseController
   with I18nSupport {
 

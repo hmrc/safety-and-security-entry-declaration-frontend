@@ -18,10 +18,10 @@ package controllers.predec
 
 import base.SpecBase
 import forms.predec.LocalReferenceNumberFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.predec.LocalReferenceNumberPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +37,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider()
 
   lazy val localReferenceNumberRoute =
-    routes.LocalReferenceNumberController.onPageLoad(NormalMode).url
+    routes.LocalReferenceNumberController.onPageLoad().url
 
   "LocalReferenceNumber Controller" - {
 
@@ -53,7 +53,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[LocalReferenceNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(
+        contentAsString(result) mustEqual view(form)(
           request,
           messages(application)
         ).toString
@@ -81,7 +81,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual LocalReferenceNumberPage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(EmptyWaypoints, expectedAnswers)
           .url
       }
     }
@@ -102,7 +102,7 @@ class LocalReferenceNumberControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm)(
           request,
           messages(application)
         ).toString

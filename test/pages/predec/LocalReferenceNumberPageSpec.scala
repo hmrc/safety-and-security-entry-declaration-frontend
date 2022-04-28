@@ -26,30 +26,24 @@ class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
   "LocalReferenceNumberPage" - {
 
-    beRetrievable[LocalReferenceNumber](LocalReferenceNumberPage)
-
-    beSettable[LocalReferenceNumber](LocalReferenceNumberPage)
-
-    beRemovable[LocalReferenceNumber](LocalReferenceNumberPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Declaration Place" in {
-
-        LocalReferenceNumberPage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(predecRoutes.DeclarationPlaceController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        LocalReferenceNumberPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to Declaration Place" in {
+//
+//        LocalReferenceNumberPage
+//          .navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(predecRoutes.DeclarationPlaceController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        LocalReferenceNumberPage
+//          .navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

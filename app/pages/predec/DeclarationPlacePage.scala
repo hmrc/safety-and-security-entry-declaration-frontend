@@ -28,6 +28,4 @@ case object DeclarationPlacePage extends QuestionPage[String] {
 
   override def toString: String = "declarationPlace"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    predecRoutes.LodgingPersonTypeController.onPageLoad(NormalMode, answers.lrn)
 }

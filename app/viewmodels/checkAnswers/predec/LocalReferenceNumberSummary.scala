@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.predec
 
 import controllers.predec.{routes => predecRoutes}
 import models.{CheckMode, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.predec.LocalReferenceNumberPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,18 +28,13 @@ import viewmodels.implicits._
 
 object LocalReferenceNumberSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LocalReferenceNumberPage).map { answer =>
 
       SummaryListRowViewModel(
         key = "localReferenceNumber.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer.value).toString),
-        actions = Seq(
-          ActionItemViewModel(
-            "site.change",
-            predecRoutes.LocalReferenceNumberController.onPageLoad(CheckMode).url
-          ).withVisuallyHiddenText(messages("localReferenceNumber.change.hidden"))
-        )
+        actions = Nil
       )
     }
 }

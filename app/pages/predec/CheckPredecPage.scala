@@ -16,16 +16,17 @@
 
 package pages.predec
 
-import controllers.predec.{routes => predecRoutes}
-import models.UserAnswers
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import controllers.predec.routes
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, TaskListPage, Waypoints}
 import play.api.mvc.Call
 
-case object TotalGrossWeightPage extends QuestionPage[BigDecimal] {
+object CheckPredecPage extends CheckAnswersPage {
+  override val urlFragment: String = "check-predec"
 
-  override def path: JsPath = JsPath \ toString
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CheckPredecController.onPageLoad(waypoints, lrn)
 
-  override def toString: String = "totalGrossWeight"
-
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    TaskListPage
 }

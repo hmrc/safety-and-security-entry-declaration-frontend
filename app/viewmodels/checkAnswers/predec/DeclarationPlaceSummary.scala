@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.predec
 
 import controllers.predec.{routes => predecRoutes}
 import models.{CheckMode, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.predec.DeclarationPlacePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,7 +28,8 @@ import viewmodels.implicits._
 
 object DeclarationPlaceSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DeclarationPlacePage).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +38,7 @@ object DeclarationPlaceSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            predecRoutes.DeclarationPlaceController.onPageLoad(CheckMode, answers.lrn).url
+            DeclarationPlacePage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("declarationPlace.change.hidden"))
         )
       )

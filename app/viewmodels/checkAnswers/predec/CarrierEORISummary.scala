@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.predec
 
 import controllers.predec.{routes => predecRoutes}
 import models.{CheckMode, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.predec.CarrierEORIPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,7 +28,8 @@ import viewmodels.implicits._
 
 object CarrierEORISummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(CarrierEORIPage).map { answer =>
 
       SummaryListRowViewModel(
@@ -36,7 +38,7 @@ object CarrierEORISummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            predecRoutes.CarrierEORIController.onPageLoad(CheckMode, answers.lrn).url
+            CarrierEORIPage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("carrierEORI.change.hidden"))
         )
       )

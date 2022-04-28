@@ -26,30 +26,24 @@ class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "TotalGrossWeightPage" - {
 
-    beRetrievable[BigDecimal](TotalGrossWeightPage)
-
-    beSettable[BigDecimal](TotalGrossWeightPage)
-
-    beRemovable[BigDecimal](TotalGrossWeightPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Check Predec" in {
-
-        TotalGrossWeightPage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        TotalGrossWeightPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to Check Predec" in {
+//
+//        TotalGrossWeightPage
+//          .navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        TotalGrossWeightPage
+//          .navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

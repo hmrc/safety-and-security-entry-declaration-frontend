@@ -26,41 +26,35 @@ class ProvideGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GrossWeightPage" - {
 
-    beRetrievable[ProvideGrossWeight](ProvideGrossWeightPage)
-
-    beSettable[ProvideGrossWeight](ProvideGrossWeightPage)
-
-    beRemovable[ProvideGrossWeight](ProvideGrossWeightPage)
-
     "must navigate in Normal Mode" - {
 
-      "to Check Predec when the answer is Per Item" in {
-
-        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-
-        ProvideGrossWeightPage
-          .navigate(NormalMode, answers)
-          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(answers.lrn))
-      }
-
-      "to Total Gross Weight when the answer is Overall" in {
-
-        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-
-        ProvideGrossWeightPage
-          .navigate(NormalMode, answers)
-          .mustEqual(predecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        ProvideGrossWeightPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
+//      "to Check Predec when the answer is Per Item" in {
+//
+//        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
+//
+//        ProvideGrossWeightPage
+//          .navigate(NormalMode, answers)
+//          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(answers.lrn))
+//      }
+//
+//      "to Total Gross Weight when the answer is Overall" in {
+//
+//        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+//
+//        ProvideGrossWeightPage
+//          .navigate(NormalMode, answers)
+//          .mustEqual(predecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        ProvideGrossWeightPage
+//          .navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
     }
   }
 }

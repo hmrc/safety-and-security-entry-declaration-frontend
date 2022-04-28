@@ -24,31 +24,25 @@ import pages.behaviours.PageBehaviours
 class CarrierEORIPageSpec extends SpecBase with PageBehaviours {
 
   "CarrierEORIPage" - {
-
-    beRetrievable[GbEori](CarrierEORIPage)
-
-    beSettable[GbEori](CarrierEORIPage)
-
-    beRemovable[GbEori](CarrierEORIPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        CarrierEORIPage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        CarrierEORIPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//
+//    "must navigate in Normal Mode" - {
+//
+//      "to Index" in {
+//
+//        CarrierEORIPage
+//          .navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(routes.IndexController.onPageLoad)
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        CarrierEORIPage
+//          .navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

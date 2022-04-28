@@ -18,8 +18,8 @@ package controllers.predec
 
 import controllers.actions._
 import forms.predec.DeclarationPlaceFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.predec.DeclarationPlacePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.predec.DeclarationPlaceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationPlaceController @Inject() (
@@ -44,7 +45,7 @@ class DeclarationPlaceController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(DeclarationPlacePage) match {
@@ -52,21 +53,21 @@ class DeclarationPlaceController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, waypoints, lrn))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DeclarationPlacePage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(DeclarationPlacePage.navigate(mode, updatedAnswers))
+            } yield Redirect(DeclarationPlacePage.navigate(waypoints, updatedAnswers))
         )
     }
 }

@@ -30,13 +30,4 @@ case object ProvideGrossWeightPage extends QuestionPage[ProvideGrossWeight] {
 
   override def toString: String = "provideGrossWeight"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(ProvideGrossWeightPage) match {
-      case Some(ProvideGrossWeight.PerItem) =>
-        predecRoutes.CheckPredecController.onPageLoad(answers.lrn)
-      case Some(ProvideGrossWeight.Overall) =>
-        predecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn)
-      case _ =>
-        routes.JourneyRecoveryController.onPageLoad()
-    }
 }

@@ -19,10 +19,10 @@ package controllers.predec
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.predec.CarrierEORIFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.predec.CarrierEORIPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,8 +36,9 @@ class CarrierEORIControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new CarrierEORIFormProvider()
   private val form = formProvider()
+  private val waypoints = EmptyWaypoints
 
-  private lazy val carrierEORIRoute = routes.CarrierEORIController.onPageLoad(NormalMode, lrn).url
+  private lazy val carrierEORIRoute = routes.CarrierEORIController.onPageLoad(waypoints, lrn).url
 
   "CarrierEORI Controller" - {
 
@@ -53,7 +54,7 @@ class CarrierEORIControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[CarrierEORIView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -74,7 +75,7 @@ class CarrierEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(eori), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill(eori), waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -102,7 +103,7 @@ class CarrierEORIControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CarrierEORIPage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -124,7 +125,7 @@ class CarrierEORIControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(
           request,
           messages(application)
         ).toString
