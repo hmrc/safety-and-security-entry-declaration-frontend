@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package models
+package models.completion.downstream
 
-import play.api.libs.json.Json
+import java.time.Instant
 
-/**
- * Movement Reference Number (MRN) is the remote unique identifier for the ENS declaration
- */
-case class MovementReferenceNumber(value: String) extends AnyVal
-
-object MovementReferenceNumber {
-  implicit val format = Json.format[MovementReferenceNumber]
+sealed trait DeclarationTimePlace {
+  val place: String
+  val datetime: Instant
 }
+
+case class SubmissionTimePlace(place: String, datetime: Instant) extends DeclarationTimePlace
+case class AmendmentTimePlace(place: String, datetime: Instant) extends DeclarationTimePlace

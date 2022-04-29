@@ -22,11 +22,11 @@ import scala.xml.XML
 
 import uk.gov.hmrc.http._
 
-import models.completion.downstream.{CorrelationId, Outcome, Submission}
-import serialisation.xml.{ResponseFormats, SubmissionFormats}
+import models.completion.downstream.{CorrelationId, Declaration, Outcome}
+import serialisation.xml.{DeclarationFormats, ResponseFormats}
 import serialisation.xml.XmlImplicits._
 
-trait DeclarationConnecting extends SubmissionFormats {
+trait DeclarationConnecting extends DeclarationFormats {
   import DeclarationConnecting._
 
   protected val storeUrl: URL
@@ -35,7 +35,7 @@ trait DeclarationConnecting extends SubmissionFormats {
 
   protected implicit val ec: ExecutionContext
 
-  def submitDeclaration(declaration: Submission)(
+  def submitDeclaration(declaration: Declaration)(
     implicit hc: HeaderCarrier
   ): Future[CorrelationId] = {
     httpClient.POSTString[CorrelationId](storeUrl, declaration.toXml.toString)

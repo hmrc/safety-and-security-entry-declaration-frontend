@@ -16,22 +16,22 @@
 
 package serialisation.xml
 
+import models.completion.downstream.MessageType
 import models.completion.{CustomsOffice, Itinerary}
-import models.completion.downstream.{GoodsItem, Header, Metadata, Submission}
+import models.completion.downstream.{GoodsItem, Header, Metadata, Declaration}
 
-import scala.xml.NodeSeq
+import scala.xml.{Attribute, Elem, NodeSeq, Null, TopScope}
 import serialisation.xml.XmlImplicits._
 
-trait SubmissionFormats
+trait DeclarationFormats
   extends CustomsOfficeFormats
   with GoodsItemFormats
   with HeaderFormats
   with ItineraryFormats
   with MetadataFormats {
 
-  implicit val SubmissionFmt = new Format[Submission] {
-
-    override def encode(sub: Submission): NodeSeq = {
+  implicit val decFmt = new Format[Declaration] {
+    override def encode(sub: Declaration): NodeSeq = {
 
       val goodsItems: NodeSeq = sub.goodsItems map {
         gi => <GOOITEGDS>{gi.toXml}</GOOITEGDS>
@@ -49,20 +49,34 @@ trait SubmissionFormats
         c => <TRACONCO1>{rootConsignorFormat.encode(c)}</TRACONCO1>
       }.toSeq
 
-      <ie:CC315A xmlns:ie="http://ics.dgtaxud.ec/CC315A">
-        {sub.metadata.toXml}
-        {sub.header.toXml}
-        {consignor}
-        {goodsItems}
-        {sub.itinerary.toXml}
-        <PERLODSUMDEC>{lodgingPersonFormat.encode(sub.declarer)}</PERLODSUMDEC>
-        {seals}
-        <CUSOFFFENT730>{sub.customsOffice.toXml}</CUSOFFFENT730>
-        {carrier}
-      </ie:CC315A>
+      val label = sub.metadata.messageType match {
+        case MessageType.Submission => "CC315A"
+        case MessageType.Amendment => "CC313A"
+      }
+
+      val content: NodeSeq = Seq(
+        sub.metadata.toXml,
+        sub.header.toXml,
+        consignor,
+        goodsItems,
+        sub.itinerary.toXml,
+        <PERLODSUMDEC>{lodgingPersonFormat.encode(sub.declarer)}</PERLODSUMDEC>,
+        seals,
+        <CUSOFFFENT730>{sub.customsOffice.toXml}</CUSOFFFENT730>,
+        carrier
+      ).flatten
+
+      Elem(
+        prefix = "ie",
+        label = label,
+        attributes = Attribute("xmlns", "ie", s"http://ics.dgtaxud.ec/$label", Null),
+        scope = TopScope,
+        minimizeEmpty = false,
+        content: _*
+      )
     }
 
-    override def decode(data: NodeSeq): Submission = Submission(
+    override def decode(data: NodeSeq): Declaration = Declaration(
       metadata = data.parseXml[Metadata],
       header = (data \ "HEAHEA").parseXml[Header],
       goodsItems = (data \ "GOOITEGDS").map { _.parseXml[GoodsItem] }.toList,

@@ -16,20 +16,17 @@
 
 package models.completion.downstream
 
-import java.time.Instant
-
-import models.LocalReferenceNumber
+import models.ReferenceNumber
 
 /**
  * ENS declaration payload header element (HEAHEA)
  */
 case class Header(
-  lrn: LocalReferenceNumber,
+  ref: ReferenceNumber,
   transportDetails: TransportDetails,
   itemCount: Int,
   packageCount: Int,
   grossMass: Option[BigDecimal],
-  declarationPlace: String,
   conveyanceReferenceNumber: String,
-  datetime: Instant
+  timePlace: DeclarationTimePlace
 )

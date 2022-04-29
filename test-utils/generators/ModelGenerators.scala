@@ -133,35 +133,6 @@ trait ModelGenerators extends StringGenerators {
       } yield PlaceOfUnloading(id, country, place)
     }
 
-  implicit lazy val arbitrarySubmission: Arbitrary[Submission] =
-    Arbitrary {
-      for {
-        metadata <- arbitrary[Metadata]
-        header <- arbitrary[Header]
-        goodsItemsLen <- Gen.choose(1, 5)
-        goodsItems <- Gen.listOfN(goodsItemsLen, arbitrary[GoodsItem])
-        itinerary <- arbitrary[Itinerary]
-        declarer <- arbitrary[Party.ByEori]
-        sealsLen <- Gen.choose(1, 5)
-        seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
-        customsOffice <- arbitrary[CustomsOfficePayload]
-        carrier <- Gen.option(arbitrary[Party])
-        consignor <- Gen.option(arbitrary[Party])
-      } yield {
-        Submission(
-          metadata,
-          header,
-          goodsItems.zipWithIndex.map { case (item, i) => item.copy(itemNumber = i + 1) },
-          itinerary,
-          declarer,
-          seals,
-          customsOffice,
-          carrier,
-          consignor
-        )
-      }
-    }
-
   implicit lazy val arbitraryPlaceOfLoading: Arbitrary[PlaceOfLoading] =
     Arbitrary {
       for {
@@ -282,6 +253,19 @@ trait ModelGenerators extends StringGenerators {
       } yield ArrivalDateAndTime(date, LocalTime.of(hour, minute))
     }
 
+  // MRNs fit the regex [0-9]{2}[A-Z]{2}[A-Z0-9]{13}[0-9]
+  implicit lazy val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = {
+    Arbitrary {
+      for {
+        twoDigits <- Gen.listOfN(2, Gen.numChar)
+        thirteenAlphaNum <- Gen.listOfN(13, Gen.alphaNumChar)
+        oneDigit <- Gen.numChar
+      } yield MovementReferenceNumber(
+        s"${twoDigits.mkString}GB${thirteenAlphaNum.mkString.toUpperCase}$oneDigit"
+      )
+    }
+  }
+
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       stringsWithMaxLength(22).map(LocalReferenceNumber.apply)
@@ -315,6 +299,30 @@ trait ModelGenerators extends StringGenerators {
     } yield TransportDetails(mode, identifier, nationality)
   }
 
+  implicit lazy val arbitrarySubmissionTimePlace: Arbitrary[SubmissionTimePlace] = Arbitrary {
+    for {
+      datetime <- arbitrary[Instant](arbitraryRecentInstant)
+      declarationPlace <- stringsWithMaxLength(35)
+    } yield {
+      SubmissionTimePlace(
+        declarationPlace,
+        datetime
+      )
+    }
+  }
+
+  implicit lazy val arbitraryAmendmentTimePlace: Arbitrary[AmendmentTimePlace] = Arbitrary {
+    for {
+      datetime <- arbitrary[Instant](arbitraryRecentInstant)
+      declarationPlace <- stringsWithMaxLength(35)
+    } yield {
+      AmendmentTimePlace(
+        declarationPlace,
+        datetime
+      )
+    }
+  }
+
   implicit lazy val arbitraryPayloadHeader: Arbitrary[Header] = Arbitrary {
     for {
       lrn <- arbitrary[LocalReferenceNumber]
@@ -322,9 +330,8 @@ trait ModelGenerators extends StringGenerators {
       itemCount <- Gen.choose(1, 3)
       packageCount <- Gen.choose(1, 3)
       grossMass <- Gen.option(grossMassGen)
-      declarationPlace <- stringsWithMaxLength(35)
       conveyanceReferenceNumber <- stringsWithMaxLength(35)
-      datetime <- arbitrary[Instant](arbitraryRecentInstant)
+      timePlace <- arbitrary[SubmissionTimePlace]
     } yield {
       Header(
         lrn,
@@ -332,9 +339,8 @@ trait ModelGenerators extends StringGenerators {
         itemCount,
         packageCount,
         grossMass,
-        declarationPlace,
         conveyanceReferenceNumber,
-        datetime
+        timePlace
       )
     }
   }
@@ -367,6 +373,53 @@ trait ModelGenerators extends StringGenerators {
   implicit lazy val arbitraryMessageType: Arbitrary[MessageType] = Arbitrary {
     Gen.oneOf(MessageType.Submission, MessageType.Amendment)
   }
+
+  // Represents a newly submitted declaration, with submission-specific values
+  protected val submissionGen: Gen[Declaration] = {
+    for {
+      metadata <- arbitrary[Metadata]
+      header <- arbitrary[Header]
+      lrn <- arbitrary[LocalReferenceNumber]
+      timePlace <- arbitrary[SubmissionTimePlace]
+      goodsItemsLen <- Gen.choose(1, 5)
+      goodsItems <- Gen.listOfN(goodsItemsLen, arbitrary[GoodsItem])
+      itinerary <- arbitrary[Itinerary]
+      declarer <- arbitrary[Party.ByEori]
+      sealsLen <- Gen.choose(1, 5)
+      seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
+      customsOffice <- arbitrary[CustomsOfficePayload]
+      carrier <- Gen.option(arbitrary[Party])
+      consignor <- Gen.option(arbitrary[Party])
+    } yield {
+      Declaration(
+        metadata.copy(messageType = MessageType.Submission),
+        header.copy(ref = lrn, timePlace = timePlace),
+        goodsItems.zipWithIndex.map { case (item, i) => item.copy(itemNumber = i + 1) },
+        itinerary,
+        declarer,
+        seals,
+        customsOffice,
+        carrier,
+        consignor
+      )
+    }
+  }
+
+  // Represents an amendment to a declaration, with amendment-specific values
+  protected val amendmentGen: Gen[Declaration] = {
+    for {
+      dec <- submissionGen
+      mrn <- arbitrary[MovementReferenceNumber]
+      timePlace <- arbitrary[AmendmentTimePlace]
+    } yield {
+      dec.copy(
+        metadata = dec.metadata.copy(messageType = MessageType.Amendment),
+        header = dec.header.copy(ref = mrn, timePlace = timePlace)
+      )
+    }
+  }
+
+  implicit lazy val arbitraryDeclaration = Arbitrary(Gen.oneOf(submissionGen, amendmentGen))
 
   implicit lazy val arbitraryMetadata: Arbitrary[Metadata] = Arbitrary {
     for {
