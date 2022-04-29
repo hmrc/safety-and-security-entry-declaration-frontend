@@ -26,8 +26,8 @@ import queries.goods.DeriveNumberOfContainers
 
 final case class AddItemContainerNumberPage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  override val normalModeUrlFragment: String = s"add-container-${itemIndex.position}"
-  override val checkModeUrlFragment: String = s"change-container-${itemIndex.position}"
+  override val normalModeUrlFragment: String = s"add-container-${itemIndex.display}"
+  override val checkModeUrlFragment: String = s"change-container-${itemIndex.display}"
 
   override def path: JsPath = JsPath \ "addContainerNumber"
 

@@ -26,8 +26,8 @@ import queries.goods.DeriveNumberOfPackages
 
 case class AddPackagePage(itemIndex: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  override val normalModeUrlFragment: String = s"add-package-${itemIndex.position}"
-  override val checkModeUrlFragment: String = s"change-package-${itemIndex.position}"
+  override val normalModeUrlFragment: String = s"add-package-${itemIndex.display}"
+  override val checkModeUrlFragment: String = s"change-package-${itemIndex.display}"
 
   override def path: JsPath = JsPath \ "addPackage"
 

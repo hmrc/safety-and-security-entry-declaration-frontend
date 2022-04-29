@@ -25,8 +25,8 @@ import queries.goods.DeriveNumberOfDocuments
 
 final case class AddDocumentPage(index: Index) extends QuestionPage[Boolean] with AddItemPage {
 
-  override val normalModeUrlFragment: String = s"add-document-${index.position}"
-  override val checkModeUrlFragment: String = s"change-document-${index.position}"
+  override val normalModeUrlFragment: String = s"add-document-${index.display}"
+  override val checkModeUrlFragment: String = s"change-document-${index.display}"
 
   override def path: JsPath = JsPath \ "addDocument"
 
