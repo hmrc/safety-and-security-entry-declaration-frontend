@@ -26,58 +26,44 @@ class CarrierNamePageSpec extends SpecBase with PageBehaviours {
 
   "CarrierNamePage" - {
 
-//    "must navigate when there are no waypoints" - {
-//
-//      val waypoints = EmptyWaypoints
-//
-//      "to carrier address" in {
-//
-//        CarrierNamePage(index)
-//          .navigate(waypoints, emptyUserAnswers)
-//          .mustEqual(routes.CarrierAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
-//      }
-//    }
-//
-//    "must navigate when the current waypoint is AddCarrier" - {
-//
-//      val waypoints = Waypoints(List(AddCarrierPage.waypoint(NormalMode)))
-//
-//      "to carrier address" in {
-//
-//        CarrierNamePage(index)
-//          .navigate(waypoints, emptyUserAnswers)
-//          .mustEqual(
-//            routes.CarrierAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index)
-//          )
-//      }
-//    }
-//
-//    "must navigate when the current waypoint is Check Carrier" - {
-//
-//      val waypoints = Waypoints(List(CheckCarrierPage(index).waypoint))
-//
-//      "and Carrier Address has been answered" - {
-//
-//        "to Check Carrier with the current waypoint removed" in {
-//
-//          val answers =
-//            emptyUserAnswers
-//              .set(CarrierAddressPage(index), Address("street", "city", "AA11 1AA", Country("GB", "United Kingdom")))
-//              .success.value
-//
-//          CarrierNamePage(index).navigate(waypoints, answers)
-//            .mustEqual(routes.CheckCarrierController.onPageLoad(EmptyWaypoints, answers.lrn, index))
-//        }
-//      }
-//
-//      "and Carrier Address has not been answered" - {
-//
-//        "to Carrier Address" in {
-//
-//          CarrierNamePage(index).navigate(waypoints, emptyUserAnswers)
-//            .mustEqual(routes.CarrierAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
-//        }
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to carrier address" in {
+
+        CarrierNamePage
+          .navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CarrierAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Carrier" - {
+
+      val waypoints = Waypoints(List(CheckPredecPage.waypoint))
+
+      "and Carrier Address has been answered" - {
+
+        "to Check Carrier with the current waypoint removed" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(CarrierAddressPage, Address("street", "city", "AA11 1AA", Country("GB", "United Kingdom")))
+              .success.value
+
+          CarrierNamePage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+      }
+
+      "and Carrier Address has not been answered" - {
+
+        "to Carrier Address" in {
+
+          CarrierNamePage.navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.CarrierAddressController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+        }
+      }
+    }
   }
 }

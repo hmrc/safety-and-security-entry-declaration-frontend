@@ -17,8 +17,8 @@
 package pages.predec
 
 import controllers.predec.routes
-import models.{Address, LocalReferenceNumber}
-import pages.{QuestionPage, Waypoints}
+import models.{Address, LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,4 +30,7 @@ case object CarrierAddressPage extends QuestionPage[Address] {
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.CarrierAddressController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    ProvideGrossWeightPage
 }

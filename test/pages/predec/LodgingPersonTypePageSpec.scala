@@ -17,44 +17,109 @@
 package pages.predec
 
 import base.SpecBase
-import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{CheckMode, LodgingPersonType, NormalMode}
+import controllers.predec.routes
+import models.{Address, Country, GbEori, LodgingPersonType}
+import models.TraderIdentity.GBEORI
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class LodgingPersonTypePageSpec extends SpecBase with PageBehaviours {
 
   "LodgingPersonTypePage" - {
 
-    "must navigate in Normal Mode" - {
-//
-//      "to Carrier EORI when the answer is Representative" in {
-//
-//        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
-//
-//        LodgingPersonTypePage
-//          .navigate(NormalMode, answers)
-//          .mustEqual(predecRoutes.CarrierEORIController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-//      }
-//
-//      "to Gross Weight when the answer is Carrier" in {
-//
-//        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
-//
-//        LodgingPersonTypePage
-//          .navigate(NormalMode, answers)
-//          .mustEqual(predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//
-//        LodgingPersonTypePage
-//          .navigate(CheckMode, emptyUserAnswers)
-//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-//      }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Carrier Identity when the answer is Representative" in {
+
+        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+
+        LodgingPersonTypePage
+          .navigate(waypoints, answers)
+          .mustEqual(routes.CarrierIdentityController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+
+      "to Gross Weight when the answer is Carrier" in {
+
+        val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+
+        LodgingPersonTypePage
+          .navigate(waypoints, answers)
+          .mustEqual(routes.ProvideGrossWeightController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Predec" - {
+
+      val waypoints = Waypoints(List(CheckPredecPage.waypoint))
+
+      "and the answer is Representative" - {
+
+        "to Check Predec with the current waypoint removed when Carrier Identity has been answered" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+              .set(CarrierIdentityPage, GBEORI).success.value
+
+          LodgingPersonTypePage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+
+        "to Carrier Identity when it has not been answered" in {
+
+          val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+
+          LodgingPersonTypePage.navigate(waypoints, answers)
+            .mustEqual(routes.CarrierIdentityController.onPageLoad(waypoints, answers.lrn))
+        }
+      }
+
+      "and the answer is Carrier" - {
+
+        "to Check Predec with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+
+          LodgingPersonTypePage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+      }
+    }
+
+    "must not alter the user's answers when the answer is Representative" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(CarrierIdentityPage, GBEORI).success.value
+          .set(CarrierEORIPage, GbEori("123456789000")).success.value
+          .set(CarrierNamePage, "name").success.value
+          .set(CarrierAddressPage, Address("street", "town", "postcode", Country("GB", "United Kingdom"))).success.value
+
+      val result = answers.set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+
+      result.get(CarrierIdentityPage).value mustEqual GBEORI
+      result.get(CarrierEORIPage).value mustEqual GbEori("123456789000")
+      result.get(CarrierNamePage).value mustEqual "name"
+      result.get(CarrierAddressPage).value mustEqual Address("street", "town", "postcode", Country("GB", "United Kingdom"))
+    }
+
+    "must remove Carrier identity, EORI, name and address when the answer is Carrier" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(CarrierIdentityPage, GBEORI).success.value
+          .set(CarrierEORIPage, GbEori("123456789000")).success.value
+          .set(CarrierNamePage, "name").success.value
+          .set(CarrierAddressPage, Address("street", "town", "postcode", Country("GB", "United Kingdom"))).success.value
+
+      val result = answers.set(LodgingPersonTypePage, LodgingPersonType.Carrier).success.value
+
+      result.get(CarrierIdentityPage) must not be defined
+      result.get(CarrierEORIPage) must not be defined
+      result.get(CarrierNamePage) must not be defined
+      result.get(CarrierAddressPage) must not be defined
     }
   }
 }

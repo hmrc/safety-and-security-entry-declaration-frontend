@@ -17,33 +17,34 @@
 package pages.predec
 
 import base.SpecBase
-import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.predec.routes
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class TotalGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "TotalGrossWeightPage" - {
 
-//    "must navigate in Normal Mode" - {
-//
-//      "to Check Predec" in {
-//
-//        TotalGrossWeightPage
-//          .navigate(NormalMode, emptyUserAnswers)
-//          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//
-//        TotalGrossWeightPage
-//          .navigate(CheckMode, emptyUserAnswers)
-//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Check Predec" in {
+
+        TotalGrossWeightPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckPredecController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Predec" - {
+
+      val waypoints = Waypoints(List(CheckPredecPage.waypoint))
+
+      "to Check Predec with the current waypoint removed" in {
+
+        TotalGrossWeightPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
+      }
+    }
   }
 }

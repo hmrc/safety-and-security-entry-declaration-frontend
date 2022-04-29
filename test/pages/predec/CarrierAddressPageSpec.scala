@@ -18,47 +18,32 @@ package pages.predec
 
 import base.SpecBase
 import controllers.predec.routes
-import models.{CheckMode, NormalMode}
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class CarrierAddressPageSpec extends SpecBase with PageBehaviours {
 
   "CarrierAddressPage" - {
 
-//    "must navigate when there are no waypoints" - {
-//
-//      val waypoints = EmptyWaypoints
-//
-//      "to Check Carrier" in {
-//
-//        CarrierAddressPage(index)
-//          .navigate(waypoints, emptyUserAnswers)
-//          .mustEqual(routes.CheckCarrierController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
-//      }
-//    }
-//
-//    "must navigate when the current waypoint is Add Carrier" - {
-//
-//      val waypoints = Waypoints(List(AddCarrierPage.waypoint(NormalMode)))
-//
-//      "to Check carrier" in {
-//
-//        CarrierAddressPage(index)
-//          .navigate(waypoints, emptyUserAnswers)
-//          .mustEqual(routes.CheckCarrierController.onPageLoad(waypoints, emptyUserAnswers.lrn, index))
-//      }
-//    }
-//
-//    "must navigate when the current waypoint is Check Carrier" - {
-//
-//      val waypoints = Waypoints(List(CheckCarrierPage(index).waypoint))
-//
-//      "to Check Carrier with the current waypoint removed" in {
-//        CarrierAddressPage(index)
-//          .navigate(waypoints, emptyUserAnswers)
-//          .mustEqual(routes.CheckCarrierController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn, index))
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Provide Gross Weight" in {
+
+        CarrierAddressPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.ProvideGrossWeightController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+
+      "must navigate when the current waypoint is Check Predec" - {
+
+        val waypoints = Waypoints(List(CheckPredecPage.waypoint))
+
+        "to Check Carrier with the current waypoint removed" in {
+          CarrierAddressPage.navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
+        }
+      }
+    }
   }
 }

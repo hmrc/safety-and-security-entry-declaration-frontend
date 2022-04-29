@@ -16,9 +16,9 @@
 
 package pages.predec
 
-import controllers.predec.{routes => predecRoutes}
-import models.UserAnswers
-import pages.QuestionPage
+import controllers.predec.routes
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,4 +28,9 @@ case object TotalGrossWeightPage extends QuestionPage[BigDecimal] {
 
   override def toString: String = "totalGrossWeight"
 
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.TotalGrossWeightController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    CheckPredecPage
 }

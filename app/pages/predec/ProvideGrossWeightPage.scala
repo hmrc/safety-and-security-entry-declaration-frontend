@@ -16,13 +16,14 @@
 
 package pages.predec
 
-import controllers.predec.{routes => predecRoutes}
-import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{NormalMode, ProvideGrossWeight, UserAnswers}
-import pages.QuestionPage
+import controllers.predec.routes
+import models.ProvideGrossWeight.{Overall, PerItem}
+import models.{LocalReferenceNumber, ProvideGrossWeight, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object ProvideGrossWeightPage extends QuestionPage[ProvideGrossWeight] {
 
@@ -30,4 +31,20 @@ case object ProvideGrossWeightPage extends QuestionPage[ProvideGrossWeight] {
 
   override def toString: String = "provideGrossWeight"
 
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.ProvideGrossWeightController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page = {
+    answers.get(this).map {
+      case Overall => TotalGrossWeightPage
+      case PerItem => CheckPredecPage
+    }.orRecover
+  }
+
+  override def cleanup(value: Option[ProvideGrossWeight], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(PerItem)) {
+      userAnswers.remove(TotalGrossWeightPage)
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

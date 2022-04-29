@@ -18,43 +18,53 @@ package pages.predec
 
 import base.SpecBase
 import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode, ProvideGrossWeight}
+import models.ProvideGrossWeight
+import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 
 class ProvideGrossWeightPageSpec extends SpecBase with PageBehaviours {
 
   "GrossWeightPage" - {
 
-    "must navigate in Normal Mode" - {
+    "must navigate when there are no waypoints" - {
 
-//      "to Check Predec when the answer is Per Item" in {
-//
-//        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-//
-//        ProvideGrossWeightPage
-//          .navigate(NormalMode, answers)
-//          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(answers.lrn))
-//      }
-//
-//      "to Total Gross Weight when the answer is Overall" in {
-//
-//        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
-//
-//        ProvideGrossWeightPage
-//          .navigate(NormalMode, answers)
-//          .mustEqual(predecRoutes.TotalGrossWeightController.onPageLoad(NormalMode, answers.lrn))
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//
-//        ProvideGrossWeightPage
-//          .navigate(CheckMode, emptyUserAnswers)
-//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-//      }
+      val waypoints = EmptyWaypoints
+
+      "to Check Predec when the answer is Per Item" in {
+
+        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
+
+        ProvideGrossWeightPage
+          .navigate(waypoints, answers)
+          .mustEqual(predecRoutes.CheckPredecController.onPageLoad(waypoints, answers.lrn))
+      }
+
+      "to Total Gross Weight when the answer is Overall" in {
+
+        val answers = emptyUserAnswers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+
+        ProvideGrossWeightPage
+          .navigate(waypoints, answers)
+          .mustEqual(predecRoutes.TotalGrossWeightController.onPageLoad(waypoints, answers.lrn))
+      }
+    }
+
+    "must not remove Total Gross Weight when the answer is Overall" in {
+
+      val answers = emptyUserAnswers.set(TotalGrossWeightPage, BigDecimal(1)).success.value
+
+      val result = answers.set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+
+      result.get(TotalGrossWeightPage).value mustEqual BigDecimal(1)
+    }
+
+    "must remove Total Gross Weight when the answer is PerItem" in {
+
+      val answers = emptyUserAnswers.set(TotalGrossWeightPage, BigDecimal(1)).success.value
+
+      val result = answers.set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
+
+      result.get(TotalGrossWeightPage) must not be defined
     }
   }
 }

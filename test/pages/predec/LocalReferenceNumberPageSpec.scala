@@ -17,33 +17,34 @@
 package pages.predec
 
 import base.SpecBase
-import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, NormalMode}
+import controllers.predec.routes
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class LocalReferenceNumberPageSpec extends SpecBase with PageBehaviours {
 
   "LocalReferenceNumberPage" - {
 
-//    "must navigate in Normal Mode" - {
-//
-//      "to Declaration Place" in {
-//
-//        LocalReferenceNumberPage
-//          .navigate(NormalMode, emptyUserAnswers)
-//          .mustEqual(predecRoutes.DeclarationPlaceController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//
-//        LocalReferenceNumberPage
-//          .navigate(CheckMode, emptyUserAnswers)
-//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Declaration Place" in {
+
+        LocalReferenceNumberPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.DeclarationPlaceController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Predec" - {
+
+      val waypoints = Waypoints(List(CheckPredecPage.waypoint))
+
+      "to Check Predec with the current waypoint removed" in {
+
+        LocalReferenceNumberPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
+      }
+    }
   }
 }

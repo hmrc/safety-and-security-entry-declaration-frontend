@@ -21,11 +21,17 @@ import models.{CheckMode, Index, NormalMode}
 import pages.consignees._
 import pages.consignors._
 import pages.goods.{AddDocumentPage, AddItemContainerNumberPage, AddPackagePage, CheckGoodsItemPage, CheckPackageItemPage}
+import pages.predec.CheckPredecPage
 import pages.routedetails._
 
 class WaypointSpec extends SpecBase {
 
   ".fromString" - {
+
+    "must return CheckPredec when given its waypoint" in {
+
+      Waypoint.fromString("check-predec").value mustEqual CheckPredecPage.waypoint
+    }
 
     "must return AddConsigneePage when given its normal-mode waypoint" in {
 
