@@ -51,6 +51,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
     s"$exitSurveyBaseUrl/feedback/safety-and-security-entry-declaration-frontend"
 
   val declarationStoreUrl = configuration.get[Service]("microservice.services.iced-store").baseUrl
+  val declarationOutcomesUrl = configuration.get[Service]("microservice.services.iced-outcome").baseUrl
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")

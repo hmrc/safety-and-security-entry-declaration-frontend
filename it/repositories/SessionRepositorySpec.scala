@@ -49,10 +49,8 @@ class SessionRepositorySpec
     UserAnswers(eori2, lrn1, Map.empty, Json.obj("bar" -> "baz"), Instant.ofEpochSecond(3))
 
   private val corrId1 = CorrelationId("abcdef")
-  private val event1 = DeclarationEvent(MessageType.Submission, outcome = None)
-  private val outcome1 = {
-    Outcome.Accepted(corrId1, event1.messageType, instant, MovementReferenceNumber("123"))
-  }
+  private val event1 = DeclarationEvent(MessageType.Submission, instant, outcome = None)
+  private val outcome1 = Outcome.Accepted(corrId1, MovementReferenceNumber("123"))
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1

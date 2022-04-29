@@ -27,8 +27,8 @@ class UserAnswersSpec extends SpecBase {
   private val corrId = CorrelationId("123456")
   private val mrn = MovementReferenceNumber("654321")
   private val messageType = MessageType.Submission
-  private val outcome = Outcome.Accepted(corrId, messageType, Instant.now, mrn)
-  private val incompleteEvent = DeclarationEvent(messageType, outcome = None)
+  private val outcome = Outcome.Accepted(corrId, mrn)
+  private val incompleteEvent = DeclarationEvent(messageType, Instant.now, outcome = None)
   private val completeEvent = incompleteEvent.copy(outcome = Some(outcome))
 
   "UserAnswers" - {

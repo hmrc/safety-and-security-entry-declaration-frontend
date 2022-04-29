@@ -16,6 +16,8 @@
 
 package models.completion
 
+import java.time.Instant
+
 import play.api.libs.json._
 
 import models.completion.downstream.{MessageType, Outcome}
@@ -23,7 +25,11 @@ import models.completion.downstream.{MessageType, Outcome}
 /**
  * Represents details of a declaration which has been made to the API
  */
-case class DeclarationEvent(messageType: MessageType, outcome: Option[Outcome])
+case class DeclarationEvent(
+  messageType: MessageType,
+  timestamp: Instant,
+  outcome: Option[Outcome]
+)
 
 object DeclarationEvent {
   implicit val declarationEventFormat = Json.format[DeclarationEvent]

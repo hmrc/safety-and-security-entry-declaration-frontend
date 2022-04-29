@@ -24,24 +24,11 @@ import models.MovementReferenceNumber
 
 sealed trait Outcome {
   val correlationId: CorrelationId
-  val messageType: MessageType
-  val timestamp: Instant
 }
 
 object Outcome {
-  case class Accepted(
-    correlationId: CorrelationId,
-    messageType: MessageType,
-    timestamp: Instant,
-    mrn: MovementReferenceNumber
-  ) extends Outcome
-
-  case class Rejected(
-    correlationId: CorrelationId,
-    messageType: MessageType,
-    timestamp: Instant,
-    reason: RejectionReason
-  ) extends Outcome
+  case class Accepted(correlationId: CorrelationId, mrn: MovementReferenceNumber) extends Outcome
+  case class Rejected(correlationId: CorrelationId, reason: RejectionReason) extends Outcome
 
   implicit val acceptedFormat = Json.format[Accepted]
   implicit val rejectedFormat = Json.format[Rejected]

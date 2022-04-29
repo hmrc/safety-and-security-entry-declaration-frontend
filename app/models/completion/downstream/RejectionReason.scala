@@ -18,7 +18,7 @@ package models.completion.downstream
 
 import play.api.libs.json.Json
 
-case class RejectionReason(code: Option[Int], desc: String)
+case class RejectionReason(code: Option[String], desc: Option[String])
 
 object RejectionReason {
   implicit val format = Json.format[RejectionReason]

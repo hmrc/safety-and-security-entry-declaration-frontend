@@ -28,4 +28,5 @@ class DeclarationConnector @Inject() (
   override protected val httpClient: HttpClient
 )(override protected implicit val ec: ExecutionContext) extends DeclarationConnecting {
   override protected val storeUrl = cfg.declarationStoreUrl
+  override protected val outcomesUrl = cfg.declarationOutcomesUrl
 }

@@ -20,9 +20,9 @@ import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
 
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http._
 
-import models.completion.downstream.{CorrelationId, Submission}
+import models.completion.downstream.{CorrelationId, Outcome, Submission}
 import serialisation.xml.{ResponseFormats, SubmissionFormats}
 import serialisation.xml.XmlImplicits._
 
@@ -30,6 +30,7 @@ trait DeclarationConnecting extends SubmissionFormats {
   import DeclarationConnecting._
 
   protected val storeUrl: URL
+  protected val outcomesUrl: URL
   protected val httpClient: HttpClient
 
   protected implicit val ec: ExecutionContext
@@ -39,6 +40,20 @@ trait DeclarationConnecting extends SubmissionFormats {
   ): Future[CorrelationId] = {
     httpClient.POSTString[CorrelationId](storeUrl, declaration.toXml.toString)
   }
+
+  def listOutcomes()(implicit hc: HeaderCarrier): Future[List[CorrelationId]] = {
+    httpClient.GET[List[CorrelationId]](outcomesUrl)
+  }
+
+  def fetchOutcome(
+    correlationId: CorrelationId
+  )(implicit hc: HeaderCarrier): Future[Outcome] = {
+    httpClient.GET[Outcome](url"$outcomesUrl/${correlationId.id}")
+  }
+
+  def ackOutcome(correlationId: CorrelationId)(implicit hc: HeaderCarrier): Future[Unit] = {
+    httpClient.DELETE[Unit](url"$outcomesUrl/${correlationId.id}")
+  }
 }
 
 object DeclarationConnecting extends ResponseFormats {
@@ -47,16 +62,50 @@ object DeclarationConnecting extends ResponseFormats {
   )
   class BadRequestException(body: String) extends RequestFailedException(400, body)
 
+  private def handleFailures[T](response: HttpResponse)(onSuccess: => T): T = {
+    response.status match {
+      case 400 =>
+        throw new BadRequestException(response.body)
+      case status if status < 200 || status >= 300 =>
+        throw new RequestFailedException(status, response.body)
+      case _ =>
+        onSuccess
+    }
+  }
+
   implicit val declarationResponseReads: HttpReads[CorrelationId] = new HttpReads[CorrelationId] {
     override def read(method: String, url: String, response: HttpResponse): CorrelationId = {
-      response.status match {
-        case 400 =>
-          throw new BadRequestException(response.body)
-        case status if status < 200 || status >= 300 =>
-          throw new RequestFailedException(status, response.body)
-        case _ =>
-          XML.loadString(response.body).parseXml[CorrelationId]
+      handleFailures(response) {
+        XML.loadString(response.body).parseXml[CorrelationId]
       }
+    }
+  }
+
+  implicit val listOutcomesResponseReads: HttpReads[List[CorrelationId]] = {
+    new HttpReads[List[CorrelationId]] {
+      override def read(method: String, url: String, response: HttpResponse): List[CorrelationId] = {
+        handleFailures(response) {
+          if (response.status == 204) {
+            Nil
+          } else {
+            XML.loadString(response.body).parseXml[List[CorrelationId]]
+          }
+        }
+      }
+    }
+  }
+
+  implicit val fetchOutcomeResponseReads: HttpReads[Outcome] = new HttpReads[Outcome] {
+    override def read(method: String, url: String, response: HttpResponse): Outcome = {
+      handleFailures(response) {
+        XML.loadString(response.body).parseXml[Outcome]
+      }
+    }
+  }
+
+  implicit val noContentResponseReads: HttpReads[Unit] = new HttpReads[Unit] {
+    override def read(method: String, url: String, response: HttpResponse): Unit = {
+      handleFailures(response)(())
     }
   }
 }
