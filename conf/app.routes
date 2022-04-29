@@ -40,6 +40,15 @@ POST       /:lrn/totalGrossWeight                  controllers.predec.TotalGross
 GET        /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 POST       /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
+GET        /:lrn/carrierName                        controllers.predec.CarrierNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierName                        controllers.predec.CarrierNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierAddress                     controllers.predec.CarrierAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierAddress                     controllers.predec.CarrierAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierIdentity                    controllers.predec.CarrierIdentityController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierIdentity                    controllers.predec.CarrierIdentityController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
 GET        /:lrn/transportMode                        controllers.transport.TransportModeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/transportMode                        controllers.transport.TransportModeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeTransportMode                  controllers.transport.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)

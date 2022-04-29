@@ -18,7 +18,8 @@ package viewmodels.checkAnswers.consignors
 
 import models.{Index, UserAnswers}
 import pages.consignees.ConsigneeAddressPage
-import pages.{CheckAnswersPage, Waypoints, consignors}
+import pages.consignors.ConsignorAddressPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -30,7 +31,7 @@ object ConsignorAddressSummary {
 
   def row(answers: UserAnswers, index: Index, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(consignors.ConsignorAddressPage(index)).map { answer =>
+    answers.get(ConsignorAddressPage(index)).map { answer =>
 
       val address = Seq(
         HtmlFormat.escape(answer.streetAndNumber).toString,

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.predec
 
 import models.UserAnswers
-import pages.predec.DeclarationPlacePage
+import pages.predec.CarrierNamePage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -25,20 +25,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DeclarationPlaceSummary {
+object CarrierNameSummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DeclarationPlacePage).map { answer =>
+    answers.get(CarrierNamePage).map { answer =>
 
       SummaryListRowViewModel(
-        key = "declarationPlace.checkYourAnswersLabel",
+        key = "carrierName.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            DeclarationPlacePage.changeLink(waypoints, answers.lrn, sourcePage).url
-          ).withVisuallyHiddenText(messages("declarationPlace.change.hidden"))
+            CarrierNamePage.changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("carrierName.change.hidden"))
         )
       )
     }

@@ -144,6 +144,24 @@ carrierEORI.checkYourAnswersLabel = GB EORI number
 carrierEORI.error.required = Enter the GB EORI number of the carrier
 carrierEORI.change.hidden = the GB EORI number of the carrier
 
+carrierIdentity.title = How do you want to identify the carrier?
+carrierIdentity.heading = How do you want to identify the carrier?
+carrierIdentity.checkYourAnswersLabel = How do you want to identify the carrier?
+carrierIdentity.error.required = Select how you want to identify the carrier
+carrierIdentity.change.hidden = how you want to identify the carrier
+
+carrierAddress.title = What is the carrier’s address?
+carrierAddress.heading = What is the carrier’s address?
+carrierAddress.checkYourAnswersLabel = Carries’s address
+carrierAddress.change.hidden = the carrier’s address
+
+carrierName.title = What is the carrier’s name?
+carrierName.heading = What is the carrier’s name?
+carrierName.checkYourAnswersLabel = Carrier’s name
+carrierName.error.required = Enter the carrier’s name
+carrierName.error.length = The name must be 35 characters or less
+carrierName.change.hidden = the carrier’s name
+
 arrivalDateAndTime.title = When is the consignment due to arrive in Great Britain?
 arrivalDateAndTime.heading = When is the consignment due to arrive in Great Britain?
 arrivalDateAndTime.date = Planned date of arrival

@@ -16,10 +16,9 @@
 
 package viewmodels.checkAnswers.predec
 
-import controllers.predec.{routes => predecRoutes}
-import models.{CheckMode, UserAnswers}
-import pages.{CheckAnswersPage, Waypoints}
+import models.UserAnswers
 import pages.predec.TotalGrossWeightPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._

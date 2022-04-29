@@ -17,28 +17,35 @@
 package viewmodels.checkAnswers.predec
 
 import models.UserAnswers
-import pages.predec.DeclarationPlacePage
+import pages.predec.CarrierIdentityPage
 import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DeclarationPlaceSummary {
+object CarrierIdentitySummary {
 
   def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
          (implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DeclarationPlacePage).map { answer =>
+    answers.get(CarrierIdentityPage).map { answer =>
+
+      val value = ValueViewModel(
+        HtmlContent(
+          HtmlFormat.escape(messages(s"traderIdentity.$answer"))
+        )
+      )
 
       SummaryListRowViewModel(
-        key = "declarationPlace.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        key = "carrierIdentity.checkYourAnswersLabel",
+        value = value,
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            DeclarationPlacePage.changeLink(waypoints, answers.lrn, sourcePage).url
-          ).withVisuallyHiddenText(messages("declarationPlace.change.hidden"))
+            CarrierIdentityPage.changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("carrierIdentity.change.hidden"))
         )
       )
     }
