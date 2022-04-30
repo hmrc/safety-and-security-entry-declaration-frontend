@@ -16,7 +16,8 @@
 
 package models.completion.answers
 
-import models.{GbEori, LocalReferenceNumber}
+import models.LocalReferenceNumber
+import models.completion.Party
 
 /**
  * Models the answers given for a completed predeclaration section
@@ -24,6 +25,6 @@ import models.{GbEori, LocalReferenceNumber}
 case class Predec(
   lrn: LocalReferenceNumber,
   location: String,
-  totalMass: Option[BigDecimal],
-  carrierEORI: Option[GbEori]
+  carrier: Option[Party],
+  totalMass: Option[BigDecimal]
 )
