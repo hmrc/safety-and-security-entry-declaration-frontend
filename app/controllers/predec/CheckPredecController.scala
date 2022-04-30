@@ -46,7 +46,10 @@ class CheckPredecController @Inject() (
           LocalReferenceNumberSummary.row(request.userAnswers, waypoints, CheckPredecPage),
           DeclarationPlaceSummary.row(request.userAnswers, waypoints, CheckPredecPage),
           LodgingPersonTypeSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierIdentitySummary.row(request.userAnswers, waypoints, CheckPredecPage),
           CarrierEORISummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierNameSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierAddressSummary.row(request.userAnswers, waypoints, CheckPredecPage),
           ProvideGrossWeightSummary.row(request.userAnswers, waypoints, CheckPredecPage),
           TotalGrossWeightSummary.row(request.userAnswers, waypoints, CheckPredecPage)
         ).flatten
