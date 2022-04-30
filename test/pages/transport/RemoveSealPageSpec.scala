@@ -25,28 +25,22 @@ class RemoveSealPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveSealPage" - {
 
-    beRetrievable[Boolean](RemoveSealPage)
-
-    beSettable[Boolean](RemoveSealPage)
-
-    beRemovable[Boolean](RemoveSealPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        RemoveSealPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RemoveSealPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to Index" in {
+//
+//        RemoveSealPage.navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(routes.IndexController.onPageLoad)
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        RemoveSealPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

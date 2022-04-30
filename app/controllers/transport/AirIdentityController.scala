@@ -18,8 +18,10 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.AirIdentityFormProvider
+
 import javax.inject.Inject
 import models.{LocalReferenceNumber, Mode}
+import pages.Waypoints
 import pages.transport.AirIdentityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,7 +46,7 @@ class AirIdentityController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val preparedForm = request.userAnswers.get(AirIdentityPage) match {
@@ -52,21 +54,21 @@ class AirIdentityController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, waypoints, lrn))
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AirIdentityPage, value))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(AirIdentityPage.navigate(mode, updatedAnswers))
+            } yield Redirect(AirIdentityPage.navigate(waypoints, updatedAnswers))
         )
     }
 }

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package queries
+package queries.transport
 
 import models.Document
 import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
 case object AllOverallDocumentsQuery extends Settable[List[Document]] with Gettable[List[Document]] {
 

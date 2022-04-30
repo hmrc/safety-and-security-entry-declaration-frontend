@@ -27,28 +27,22 @@ class OverallDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "OverallDocumentPage" - {
 
-    beRetrievable[Document](page)
-
-    beSettable[Document](page)
-
-    beRemovable[Document](page)
-
-    "must navigate in Normal Mode" - {
-
-      "to AddOverallDocument" in {
-
-        page.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        page.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to AddOverallDocument" in {
+//
+//        page.navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        page.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

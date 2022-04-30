@@ -17,21 +17,14 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{QuestionPage, Waypoints}
-import play.api.libs.json.JsPath
+import models.LocalReferenceNumber
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.mvc.Call
 
-case class SealPage(index: Index) extends QuestionPage[String] {
+object CheckTransportPage extends CheckAnswersPage {
 
-  override def path: JsPath = JsPath \ "seals" \ index.position
-
-  override def toString: String = "seal"
+  override val urlFragment: String = "check-transport"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.SealController.onPageLoad(waypoints, lrn, index)
-//
-//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-//    transportRoutes.AddSealController.onPageLoad(NormalMode, answers.lrn)
-//  }
+    routes.CheckTransportController.onPageLoad(waypoints, lrn)
 }

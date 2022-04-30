@@ -27,59 +27,53 @@ class AddSealPageSpec extends SpecBase with PageBehaviours {
 
   "AddSealPage" - {
 
-    beRetrievable[Boolean](AddSealPage)
-
-    beSettable[Boolean](AddSealPage)
-
-    beRemovable[Boolean](AddSealPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to JourneyRecoveryController when add another answer is yes but DeriveNumberOfSeals not Set" in {
-        val answers = emptyUserAnswers.set(AddSealPage, true).success.value
-
-        AddSealPage
-          .navigate(NormalMode, answers, true)
-          .mustEqual(routes.JourneyRecoveryController.onPageLoad())
-      }
-
-      "to Check Your Answers when add another answer is no" in {
-        val answers = emptyUserAnswers.set(AddSealPage, false).success.value
-
-        AddSealPage
-          .navigate(NormalMode, answers, addAnother = false)
-          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
-      }
-
-      "to Seal with (index + 1) if yes is selected" in {
-        // Add a document and check redirect multiple times to check it works for each index
-        (0 to 2).foldLeft(emptyUserAnswers) {
-          case (prevAnswers, idx) =>
-            val currIndex = Index(idx)
-            val answers = prevAnswers.set(
-              SealPage(currIndex),
-              arbitrary[String].sample.value
-            ).success.value
-
-            AddSealPage.navigate(NormalMode, answers, addAnother = true)
-              .mustEqual(
-                transportRoutes.SealController.onPageLoad(
-                  NormalMode,
-                  answers.lrn,
-                  currIndex + 1
-                )
-              )
-            answers
-        }
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-        AddSealPage.navigate(CheckMode, emptyUserAnswers, false)
-          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to JourneyRecoveryController when add another answer is yes but DeriveNumberOfSeals not Set" in {
+//        val answers = emptyUserAnswers.set(AddSealPage, true).success.value
+//
+//        AddSealPage
+//          .navigate(NormalMode, answers, true)
+//          .mustEqual(routes.JourneyRecoveryController.onPageLoad())
+//      }
+//
+//      "to Check Your Answers when add another answer is no" in {
+//        val answers = emptyUserAnswers.set(AddSealPage, false).success.value
+//
+//        AddSealPage
+//          .navigate(NormalMode, answers, addAnother = false)
+//          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//
+//      "to Seal with (index + 1) if yes is selected" in {
+//        // Add a document and check redirect multiple times to check it works for each index
+//        (0 to 2).foldLeft(emptyUserAnswers) {
+//          case (prevAnswers, idx) =>
+//            val currIndex = Index(idx)
+//            val answers = prevAnswers.set(
+//              SealPage(currIndex),
+//              arbitrary[String].sample.value
+//            ).success.value
+//
+//            AddSealPage.navigate(NormalMode, answers, addAnother = true)
+//              .mustEqual(
+//                transportRoutes.SealController.onPageLoad(
+//                  NormalMode,
+//                  answers.lrn,
+//                  currIndex + 1
+//                )
+//              )
+//            answers
+//        }
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//        AddSealPage.navigate(CheckMode, emptyUserAnswers, false)
+//          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

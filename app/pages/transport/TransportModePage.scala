@@ -16,11 +16,10 @@
 
 package pages.transport
 
-import controllers.routes
-import controllers.transport.{routes => transportRoutes}
-import models.{NormalMode, TransportMode, UserAnswers}
+import controllers.transport.routes
+import models.{LocalReferenceNumber, NormalMode, TransportMode, UserAnswers}
 import models.TransportMode._
-import pages.QuestionPage
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,21 +29,24 @@ case object TransportModePage extends QuestionPage[TransportMode] {
 
   override def toString: String = "transportMode"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(TransportModePage) match {
-      case Some(Air) =>
-        transportRoutes.AirIdentityController.onPageLoad(NormalMode, answers.lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.TransportModeController.onPageLoad(waypoints, lrn)
 
-      case Some(Rail) =>
-        transportRoutes.RailIdentityController.onPageLoad(NormalMode, answers.lrn)
-
-      case Some(Maritime) =>
-        transportRoutes.MaritimeIdentityController.onPageLoad(NormalMode, answers.lrn)
-
-      case Some(RoroAccompanied) | Some(RoroUnaccompanied) | Some(Road) =>
-        transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn)
-
-      case None =>
-        routes.JourneyRecoveryController.onPageLoad()
-    }
+//  override protected def navigateInNormalMode(answers: UserAnswers): Call =
+//    answers.get(TransportModePage) match {
+//      case Some(Air) =>
+//        transportRoutes.AirIdentityController.onPageLoad(NormalMode, answers.lrn)
+//
+//      case Some(Rail) =>
+//        transportRoutes.RailIdentityController.onPageLoad(NormalMode, answers.lrn)
+//
+//      case Some(Maritime) =>
+//        transportRoutes.MaritimeIdentityController.onPageLoad(NormalMode, answers.lrn)
+//
+//      case Some(RoroAccompanied) | Some(RoroUnaccompanied) | Some(Road) =>
+//        transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn)
+//
+//      case None =>
+//        routes.JourneyRecoveryController.onPageLoad()
+//    }
 }

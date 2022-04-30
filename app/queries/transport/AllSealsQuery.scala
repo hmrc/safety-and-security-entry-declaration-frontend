@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package queries
+package queries.transport
 
 import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-case object DeriveNumberOfSeals extends Derivable[List[String], Int] {
-
-  override val derive: List[String] => Int = _.size
+case object AllSealsQuery extends Settable[List[String]] with Gettable[List[String]] {
 
   override def path: JsPath = JsPath \ "seals"
 }

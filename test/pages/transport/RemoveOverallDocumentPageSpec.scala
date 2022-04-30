@@ -24,29 +24,23 @@ import pages.behaviours.PageBehaviours
 class RemoveOverallDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveOverallDocumentPage" - {
-
-    beRetrievable[Boolean](RemoveOverallDocumentPage)
-
-    beSettable[Boolean](RemoveOverallDocumentPage)
-
-    beRemovable[Boolean](RemoveOverallDocumentPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        RemoveOverallDocumentPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RemoveOverallDocumentPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//
+//    "must navigate in Normal Mode" - {
+//
+//      "to Index" in {
+//
+//        RemoveOverallDocumentPage.navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(routes.IndexController.onPageLoad)
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        RemoveOverallDocumentPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

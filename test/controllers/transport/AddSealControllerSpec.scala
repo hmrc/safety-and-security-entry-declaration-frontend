@@ -19,20 +19,27 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.AddSealFormProvider
-import models.NormalMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.{AddSealPage, SealPage}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.transport.AddSealView
+
+import scala.concurrent.Future
 
 class AddSealControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   val formProvider = new AddSealFormProvider()
   val form = formProvider()
 
-  lazy val addSealRoute = routes.AddSealController.onPageLoad(NormalMode, lrn).url
+  lazy val addSealRoute = routes.AddSealController.onPageLoad(waypoints, lrn).url
 
   "AddSeal Controller" - {
 
@@ -48,32 +55,23 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AddSealView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, Nil)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, Nil)(request, messages(application)).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(AddSealPage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, addSealRoute)
-
-        val view = application.injector.instanceOf[AddSealView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn, Nil)(request, messages(application)).toString
-      }
-    }
-
-    "must redirect to the Seal page with the correct next index if yes is selected" in {
+    "must save the answer redirect to the next page with the correct next index if yes is selected" in {
       val content = arbitrary[String].sample.value
       val answers = emptyUserAnswers.set(SealPage(index), content).success.value
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
 
       running(application) {
         val request = {
@@ -81,16 +79,11 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         }
 
         val result = route(application, request).value
-        val expectedRedirect = {
-          routes.SealController.onPageLoad(
-            NormalMode,
-            answers.lrn,
-            index + 1
-          ).url
-        }
+        val expectedAnswers = answers.set(AddSealPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual expectedRedirect
+        redirectLocation(result).value mustEqual AddSealPage.navigate(waypoints, expectedAnswers)
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
@@ -110,7 +103,7 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, Nil)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, Nil)(request, messages(application)).toString
       }
     }
 

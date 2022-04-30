@@ -19,10 +19,11 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.SealFormProvider
-import models.{Index, NormalMode}
+import models.Index
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.SealPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,10 +35,11 @@ import scala.concurrent.Future
 
 class SealControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   val formProvider = new SealFormProvider()
   val form = formProvider()
 
-  lazy val sealRoute = routes.SealController.onPageLoad(NormalMode, lrn, Index(0)).url
+  lazy val sealRoute = routes.SealController.onPageLoad(waypoints, lrn, Index(0)).url
 
   "Seal Controller" - {
 
@@ -53,7 +55,7 @@ class SealControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[SealView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn, Index(0))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, Index(0))(request, messages(application)).toString
       }
     }
 
@@ -71,7 +73,7 @@ class SealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn, Index(0))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), waypoints, lrn, Index(0))(request, messages(application)).toString
       }
     }
 
@@ -95,7 +97,7 @@ class SealControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(SealPage(Index(0)), "answer").success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual SealPage(Index(0)).navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual SealPage(Index(0)).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -116,7 +118,7 @@ class SealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn, Index(0))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, Index(0))(request, messages(application)).toString
       }
     }
 

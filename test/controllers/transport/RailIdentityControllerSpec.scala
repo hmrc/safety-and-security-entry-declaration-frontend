@@ -19,11 +19,12 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RailIdentityFormProvider
-import models.{NormalMode, UserAnswers}
 import models.TransportIdentity.RailIdentity
+import models.UserAnswers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.RailIdentityPage
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -36,11 +37,12 @@ import scala.concurrent.Future
 
 class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   private val formProvider = new RailIdentityFormProvider()
   private val form = formProvider()
   private val wagonNumber = "testWagonNumber"
 
-  lazy val railIdentityRoute = routes.RailIdentityController.onPageLoad(NormalMode, lrn).url
+  lazy val railIdentityRoute = routes.RailIdentityController.onPageLoad(waypoints, lrn).url
 
   val userAnswers = UserAnswers(
     userAnswersId,
@@ -67,7 +69,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -84,7 +86,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual {
-          view(form.fill(RailIdentity(wagonNumber)), NormalMode, lrn)(request, messages(application)).toString
+          view(form.fill(RailIdentity(wagonNumber)), waypoints, lrn)(request, messages(application)).toString
         }
       }
     }
@@ -109,7 +111,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(RailIdentityPage, RailIdentity(wagonNumber)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RailIdentityPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RailIdentityPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -130,7 +132,7 @@ class RailIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

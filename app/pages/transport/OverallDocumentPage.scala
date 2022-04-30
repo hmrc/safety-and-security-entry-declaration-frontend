@@ -16,9 +16,9 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{Document, Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.transport.routes
+import models.{Document, Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +28,10 @@ case class OverallDocumentPage(index: Index) extends QuestionPage[Document] {
 
   override def toString: String = "overallDocument"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.OverallDocumentController.onPageLoad(waypoints, lrn, index)
+
+//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+//    transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn)
+//  }
 }

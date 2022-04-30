@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
 import models.{CheckMode, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.transport.MaritimeIdentityPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,7 +29,8 @@ import viewmodels.implicits._
 
 object MaritimeIdentitySummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MaritimeIdentityPage).map {
       answer =>
 
@@ -38,8 +40,10 @@ object MaritimeIdentitySummary {
           key     = "maritimeIdentity.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.MaritimeIdentityController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("maritimeIdentity.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              MaritimeIdentityPage.changeLink(waypoints, answers.lrn, sourcePage).url
+            ).withVisuallyHiddenText(messages("maritimeIdentity.change.hidden"))
           )
         )
     }

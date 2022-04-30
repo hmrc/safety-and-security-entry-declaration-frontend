@@ -26,42 +26,36 @@ class AnyOverallDocumentsPageSpec extends SpecBase with PageBehaviours {
 
   "AnyOverallDocumentsPage" - {
 
-    beRetrievable[Boolean](AnyOverallDocumentsPage)
-
-    beSettable[Boolean](AnyOverallDocumentsPage)
-
-    beRemovable[Boolean](AnyOverallDocumentsPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to OverallDocument if answer is yes" in {
-        val userAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, true).success.value
-
-        AnyOverallDocumentsPage.navigate(NormalMode, userAnswers)
-          .mustEqual(
-            transportRoutes.OverallDocumentController.onPageLoad(
-              NormalMode,
-              userAnswers.lrn,
-              index
-            )
-          )
-      }
-
-      "to AddSeal if answer is no" in {
-        val userAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, false).success.value
-
-        AnyOverallDocumentsPage.navigate(NormalMode, userAnswers)
-          .mustEqual(transportRoutes.AddAnySealsController.onPageLoad(NormalMode, userAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AnyOverallDocumentsPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to OverallDocument if answer is yes" in {
+//        val userAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, true).success.value
+//
+//        AnyOverallDocumentsPage.navigate(NormalMode, userAnswers)
+//          .mustEqual(
+//            transportRoutes.OverallDocumentController.onPageLoad(
+//              NormalMode,
+//              userAnswers.lrn,
+//              index
+//            )
+//          )
+//      }
+//
+//      "to AddSeal if answer is no" in {
+//        val userAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, false).success.value
+//
+//        AnyOverallDocumentsPage.navigate(NormalMode, userAnswers)
+//          .mustEqual(transportRoutes.AddAnySealsController.onPageLoad(NormalMode, userAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        AnyOverallDocumentsPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

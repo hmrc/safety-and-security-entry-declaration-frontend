@@ -26,29 +26,23 @@ import pages.behaviours.PageBehaviours
 class MaritimeIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "MaritimeIdentityPage" - {
-
-    beRetrievable[MaritimeIdentity](MaritimeIdentityPage)
-
-    beSettable[MaritimeIdentity](MaritimeIdentityPage)
-
-    beRemovable[MaritimeIdentity](MaritimeIdentityPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to AnyOverallDocumentsController" in {
-
-        MaritimeIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        MaritimeIdentityPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//
+//    "must navigate in Normal Mode" - {
+//
+//      "to AnyOverallDocumentsController" in {
+//
+//        MaritimeIdentityPage.navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        MaritimeIdentityPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

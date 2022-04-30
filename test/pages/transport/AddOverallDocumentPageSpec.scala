@@ -27,51 +27,51 @@ class AddOverallDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "AddOverallDocumentPage" - {
 
-    "must navigate in Normal Mode" - {
-
-      "to OverallDocument with (index + 1) if yes is selected" in {
-        // Add a document and check redirect multiple times to check it works for each index
-        (0 to 2).foldLeft(emptyUserAnswers) {
-          case (prevAnswers, idx) =>
-            val currIndex = Index(idx)
-            val answers = prevAnswers.set(
-              OverallDocumentPage(currIndex),
-              arbitrary[Document].sample.value
-            ).success.value
-
-            AddOverallDocumentPage.navigate(NormalMode, answers, addAnother = true)
-              .mustEqual(
-                transportRoutes.OverallDocumentController.onPageLoad(
-                  NormalMode,
-                  answers.lrn,
-                  currIndex + 1
-                )
-              )
-
-            answers
-        }
-      }
-
-      "to AddAnySeals if no is selected" in {
-        val answers = emptyUserAnswers.set(
-          OverallDocumentPage(index),
-          arbitrary[Document].sample.value
-        ).success.value
-
-        AddOverallDocumentPage.navigate(NormalMode, answers, addAnother = false)
-          .mustEqual(
-            transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
-          )
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        AddOverallDocumentPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to OverallDocument with (index + 1) if yes is selected" in {
+//        // Add a document and check redirect multiple times to check it works for each index
+//        (0 to 2).foldLeft(emptyUserAnswers) {
+//          case (prevAnswers, idx) =>
+//            val currIndex = Index(idx)
+//            val answers = prevAnswers.set(
+//              OverallDocumentPage(currIndex),
+//              arbitrary[Document].sample.value
+//            ).success.value
+//
+//            AddOverallDocumentPage.navigate(NormalMode, answers, addAnother = true)
+//              .mustEqual(
+//                transportRoutes.OverallDocumentController.onPageLoad(
+//                  NormalMode,
+//                  answers.lrn,
+//                  currIndex + 1
+//                )
+//              )
+//
+//            answers
+//        }
+//      }
+//
+//      "to AddAnySeals if no is selected" in {
+//        val answers = emptyUserAnswers.set(
+//          OverallDocumentPage(index),
+//          arbitrary[Document].sample.value
+//        ).success.value
+//
+//        AddOverallDocumentPage.navigate(NormalMode, answers, addAnother = false)
+//          .mustEqual(
+//            transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
+//          )
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        AddOverallDocumentPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

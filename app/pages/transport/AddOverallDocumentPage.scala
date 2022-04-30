@@ -16,34 +16,39 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, Index, Mode, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.transport.routes
+import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import pages.{AddItemPage, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfOverallDocuments
+import queries.transport.DeriveNumberOfOverallDocuments
 
-case object AddOverallDocumentPage extends QuestionPage[Boolean] {
+case object AddOverallDocumentPage extends QuestionPage[Boolean] with AddItemPage {
+
+  override val normalModeUrlFragment: String = "add-overall-document"
+  override val checkModeUrlFragment: String = "change-overall-document"
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addOverallDocument"
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfOverallDocuments) match {
-        case Some(size) =>
-          transportRoutes.OverallDocumentController.onPageLoad(mode, answers.lrn, Index(size))
-        case None =>
-          routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      mode match {
-        case NormalMode =>
-          transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
-        case CheckMode =>
-          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-      }
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddOverallDocumentController.onPageLoad(waypoints, lrn)
+//
+//  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
+//    if (addAnother) {
+//      answers.get(DeriveNumberOfOverallDocuments) match {
+//        case Some(size) =>
+//          transportRoutes.OverallDocumentController.onPageLoad(mode, answers.lrn, Index(size))
+//        case None =>
+//          routes.JourneyRecoveryController.onPageLoad()
+//      }
+//    } else {
+//      mode match {
+//        case NormalMode =>
+//          transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
+//        case CheckMode =>
+//          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
+//      }
+//    }
 }

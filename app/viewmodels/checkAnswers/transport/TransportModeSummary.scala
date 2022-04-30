@@ -18,6 +18,7 @@ package viewmodels.checkAnswers.transport
 
 import controllers.transport.routes
 import models.{CheckMode, UserAnswers}
+import pages.{CheckAnswersPage, Waypoints}
 import pages.transport.TransportModePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,7 +29,8 @@ import viewmodels.implicits._
 
 object TransportModeSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TransportModePage).map { answer =>
 
       val value = ValueViewModel(
@@ -43,7 +45,7 @@ object TransportModeSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            routes.TransportModeController.onPageLoad(CheckMode, answers.lrn).url
+            TransportModePage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("transportMode.change.hidden"))
         )
       )

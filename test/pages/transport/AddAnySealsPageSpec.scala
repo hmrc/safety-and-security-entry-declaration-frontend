@@ -26,37 +26,31 @@ class AddAnySealsPageSpec extends SpecBase with PageBehaviours {
 
   "AddAnySealsPage" - {
 
-    beRetrievable[Boolean](AddAnySealsPage)
-
-    beSettable[Boolean](AddAnySealsPage)
-
-    beRemovable[Boolean](AddAnySealsPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to SealController when answer is yes" in {
-        val answers = emptyUserAnswers.set(AddAnySealsPage, true).success.value
-
-        AddAnySealsPage
-          .navigate(NormalMode, answers)
-          .mustEqual(transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, index))
-      }
-
-      "to Check Your Answers when answer is no" in {
-        val answers = emptyUserAnswers.set(AddAnySealsPage, false).success.value
-
-        AddAnySealsPage
-          .navigate(NormalMode, answers)
-          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-        AddAnySealsPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to SealController when answer is yes" in {
+//        val answers = emptyUserAnswers.set(AddAnySealsPage, true).success.value
+//
+//        AddAnySealsPage
+//          .navigate(NormalMode, answers)
+//          .mustEqual(transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, index))
+//      }
+//
+//      "to Check Your Answers when answer is no" in {
+//        val answers = emptyUserAnswers.set(AddAnySealsPage, false).success.value
+//
+//        AddAnySealsPage
+//          .navigate(NormalMode, answers)
+//          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//        AddAnySealsPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

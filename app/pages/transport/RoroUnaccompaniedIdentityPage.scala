@@ -16,10 +16,10 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{NormalMode, UserAnswers}
+import controllers.transport.routes
+import models.{LocalReferenceNumber, NormalMode, UserAnswers}
 import models.TransportIdentity.RoroUnaccompaniedIdentity
-import pages.QuestionPage
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,7 +29,10 @@ case object RoroUnaccompaniedIdentityPage extends QuestionPage[RoroUnaccompanied
 
   override def toString: String = "roroUnaccompaniedIdentity"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.RoroUnaccompaniedIdentityController.onPageLoad(waypoints, lrn)
+
+//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+//    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
+//  }
 }

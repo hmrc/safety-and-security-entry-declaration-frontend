@@ -19,12 +19,12 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.MaritimeIdentityFormProvider
-import models.{NormalMode, UserAnswers}
 import models.TransportIdentity.MaritimeIdentity
+import models.UserAnswers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport
+import pages.{EmptyWaypoints, transport}
 import pages.transport.MaritimeIdentityPage
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -37,10 +37,11 @@ import scala.concurrent.Future
 
 class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   val formProvider = new MaritimeIdentityFormProvider()
   val form = formProvider()
 
-  lazy val maritimeIdentityRoute = routes.MaritimeIdentityController.onPageLoad(NormalMode, lrn).url
+  lazy val maritimeIdentityRoute = routes.MaritimeIdentityController.onPageLoad(waypoints, lrn).url
 
   val userAnswers = UserAnswers(
     userAnswersId,
@@ -68,7 +69,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -84,7 +85,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(MaritimeIdentity("123", "value2")), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(MaritimeIdentity("123", "value2")), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -108,7 +109,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(MaritimeIdentityPage, MaritimeIdentity("123", "value2")).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual transport.MaritimeIdentityPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual transport.MaritimeIdentityPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -129,7 +130,7 @@ class MaritimeIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

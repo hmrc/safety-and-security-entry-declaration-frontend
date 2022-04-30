@@ -22,7 +22,7 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.transport.{routes => transportRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.EmptyWaypoints
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -58,7 +58,7 @@ object TaskListViewModel {
   private def transportRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey = messages("taskList.transport"),
-      link = transportRoutes.TransportModeController.onPageLoad(NormalMode, answers.lrn),
+      link = transportRoutes.TransportModeController.onPageLoad(EmptyWaypoints, answers.lrn),
       id = "transport-details",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )

@@ -16,10 +16,9 @@
 
 package pages.transport
 
-import controllers.routes
-import controllers.transport.{routes => transportRoutes}
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.transport.routes
+import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,14 +28,17 @@ case object AnyOverallDocumentsPage extends QuestionPage[Boolean] {
 
   override def toString: String = "anyOverallDocuments"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(AnyOverallDocumentsPage) map {
-      case true =>
-        transportRoutes.OverallDocumentController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case _ =>
-        transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
-    } getOrElse {
-      routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AnyOverallDocumentsController.onPageLoad(waypoints, lrn)
+
+//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
+//    answers.get(AnyOverallDocumentsPage) map {
+//      case true =>
+//        transportRoutes.OverallDocumentController.onPageLoad(NormalMode, answers.lrn, Index(0))
+//      case _ =>
+//        transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
+//    } getOrElse {
+//      routes.JourneyRecoveryController.onPageLoad()
+//    }
+//  }
 }

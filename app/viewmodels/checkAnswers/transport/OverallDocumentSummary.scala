@@ -18,9 +18,11 @@ package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
 import models.{Index, NormalMode, UserAnswers}
+import pages.transport.{AddOverallDocumentPage, OverallDocumentPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.AllOverallDocumentsQuery
+import queries.transport.AllOverallDocumentsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
@@ -29,24 +31,26 @@ import viewmodels.implicits._
 
 object OverallDocumentSummary {
 
-  def rows(answers: UserAnswers): List[ListItem] =
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage): List[ListItem] =
     answers.get(AllOverallDocumentsQuery).getOrElse(Nil).zipWithIndex.map {
       case (document, index) =>
         ListItem(
           name = HtmlFormat.escape(document.documentType.name).toString,
-          changeUrl = transportRoutes.OverallDocumentController
-            .onPageLoad(NormalMode, answers.lrn, Index(index))
-            .url,
+          changeUrl = OverallDocumentPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
           removeUrl = transportRoutes.RemoveOverallDocumentController
-            .onPageLoad(NormalMode, answers.lrn)
+            .onPageLoad(waypoints, answers.lrn, Index(index))
             .url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllOverallDocumentsQuery).map {
       documents =>
-        val value = documents.map(c => s"${c.documentType.name}(${c.reference})").mkString("<br>")
+        val value =
+          documents
+            .map(c => s"${c.documentType.name} - ${HtmlFormat.escape(c.reference).toString}")
+            .mkString("<br>")
 
         SummaryListRowViewModel(
           key = "addOverallDocument.checkYourAnswersLabel",
@@ -54,7 +58,7 @@ object OverallDocumentSummary {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn).url
+              AddOverallDocumentPage.changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("addOverallDocument.change.hidden"))
           )
         )

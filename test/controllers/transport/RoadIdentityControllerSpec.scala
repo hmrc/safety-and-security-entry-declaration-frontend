@@ -19,12 +19,12 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoadIdentityFormProvider
-import models.NormalMode
 import models.TransportIdentity.RoadIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.RoadIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,10 +36,11 @@ import scala.concurrent.Future
 
 class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   private val formProvider = new RoadIdentityFormProvider()
   private val form = formProvider()
 
-  private lazy val roadIdentityRoute = routes.RoadIdentityController.onPageLoad(NormalMode, lrn).url
+  private lazy val roadIdentityRoute = routes.RoadIdentityController.onPageLoad(waypoints, lrn).url
 
   private val id = arbitrary[RoadIdentity].sample.value
   private val formData: List[(String, String)] = List(
@@ -63,7 +64,7 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -79,7 +80,7 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(id), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(id), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -103,7 +104,7 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(RoadIdentityPage, id).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RoadIdentityPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RoadIdentityPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -124,7 +125,7 @@ class RoadIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

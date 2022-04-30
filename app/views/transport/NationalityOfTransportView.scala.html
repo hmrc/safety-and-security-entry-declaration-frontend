@@ -27,11 +27,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], waypoints: Waypoints, lrn: LocalReferenceNumber)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("nationalityOfTransport.title"))) {
 
-    @formHelper(action = routes.NationalityOfTransportController.onSubmit(mode, lrn), 'autoComplete -> "off") {
+    @formHelper(action = routes.NationalityOfTransportController.onSubmit(waypoints, lrn), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

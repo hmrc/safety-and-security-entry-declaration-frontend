@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.transport.NationalityOfTransportPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,8 @@ import viewmodels.implicits._
 
 object NationalityOfTransportSummary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NationalityOfTransportPage).map {
       answer =>
 
@@ -35,8 +36,10 @@ object NationalityOfTransportSummary  {
           key     = "nationalityOfTransport.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer.name).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.NationalityOfTransportController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("nationalityOfTransport.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              NationalityOfTransportPage.changeLink(waypoints, answers.lrn, sourcePage).url
+            ).withVisuallyHiddenText(messages("nationalityOfTransport.change.hidden"))
           )
         )
     }

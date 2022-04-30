@@ -27,33 +27,27 @@ class RoroUnaccompaniedIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "RoroUnaccompaniedIdentityPage" - {
 
-    beRetrievable[RoroUnaccompaniedIdentity](RoroUnaccompaniedIdentityPage)
-
-    beSettable[RoroUnaccompaniedIdentity](RoroUnaccompaniedIdentityPage)
-
-    beRemovable[RoroUnaccompaniedIdentity](RoroUnaccompaniedIdentityPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to AnyOverallDocuments" in {
-
-        RoroUnaccompaniedIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            transportRoutes.AnyOverallDocumentsController.onPageLoad(
-              NormalMode,
-              emptyUserAnswers.lrn
-            )
-          )
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RoroUnaccompaniedIdentityPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to AnyOverallDocuments" in {
+//
+//        RoroUnaccompaniedIdentityPage.navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(
+//            transportRoutes.AnyOverallDocumentsController.onPageLoad(
+//              NormalMode,
+//              emptyUserAnswers.lrn
+//            )
+//          )
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        RoroUnaccompaniedIdentityPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

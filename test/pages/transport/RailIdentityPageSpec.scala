@@ -27,28 +27,22 @@ class RailIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "RailIdentityPage" - {
 
-    beRetrievable[RailIdentity](RailIdentityPage)
-
-    beSettable[RailIdentity](RailIdentityPage)
-
-    beRemovable[RailIdentity](RailIdentityPage)
-
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        RailIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        RailIdentityPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to Index" in {
+//
+//        RailIdentityPage.navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        RailIdentityPage.navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

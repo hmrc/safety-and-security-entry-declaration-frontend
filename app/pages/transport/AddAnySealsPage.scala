@@ -16,10 +16,9 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{Index, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.transport.routes
+import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,10 +28,13 @@ case object AddAnySealsPage extends QuestionPage[Boolean] {
 
   override def toString: String = "addAnySeals"
 
-  override def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(AddAnySealsPage) match {
-      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, Index(0))
-      case Some(false) => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
-      case None => routes.JourneyRecoveryController.onPageLoad()
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddAnySealsController.onPageLoad(waypoints, lrn)
+
+//  override def navigateInNormalMode(answers: UserAnswers): Call =
+//    answers.get(AddAnySealsPage) match {
+//      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, Index(0))
+//      case Some(false) => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
+//      case None => routes.JourneyRecoveryController.onPageLoad()
+//    }
 }

@@ -16,13 +16,12 @@
 
 package pages.transport
 
-import controllers.transport.routes
-import models.{Index, LocalReferenceNumber}
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
+import models.NormalMode
+import pages.{AddToListQuestionPage, AddToListSection, OverallDocumentSection, QuestionPage, Waypoint}
 
-final case class RemoveSealPage(index: Index) extends Page {
+trait OverallDocumentQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
 
-  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.RemoveSealController.onPageLoad(waypoints, lrn, index)
+  override val addItemWaypoint: Waypoint = AddOverallDocumentPage.waypoint{NormalMode}
+
+  override val section: AddToListSection = OverallDocumentSection
 }

@@ -26,28 +26,22 @@ class SealPageSpec extends SpecBase with PageBehaviours {
 
   "SealPage" - {
 
-    beRetrievable[String](SealPage(Index(0)))
-
-    beSettable[String](SealPage(Index(0)))
-
-    beRemovable[String](SealPage(Index(0)))
-
-    "must navigate in Normal Mode" - {
-
-      "to AddSealController" in {
-
-        SealPage(Index(0)).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AddSealController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
-      }
-    }
-
-    "must navigate in Check Mode" - {
-
-      "to Check Your Answers" in {
-
-        SealPage(Index(0)).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-      }
-    }
+//    "must navigate in Normal Mode" - {
+//
+//      "to AddSealController" in {
+//
+//        SealPage(Index(0)).navigate(NormalMode, emptyUserAnswers)
+//          .mustEqual(transportRoutes.AddSealController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+//      }
+//    }
+//
+//    "must navigate in Check Mode" - {
+//
+//      "to Check Your Answers" in {
+//
+//        SealPage(Index(0)).navigate(CheckMode, emptyUserAnswers)
+//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+//      }
+//    }
   }
 }

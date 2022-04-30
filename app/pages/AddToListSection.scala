@@ -28,3 +28,5 @@ case object DocumentSection extends AddToListSection
 case object PackageSection extends AddToListSection
 case object ContainerSection extends AddToListSection
 case object GoodsItemSection extends AddToListSection
+case object SealSection extends AddToListSection
+case object OverallDocumentSection extends AddToListSection

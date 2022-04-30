@@ -19,10 +19,10 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.AnyOverallDocumentsFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.AnyOverallDocumentsPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,10 +34,11 @@ import scala.concurrent.Future
 
 class AnyOverallDocumentsControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   val formProvider = new AnyOverallDocumentsFormProvider()
   val form = formProvider()
 
-  lazy val anyOverallDocumentsRoute = routes.AnyOverallDocumentsController.onPageLoad(NormalMode, lrn).url
+  lazy val anyOverallDocumentsRoute = routes.AnyOverallDocumentsController.onPageLoad(waypoints, lrn).url
 
   "AnyOverallDocuments Controller" - {
 
@@ -53,7 +54,7 @@ class AnyOverallDocumentsControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[AnyOverallDocumentsView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -71,7 +72,7 @@ class AnyOverallDocumentsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -95,7 +96,7 @@ class AnyOverallDocumentsControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(AnyOverallDocumentsPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AnyOverallDocumentsPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual AnyOverallDocumentsPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -116,7 +117,7 @@ class AnyOverallDocumentsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
