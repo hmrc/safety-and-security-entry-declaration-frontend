@@ -22,12 +22,22 @@ import models.Country
 import models.TransportIdentity._
 import models.TransportMode._
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class TransportModePageSpec extends SpecBase with PageBehaviours {
 
   "TransportModePage" - {
+
+    val fullAnswers =
+      emptyUserAnswers
+        .set(NationalityOfTransportPage, arbitrary[Country].sample.value).success.value
+        .set(AirIdentityPage, arbitrary[AirIdentity].sample.value).success.value
+        .set(MaritimeIdentityPage, arbitrary[MaritimeIdentity].sample.value).success.value
+        .set(RailIdentityPage, arbitrary[RailIdentity].sample.value).success.value
+        .set(RoadIdentityPage, arbitrary[RoadIdentity].sample.value).success.value
+        .set(RoroAccompaniedIdentityPage, arbitrary[RoroAccompaniedIdentity].sample.value).success.value
+        .set(RoroUnaccompaniedIdentityPage, arbitrary[RoroUnaccompaniedIdentity].sample.value).success.value
 
     "must navigate when there are no waypoints" - {
 
@@ -234,6 +244,108 @@ class TransportModePageSpec extends SpecBase with PageBehaviours {
           TransportModePage.navigate(waypoints, answers)
             .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
         }
+      }
+    }
+
+    "when the user chooses Air" - {
+
+      "must remove Nationality of Transport and all other types' details" in {
+
+        val result = fullAnswers.set(TransportModePage, Air).success.value
+
+        result.get(AirIdentityPage) mustBe defined
+
+        result.get(NationalityOfTransportPage) must not be defined
+        result.get(MaritimeIdentityPage) must not be defined
+        result.get(RoadIdentityPage) must not be defined
+        result.get(RailIdentityPage) must not be defined
+        result.get(RoroAccompaniedIdentityPage) must not be defined
+        result.get(RoroUnaccompaniedIdentityPage) must not be defined
+      }
+    }
+
+    "when the user chooses Maritime" - {
+
+      "must remove Nationality of Transport and all other types' details" in {
+
+        val result = fullAnswers.set(TransportModePage, Maritime).success.value
+
+        result.get(MaritimeIdentityPage) mustBe defined
+
+        result.get(NationalityOfTransportPage) must not be defined
+        result.get(AirIdentityPage) must not be defined
+        result.get(RoadIdentityPage) must not be defined
+        result.get(RailIdentityPage) must not be defined
+        result.get(RoroAccompaniedIdentityPage) must not be defined
+        result.get(RoroUnaccompaniedIdentityPage) must not be defined
+      }
+    }
+
+    "when the user chooses Rail" - {
+
+      "must remove Nationality of Transport and all other types' details" in {
+
+        val result = fullAnswers.set(TransportModePage, Rail).success.value
+
+        result.get(RailIdentityPage) mustBe defined
+
+        result.get(NationalityOfTransportPage) must not be defined
+        result.get(AirIdentityPage) must not be defined
+        result.get(MaritimeIdentityPage) must not be defined
+        result.get(RoadIdentityPage) must not be defined
+        result.get(RoroAccompaniedIdentityPage) must not be defined
+        result.get(RoroUnaccompaniedIdentityPage) must not be defined
+      }
+    }
+
+    "when the user chooses Road" - {
+
+      "must remove all other types' details" in {
+
+        val result = fullAnswers.set(TransportModePage, Road).success.value
+
+        result.get(RoadIdentityPage) mustBe defined
+        result.get(NationalityOfTransportPage) mustBe defined
+
+        result.get(AirIdentityPage) must not be defined
+        result.get(MaritimeIdentityPage) must not be defined
+        result.get(RailIdentityPage) must not be defined
+        result.get(RoroAccompaniedIdentityPage) must not be defined
+        result.get(RoroUnaccompaniedIdentityPage) must not be defined
+      }
+    }
+
+    "when the user chooses Roro Accompanied" - {
+
+      "must remove all other types' details" in {
+
+        val result = fullAnswers.set(TransportModePage, RoroAccompanied).success.value
+
+        result.get(RoroAccompaniedIdentityPage) mustBe defined
+        result.get(NationalityOfTransportPage) mustBe defined
+
+        result.get(AirIdentityPage) must not be defined
+        result.get(MaritimeIdentityPage) must not be defined
+        result.get(RailIdentityPage) must not be defined
+        result.get(RoadIdentityPage) must not be defined
+        result.get(RoroUnaccompaniedIdentityPage) must not be defined
+      }
+    }
+
+    "when the user chooses Roro Unaccompanied" - {
+
+      "must remove all other types' details" in {
+
+        val result = fullAnswers.set(TransportModePage, RoroUnaccompanied).success.value
+
+        result.get(RoroUnaccompaniedIdentityPage) mustBe defined
+        result.get(NationalityOfTransportPage) mustBe defined
+
+        result.get(AirIdentityPage) must not be defined
+        result.get(MaritimeIdentityPage) must not be defined
+        result.get(RailIdentityPage) must not be defined
+        result.get(RoadIdentityPage) must not be defined
+        result.get(RoroAccompaniedIdentityPage) must not be defined
       }
     }
   }

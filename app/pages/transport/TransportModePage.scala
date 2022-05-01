@@ -23,6 +23,8 @@ import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object TransportModePage extends QuestionPage[TransportMode] {
 
   override def path: JsPath = JsPath \ toString
@@ -62,4 +64,58 @@ case object TransportModePage extends QuestionPage[TransportMode] {
           .map(_ => waypoints.next.page)
           .getOrElse(NationalityOfTransportPage)
     }.orRecover
+
+  override def cleanup(value: Option[TransportMode], userAnswers: UserAnswers): Try[UserAnswers] =
+    value.map {
+      case Air =>
+        userAnswers
+          .remove(NationalityOfTransportPage)
+          .flatMap(_.remove(MaritimeIdentityPage))
+          .flatMap(_.remove(RailIdentityPage))
+          .flatMap(_.remove(RoadIdentityPage))
+          .flatMap(_.remove(RoroAccompaniedIdentityPage))
+          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+
+      case Maritime =>
+        userAnswers
+          .remove(NationalityOfTransportPage)
+          .flatMap(_.remove(AirIdentityPage))
+          .flatMap(_.remove(RailIdentityPage))
+          .flatMap(_.remove(RoadIdentityPage))
+          .flatMap(_.remove(RoroAccompaniedIdentityPage))
+          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+
+      case Rail =>
+        userAnswers
+          .remove(NationalityOfTransportPage)
+          .flatMap(_.remove(AirIdentityPage))
+          .flatMap(_.remove(MaritimeIdentityPage))
+          .flatMap(_.remove(RoadIdentityPage))
+          .flatMap(_.remove(RoroAccompaniedIdentityPage))
+          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+
+      case Road =>
+        userAnswers
+          .remove(AirIdentityPage)
+          .flatMap(_.remove(MaritimeIdentityPage))
+          .flatMap(_.remove(RailIdentityPage))
+          .flatMap(_.remove(RoroAccompaniedIdentityPage))
+          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+
+      case RoroAccompanied =>
+        userAnswers
+          .remove(AirIdentityPage)
+          .flatMap(_.remove(MaritimeIdentityPage))
+          .flatMap(_.remove(RailIdentityPage))
+          .flatMap(_.remove(RoadIdentityPage))
+          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+
+      case RoroUnaccompanied =>
+        userAnswers
+          .remove(AirIdentityPage)
+          .flatMap(_.remove(MaritimeIdentityPage))
+          .flatMap(_.remove(RailIdentityPage))
+          .flatMap(_.remove(RoadIdentityPage))
+          .flatMap(_.remove(RoroAccompaniedIdentityPage))
+    }.getOrElse(super.cleanup(value, userAnswers))
 }
