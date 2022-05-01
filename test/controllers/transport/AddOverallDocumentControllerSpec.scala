@@ -84,7 +84,7 @@ class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = answers.set(AddOverallDocumentPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddOverallDocumentPage.navigate(waypoints, expectedAnswers)
+        redirectLocation(result).value mustEqual AddOverallDocumentPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }

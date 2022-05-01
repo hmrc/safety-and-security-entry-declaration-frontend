@@ -81,7 +81,7 @@ class RemoveOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.remove(OverallDocumentPage(index)).success.value
+        val expectedAnswers = answers.remove(OverallDocumentPage(index)).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual RemoveOverallDocumentPage(index).navigate(waypoints, expectedAnswers).url
@@ -106,7 +106,7 @@ class RemoveOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, removeOverallDocumentRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+            .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 

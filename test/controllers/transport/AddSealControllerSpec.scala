@@ -82,7 +82,7 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = answers.set(AddSealPage, true).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddSealPage.navigate(waypoints, expectedAnswers)
+        redirectLocation(result).value mustEqual AddSealPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }

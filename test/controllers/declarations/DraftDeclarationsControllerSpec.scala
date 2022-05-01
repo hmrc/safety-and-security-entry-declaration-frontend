@@ -17,18 +17,32 @@
 package controllers.declarations
 
 import base.SpecBase
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import viewmodels.govuk.SummaryListFluency
 import views.html.declarations.DraftDeclarationsView
 
-class DraftDeclarationsControllerSpec extends SpecBase with SummaryListFluency {
+import scala.concurrent.Future
+
+class DraftDeclarationsControllerSpec extends SpecBase with SummaryListFluency with MockitoSugar {
 
   "DraftDeclarations Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.getSummaryList(any())) thenReturn Future.successful(Nil)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, routes.DraftDeclarationsController.onPageLoad().url)

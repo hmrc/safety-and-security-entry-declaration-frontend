@@ -23,6 +23,7 @@ import pages.consignors._
 import pages.goods.{AddDocumentPage, AddItemContainerNumberPage, AddPackagePage, CheckGoodsItemPage, CheckPackageItemPage}
 import pages.predec.CheckPredecPage
 import pages.routedetails._
+import pages.transport.{AddOverallDocumentPage, AddSealPage, CheckTransportPage}
 
 class WaypointSpec extends SpecBase {
 
@@ -157,6 +158,31 @@ class WaypointSpec extends SpecBase {
     "must return Add Package when given its check-mode waypoint" in {
 
       Waypoint.fromString("change-package-1").value mustEqual AddPackagePage(Index(0)).waypoint(CheckMode)
+    }
+
+    "must return Check Transport when given its waypoint" in {
+
+      Waypoint.fromString("check-transport").value mustEqual CheckTransportPage.waypoint
+    }
+
+    "must return Add Seal when given its normal-mode fragment" in {
+
+      Waypoint.fromString("add-seal").value mustEqual AddSealPage.waypoint(NormalMode)
+    }
+
+    "must return Add Seal when given its check-mode fragment" in {
+
+      Waypoint.fromString("change-seal").value mustEqual AddSealPage.waypoint(CheckMode)
+    }
+
+    "must return Add Overall Document when given its normal-mode fragment" in {
+
+      Waypoint.fromString("add-overall-document").value mustEqual AddOverallDocumentPage.waypoint(NormalMode)
+    }
+
+    "must return Add Overall Document when given its check-mode fragment" in {
+
+      Waypoint.fromString("change-overall-document").value mustEqual AddOverallDocumentPage.waypoint(CheckMode)
     }
   }
 }
