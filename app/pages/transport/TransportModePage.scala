@@ -17,9 +17,9 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{LocalReferenceNumber, NormalMode, TransportMode, UserAnswers}
 import models.TransportMode._
-import pages.{QuestionPage, Waypoints}
+import models.{LocalReferenceNumber, TransportMode, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,21 +32,34 @@ case object TransportModePage extends QuestionPage[TransportMode] {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.TransportModeController.onPageLoad(waypoints, lrn)
 
-//  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-//    answers.get(TransportModePage) match {
-//      case Some(Air) =>
-//        transportRoutes.AirIdentityController.onPageLoad(NormalMode, answers.lrn)
-//
-//      case Some(Rail) =>
-//        transportRoutes.RailIdentityController.onPageLoad(NormalMode, answers.lrn)
-//
-//      case Some(Maritime) =>
-//        transportRoutes.MaritimeIdentityController.onPageLoad(NormalMode, answers.lrn)
-//
-//      case Some(RoroAccompanied) | Some(RoroUnaccompanied) | Some(Road) =>
-//        transportRoutes.NationalityOfTransportController.onPageLoad(NormalMode, answers.lrn)
-//
-//      case None =>
-//        routes.JourneyRecoveryController.onPageLoad()
-//    }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case Air => AirIdentityPage
+      case Maritime => MaritimeIdentityPage
+      case Rail => RailIdentityPage
+      case Road | RoroAccompanied | RoroUnaccompanied => NationalityOfTransportPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case Air =>
+        answers.get(AirIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(AirIdentityPage)
+
+      case Maritime =>
+        answers.get(MaritimeIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(MaritimeIdentityPage)
+
+      case Rail =>
+        answers.get(RailIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RailIdentityPage)
+
+      case Road | RoroAccompanied | RoroUnaccompanied =>
+        answers.get(NationalityOfTransportPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(NationalityOfTransportPage)
+    }.orRecover
 }

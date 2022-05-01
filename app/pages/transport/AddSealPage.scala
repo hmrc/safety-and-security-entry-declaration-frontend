@@ -17,8 +17,8 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
-import pages.{AddItemPage, QuestionPage, Waypoints}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.transport.DeriveNumberOfSeals
@@ -35,13 +35,25 @@ case object AddSealPage extends QuestionPage[Boolean] with AddItemPage {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.AddSealController.onPageLoad(waypoints, lrn)
 
-//  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-//    if (addAnother) {
-//      answers.get(DeriveNumberOfSeals) match {
-//        case Some(size) => transportRoutes.SealController.onPageLoad(mode, answers.lrn, Index(size))
-//        case None => routes.JourneyRecoveryController.onPageLoad()
-//      }
-//    } else {
-//      transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
-//    }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfSeals)
+          .map(n => SealPage(Index(n)))
+          .orRecover
+
+      case false =>
+        CheckTransportPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+    case true =>
+      answers.get(DeriveNumberOfSeals)
+        .map(n => SealPage(Index(n)))
+        .orRecover
+
+    case false =>
+      waypoints.next.page
+  }.orRecover
 }

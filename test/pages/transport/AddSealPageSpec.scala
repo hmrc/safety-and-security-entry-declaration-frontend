@@ -17,63 +17,75 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode}
-import org.scalacheck.Arbitrary.arbitrary
+import controllers.transport.routes
+import models.{Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class AddSealPageSpec extends SpecBase with PageBehaviours {
 
   "AddSealPage" - {
 
-//    "must navigate in Normal Mode" - {
-//
-//      "to JourneyRecoveryController when add another answer is yes but DeriveNumberOfSeals not Set" in {
-//        val answers = emptyUserAnswers.set(AddSealPage, true).success.value
-//
-//        AddSealPage
-//          .navigate(NormalMode, answers, true)
-//          .mustEqual(routes.JourneyRecoveryController.onPageLoad())
-//      }
-//
-//      "to Check Your Answers when add another answer is no" in {
-//        val answers = emptyUserAnswers.set(AddSealPage, false).success.value
-//
-//        AddSealPage
-//          .navigate(NormalMode, answers, addAnother = false)
-//          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//
-//      "to Seal with (index + 1) if yes is selected" in {
-//        // Add a document and check redirect multiple times to check it works for each index
-//        (0 to 2).foldLeft(emptyUserAnswers) {
-//          case (prevAnswers, idx) =>
-//            val currIndex = Index(idx)
-//            val answers = prevAnswers.set(
-//              SealPage(currIndex),
-//              arbitrary[String].sample.value
-//            ).success.value
-//
-//            AddSealPage.navigate(NormalMode, answers, addAnother = true)
-//              .mustEqual(
-//                transportRoutes.SealController.onPageLoad(
-//                  NormalMode,
-//                  answers.lrn,
-//                  currIndex + 1
-//                )
-//              )
-//            answers
-//        }
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//        AddSealPage.navigate(CheckMode, emptyUserAnswers, false)
-//          .mustEqual(transportRoutes.CheckTransportController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Seal for the next index when the answer is yes" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(SealPage(Index(0)), "seal1").success.value
+            .set(AddSealPage, true).success.value
+
+        AddSealPage.navigate(waypoints, answers)
+          .mustEqual(routes.SealController.onPageLoad(waypoints, answers.lrn, Index(1)))
+      }
+
+      "to Check Transport when the answer is no" in {
+
+        val answers =
+          emptyUserAnswers
+            .set(SealPage(Index(0)), "seal1").success.value
+            .set(AddSealPage, false).success.value
+
+        AddSealPage.navigate(waypoints, answers)
+          .mustEqual(routes.CheckTransportController.onPageLoad(waypoints, answers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Transport" - {
+
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
+
+      "when the answer is yes" - {
+
+        "to Seal for the next index with Add Seal added to the waypoints" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(SealPage(Index(0)), "seal1").success.value
+              .set(AddSealPage, true).success.value
+
+          val expectedWaypoints = waypoints.setNextWaypoint(AddSealPage.waypoint(NormalMode))
+
+          AddSealPage.navigate(waypoints, answers)
+            .mustEqual(routes.SealController.onPageLoad(expectedWaypoints, answers.lrn, Index(1)))
+        }
+      }
+
+      "when the answer is no" - {
+
+        "to Check Transport with the current waypoint removed" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(SealPage(Index(0)), "seal1").success.value
+              .set(AddSealPage, false).success.value
+
+          AddSealPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+      }
+    }
   }
 }

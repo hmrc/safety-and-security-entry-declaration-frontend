@@ -17,9 +17,9 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{LocalReferenceNumber, NormalMode, UserAnswers}
 import models.TransportIdentity.RoadIdentity
-import pages.{QuestionPage, Waypoints}
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,7 +32,6 @@ case object RoadIdentityPage extends QuestionPage[RoadIdentity] {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.RoadIdentityController.onPageLoad(waypoints, lrn)
 
-//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-//    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
-//  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AnyOverallDocumentsPage
 }

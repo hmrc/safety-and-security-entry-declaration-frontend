@@ -17,10 +17,13 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{QuestionPage, Waypoints}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.transport.{AllOverallDocumentsQuery, DeriveNumberOfOverallDocuments}
+
+import scala.util.Try
 
 case object AnyOverallDocumentsPage extends QuestionPage[Boolean] {
 
@@ -31,14 +34,28 @@ case object AnyOverallDocumentsPage extends QuestionPage[Boolean] {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.AnyOverallDocumentsController.onPageLoad(waypoints, lrn)
 
-//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-//    answers.get(AnyOverallDocumentsPage) map {
-//      case true =>
-//        transportRoutes.OverallDocumentController.onPageLoad(NormalMode, answers.lrn, Index(0))
-//      case _ =>
-//        transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
-//    } getOrElse {
-//      routes.JourneyRecoveryController.onPageLoad()
-//    }
-//  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => OverallDocumentPage(Index(0))
+      case false => AddAnySealsPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfOverallDocuments).map {
+          case n if n > 0 => waypoints.next.page
+          case _ => OverallDocumentPage(Index(0))
+        }.getOrElse(OverallDocumentPage(Index(0)))
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(AllOverallDocumentsQuery)
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

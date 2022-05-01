@@ -17,12 +17,19 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Index, LocalReferenceNumber}
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.{Page, Waypoints}
 import play.api.mvc.Call
+import queries.transport.DeriveNumberOfOverallDocuments
 
 case class RemoveOverallDocumentPage(index: Index) extends Page {
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.RemoveOverallDocumentController.onPageLoad(waypoints, lrn, index)
+
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfOverallDocuments).map {
+      case n if n > 0 => AddOverallDocumentPage
+      case _ => AnyOverallDocumentsPage
+    }.getOrElse(AnyOverallDocumentsPage)
 }

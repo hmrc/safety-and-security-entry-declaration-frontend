@@ -17,12 +17,12 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Document, Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{QuestionPage, Waypoints}
+import models.{Document, Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class OverallDocumentPage(index: Index) extends QuestionPage[Document] {
+case class OverallDocumentPage(index: Index) extends OverallDocumentQuestionPage[Document] {
 
   override def path: JsPath = JsPath \ "overallDocuments" \ index.position
 
@@ -31,7 +31,6 @@ case class OverallDocumentPage(index: Index) extends QuestionPage[Document] {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.OverallDocumentController.onPageLoad(waypoints, lrn, index)
 
-//  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-//    transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, answers.lrn)
-//  }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AddOverallDocumentPage
 }

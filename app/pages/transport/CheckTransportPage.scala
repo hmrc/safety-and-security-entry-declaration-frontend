@@ -17,8 +17,8 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.LocalReferenceNumber
-import pages.{CheckAnswersPage, Waypoints}
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, TaskListPage, Waypoints}
 import play.api.mvc.Call
 
 object CheckTransportPage extends CheckAnswersPage {
@@ -27,4 +27,7 @@ object CheckTransportPage extends CheckAnswersPage {
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.CheckTransportController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    TaskListPage
 }

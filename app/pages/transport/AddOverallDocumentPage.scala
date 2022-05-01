@@ -17,8 +17,8 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{CheckMode, Index, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
-import pages.{AddItemPage, QuestionPage, Waypoints}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 import queries.transport.DeriveNumberOfOverallDocuments
@@ -34,21 +34,27 @@ case object AddOverallDocumentPage extends QuestionPage[Boolean] with AddItemPag
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.AddOverallDocumentController.onPageLoad(waypoints, lrn)
-//
-//  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-//    if (addAnother) {
-//      answers.get(DeriveNumberOfOverallDocuments) match {
-//        case Some(size) =>
-//          transportRoutes.OverallDocumentController.onPageLoad(mode, answers.lrn, Index(size))
-//        case None =>
-//          routes.JourneyRecoveryController.onPageLoad()
-//      }
-//    } else {
-//      mode match {
-//        case NormalMode =>
-//          transportRoutes.AddAnySealsController.onPageLoad(NormalMode, answers.lrn)
-//        case CheckMode =>
-//          routes.CheckYourAnswersController.onPageLoad(answers.lrn)
-//      }
-//    }
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfOverallDocuments)
+        .map(n => OverallDocumentPage(Index(n)))
+        .orRecover
+
+      case false =>
+        AddAnySealsPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfOverallDocuments)
+          .map(n => OverallDocumentPage(Index(n)))
+          .orRecover
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
 }
+

@@ -17,30 +17,51 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.transport.routes
+import models.Index
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemoveSealPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveSealPage" - {
 
-//    "must navigate in Normal Mode" - {
-//
-//      "to Index" in {
-//
-//        RemoveSealPage.navigate(NormalMode, emptyUserAnswers)
-//          .mustEqual(routes.IndexController.onPageLoad)
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//
-//        RemoveSealPage.navigate(CheckMode, emptyUserAnswers)
-//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Add Any Seals when there are no seals left" in {
+
+        RemoveSealPage(Index(0)).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddAnySealsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+
+      "to Add Seal when there is at least one seal left" in {
+
+        val answers = emptyUserAnswers.set(SealPage(Index(0)), "seal").success.value
+
+        RemoveSealPage(Index(0)).navigate(waypoints, answers)
+          .mustEqual(routes.AddSealController.onPageLoad(waypoints, answers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Transport" - {
+
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
+
+      "to Add Any Seals when there are no seals left" in {
+
+        RemoveSealPage(Index(0)).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddAnySealsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+
+      "to Add Seal when there is at least one seal left" in {
+
+        val answers = emptyUserAnswers.set(SealPage(Index(0)), "seal").success.value
+
+        RemoveSealPage(Index(0)).navigate(waypoints, answers)
+          .mustEqual(routes.AddSealController.onPageLoad(waypoints, answers.lrn))
+      }
+    }
   }
 }

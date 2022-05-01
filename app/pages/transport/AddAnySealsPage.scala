@@ -17,10 +17,13 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Index, LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.{QuestionPage, Waypoints}
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.transport.{AllSealsQuery, DeriveNumberOfSeals}
+
+import scala.util.Try
 
 case object AddAnySealsPage extends QuestionPage[Boolean] {
 
@@ -31,10 +34,28 @@ case object AddAnySealsPage extends QuestionPage[Boolean] {
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
     routes.AddAnySealsController.onPageLoad(waypoints, lrn)
 
-//  override def navigateInNormalMode(answers: UserAnswers): Call =
-//    answers.get(AddAnySealsPage) match {
-//      case Some(true) => transportRoutes.SealController.onPageLoad(NormalMode, answers.lrn, Index(0))
-//      case Some(false) => transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
-//      case None => routes.JourneyRecoveryController.onPageLoad()
-//    }
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true => SealPage(Index(0))
+      case false => CheckTransportPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfSeals).map {
+          case n if n > 0 => waypoints.next.page
+          case _ => SealPage(Index(0))
+        }.getOrElse(SealPage(Index(0)))
+
+      case false =>
+        waypoints.next.page
+    }.orRecover
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(false)) {
+      userAnswers.remove(AllSealsQuery)
+    } else {
+      super.cleanup(value, userAnswers)
+    }
 }

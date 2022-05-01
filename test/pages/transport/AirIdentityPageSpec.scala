@@ -17,36 +17,36 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
+import controllers.transport.routes
 import models.{CheckMode, NormalMode}
 import models.TransportIdentity.AirIdentity
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class AirIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "AirIdentityPage" - {
 
-//    "must navigate in Normal Mode" - {
-//
-//      "to AnyOverallDocuments" in {
-//        AirIdentityPage.navigate(NormalMode, emptyUserAnswers)
-//          .mustEqual(
-//            transportRoutes.AnyOverallDocumentsController.onPageLoad(
-//              NormalMode,
-//              emptyUserAnswers.lrn
-//            )
-//          )
-//      }
-//    }
-//
-//    "must navigate in Check Mode" - {
-//
-//      "to Check Your Answers" in {
-//
-//        AirIdentityPage.navigate(CheckMode, emptyUserAnswers)
-//          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
-//      }
-//    }
+    "must navigate when there are no waypoints" - {
+
+      val waypoints = EmptyWaypoints
+
+      "to Any Overall Documents" in {
+
+        AirIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyOverallDocumentsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+    }
+
+    "must navigate when the current waypoint is Check Transport" - {
+
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
+
+      "to Check Transport with the current waypoint removed" in {
+
+        AirIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
+      }
+    }
   }
 }
