@@ -22,6 +22,7 @@ import models.{LocalReferenceNumber, TransportMode, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import queries.Settable
 
 import scala.util.Try
 
@@ -59,10 +60,32 @@ case object TransportModePage extends QuestionPage[TransportMode] {
           .map(_ => waypoints.next.page)
           .getOrElse(RailIdentityPage)
 
-      case Road | RoroAccompanied | RoroUnaccompanied =>
+      case Road =>
         answers.get(NationalityOfTransportPage)
-          .map(_ => waypoints.next.page)
-          .getOrElse(NationalityOfTransportPage)
+          .map {
+            _ =>
+              answers.get(RoadIdentityPage)
+                .map(_ => waypoints.next.page)
+                .getOrElse(RoadIdentityPage)
+          }.getOrElse(NationalityOfTransportPage)
+
+      case RoroAccompanied =>
+        answers.get(NationalityOfTransportPage)
+          .map {
+            _ =>
+              answers.get(RoroAccompaniedIdentityPage)
+                .map(_ => waypoints.next.page)
+                .getOrElse(RoroAccompaniedIdentityPage)
+          }.getOrElse(NationalityOfTransportPage)
+
+      case RoroUnaccompanied =>
+        answers.get(NationalityOfTransportPage)
+          .map {
+            _ =>
+              answers.get(RoroUnaccompaniedIdentityPage)
+                .map(_ => waypoints.next.page)
+                .getOrElse(RoroUnaccompaniedIdentityPage)
+          }.getOrElse(NationalityOfTransportPage)
     }.orRecover
 
   override def cleanup(value: Option[TransportMode], userAnswers: UserAnswers): Try[UserAnswers] =
@@ -70,52 +93,45 @@ case object TransportModePage extends QuestionPage[TransportMode] {
       case Air =>
         userAnswers
           .remove(NationalityOfTransportPage)
-          .flatMap(_.remove(MaritimeIdentityPage))
-          .flatMap(_.remove(RailIdentityPage))
-          .flatMap(_.remove(RoadIdentityPage))
-          .flatMap(_.remove(RoroAccompaniedIdentityPage))
-          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+          .flatMap(x => cleanOtherModes(AirIdentityPage, x))
 
       case Maritime =>
         userAnswers
           .remove(NationalityOfTransportPage)
-          .flatMap(_.remove(AirIdentityPage))
-          .flatMap(_.remove(RailIdentityPage))
-          .flatMap(_.remove(RoadIdentityPage))
-          .flatMap(_.remove(RoroAccompaniedIdentityPage))
-          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+          .flatMap(x => cleanOtherModes(MaritimeIdentityPage, x))
 
       case Rail =>
         userAnswers
           .remove(NationalityOfTransportPage)
-          .flatMap(_.remove(AirIdentityPage))
-          .flatMap(_.remove(MaritimeIdentityPage))
-          .flatMap(_.remove(RoadIdentityPage))
-          .flatMap(_.remove(RoroAccompaniedIdentityPage))
-          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+          .flatMap(x => cleanOtherModes(RailIdentityPage, x))
 
       case Road =>
-        userAnswers
-          .remove(AirIdentityPage)
-          .flatMap(_.remove(MaritimeIdentityPage))
-          .flatMap(_.remove(RailIdentityPage))
-          .flatMap(_.remove(RoroAccompaniedIdentityPage))
-          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+        cleanOtherModes(RoadIdentityPage, userAnswers)
 
       case RoroAccompanied =>
-        userAnswers
-          .remove(AirIdentityPage)
-          .flatMap(_.remove(MaritimeIdentityPage))
-          .flatMap(_.remove(RailIdentityPage))
-          .flatMap(_.remove(RoadIdentityPage))
-          .flatMap(_.remove(RoroUnaccompaniedIdentityPage))
+        cleanOtherModes(RoroAccompaniedIdentityPage, userAnswers)
 
       case RoroUnaccompanied =>
-        userAnswers
-          .remove(AirIdentityPage)
-          .flatMap(_.remove(MaritimeIdentityPage))
-          .flatMap(_.remove(RailIdentityPage))
-          .flatMap(_.remove(RoadIdentityPage))
-          .flatMap(_.remove(RoroAccompaniedIdentityPage))
+        cleanOtherModes(RoroUnaccompaniedIdentityPage, userAnswers)
     }.getOrElse(super.cleanup(value, userAnswers))
+
+  private def cleanOtherModes(pageToKeep: Settable[_], answers: UserAnswers): Try[UserAnswers] = {
+
+    val allPages: List[Settable[_]] = List(
+      AirIdentityPage,
+      MaritimeIdentityPage,
+      RailIdentityPage,
+      RoadIdentityPage,
+      RoroAccompaniedIdentityPage,
+      RoroUnaccompaniedIdentityPage
+    )
+
+    allPages
+      .filterNot(_ == pageToKeep)
+      .foldLeft(Try(answers)) {
+        (accumulatedAnswers, page) =>
+          accumulatedAnswers.flatMap(_.remove(page))
+      }
+  }
+
 }

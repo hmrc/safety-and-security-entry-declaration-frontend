@@ -45,14 +45,16 @@ class CheckTransportController @Inject()(
         rows = Seq(
           TransportModeSummary.row(request.userAnswers, waypoints, CheckTransportPage),
           NationalityOfTransportSummary.row(request.userAnswers, waypoints, CheckTransportPage),
-          RoroUnaccompaniedIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
-          RoroAccompaniedIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
-          SealSummary.checkAnswersRow(request.userAnswers, waypoints, CheckTransportPage),
-          RoadIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
-          RailIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
-          OverallDocumentSummary.checkAnswersRow(request.userAnswers, waypoints, CheckTransportPage),
+          AirIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
           MaritimeIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
-          AirIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage)
+          RailIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RoadIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RoroAccompaniedIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RoroUnaccompaniedIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          AnyOverallDocumentsSummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          OverallDocumentSummary.checkAnswersRow(request.userAnswers, waypoints, CheckTransportPage),
+          AddAnySealsSummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          SealSummary.checkAnswersRow(request.userAnswers, waypoints, CheckTransportPage),
         ).flatten
       )
 

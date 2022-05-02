@@ -19,7 +19,7 @@ package pages.transport
 import controllers.transport.routes
 import models.{Country, LocalReferenceNumber, NormalMode, UserAnswers}
 import models.TransportMode._
-import pages.{Page, QuestionPage, Waypoints}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -42,4 +42,24 @@ case object NationalityOfTransportPage extends QuestionPage[Country] {
       case RoroUnaccompanied => RoroUnaccompaniedIdentityPage
     }.orRecover
 
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(TransportModePage).map {
+      case Road =>
+        answers.get(RoadIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RoadIdentityPage)
+
+      case RoroAccompanied =>
+        answers.get(RoroAccompaniedIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RoroAccompaniedIdentityPage)
+
+      case RoroUnaccompanied =>
+        answers.get(RoroUnaccompaniedIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RoroUnaccompaniedIdentityPage)
+
+      case Air | Maritime | Rail =>
+        waypoints.next.page
+    }.orRecover
 }

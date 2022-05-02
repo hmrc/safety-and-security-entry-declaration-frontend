@@ -18,10 +18,11 @@ package pages.transport
 
 import base.SpecBase
 import controllers.transport.routes
-import models.TransportMode
+import models.TransportIdentity.{RoadIdentity, RoroAccompaniedIdentity, RoroUnaccompaniedIdentity}
 import models.TransportMode._
-import pages.{EmptyWaypoints, Waypoints}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class NationalityOfTransportPageSpec extends SpecBase with PageBehaviours {
 
@@ -31,7 +32,7 @@ class NationalityOfTransportPageSpec extends SpecBase with PageBehaviours {
 
       val waypoints = EmptyWaypoints
 
-      "to Air Identity if transport mode is Ait" in {
+      "to Air Identity if transport mode is Air" in {
 
         val answers = emptyUserAnswers.set(TransportModePage, Air).success.value
 
@@ -84,15 +85,102 @@ class NationalityOfTransportPageSpec extends SpecBase with PageBehaviours {
 
       val waypoints = Waypoints(List(CheckTransportPage.waypoint))
 
-      "to Check Transport with the current waypoint removed regardless of the transport mode" in {
+      "when the transport mode is Air" - {
 
-        TransportMode.values.map {
-          transportMode =>
+        "to Check Transport with the current waypoint removed" in {
 
-            val answers = emptyUserAnswers.set(TransportModePage, transportMode).success.value
+          val answers = emptyUserAnswers.set(TransportModePage, Air).success.value
 
-            NationalityOfTransportPage.navigate(waypoints, answers)
-              .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+      }
+
+      "when the transport mode is Maritime" - {
+
+        "to Check Transport with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, Maritime).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+      }
+
+      "when the transport mode is Rail" - {
+
+        "to Check Transport with the current waypoint removed" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, Rail).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+      }
+
+      "when the transport mode is Road" - {
+
+        "to Check Transport with the current waypoint removed when Road Identity has been answered" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(RoadIdentityPage, arbitrary[RoadIdentity].sample.value).success.value
+              .set(TransportModePage, Road).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+
+        "to Road Identity when it has not been answered" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, Road).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.RoadIdentityController.onPageLoad(waypoints, answers.lrn))
+        }
+      }
+
+      "when the transport mode is Roro Accompanied" - {
+
+        "to Check Transport with the current waypoint removed when Roro Accompanied Identity has been answered" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(RoroAccompaniedIdentityPage, arbitrary[RoroAccompaniedIdentity].sample.value).success.value
+              .set(TransportModePage, RoroAccompanied).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+
+        "to Roro Accompanied Identity when it has not been answered" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, RoroAccompanied).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.RoroAccompaniedIdentityController.onPageLoad(waypoints, answers.lrn))
+        }
+      }
+
+      "when the transport mode is Roro Unaccompanied" - {
+
+        "to Check Transport with the current waypoint removed when Roro Unaccompanied Identity has been answered" in {
+
+          val answers =
+            emptyUserAnswers
+              .set(RoroUnaccompaniedIdentityPage, arbitrary[RoroUnaccompaniedIdentity].sample.value).success.value
+              .set(TransportModePage, RoroUnaccompanied).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn))
+        }
+
+        "to Roro Unaccompanied Identity when it has not been answered" in {
+
+          val answers = emptyUserAnswers.set(TransportModePage, RoroUnaccompanied).success.value
+
+          NationalityOfTransportPage.navigate(waypoints, answers)
+            .mustEqual(routes.RoroUnaccompaniedIdentityController.onPageLoad(waypoints, answers.lrn))
         }
       }
     }
