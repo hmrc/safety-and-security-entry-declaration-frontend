@@ -18,8 +18,8 @@ package pages.transport
 
 import base.SpecBase
 import controllers.transport.routes
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RoroUnaccompaniedIdentityPageSpec extends SpecBase with PageBehaviours {
 

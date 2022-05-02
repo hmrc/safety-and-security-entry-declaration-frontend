@@ -18,10 +18,8 @@ package pages.transport
 
 import base.SpecBase
 import controllers.transport.routes
-import models.{CheckMode, NormalMode}
-import models.TransportIdentity.AirIdentity
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class AirIdentityPageSpec extends SpecBase with PageBehaviours {
 

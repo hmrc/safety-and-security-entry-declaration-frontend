@@ -16,10 +16,9 @@
 
 package viewmodels.checkAnswers.transport
 
-import controllers.transport.routes
-import models.{CheckMode, UserAnswers}
-import pages.{CheckAnswersPage, Waypoints}
+import models.UserAnswers
 import pages.transport.TransportModePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

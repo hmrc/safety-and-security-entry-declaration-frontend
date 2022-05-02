@@ -18,9 +18,7 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.AddAnySealsFormProvider
-
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.transport.AddAnySealsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.AddAnySealsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnySealsController @Inject()(

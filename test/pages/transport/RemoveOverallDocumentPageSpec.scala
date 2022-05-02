@@ -20,8 +20,8 @@ import base.SpecBase
 import controllers.transport.routes
 import models.{Document, Index}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemoveOverallDocumentPageSpec extends SpecBase with PageBehaviours {
 

@@ -20,9 +20,9 @@ import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RemoveOverallDocumentFormProvider
 import models.Document
-import org.scalacheck.Arbitrary.arbitrary
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.transport.{OverallDocumentPage, RemoveOverallDocumentPage}

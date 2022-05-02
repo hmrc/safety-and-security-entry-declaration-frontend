@@ -17,8 +17,8 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Country, LocalReferenceNumber, NormalMode, UserAnswers}
 import models.TransportMode._
+import models.{Country, LocalReferenceNumber, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
 import pages.transport.{AddOverallDocumentPage, OverallDocumentPage}
 import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages

@@ -18,9 +18,9 @@ package pages.transport
 
 import base.SpecBase
 import controllers.transport.routes
-import models.{CheckMode, Index, NormalMode}
-import pages.{EmptyWaypoints, Waypoints}
+import models.{Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class SealPageSpec extends SpecBase with PageBehaviours {
 

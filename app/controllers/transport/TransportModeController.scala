@@ -18,7 +18,7 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.TransportModeFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.transport.TransportModePage
 import play.api.i18n.{I18nSupport, MessagesApi}

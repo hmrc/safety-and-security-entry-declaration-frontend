@@ -24,8 +24,8 @@ import models.UserAnswers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{EmptyWaypoints, transport}
 import pages.transport.MaritimeIdentityPage
+import pages.{EmptyWaypoints, transport}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest

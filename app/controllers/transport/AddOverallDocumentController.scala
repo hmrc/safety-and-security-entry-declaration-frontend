@@ -18,9 +18,7 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.AddOverallDocumentFormProvider
-
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.transport.AddOverallDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transport.OverallDocumentSummary
 import views.html.transport.AddOverallDocumentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddOverallDocumentController @Inject()(

@@ -19,8 +19,8 @@ package pages.transport
 import base.SpecBase
 import controllers.transport.routes
 import models.NormalMode
-import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class OverallDocumentPageSpec extends SpecBase with PageBehaviours {
   private val page = OverallDocumentPage(index)
