@@ -19,10 +19,11 @@ package controllers.predec
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.predec.LodgingPersonTypeFormProvider
-import models.{LodgingPersonType, NormalMode}
+import models.LodgingPersonType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.predec.LodgingPersonTypePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,8 +35,9 @@ import scala.concurrent.Future
 
 class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   lazy val lodgingPersonTypeRoute =
-    routes.LodgingPersonTypeController.onPageLoad(NormalMode, lrn).url
+    routes.LodgingPersonTypeController.onPageLoad(waypoints, lrn).url
 
   val formProvider = new LodgingPersonTypeFormProvider()
   val form = formProvider()
@@ -54,7 +56,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[LodgingPersonTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -78,7 +80,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(LodgingPersonType.values.head),
-          NormalMode,
+          waypoints,
           lrn
         )(request, messages(application)).toString
       }
@@ -106,7 +108,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual LodgingPersonTypePage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -128,7 +130,7 @@ class LodgingPersonTypeControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(
           request,
           messages(application)
         ).toString

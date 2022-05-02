@@ -20,6 +20,7 @@ import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 import pages.consignors.{AddConsignorPage, CheckConsignorPage}
 import pages.goods.{AddDocumentPage, AddGoodsPage, AddItemContainerNumberPage, AddPackagePage, CheckGoodsItemPage, CheckPackageItemPage}
+import pages.predec.CheckPredecPage
 import pages.routedetails.{AddCountryEnRoutePage, AddPlaceOfLoadingPage, AddPlaceOfUnloadingPage, CheckRouteDetailsPage}
 
 case class Waypoint (
@@ -79,6 +80,9 @@ object Waypoint {
 
       case CheckConsigneesAndNotifiedPartiesPage.urlFragment =>
         Some(CheckConsigneesAndNotifiedPartiesPage.waypoint)
+
+      case CheckPredecPage.urlFragment =>
+        Some(CheckPredecPage.waypoint)
 
       case other =>
         CheckConsigneePage.waypointFromString(other)

@@ -17,15 +17,15 @@
 package forms.consignors
 
 import forms.mappings.Mappings
-import models.ConsignorIdentity
+import models.TraderIdentity
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class ConsignorIdentityFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[ConsignorIdentity] =
+  def apply(): Form[TraderIdentity] =
     Form(
-      "value" -> enumerable[ConsignorIdentity]("consignorIdentity.error.required")
+      "value" -> enumerable[TraderIdentity]("consignorIdentity.error.required")
     )
 }

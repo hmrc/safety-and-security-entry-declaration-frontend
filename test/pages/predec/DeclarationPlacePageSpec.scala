@@ -17,40 +17,33 @@
 package pages.predec
 
 import base.SpecBase
-import controllers.predec.{routes => predecRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.predec.routes
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class DeclarationPlacePageSpec extends SpecBase with PageBehaviours {
 
   "DeclarationPlacePage" - {
 
-    beRetrievable[String](DeclarationPlacePage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[String](DeclarationPlacePage)
-
-    beRemovable[String](DeclarationPlacePage)
-
-    "must navigate in Normal Mode" - {
+      val waypoints = EmptyWaypoints
 
       "to Lodging Person" in {
 
-        DeclarationPlacePage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            predecRoutes.LodgingPersonTypeController.onPageLoad(NormalMode, emptyUserAnswers.lrn)
-          )
+        DeclarationPlacePage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.LodgingPersonTypeController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Predec" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckPredecPage.waypoint))
 
-        DeclarationPlacePage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Predec with the current waypoint removed" in {
+
+        DeclarationPlacePage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

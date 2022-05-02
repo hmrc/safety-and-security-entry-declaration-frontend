@@ -19,10 +19,10 @@ package controllers.predec
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.predec.DeclarationPlaceFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.predec.DeclarationPlacePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,8 +36,9 @@ class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DeclarationPlaceFormProvider()
   val form = formProvider()
+  private val waypoints = EmptyWaypoints
 
-  lazy val declarationPlaceRoute = routes.DeclarationPlaceController.onPageLoad(NormalMode, lrn).url
+  lazy val declarationPlaceRoute = routes.DeclarationPlaceController.onPageLoad(waypoints, lrn).url
 
   "DeclarationPlace Controller" - {
 
@@ -53,7 +54,7 @@ class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[DeclarationPlaceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -74,7 +75,7 @@ class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill("answer"), waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -102,7 +103,7 @@ class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual DeclarationPlacePage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -124,7 +125,7 @@ class DeclarationPlaceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(
           request,
           messages(application)
         ).toString

@@ -16,13 +16,21 @@
 
 package pages.predec
 
-import models.GbEori
-import pages.QuestionPage
+import controllers.predec.routes
+import models.{GbEori, LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
 case object CarrierEORIPage extends QuestionPage[GbEori] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "carrierEORI"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CarrierEORIController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    ProvideGrossWeightPage
 }

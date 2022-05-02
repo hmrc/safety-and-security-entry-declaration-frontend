@@ -50,7 +50,7 @@ object TaskListViewModel {
   private def predecRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
       messageKey          = messages("taskList.predec"),
-      link                = predecRoutes.CheckPredecController.onPageLoad(answers.lrn),
+      link                = predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn),
       id                  = "predec",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.Completed)
     )

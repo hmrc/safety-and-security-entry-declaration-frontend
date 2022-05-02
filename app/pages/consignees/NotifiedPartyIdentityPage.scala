@@ -17,15 +17,15 @@
 package pages.consignees
 
 import controllers.consignees.{routes => consigneeRoutes}
-import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
-import models.{Index, LocalReferenceNumber, NormalMode, NotifiedPartyIdentity, UserAnswers}
-import pages.{Waypoint, Waypoints, NonEmptyWaypoints, Page}
+import models.TraderIdentity.{GBEORI, NameAddress}
+import models.{Index, LocalReferenceNumber, NormalMode, TraderIdentity, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, Waypoint, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestionPage[NotifiedPartyIdentity] {
+case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestionPage[TraderIdentity] {
 
   override val addItemWaypoint: Waypoint = AddNotifiedPartyPage.waypoint(NormalMode)
 
@@ -56,7 +56,7 @@ case class NotifiedPartyIdentityPage(index: Index) extends NotifiedPartyQuestion
     }.orRecover
 
 
-  override def cleanup(value: Option[NotifiedPartyIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[TraderIdentity], userAnswers: UserAnswers): Try[UserAnswers] = {
     value.map {
       case GBEORI =>
         userAnswers

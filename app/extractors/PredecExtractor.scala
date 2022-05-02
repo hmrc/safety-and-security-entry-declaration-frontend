@@ -17,8 +17,9 @@
 package extractors
 
 import cats.implicits._
-import models.{GbEori, LocalReferenceNumber, LodgingPersonType, ProvideGrossWeight, UserAnswers}
+import models.completion.Party
 import models.completion.answers.Predec
+import models.{LocalReferenceNumber, LodgingPersonType, ProvideGrossWeight, TraderIdentity, UserAnswers}
 import pages.predec._
 
 class PredecExtractor(
@@ -33,18 +34,35 @@ class PredecExtractor(
     } getOrElse ValidationError.MissingField(ProvideGrossWeightPage).invalidNec
   }
 
-  private def extractCarrierEORI(): ValidationResult[Option[GbEori]] =
+  private def extractCarrier(): ValidationResult[Option[Party]] =
     answers.get(LodgingPersonTypePage) map {
-      case LodgingPersonType.Carrier => None.validNec
-      case LodgingPersonType.Representative => requireAnswer(CarrierEORIPage) map { Some(_) }
+      case LodgingPersonType.Carrier =>
+        None.validNec
+
+      case LodgingPersonType.Representative =>
+        answers.get(CarrierIdentityPage) map {
+          case TraderIdentity.GBEORI =>
+            requireAnswer(CarrierEORIPage) map { eori =>
+              Some(Party.ByEori(eori))
+            }
+
+          case TraderIdentity.NameAddress =>
+            (
+              requireAnswer(CarrierNamePage),
+              requireAnswer(CarrierAddressPage)
+            ).mapN {
+              case (name, address) =>
+                Some(Party.ByAddress(name, address))
+            }
+        } getOrElse ValidationError.MissingField(CarrierIdentityPage).invalidNec
     } getOrElse ValidationError.MissingField(LodgingPersonTypePage).invalidNec
 
   override def extract(): ValidationResult[Predec] = {
     val lrn: ValidationResult[LocalReferenceNumber] = answers.lrn.validNec
     val location = requireAnswer(DeclarationPlacePage)
+    val carrier = extractCarrier()
     val totalMass = extractTotalMass()
-    val carrierEORI = extractCarrierEORI()
 
-    (lrn, location, totalMass, carrierEORI).mapN(Predec)
+    (lrn, location, carrier, totalMass).mapN(Predec)
   }
 }

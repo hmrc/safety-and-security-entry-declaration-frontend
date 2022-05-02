@@ -17,37 +17,32 @@
 package pages.predec
 
 import base.SpecBase
-import controllers.routes
-import models.{CheckMode, GbEori, NormalMode}
+import controllers.predec.routes
+import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 
 class CarrierEORIPageSpec extends SpecBase with PageBehaviours {
 
   "CarrierEORIPage" - {
 
-    beRetrievable[GbEori](CarrierEORIPage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[GbEori](CarrierEORIPage)
+      val waypoints = EmptyWaypoints
 
-    beRemovable[GbEori](CarrierEORIPage)
+      "to Provide Gross Weight" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        CarrierEORIPage
-          .navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+        CarrierAddressPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.ProvideGrossWeightController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
-    }
 
-    "must navigate in Check Mode" - {
+      "must navigate when the current waypoint is Check Predec" - {
 
-      "to Check Your Answers" in {
+        val waypoints = Waypoints(List(CheckPredecPage.waypoint))
 
-        CarrierEORIPage
-          .navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+        "to Check Carrier with the current waypoint removed" in {
+          CarrierAddressPage.navigate(waypoints, emptyUserAnswers)
+            .mustEqual(routes.CheckPredecController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
+        }
       }
     }
   }

@@ -34,7 +34,7 @@ object ConsigneeIdentitySummary {
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"consigneeIdentity.$answer"))
+          HtmlFormat.escape(messages(s"traderIdentity.$answer"))
         )
       )
 

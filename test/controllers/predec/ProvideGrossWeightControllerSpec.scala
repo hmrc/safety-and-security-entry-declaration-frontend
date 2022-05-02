@@ -19,10 +19,11 @@ package controllers.predec
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.predec.ProvideGrossWeightFormProvider
-import models.{NormalMode, ProvideGrossWeight}
+import models.ProvideGrossWeight
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.predec.ProvideGrossWeightPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -34,7 +35,8 @@ import scala.concurrent.Future
 
 class ProvideGrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val provideGrossWeightRoute = routes.ProvideGrossWeightController.onPageLoad(NormalMode, lrn).url
+  private val waypoints = EmptyWaypoints
+  lazy val provideGrossWeightRoute = routes.ProvideGrossWeightController.onPageLoad(waypoints, lrn).url
 
   val formProvider = new ProvideGrossWeightFormProvider()
   val form = formProvider()
@@ -53,7 +55,7 @@ class ProvideGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[ProvideGrossWeightView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -74,7 +76,7 @@ class ProvideGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ProvideGrossWeight.values.head), NormalMode, lrn)(
+        contentAsString(result) mustEqual view(form.fill(ProvideGrossWeight.values.head), waypoints, lrn)(
           request,
           messages(application)
         ).toString
@@ -103,7 +105,7 @@ class ProvideGrossWeightControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual ProvideGrossWeightPage
-          .navigate(NormalMode, expectedAnswers)
+          .navigate(waypoints, expectedAnswers)
           .url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
@@ -125,7 +127,7 @@ class ProvideGrossWeightControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(
           request,
           messages(application)
         ).toString

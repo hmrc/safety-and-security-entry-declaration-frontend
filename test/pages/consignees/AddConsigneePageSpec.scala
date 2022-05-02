@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{ConsigneeIdentity, GbEori, Index, NormalMode}
+import models.{TraderIdentity, GbEori, Index, NormalMode}
 import pages.{Waypoints, EmptyWaypoints}
 import pages.behaviours.PageBehaviours
 import queries.consignees.ConsigneeKeyQuery
@@ -63,7 +63,7 @@ class AddConsigneePageSpec extends SpecBase with PageBehaviours {
           val answers =
             emptyUserAnswers
               .set(AddConsigneePage, true).success.value
-              .set(ConsigneeIdentityPage(Index(0)), ConsigneeIdentity.GBEORI).success.value
+              .set(ConsigneeIdentityPage(Index(0)), TraderIdentity.GBEORI).success.value
               .set(ConsigneeEORIPage(Index(0)), GbEori("123456789000")).success.value
               .set(ConsigneeKeyQuery(Index(0)), 1).success.value
 

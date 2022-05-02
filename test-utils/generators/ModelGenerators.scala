@@ -144,17 +144,12 @@ trait ModelGenerators extends StringGenerators {
 
   implicit lazy val arbitraryPaymentMethod: Arbitrary[PaymentMethod] =
     Arbitrary {
-      Gen.oneOf(PaymentMethod.values.toSeq)
+      Gen.oneOf(PaymentMethod.values)
     }
 
-  implicit lazy val arbitraryNotifiedPartyIdentity: Arbitrary[NotifiedPartyIdentity] =
+  implicit lazy val arbitraryConsigneeIdentity: Arbitrary[TraderIdentity] =
     Arbitrary {
-      Gen.oneOf(NotifiedPartyIdentity.values.toSeq)
-    }
-
-  implicit lazy val arbitraryConsigneeIdentity: Arbitrary[ConsigneeIdentity] =
-    Arbitrary {
-      Gen.oneOf(ConsigneeIdentity.values.toSeq)
+      Gen.oneOf(TraderIdentity.values)
     }
 
   val allDangerousGoods = Seq(
@@ -175,11 +170,6 @@ trait ModelGenerators extends StringGenerators {
   implicit lazy val arbitrarysOffice: Arbitrary[CustomsOffice] =
     Arbitrary {
       Gen.oneOf(CustomsOffice.allCustomsOffices)
-    }
-
-  implicit lazy val arbitraryConsignorIdentity: Arbitrary[ConsignorIdentity] =
-    Arbitrary {
-      Gen.oneOf(ConsignorIdentity.values)
     }
 
   implicit lazy val arbitraryDocument: Arbitrary[Document] =
@@ -273,17 +263,17 @@ trait ModelGenerators extends StringGenerators {
 
   implicit lazy val arbitraryTransportMode: Arbitrary[TransportMode] =
     Arbitrary {
-      Gen.oneOf(TransportMode.values.toSeq)
+      Gen.oneOf(TransportMode.values)
     }
 
   implicit lazy val arbitraryGrossWeight: Arbitrary[ProvideGrossWeight] =
     Arbitrary {
-      Gen.oneOf(ProvideGrossWeight.values.toSeq)
+      Gen.oneOf(ProvideGrossWeight.values)
     }
 
   implicit lazy val arbitraryLodgingPersonType: Arbitrary[LodgingPersonType] =
     Arbitrary {
-      Gen.oneOf(LodgingPersonType.values.toSeq)
+      Gen.oneOf(LodgingPersonType.values)
     }
 
   implicit lazy val arbitraryGbEori: Arbitrary[GbEori] =

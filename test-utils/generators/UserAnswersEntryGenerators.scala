@@ -253,7 +253,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page <- arbitrary[NotifiedPartyIdentityPage]
-        value <- arbitrary[NotifiedPartyIdentity].map(Json.toJson(_))
+        value <- arbitrary[TraderIdentity].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -289,7 +289,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page <- arbitrary[ConsigneeIdentityPage]
-        value <- arbitrary[ConsigneeIdentity].map(Json.toJson(_))
+        value <- arbitrary[TraderIdentity].map(Json.toJson(_))
       } yield (page, value)
     }
 
@@ -361,7 +361,7 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
     Arbitrary {
       for {
         page <- arbitrary[ConsignorIdentityPage]
-        value <- arbitrary[ConsignorIdentity].map(Json.toJson(_))
+        value <- arbitrary[TraderIdentity].map(Json.toJson(_))
       } yield (page, value)
     }
 

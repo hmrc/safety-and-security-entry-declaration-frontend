@@ -25,35 +25,34 @@ GET         /account/signed-out                          controllers.auth.Signed
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /localReferenceNumber                        controllers.predec.LocalReferenceNumberController.onPageLoad(mode: Mode = NormalMode)
-POST       /localReferenceNumber                        controllers.predec.LocalReferenceNumberController.onSubmit(mode: Mode = NormalMode)
-GET        /changeLocalReferenceNumber                  controllers.predec.LocalReferenceNumberController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeLocalReferenceNumber                  controllers.predec.LocalReferenceNumberController.onSubmit(mode: Mode = CheckMode)
+GET        /localReferenceNumber                        controllers.predec.LocalReferenceNumberController.onPageLoad()
+POST       /localReferenceNumber                        controllers.predec.LocalReferenceNumberController.onSubmit()
 
-GET        /:lrn/lodgingPersonType                        controllers.predec.LodgingPersonTypeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/lodgingPersonType                        controllers.predec.LodgingPersonTypeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeLodgingPersonType                  controllers.predec.LodgingPersonTypeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeLodgingPersonType                  controllers.predec.LodgingPersonTypeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/lodgingPersonType                        controllers.predec.LodgingPersonTypeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/lodgingPersonType                        controllers.predec.LodgingPersonTypeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
-GET        /:lrn/provideGrossWeight                        controllers.predec.ProvideGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/provideGrossWeight                        controllers.predec.ProvideGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeGrossWeight                  controllers.predec.ProvideGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeGrossWeight                  controllers.predec.ProvideGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/provideGrossWeight                        controllers.predec.ProvideGrossWeightController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/provideGrossWeight                        controllers.predec.ProvideGrossWeightController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
-GET        /:lrn/totalGrossWeight                  controllers.predec.TotalGrossWeightController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/totalGrossWeight                  controllers.predec.TotalGrossWeightController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeTotalGrossWeight                        controllers.predec.TotalGrossWeightController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeTotalGrossWeight                        controllers.predec.TotalGrossWeightController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/totalGrossWeight                  controllers.predec.TotalGrossWeightController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/totalGrossWeight                  controllers.predec.TotalGrossWeightController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierName                        controllers.predec.CarrierNameController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierName                        controllers.predec.CarrierNameController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierAddress                     controllers.predec.CarrierAddressController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierAddress                     controllers.predec.CarrierAddressController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+
+GET        /:lrn/carrierIdentity                    controllers.predec.CarrierIdentityController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/carrierIdentity                    controllers.predec.CarrierIdentityController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
 GET        /:lrn/transportMode                        controllers.transport.TransportModeController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 POST       /:lrn/transportMode                        controllers.transport.TransportModeController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
 GET        /:lrn/changeTransportMode                  controllers.transport.TransportModeController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 POST       /:lrn/changeTransportMode                  controllers.transport.TransportModeController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-
-GET        /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/carrierEORI                        controllers.predec.CarrierEORIController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeCarrierEORI                  controllers.predec.CarrierEORIController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeCarrierEORI                  controllers.predec.CarrierEORIController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
 
 GET        /:lrn/arrivalDateAndTime                        controllers.routedetails.ArrivalDateAndTimeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 POST       /:lrn/arrivalDateAndTime                        controllers.routedetails.ArrivalDateAndTimeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
@@ -85,10 +84,8 @@ POST       /:lrn/commodityCodeKnown/:index                        controllers.go
 GET        /:lrn/goodsDescription/:index                        controllers.goods.GoodsDescriptionController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/goodsDescription/:index                        controllers.goods.GoodsDescriptionController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/declarationPlace                        controllers.predec.DeclarationPlaceController.onPageLoad(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-POST       /:lrn/declarationPlace                        controllers.predec.DeclarationPlaceController.onSubmit(mode: Mode = NormalMode, lrn: LocalReferenceNumber)
-GET        /:lrn/changeDeclarationPlace                  controllers.predec.DeclarationPlaceController.onPageLoad(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
-POST       /:lrn/changeDeclarationPlace                  controllers.predec.DeclarationPlaceController.onSubmit(mode: Mode = CheckMode, lrn: LocalReferenceNumber)
+GET        /:lrn/declarationPlace                        controllers.predec.DeclarationPlaceController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/declarationPlace                        controllers.predec.DeclarationPlaceController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
 GET        /:lrn/addMarkOrNumber/:itemIndex/:packageIndex                        controllers.goods.AddMarkOrNumberController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
 POST       /:lrn/addMarkOrNumber/:itemIndex/:packageIndex                        controllers.goods.AddMarkOrNumberController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index)
@@ -207,7 +204,8 @@ POST       /:lrn/removeConsignee/:index                        controllers.consi
 GET        /:lrn/removeNotifiedParty/:index                        controllers.consignees.RemoveNotifiedPartyController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/removeNotifiedParty/:index                        controllers.consignees.RemoveNotifiedPartyController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)
 
-GET        /:lrn/checkPredec                              controllers.predec.CheckPredecController.onPageLoad(lrn: LocalReferenceNumber)
+GET        /:lrn/checkPredec                              controllers.predec.CheckPredecController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
+POST       /:lrn/checkPredec                              controllers.predec.CheckPredecController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber)
 
 GET        /:lrn/checkConsignee/:index                              controllers.consignees.CheckConsigneeController.onPageLoad(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)
 POST       /:lrn/checkConsignee/:index                              controllers.consignees.CheckConsigneeController.onSubmit(waypoints: Waypoints ?= EmptyWaypoints, lrn: LocalReferenceNumber, index: Index)

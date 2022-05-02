@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.predec
 
-import controllers.predec.{routes => predecRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.predec.LodgingPersonTypePage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +28,8 @@ import viewmodels.implicits._
 
 object LodgingPersonTypeSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LodgingPersonTypePage).map { answer =>
 
       val value = ValueViewModel(
@@ -43,7 +44,7 @@ object LodgingPersonTypeSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            predecRoutes.LodgingPersonTypeController.onPageLoad(CheckMode, answers.lrn).url
+            LodgingPersonTypePage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("lodgingPersonType.change.hidden"))
         )
       )

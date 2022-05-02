@@ -19,6 +19,8 @@ package controllers.predec
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
+import pages.Waypoints
+import pages.predec.CheckPredecPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,21 +38,30 @@ class CheckPredecController @Inject() (
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          LocalReferenceNumberSummary.row(request.userAnswers),
-          DeclarationPlaceSummary.row(request.userAnswers),
-          LodgingPersonTypeSummary.row(request.userAnswers),
-          CarrierEORISummary.row(request.userAnswers),
-          ProvideGrossWeightSummary.row(request.userAnswers),
-          TotalGrossWeightSummary.row(request.userAnswers)
+          LocalReferenceNumberSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          DeclarationPlaceSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          LodgingPersonTypeSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierIdentitySummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierEORISummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierNameSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          CarrierAddressSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          ProvideGrossWeightSummary.row(request.userAnswers, waypoints, CheckPredecPage),
+          TotalGrossWeightSummary.row(request.userAnswers, waypoints, CheckPredecPage)
         ).flatten
       )
 
-      Ok(view(list, lrn))
+      Ok(view(waypoints, list, lrn))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
+        Redirect(CheckPredecPage.navigate(waypoints, request.userAnswers))
     }
 }
 

@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.predec
 
-import controllers.predec.{routes => predecRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.predec.TotalGrossWeightPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -26,7 +26,8 @@ import viewmodels.implicits._
 
 object TotalGrossWeightSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TotalGrossWeightPage).map { answer =>
 
       SummaryListRowViewModel(
@@ -35,7 +36,7 @@ object TotalGrossWeightSummary {
         actions = Seq(
           ActionItemViewModel(
             "site.change",
-            predecRoutes.TotalGrossWeightController.onPageLoad(CheckMode, answers.lrn).url
+            TotalGrossWeightPage.changeLink(waypoints, answers.lrn, sourcePage).url
           ).withVisuallyHiddenText(messages("totalGrossWeight.change.hidden"))
         )
       )

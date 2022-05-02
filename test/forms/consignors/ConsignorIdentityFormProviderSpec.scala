@@ -17,7 +17,7 @@
 package forms.consignors
 
 import forms.behaviours.OptionFieldBehaviours
-import models.ConsignorIdentity
+import models.TraderIdentity
 import play.api.data.FormError
 
 class ConsignorIdentityFormProviderSpec extends OptionFieldBehaviours {
@@ -29,10 +29,10 @@ class ConsignorIdentityFormProviderSpec extends OptionFieldBehaviours {
     val fieldName = "value"
     val requiredKey = "consignorIdentity.error.required"
 
-    behave like optionsField[ConsignorIdentity](
+    behave like optionsField[TraderIdentity](
       form,
       fieldName,
-      validValues = ConsignorIdentity.values,
+      validValues = TraderIdentity.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

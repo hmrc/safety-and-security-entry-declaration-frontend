@@ -16,13 +16,14 @@
 
 package pages.predec
 
-import controllers.predec.{routes => predecRoutes}
-import controllers.routes
+import controllers.predec.routes
 import models.LodgingPersonType.{Carrier, Representative}
-import models.{LodgingPersonType, NormalMode, UserAnswers}
-import pages.QuestionPage
+import models.{LocalReferenceNumber, LodgingPersonType, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
 
@@ -30,10 +31,34 @@ case object LodgingPersonTypePage extends QuestionPage[LodgingPersonType] {
 
   override def toString: String = "lodgingPersonType"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    answers.get(LodgingPersonTypePage) match {
-      case Some(Carrier)        => predecRoutes.ProvideGrossWeightController.onPageLoad(NormalMode, answers.lrn)
-      case Some(Representative) => predecRoutes.CarrierEORIController.onPageLoad(NormalMode, answers.lrn)
-      case None                 => routes.JourneyRecoveryController.onPageLoad()
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.LodgingPersonTypeController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case Carrier => ProvideGrossWeightPage
+      case Representative => CarrierIdentityPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case Carrier =>
+        CheckPredecPage
+
+      case Representative =>
+        answers.get(CarrierIdentityPage)
+        .map(_ => waypoints.next.page)
+        .getOrElse(CarrierIdentityPage)
+    }.orRecover
+
+  override def cleanup(value: Option[LodgingPersonType], userAnswers: UserAnswers): Try[UserAnswers] =
+    if (value.contains(Carrier)) {
+      userAnswers
+        .remove(CarrierIdentityPage)
+        .flatMap(_.remove(CarrierEORIPage))
+        .flatMap(_.remove(CarrierNamePage))
+        .flatMap(_.remove(CarrierAddressPage))
+    } else {
+      super.cleanup(value, userAnswers)
     }
 }

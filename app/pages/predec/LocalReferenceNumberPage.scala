@@ -16,9 +16,9 @@
 
 package pages.predec
 
-import controllers.predec.{routes => predecRoutes}
-import models.{LocalReferenceNumber, NormalMode, UserAnswers}
-import pages.QuestionPage
+import controllers.predec.routes
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,6 +28,9 @@ case object LocalReferenceNumberPage extends QuestionPage[LocalReferenceNumber] 
 
   override def toString: String = "localReferenceNumber"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call =
-    predecRoutes.DeclarationPlaceController.onPageLoad(NormalMode, answers.lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.LocalReferenceNumberController.onPageLoad()
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    DeclarationPlacePage
 }

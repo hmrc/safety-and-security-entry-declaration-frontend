@@ -34,7 +34,7 @@ object NotifiedPartyIdentitySummary {
 
       val value = ValueViewModel(
         HtmlContent(
-          HtmlFormat.escape(messages(s"notifiedPartyIdentity.$answer"))
+          HtmlFormat.escape(messages(s"traderIdentity.checkAnswers.$answer"))
         )
       )
 

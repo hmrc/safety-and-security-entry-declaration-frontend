@@ -17,15 +17,15 @@
 package forms.consignees
 
 import forms.mappings.Mappings
-import models.NotifiedPartyIdentity
+import models.TraderIdentity
 import play.api.data.Form
 
 import javax.inject.Inject
 
 class NotifiedPartyIdentityFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[NotifiedPartyIdentity] =
+  def apply(): Form[TraderIdentity] =
     Form(
-      "value" -> enumerable[NotifiedPartyIdentity]("notifiedPartyIdentity.error.required")
+      "value" -> enumerable[TraderIdentity]("notifiedPartyIdentity.error.required")
     )
 }

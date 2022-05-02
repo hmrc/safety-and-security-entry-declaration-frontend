@@ -18,10 +18,10 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.consignees.routes
-import models.{Address, Country, GbEori, NormalMode, NotifiedPartyIdentity}
-import models.NotifiedPartyIdentity.{GBEORI, NameAddress}
-import pages.{Waypoints, EmptyWaypoints}
+import models.TraderIdentity.{GBEORI, NameAddress}
+import models.{Address, Country, GbEori, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
@@ -136,10 +136,10 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
       val answers =
         emptyUserAnswers
-          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.NameAddress).success.value
+          .set(NotifiedPartyIdentityPage(index), NameAddress).success.value
           .set(NotifiedPartyEORIPage(index), GbEori("123456789000")).success.value
 
-      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NotifiedPartyIdentity.NameAddress), answers).success.value
+      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NameAddress), answers).success.value
 
       result mustEqual answers.remove(NotifiedPartyEORIPage(index)).success.value
     }
@@ -148,11 +148,11 @@ class NotifiedPartyIdentityPageSpec extends SpecBase with PageBehaviours {
 
       val answers =
         emptyUserAnswers
-          .set(NotifiedPartyIdentityPage(index), NotifiedPartyIdentity.GBEORI).success.value
+          .set(NotifiedPartyIdentityPage(index), GBEORI).success.value
           .set(NotifiedPartyNamePage(index), "name").success.value
           .set(NotifiedPartyAddressPage(index), Address("street", "town", "post code", Country("GB", "United Kingdom"))).success.value
 
-      val result = NotifiedPartyIdentityPage(index).cleanup(Some(NotifiedPartyIdentity.GBEORI), answers).success.value
+      val result = NotifiedPartyIdentityPage(index).cleanup(Some(GBEORI), answers).success.value
 
       result.mustEqual(
         answers
