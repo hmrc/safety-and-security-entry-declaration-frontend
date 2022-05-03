@@ -34,6 +34,7 @@ class GoodsItemsExtractor(
         index => extractOne(Index(index))
       }.sequence
     } getOrElse {
+      // FIXME: Should provide a MissingField response instead and point at the first page
       ValidationError.MissingQueryResult.invalidNec
     }
   }

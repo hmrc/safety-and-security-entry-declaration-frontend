@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package extractors
+package models.completion.answers
 
-import pages.QuestionPage
-
-sealed trait ValidationError {
-  val message: String
-
-  override def toString: String = message
-}
-
-object ValidationError {
-  case class MissingField[T](page: QuestionPage[T]) extends ValidationError {
-    override val message: String = s"Field $page is missing!"
-  }
-
-  case object MissingQueryResult extends ValidationError {
-    override val message: String = "Missing query result"
-  }
-}
+/**
+ * A complete set of extracted user answers representing an ENS declaration
+ */
+case class Declaration(
+  predec: Predec,
+  transportDetails: Transport,
+  routeDetails: RouteDetails,
+  items: List[GoodsItem]
+)

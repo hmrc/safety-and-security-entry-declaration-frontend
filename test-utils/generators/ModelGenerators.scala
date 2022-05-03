@@ -22,7 +22,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import models._
 import models.TransportIdentity._
-import models.completion.answers.{Parties, Predec, RouteDetails}
+import models.completion.answers.{Parties, Predec, RouteDetails, Transport}
 import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 import pages.CheckAnswersPage
@@ -124,6 +124,17 @@ trait ModelGenerators extends StringGenerators {
     } yield {
       AirIdentity((carrierCode ++ flightNumber ++ suffix).mkString)
     }
+  }
+
+  implicit lazy val arbitraryTransportIdentity: Arbitrary[TransportIdentity] = Arbitrary {
+    Gen.oneOf(
+      arbitrary[AirIdentity],
+      arbitrary[MaritimeIdentity],
+      arbitrary[RailIdentity],
+      arbitrary[RoadIdentity],
+      arbitrary[RoroAccompaniedIdentity],
+      arbitrary[RoroUnaccompaniedIdentity]
+    )
   }
 
   implicit lazy val arbitraryPlaceOfUnloading: Arbitrary[PlaceOfUnloading] =
@@ -241,6 +252,18 @@ trait ModelGenerators extends StringGenerators {
         Predec(lrn, location, carrier, totalMass)
       }
     }
+
+  implicit lazy val arbitraryTransportAnswers: Arbitrary[Transport] = Arbitrary {
+    for {
+      id <- arbitrary[TransportIdentity]
+      mode <- arbitrary[TransportMode]
+      nationality <- Gen.option(arbitrary[Country])
+      docsLen <- Gen.choose(1, 3)
+      docs <- Gen.listOfN(docsLen, arbitrary[Document])
+      sealsLen <- Gen.choose(1, 3)
+      seals <- Gen.listOfN(sealsLen, stringsWithMaxLength(20))
+    } yield Transport(id, mode, nationality, docs, seals)
+  }
 
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =
     Arbitrary {
