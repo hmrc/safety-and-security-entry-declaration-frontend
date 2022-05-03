@@ -21,9 +21,8 @@ import forms.goods.AnyShippingContainersFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.AnyShippingContainersPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.AnyShippingContainersView
 
@@ -31,19 +30,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyShippingContainersController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: AnyShippingContainersFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: AnyShippingContainersView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = cc.authAndGetData(lrn) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AnyShippingContainersPage(index)) match {
@@ -54,7 +49,7 @@ class AnyShippingContainersController @Inject()(
       Ok(view(preparedForm, waypoints, lrn, index))
   }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = cc.authAndGetData(lrn).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -64,7 +59,7 @@ class AnyShippingContainersController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyShippingContainersPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- cc.sessionRepository.set(updatedAnswers)
           } yield Redirect(AnyShippingContainersPage(index).navigate(waypoints, updatedAnswers))
       )
   }

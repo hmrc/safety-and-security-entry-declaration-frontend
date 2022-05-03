@@ -16,33 +16,24 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
-import javax.inject.Inject
+import controllers.actions.CommonControllerComponents
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.IndexView
 
+import javax.inject.Inject
+
 class IndexController @Inject() (
-  val controllerComponents: MessagesControllerComponents,
-  identify: IdentifierAction,
+  cc: CommonControllerComponents,
   view: IndexView
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] =
-    identify { implicit request =>
-      Ok(view())
-    }
+  protected val controllerComponents: MessagesControllerComponents = cc
 
-  /**
-   * IndexView / Hello World, which importantly bypasses Auth
-   * stuff for the moment
-   *
-   * TODO: Delete me when project matures further.
-   */
-  def helloWorld: Action[AnyContent] =
-    Action { implicit request =>
+  def onPageLoad: Action[AnyContent] =
+    cc.identify { implicit request =>
       Ok(view())
     }
 }

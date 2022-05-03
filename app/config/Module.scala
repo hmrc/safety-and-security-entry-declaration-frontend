@@ -31,5 +31,7 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
+
+    bind(classOf[CommonControllerComponents]).to(classOf[DefaultCommonControllerComponents]).asEagerSingleton()
   }
 }

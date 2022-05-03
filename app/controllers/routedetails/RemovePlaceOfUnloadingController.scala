@@ -21,9 +21,8 @@ import forms.routedetails.RemovePlaceOfUnloadingFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.routedetails.{PlaceOfUnloadingPage, RemovePlaceOfUnloadingPage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.RemovePlaceOfUnloadingView
 
@@ -31,26 +30,22 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemovePlaceOfUnloadingController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: RemovePlaceOfUnloadingFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: RemovePlaceOfUnloadingView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         Ok(view(form, waypoints, lrn, index))
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
 
         form.bindFromRequest().fold(
@@ -61,7 +56,7 @@ class RemovePlaceOfUnloadingController @Inject()(
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(PlaceOfUnloadingPage(index)))
-                _              <- sessionRepository.set(updatedAnswers)
+                _              <- cc.sessionRepository.set(updatedAnswers)
               } yield Redirect(RemovePlaceOfUnloadingPage(index).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(

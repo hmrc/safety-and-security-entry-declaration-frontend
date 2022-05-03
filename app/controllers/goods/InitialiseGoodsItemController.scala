@@ -16,36 +16,32 @@
 
 package controllers.goods
 
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.CommonControllerComponents
 import models.{Index, LocalReferenceNumber, UserAnswers, WithKey}
 import pages.Waypoints
 import pages.goods._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Settable
 import queries.consignees.{AllConsigneesQuery, AllNotifiedPartiesQuery}
 import queries.consignors.AllConsignorsQuery
 import queries.routedetails.{AllPlacesOfLoadingQuery, AllPlacesOfUnloadingQuery}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
+import scala.util.Success
 
 class InitialiseGoodsItemController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  val controllerComponents: MessagesControllerComponents
+  cc: CommonControllerComponents
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def initialise(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
 
         val consignors = request.userAnswers.get(AllConsignorsQuery)
@@ -80,7 +76,7 @@ class InitialiseGoodsItemController @Inject() (
           c <- updateAnswers(b, NotifiedPartyPage(index), notifiedParty)
           d <- updateAnswers(c, LoadingPlacePage(index), placeOfLoading)
           e <- updateAnswers(d, UnloadingPlacePage(index), placeOfUnloading)
-          _ <- sessionRepository.set(e)
+          _ <- cc.sessionRepository.set(e)
         } yield Redirect(InitialiseGoodsItemPage(index).navigate(waypoints, e))
     }
 

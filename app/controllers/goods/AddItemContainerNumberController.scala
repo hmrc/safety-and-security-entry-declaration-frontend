@@ -21,9 +21,8 @@ import forms.goods.AddItemContainerNumberFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.AddItemContainerNumberPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.ItemContainerNumberSummary
 import views.html.goods.AddItemContainerNumberView
@@ -32,22 +31,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddItemContainerNumberController @Inject()(
-      override val messagesApi: MessagesApi,
-      sessionRepository: SessionRepository,
-      identify: IdentifierAction,
-      getData: DataRetrievalActionProvider,
-      requireData: DataRequiredAction,
-      formProvider: AddItemContainerNumberFormProvider,
-      val controllerComponents: MessagesControllerComponents,
-      view: AddItemContainerNumberView
+  formProvider: AddItemContainerNumberFormProvider,
+  cc: CommonControllerComponents,
+  view: AddItemContainerNumberView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val containers = ItemContainerNumberSummary.rows(request.userAnswers, index, waypoints, AddItemContainerNumberPage(index))
 
@@ -55,7 +50,7 @@ class AddItemContainerNumberController @Inject()(
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    cc.authAndGetData(lrn).async { implicit request =>
 
       form
         .bindFromRequest()
@@ -68,7 +63,7 @@ class AddItemContainerNumberController @Inject()(
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddItemContainerNumberPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
+              _ <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(AddItemContainerNumberPage(index).navigate(waypoints, updatedAnswers))
         )
     }

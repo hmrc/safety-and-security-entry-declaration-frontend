@@ -21,9 +21,8 @@ import forms.goods.GoodsDescriptionFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.GoodsDescriptionPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.GoodsDescriptionView
 
@@ -31,22 +30,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsDescriptionController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: GoodsDescriptionFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: GoodsDescriptionView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val preparedForm = request.userAnswers.get(GoodsDescriptionPage(index)) match {
         case None => form
@@ -57,7 +52,7 @@ class GoodsDescriptionController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    cc.authAndGetData(lrn).async { implicit request =>
 
       form
         .bindFromRequest()
@@ -66,7 +61,7 @@ class GoodsDescriptionController @Inject() (
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(GoodsDescriptionPage(index), value))
-              _ <- sessionRepository.set(updatedAnswers)
+              _ <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(GoodsDescriptionPage(index).navigate(waypoints, updatedAnswers))
         )
     }

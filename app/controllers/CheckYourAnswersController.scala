@@ -18,27 +18,25 @@ package controllers
 
 import com.google.inject.Inject
 import connectors.DeclarationConnector
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.CommonControllerComponents
 import models.LocalReferenceNumber
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.govuk.summarylist._
 import views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject() (
-  override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   client: DeclarationConnector,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: CheckYourAnswersView
 ) extends FrontendBaseController
   with I18nSupport {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq.empty
@@ -48,7 +46,7 @@ class CheckYourAnswersController @Inject() (
     }
 
   def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = {
-    (identify andThen getData(lrn) andThen requireData) { _ =>
+    cc.authAndGetData(lrn) { _ =>
       Ok("OK")
     }
   }

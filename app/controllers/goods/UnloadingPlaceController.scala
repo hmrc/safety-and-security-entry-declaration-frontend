@@ -22,10 +22,9 @@ import forms.goods.UnloadingPlaceFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.UnloadingPlacePage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.routedetails.AllPlacesOfUnloadingQuery
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOptions
 import views.html.goods.UnloadingPlaceView
@@ -34,21 +33,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UnloadingPlaceController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: UnloadingPlaceFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: UnloadingPlaceView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport
   with AnswerExtractor {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         getAnswer(AllPlacesOfUnloadingQuery) {
           placesOfUnloading =>
@@ -66,7 +62,7 @@ class UnloadingPlaceController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
         getAnswerAsync(AllPlacesOfUnloadingQuery) {
           placesOfUnloading =>
@@ -83,7 +79,7 @@ class UnloadingPlaceController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(UnloadingPlacePage(itemIndex), value))
-                    _ <- sessionRepository.set(updatedAnswers)
+                    _ <- cc.sessionRepository.set(updatedAnswers)
                   } yield Redirect(UnloadingPlacePage(itemIndex).navigate(waypoints, updatedAnswers))
               )
         }

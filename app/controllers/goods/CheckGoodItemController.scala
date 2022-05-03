@@ -17,11 +17,11 @@
 package controllers.goods
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.CommonControllerComponents
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.CheckGoodsItemPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods._
@@ -29,21 +29,19 @@ import viewmodels.govuk.summarylist._
 import views.html.goods.CheckGoodItemView
 
 class CheckGoodItemController @Inject() (
-  override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: CheckGoodItemView
 ) extends FrontendBaseController
   with I18nSupport {
+
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(
     waypoints: Waypoints,
     lrn: LocalReferenceNumber,
     itemIndex: Index
   ): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val thisPage = CheckGoodsItemPage(itemIndex)
 
@@ -74,7 +72,7 @@ class CheckGoodItemController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         Redirect(CheckGoodsItemPage(index).navigate(waypoints, request.userAnswers))
     }

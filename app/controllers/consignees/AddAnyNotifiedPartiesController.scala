@@ -21,9 +21,8 @@ import forms.consignees.AddAnyNotifiedPartiesFormProvider
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.consignees.AddAnyNotifiedPartiesPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.AddAnyNotifiedPartiesView
 
@@ -31,19 +30,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnyNotifiedPartiesController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: AddAnyNotifiedPartiesFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: AddAnyNotifiedPartiesView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = cc.authAndGetData(lrn) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AddAnyNotifiedPartiesPage) match {
@@ -55,7 +50,7 @@ class AddAnyNotifiedPartiesController @Inject()(
   }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
 
         form.bindFromRequest().fold(
@@ -65,7 +60,7 @@ class AddAnyNotifiedPartiesController @Inject()(
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyNotifiedPartiesPage, value))
-              _              <- sessionRepository.set(updatedAnswers)
+              _              <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(AddAnyNotifiedPartiesPage.navigate(waypoints, updatedAnswers))
         )
     }
