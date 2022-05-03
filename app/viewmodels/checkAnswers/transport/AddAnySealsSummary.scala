@@ -16,29 +16,31 @@
 
 package viewmodels.checkAnswers.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
-import pages.transport.RemoveSealPage
+import models.UserAnswers
+import pages.transport.AddAnySealsPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object RemoveSealSummary  {
+object AddAnySealsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RemoveSealPage).map {
-      answer =>
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AddAnySealsPage).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "removeSeal.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.RemoveSealController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("removeSeal.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "addAnySeals.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            AddAnySealsPage.changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("addAnySeals.change.hidden"))
         )
+      )
     }
 }

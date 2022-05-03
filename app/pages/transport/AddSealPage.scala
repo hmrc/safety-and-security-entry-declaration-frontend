@@ -16,27 +16,44 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import controllers.transport.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{AddItemPage, NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import queries.DeriveNumberOfSeals
+import queries.transport.DeriveNumberOfSeals
 
-case object AddSealPage extends QuestionPage[Boolean] {
+case object AddSealPage extends QuestionPage[Boolean] with AddItemPage {
+
+  override val normalModeUrlFragment: String = "add-seal"
+  override val checkModeUrlFragment: String = "change-seal"
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "addSeal"
 
-  def navigate(mode: Mode, answers: UserAnswers, addAnother: Boolean): Call =
-    if (addAnother) {
-      answers.get(DeriveNumberOfSeals) match {
-        case Some(size) => transportRoutes.SealController.onPageLoad(mode, answers.lrn, Index(size))
-        case None => routes.JourneyRecoveryController.onPageLoad()
-      }
-    } else {
-      transportRoutes.CheckTransportController.onPageLoad(answers.lrn)
-    }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.AddSealController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+      case true =>
+        answers.get(DeriveNumberOfSeals)
+          .map(n => SealPage(Index(n)))
+          .orRecover
+
+      case false =>
+        CheckTransportPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(this).map {
+    case true =>
+      answers.get(DeriveNumberOfSeals)
+        .map(n => SealPage(Index(n)))
+        .orRecover
+
+    case false =>
+      waypoints.next.page
+  }.orRecover
 }

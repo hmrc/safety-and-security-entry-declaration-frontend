@@ -19,13 +19,13 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.NationalityOfTransportFormProvider
-import models.{Country, NormalMode}
+import models.Country
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport
 import pages.transport.NationalityOfTransportPage
+import pages.{EmptyWaypoints, transport}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,11 +36,12 @@ import scala.concurrent.Future
 
 class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   val formProvider = new NationalityOfTransportFormProvider()
   val form = formProvider()
   val country = arbitrary[Country].sample.value
 
-  lazy val nationalityOfTransportRoute = routes.NationalityOfTransportController.onPageLoad(NormalMode, lrn).url
+  lazy val nationalityOfTransportRoute = routes.NationalityOfTransportController.onPageLoad(waypoints, lrn).url
 
   "NationalityOfTransport Controller" - {
 
@@ -56,7 +57,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[NationalityOfTransportView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -74,7 +75,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(country), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(country), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -98,7 +99,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(transport.NationalityOfTransportPage, country).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual transport.NationalityOfTransportPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual transport.NationalityOfTransportPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -119,7 +120,7 @@ class NationalityOfTransportControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

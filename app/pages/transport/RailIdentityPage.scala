@@ -16,10 +16,10 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{NormalMode, UserAnswers}
+import controllers.transport.routes
 import models.TransportIdentity.RailIdentity
-import pages.QuestionPage
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,7 +29,9 @@ case object RailIdentityPage extends QuestionPage[RailIdentity] {
 
   override def toString: String = "railIdentity"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, answers.lrn)
-  }
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.RailIdentityController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    AnyOverallDocumentsPage
 }

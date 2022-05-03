@@ -17,37 +17,35 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, Document, NormalMode}
+import controllers.transport.routes
+import models.NormalMode
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class OverallDocumentPageSpec extends SpecBase with PageBehaviours {
   private val page = OverallDocumentPage(index)
 
   "OverallDocumentPage" - {
 
-    beRetrievable[Document](page)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[Document](page)
+      val waypoints = EmptyWaypoints
 
-    beRemovable[Document](page)
+      "to Add Overall Document" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to AddOverallDocument" in {
-
-        page.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AddOverallDocumentController.onPageLoad(NormalMode, lrn))
+        page.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddOverallDocumentController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Add Overall Document" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddOverallDocumentPage.waypoint(NormalMode)))
 
-        page.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Add Overall Document with the current waypoint removed" in {
+
+        page.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddOverallDocumentController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

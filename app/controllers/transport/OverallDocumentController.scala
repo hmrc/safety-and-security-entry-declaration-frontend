@@ -19,8 +19,8 @@ package controllers.transport
 import controllers.actions._
 import controllers.{routes => baseRoutes}
 import forms.transport.OverallDocumentFormProvider
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
 import pages.transport.OverallDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,6 +28,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.OverallDocumentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OverallDocumentController @Inject() (
@@ -45,7 +46,7 @@ class OverallDocumentController @Inject() (
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       if (index.position >= OverallDocumentController.MaxDocuments) {
@@ -56,11 +57,11 @@ class OverallDocumentController @Inject() (
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, mode, lrn, index))
+        Ok(view(preparedForm, waypoints, lrn, index))
       }
     }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData).async { implicit request =>
       val page = OverallDocumentPage(index)
 
@@ -70,12 +71,12 @@ class OverallDocumentController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, lrn, index))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(page.navigate(mode, updatedAnswers))
+              } yield Redirect(page.navigate(waypoints, updatedAnswers))
           )
       }
     }

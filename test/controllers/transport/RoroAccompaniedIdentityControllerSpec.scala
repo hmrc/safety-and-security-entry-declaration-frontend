@@ -19,12 +19,12 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RoroAccompaniedIdentityFormProvider
-import models.NormalMode
 import models.TransportIdentity.RoroAccompaniedIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.RoroAccompaniedIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -36,11 +36,12 @@ import scala.concurrent.Future
 
 class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   private val formProvider = new RoroAccompaniedIdentityFormProvider()
   private val form = formProvider()
 
   private lazy val roroAccompaniedIdentityRoute = {
-    routes.RoroAccompaniedIdentityController.onPageLoad(NormalMode, lrn).url
+    routes.RoroAccompaniedIdentityController.onPageLoad(waypoints, lrn).url
   }
 
   private val id = arbitrary[RoroAccompaniedIdentity].sample.value
@@ -65,7 +66,7 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -81,7 +82,7 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(id), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(id), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -105,7 +106,7 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(RoroAccompaniedIdentityPage, id).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RoroAccompaniedIdentityPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RoroAccompaniedIdentityPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -126,7 +127,7 @@ class RoroAccompaniedIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

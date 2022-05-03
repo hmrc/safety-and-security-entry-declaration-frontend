@@ -16,29 +16,31 @@
 
 package viewmodels.checkAnswers.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
-import pages.transport.RemoveOverallDocumentPage
+import models.UserAnswers
+import pages.transport.AnyOverallDocumentsPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object RemoveOverallDocumentSummary  {
+object AnyOverallDocumentsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(RemoveOverallDocumentPage).map {
-      answer =>
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AnyOverallDocumentsPage).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "removeOverallDocument.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.RemoveOverallDocumentController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("removeOverallDocument.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "anyOverallDocuments.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel(
+            "site.change",
+            AnyOverallDocumentsPage.changeLink(waypoints, answers.lrn, sourcePage).url
+          ).withVisuallyHiddenText(messages("anyOverallDocuments.change.hidden"))
         )
+      )
     }
 }

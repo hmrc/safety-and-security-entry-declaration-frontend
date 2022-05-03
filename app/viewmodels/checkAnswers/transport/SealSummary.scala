@@ -17,10 +17,12 @@
 package viewmodels.checkAnswers.transport
 
 import controllers.transport.{routes => transportRoutes}
-import models.{Index, NormalMode, UserAnswers}
+import models.{Index, UserAnswers}
+import pages.transport.{AddSealPage, SealPage}
+import pages.{AddItemPage, CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.AllSealsQuery
+import queries.transport.AllSealsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
@@ -30,24 +32,23 @@ import viewmodels.implicits._
 
 object SealSummary  {
 
-  def rows(answers: UserAnswers): List[ListItem] =
+  def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage): List[ListItem] =
     answers.get(AllSealsQuery).getOrElse(Nil).zipWithIndex.map {
       case (seal, index) =>
         ListItem(
           name = HtmlFormat.escape(seal).toString,
-          changeUrl = transportRoutes.SealController
-            .onPageLoad(NormalMode, answers.lrn, Index(index))
-            .url,
+          changeUrl = SealPage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
           removeUrl = transportRoutes.RemoveSealController
-            .onPageLoad(NormalMode, answers.lrn)
+            .onPageLoad(waypoints, answers.lrn, Index(index))
             .url
         )
     }
 
-  def checkAnswersRow(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def checkAnswersRow(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+                     (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AllSealsQuery).map {
       seals =>
-        val value = seals.mkString("<br>")
+        val value = seals.map(HtmlFormat.escape(_).toString).mkString("<br>")
 
         SummaryListRowViewModel(
           key = "addAnySeals.checkYourAnswersLabel",
@@ -55,7 +56,7 @@ object SealSummary  {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              transportRoutes.AddSealController.onPageLoad(NormalMode, answers.lrn).url
+              AddSealPage.changeLink(waypoints, answers.lrn, sourcePage).url
             ).withVisuallyHiddenText(messages("addAnySeals.change.hidden"))
           )
         )

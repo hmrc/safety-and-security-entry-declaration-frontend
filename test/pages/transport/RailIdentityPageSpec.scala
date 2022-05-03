@@ -17,37 +17,33 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
-import models.TransportIdentity.RailIdentity
+import controllers.transport.routes
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RailIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "RailIdentityPage" - {
 
-    beRetrievable[RailIdentity](RailIdentityPage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[RailIdentity](RailIdentityPage)
+      val waypoints = EmptyWaypoints
 
-    beRemovable[RailIdentity](RailIdentityPage)
+      "to Any Overall Documents" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to Index" in {
-
-        RailIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        RailIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyOverallDocumentsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Transport" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
 
-        RailIdentityPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Transport with the current waypoint removed" in {
+
+        RailIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

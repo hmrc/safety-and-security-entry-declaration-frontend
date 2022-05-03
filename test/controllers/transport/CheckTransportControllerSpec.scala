@@ -19,12 +19,15 @@ package controllers.transport
 import base.SpecBase
 import controllers.transport.{routes => transportRoutes}
 import controllers.{routes => baseRoutes}
+import pages.EmptyWaypoints
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.transport.CheckTransportView
 
 class CheckTransportControllerSpec extends SpecBase with SummaryListFluency {
+
+  private val waypoints = EmptyWaypoints
 
   "Check Transport Controller" - {
 
@@ -33,7 +36,7 @@ class CheckTransportControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, transportRoutes.CheckTransportController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, transportRoutes.CheckTransportController.onPageLoad(waypoints, lrn).url)
 
         val result = route(application, request).value
 
@@ -41,7 +44,7 @@ class CheckTransportControllerSpec extends SpecBase with SummaryListFluency {
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(waypoints, list, lrn)(request, messages(application)).toString
       }
     }
 
@@ -50,7 +53,7 @@ class CheckTransportControllerSpec extends SpecBase with SummaryListFluency {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, transportRoutes.CheckTransportController.onPageLoad(lrn).url)
+        val request = FakeRequest(GET, transportRoutes.CheckTransportController.onPageLoad(waypoints, lrn).url)
 
         val result = route(application, request).value
 

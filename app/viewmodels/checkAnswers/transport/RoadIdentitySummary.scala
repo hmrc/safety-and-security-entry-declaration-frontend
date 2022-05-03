@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.transport.RoadIdentityPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +28,8 @@ import viewmodels.implicits._
 
 object RoadIdentitySummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(RoadIdentityPage).map {
       answer =>
 
@@ -41,8 +42,10 @@ object RoadIdentitySummary {
           key     = "roadIdentity.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.RoadIdentityController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("roadIdentity.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              RoadIdentityPage.changeLink(waypoints, answers.lrn, sourcePage).url
+            ).withVisuallyHiddenText(messages("roadIdentity.change.hidden"))
           )
         )
     }

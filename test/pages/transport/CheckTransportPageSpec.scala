@@ -16,20 +16,20 @@
 
 package pages.transport
 
-import controllers.transport.routes
-import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
-import play.api.mvc.Call
-import queries.transport.DeriveNumberOfSeals
+import base.SpecBase
+import controllers.routes
+import pages.EmptyWaypoints
 
-final case class RemoveSealPage(index: Index) extends Page {
+class CheckTransportPageSpec extends SpecBase {
 
-  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.RemoveSealController.onPageLoad(waypoints, lrn, index)
+  "must navigate when there are no waypoints" - {
 
-  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
-    answers.get(DeriveNumberOfSeals).map {
-      case n if n > 0 => AddSealPage
-      case _ => AddAnySealsPage
-    }.getOrElse(AddAnySealsPage)
+    val waypoints = EmptyWaypoints
+
+    "to the task list" in {
+
+      CheckTransportPage.navigate(waypoints, emptyUserAnswers)
+        .mustEqual(routes.TaskListController.onPageLoad(emptyUserAnswers.lrn))
+    }
+  }
 }

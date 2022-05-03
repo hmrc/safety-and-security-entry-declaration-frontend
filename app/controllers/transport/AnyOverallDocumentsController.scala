@@ -18,8 +18,8 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.AnyOverallDocumentsFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.transport.AnyOverallDocumentsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.AnyOverallDocumentsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyOverallDocumentsController @Inject()(
@@ -42,7 +43,7 @@ class AnyOverallDocumentsController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AnyOverallDocumentsPage) match {
@@ -50,21 +51,21 @@ class AnyOverallDocumentsController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, lrn))
+      Ok(view(preparedForm, waypoints, lrn))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, lrn))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyOverallDocumentsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AnyOverallDocumentsPage.navigate(mode, updatedAnswers))
+          } yield Redirect(AnyOverallDocumentsPage.navigate(waypoints, updatedAnswers))
       )
   }
 }

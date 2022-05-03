@@ -19,6 +19,8 @@ package controllers.transport
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
 import models.LocalReferenceNumber
+import pages.Waypoints
+import pages.transport.CheckTransportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,25 +38,32 @@ class CheckTransportController @Inject()(
 ) extends FrontendBaseController
   with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] =
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     (identify andThen getData(lrn) andThen requireData) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
-          TransportModeSummary.row(request.userAnswers),
-          NationalityOfTransportSummary.row(request.userAnswers),
-          RoroUnaccompaniedIdentitySummary.row(request.userAnswers),
-          RoroAccompaniedIdentitySummary.row(request.userAnswers),
-          SealSummary.checkAnswersRow(request.userAnswers),
-          RoadIdentitySummary.row(request.userAnswers),
-          RailIdentitySummary.row(request.userAnswers),
-          OverallDocumentSummary.checkAnswersRow(request.userAnswers),
-          MaritimeIdentitySummary.row(request.userAnswers),
-          AirIdentitySummary.row(request.userAnswers)
+          TransportModeSummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          NationalityOfTransportSummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          AirIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          MaritimeIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RailIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RoadIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RoroAccompaniedIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          RoroUnaccompaniedIdentitySummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          AnyOverallDocumentsSummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          OverallDocumentSummary.checkAnswersRow(request.userAnswers, waypoints, CheckTransportPage),
+          AddAnySealsSummary.row(request.userAnswers, waypoints, CheckTransportPage),
+          SealSummary.checkAnswersRow(request.userAnswers, waypoints, CheckTransportPage),
         ).flatten
       )
 
-      Ok(view(list, lrn))
+      Ok(view(waypoints, list, lrn))
+    }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+      Redirect(CheckTransportPage.navigate(waypoints, request.userAnswers))
     }
 }
 

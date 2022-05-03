@@ -17,35 +17,53 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.routes
-import models.{CheckMode, NormalMode}
+import controllers.transport.routes
+import models.{Document, Index}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RemoveOverallDocumentPageSpec extends SpecBase with PageBehaviours {
 
   "RemoveOverallDocumentPage" - {
 
-    beRetrievable[Boolean](RemoveOverallDocumentPage)
+    val document = arbitrary[Document].sample.value
 
-    beSettable[Boolean](RemoveOverallDocumentPage)
+    "must navigate when there are no waypoints" - {
 
-    beRemovable[Boolean](RemoveOverallDocumentPage)
+      val waypoints = EmptyWaypoints
 
-    "must navigate in Normal Mode" - {
+      "to Any Overall Documents when there are no overall documents left" in {
 
-      "to Index" in {
+        RemoveOverallDocumentPage(Index(0)).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyOverallDocumentsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
 
-        RemoveOverallDocumentPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(routes.IndexController.onPageLoad)
+      "to Add Overall Document when there is at least one document left" in {
+
+        val answers = emptyUserAnswers.set(OverallDocumentPage(Index(0)), document).success.value
+
+        RemoveOverallDocumentPage(Index(0)).navigate(waypoints, answers)
+          .mustEqual(routes.AddOverallDocumentController.onPageLoad(waypoints, answers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Transport" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
 
-        RemoveOverallDocumentPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Any Overall Documents when there are no overall documents left" in {
+
+        RemoveOverallDocumentPage(Index(0)).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyOverallDocumentsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
+      }
+
+      "to Add Overall Document when there is at least one document left" in {
+
+        val answers = emptyUserAnswers.set(OverallDocumentPage(Index(0)), document).success.value
+
+        RemoveOverallDocumentPage(Index(0)).navigate(waypoints, answers)
+          .mustEqual(routes.AddOverallDocumentController.onPageLoad(waypoints, answers.lrn))
       }
     }
   }

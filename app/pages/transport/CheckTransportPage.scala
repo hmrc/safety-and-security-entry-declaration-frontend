@@ -17,20 +17,17 @@
 package pages.transport
 
 import controllers.transport.routes
-import models.{Document, Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
-import play.api.libs.json.JsPath
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{CheckAnswersPage, Page, TaskListPage, Waypoints}
 import play.api.mvc.Call
 
-case class OverallDocumentPage(index: Index) extends OverallDocumentQuestionPage[Document] {
+object CheckTransportPage extends CheckAnswersPage {
 
-  override def path: JsPath = JsPath \ "overallDocuments" \ index.position
-
-  override def toString: String = "overallDocument"
+  override val urlFragment: String = "check-transport"
 
   override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    routes.OverallDocumentController.onPageLoad(waypoints, lrn, index)
+    routes.CheckTransportController.onPageLoad(waypoints, lrn)
 
   override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
-    AddOverallDocumentPage
+    TaskListPage
 }

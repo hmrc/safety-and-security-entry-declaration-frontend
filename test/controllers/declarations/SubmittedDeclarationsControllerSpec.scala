@@ -17,11 +17,12 @@
 package controllers.declarations
 
 import base.SpecBase
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.declarations.SubmittedDeclarationsView
 
-class SubmittedDeclarationsControllerSpec extends SpecBase {
+class SubmittedDeclarationsControllerSpec extends SpecBase with MockitoSugar {
 
   "SubmittedDeclarations Controller" - {
 

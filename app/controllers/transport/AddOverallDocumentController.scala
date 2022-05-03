@@ -18,8 +18,8 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.AddOverallDocumentFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
+import models.LocalReferenceNumber
+import pages.Waypoints
 import pages.transport.AddOverallDocumentPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,7 +28,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transport.OverallDocumentSummary
 import views.html.transport.AddOverallDocumentView
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddOverallDocumentController @Inject()(
   override val messagesApi: MessagesApi,
@@ -43,28 +44,27 @@ class AddOverallDocumentController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
     implicit request =>
-      val documents = OverallDocumentSummary.rows(request.userAnswers)
+      val documents = OverallDocumentSummary.rows(request.userAnswers, waypoints, AddOverallDocumentPage)
 
-      val preparedForm = request.userAnswers.get(AddOverallDocumentPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, lrn, documents))
+      Ok(view(form, waypoints, lrn, documents))
   }
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val documents = OverallDocumentSummary.rows(request.userAnswers)
-          BadRequest(view(formWithErrors, mode, lrn, documents))
-        },
-        value =>
-          Redirect(AddOverallDocumentPage.navigate(mode, request.userAnswers, value))
-      )
-  }
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            val documents = OverallDocumentSummary.rows(request.userAnswers, waypoints, AddOverallDocumentPage)
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, documents)))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddOverallDocumentPage, value))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(AddOverallDocumentPage.navigate(waypoints, updatedAnswers))
+        )
+    }
 }

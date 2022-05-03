@@ -19,7 +19,6 @@ package extractors
 import cats.implicits._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-
 import base.SpecBase
 import extractors.ValidationError.MissingField
 import models.{Country, Document, Index}
@@ -29,6 +28,7 @@ import models.completion.answers._
 import models.completion.answers.Transport
 import pages.transport._
 import queries._
+import queries.transport.{AllOverallDocumentsQuery, AllSealsQuery}
 
 class TransportExtractorSpec extends SpecBase {
   private val nationality = arbitrary[Country].sample.value

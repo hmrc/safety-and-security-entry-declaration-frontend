@@ -19,13 +19,14 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.OverallDocumentFormProvider
-import models._
 import models.Document._
+import models._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.OverallDocumentPage
 import play.api.inject.bind
 import play.api.libs.json.{JsPath, JsSuccess, Json}
@@ -38,11 +39,12 @@ import scala.concurrent.Future
 
 class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   private val formProvider = new OverallDocumentFormProvider()
   private val form = formProvider()
 
   private lazy val overallDocumentRoute = {
-    routes.OverallDocumentController.onPageLoad(NormalMode, lrn, index).url
+    routes.OverallDocumentController.onPageLoad(waypoints, lrn, index).url
   }
   private val page = OverallDocumentPage(index)
 
@@ -79,7 +81,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form,
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -100,7 +102,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(document),
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -127,7 +129,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(page, document).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual page.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual page.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -150,7 +152,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
-          NormalMode,
+          waypoints,
           lrn,
           index
         )(request, messages(application)).toString
@@ -174,7 +176,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     "must return OK and the correct view for a GET if index is below max document limit" in {
       val numDocs = OverallDocumentController.MaxDocuments - 1
       val currentIndex = Index(numDocs)
-      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -188,7 +190,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form,
-          NormalMode,
+          waypoints,
           lrn,
           currentIndex
         )(request, messages(application)).toString
@@ -198,7 +200,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a GET if index is above max document limit" in {
       val numDocs = OverallDocumentController.MaxDocuments
       val currentIndex = Index(numDocs)
-      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -215,7 +217,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     "must return OK and navigate to the next page for a POST if index is below max document limit" in {
       val numDocs = OverallDocumentController.MaxDocuments - 1
       val currentIndex = Index(numDocs)
-      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
       val mockSessionRepository = mock[SessionRepository]
 
@@ -235,7 +237,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = answers.set(OverallDocumentPage(currentIndex), document).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual page.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual page.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -243,7 +245,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a POST if index is above max document limit" in {
       val numDocs = OverallDocumentController.MaxDocuments
       val currentIndex = Index(numDocs)
-      val url = routes.OverallDocumentController.onPageLoad(NormalMode, lrn, currentIndex).url
+      val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
       val mockSessionRepository = mock[SessionRepository]
 

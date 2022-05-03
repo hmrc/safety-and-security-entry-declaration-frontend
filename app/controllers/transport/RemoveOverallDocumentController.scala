@@ -18,15 +18,16 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.RemoveOverallDocumentFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
-import pages.transport.RemoveOverallDocumentPage
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.transport.{OverallDocumentPage, RemoveOverallDocumentPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.RemoveOverallDocumentView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveOverallDocumentController @Inject()(
@@ -42,29 +43,30 @@ class RemoveOverallDocumentController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(RemoveOverallDocumentPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        Ok(view(form, waypoints, lrn, index))
+    }
 
-      Ok(view(preparedForm, mode, lrn))
-  }
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveOverallDocumentPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveOverallDocumentPage.navigate(mode, updatedAnswers))
-      )
-  }
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(OverallDocumentPage(index)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveOverallDocumentPage(index).navigate(waypoints, updatedAnswers))
+            } else {
+              Future.successful(Redirect(RemoveOverallDocumentPage(index).navigate(waypoints, request.userAnswers)))
+            }
+        )
+    }
 }

@@ -19,9 +19,10 @@ package pages
 import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 import pages.consignors.{AddConsignorPage, CheckConsignorPage}
-import pages.goods.{AddDocumentPage, AddGoodsPage, AddItemContainerNumberPage, AddPackagePage, CheckGoodsItemPage, CheckPackageItemPage}
+import pages.goods._
 import pages.predec.CheckPredecPage
 import pages.routedetails.{AddCountryEnRoutePage, AddPlaceOfLoadingPage, AddPlaceOfUnloadingPage, CheckRouteDetailsPage}
+import pages.transport.{AddOverallDocumentPage, AddSealPage, CheckTransportPage}
 
 case class Waypoint (
   page: WaypointPage,
@@ -30,68 +31,45 @@ case class Waypoint (
 )
 
 object Waypoint {
+  
+  private def staticFragments: Map[String, Waypoint] =
+    Map(
+      AddConsigneePage.normalModeUrlFragment -> AddConsigneePage.waypoint(NormalMode),
+      AddConsigneePage.checkModeUrlFragment -> AddConsigneePage.waypoint(CheckMode),
+      AddNotifiedPartyPage.checkModeUrlFragment -> AddNotifiedPartyPage.waypoint(CheckMode),
+      AddNotifiedPartyPage.checkModeUrlFragment -> AddNotifiedPartyPage.waypoint(CheckMode),
+      AddNotifiedPartyPage.normalModeUrlFragment -> AddNotifiedPartyPage.waypoint(NormalMode),
+      AddConsignorPage.normalModeUrlFragment -> AddConsignorPage.waypoint(NormalMode),
+      AddConsignorPage.checkModeUrlFragment -> AddConsignorPage.waypoint(CheckMode),
+      AddCountryEnRoutePage.normalModeUrlFragment -> AddCountryEnRoutePage.waypoint(NormalMode),
+      AddCountryEnRoutePage.checkModeUrlFragment -> AddCountryEnRoutePage.waypoint(CheckMode),
+      AddPlaceOfLoadingPage.normalModeUrlFragment -> AddPlaceOfLoadingPage.waypoint(NormalMode),
+      AddPlaceOfLoadingPage.checkModeUrlFragment -> AddPlaceOfLoadingPage.waypoint(CheckMode),
+      AddPlaceOfUnloadingPage.normalModeUrlFragment -> AddPlaceOfUnloadingPage.waypoint(NormalMode),
+      AddPlaceOfUnloadingPage.checkModeUrlFragment -> AddPlaceOfUnloadingPage.waypoint(CheckMode),
+      AddGoodsPage.normalModeUrlFragment -> AddGoodsPage.waypoint(NormalMode),
+      AddGoodsPage.checkModeUrlFragment -> AddGoodsPage.waypoint(CheckMode),
+      AddSealPage.normalModeUrlFragment -> AddSealPage.waypoint(NormalMode),
+      AddSealPage.checkModeUrlFragment -> AddSealPage.waypoint(CheckMode),
+      AddOverallDocumentPage.normalModeUrlFragment -> AddOverallDocumentPage.waypoint(NormalMode),
+      AddOverallDocumentPage.checkModeUrlFragment -> AddOverallDocumentPage.waypoint(CheckMode),
+      CheckPredecPage.urlFragment -> CheckPredecPage.waypoint,
+      CheckRouteDetailsPage.urlFragment -> CheckRouteDetailsPage.waypoint,
+      CheckConsigneesAndNotifiedPartiesPage.urlFragment -> CheckConsigneesAndNotifiedPartiesPage.waypoint,
+      CheckTransportPage.urlFragment -> CheckTransportPage.waypoint,
+    )
 
   def fromString(s: String): Option[Waypoint] =
-    s match {
-      case AddConsigneePage.checkModeUrlFragment =>
-        Some(AddConsigneePage.waypoint(CheckMode))
-
-      case AddConsigneePage.normalModeUrlFragment =>
-        Some(AddConsigneePage.waypoint(NormalMode))
-
-      case AddNotifiedPartyPage.checkModeUrlFragment =>
-        Some(AddNotifiedPartyPage.waypoint(CheckMode))
-
-      case AddNotifiedPartyPage.normalModeUrlFragment =>
-        Some(AddNotifiedPartyPage.waypoint(NormalMode))
-
-      case AddConsignorPage.normalModeUrlFragment =>
-        Some(AddConsignorPage.waypoint(NormalMode))
-
-      case AddConsignorPage.checkModeUrlFragment =>
-        Some(AddConsignorPage.waypoint(CheckMode))
-
-      case AddCountryEnRoutePage.normalModeUrlFragment =>
-        Some(AddCountryEnRoutePage.waypoint(NormalMode))
-
-      case AddCountryEnRoutePage.checkModeUrlFragment =>
-        Some(AddCountryEnRoutePage.waypoint(CheckMode))
-
-      case AddPlaceOfLoadingPage.normalModeUrlFragment =>
-        Some(AddPlaceOfLoadingPage.waypoint(NormalMode))
-
-      case AddPlaceOfLoadingPage.checkModeUrlFragment =>
-        Some(AddPlaceOfLoadingPage.waypoint(CheckMode))
-
-      case AddPlaceOfUnloadingPage.normalModeUrlFragment =>
-        Some(AddPlaceOfUnloadingPage.waypoint(NormalMode))
-
-      case AddPlaceOfUnloadingPage.checkModeUrlFragment =>
-        Some(AddPlaceOfUnloadingPage.waypoint(CheckMode))
-
-      case AddGoodsPage.normalModeUrlFragment =>
-        Some(AddGoodsPage.waypoint(NormalMode))
-
-      case AddGoodsPage.checkModeUrlFragment =>
-        Some(AddGoodsPage.waypoint(CheckMode))
-
-      case CheckRouteDetailsPage.urlFragment =>
-        Some(CheckRouteDetailsPage.waypoint)
-
-      case CheckConsigneesAndNotifiedPartiesPage.urlFragment =>
-        Some(CheckConsigneesAndNotifiedPartiesPage.waypoint)
-
-      case CheckPredecPage.urlFragment =>
-        Some(CheckPredecPage.waypoint)
-
-      case other =>
-        CheckConsigneePage.waypointFromString(other)
-          .orElse(CheckNotifiedPartyPage.waypointFromString(other))
-          .orElse(CheckConsignorPage.waypointFromString(other))
-          .orElse(CheckGoodsItemPage.waypointFromString(other))
-          .orElse(CheckPackageItemPage.waypointFromString(other))
-          .orElse(AddItemContainerNumberPage.waypointFromString(other))
-          .orElse(AddPackagePage.waypointFromString(other))
-          .orElse(AddDocumentPage.waypointFromString(other))
-    }
+    staticFragments
+      .get(s)
+      .orElse(
+        CheckConsigneePage.waypointFromString(s)
+          .orElse(CheckNotifiedPartyPage.waypointFromString(s))
+          .orElse(CheckConsignorPage.waypointFromString(s))
+          .orElse(CheckGoodsItemPage.waypointFromString(s))
+          .orElse(CheckPackageItemPage.waypointFromString(s))
+          .orElse(AddItemContainerNumberPage.waypointFromString(s))
+          .orElse(AddPackagePage.waypointFromString(s))
+          .orElse(AddDocumentPage.waypointFromString(s))
+      )
 }

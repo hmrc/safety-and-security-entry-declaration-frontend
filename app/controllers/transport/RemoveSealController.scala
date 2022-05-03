@@ -18,15 +18,16 @@ package controllers.transport
 
 import controllers.actions._
 import forms.transport.RemoveSealFormProvider
-import javax.inject.Inject
-import models.{LocalReferenceNumber, Mode}
-import pages.transport.RemoveSealPage
+import models.{Index, LocalReferenceNumber}
+import pages.Waypoints
+import pages.transport.{RemoveSealPage, SealPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.RemoveSealView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveSealController @Inject()(
@@ -42,29 +43,30 @@ class RemoveSealController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(RemoveSealPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        Ok(view(form, waypoints, lrn, index))
+    }
 
-      Ok(view(preparedForm, mode, lrn))
-  }
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
+    (identify andThen getData(lrn) andThen requireData).async {
+      implicit request =>
 
-  def onSubmit(mode: Mode, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
-    implicit request =>
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, lrn))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveSealPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(RemoveSealPage.navigate(mode, updatedAnswers))
-      )
-  }
+          value =>
+            if (value) {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(SealPage(index)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(RemoveSealPage(index).navigate(waypoints, updatedAnswers))
+            } else {
+              Future.successful(Redirect(RemoveSealPage(index).navigate(waypoints, request.userAnswers)))
+            }
+        )
+    }
 }

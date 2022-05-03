@@ -19,11 +19,11 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.RemoveSealFormProvider
-import models.NormalMode
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transport.RemoveSealPage
+import pages.EmptyWaypoints
+import pages.transport.{RemoveSealPage, SealPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,10 +34,11 @@ import scala.concurrent.Future
 
 class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   val formProvider = new RemoveSealFormProvider()
   val form = formProvider()
 
-  lazy val removeSealRoute = routes.RemoveSealController.onPageLoad(NormalMode, lrn).url
+  lazy val removeSealRoute = routes.RemoveSealController.onPageLoad(waypoints, lrn, index).url
 
   "RemoveSeal Controller" - {
 
@@ -53,36 +54,20 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[RemoveSealView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(RemoveSealPage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeSealRoute)
-
-        val view = application.injector.instanceOf[RemoveSealView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, lrn)(request, messages(application)).toString
-      }
-    }
-
-    "must save the answer and redirect to the next page when valid data is submitted" in {
+    "must remove the seal and redirect to the next page when the answer is yes" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      val answers = emptyUserAnswers.set(SealPage(index), "abc").success.value
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -92,11 +77,37 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result          = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(RemoveSealPage, true).success.value
+        val expectedAnswers = answers.remove(SealPage(index)).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveSealPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual RemoveSealPage(index).navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must not remove the seal and redirect to the next page when the answer is no" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val answers = emptyUserAnswers.set(SealPage(index), "abc").success.value
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, removeSealRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual RemoveSealPage(index).navigate(waypoints, answers).url
+        verify(mockSessionRepository, never()).set(any())
       }
     }
 
@@ -116,7 +127,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index)(request, messages(application)).toString
       }
     }
 

@@ -17,36 +17,34 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, Index, NormalMode}
+import controllers.transport.routes
+import models.{Index, NormalMode}
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class SealPageSpec extends SpecBase with PageBehaviours {
 
   "SealPage" - {
 
-    beRetrievable[String](SealPage(Index(0)))
+    "must navigate when there are no waypoints" - {
 
-    beSettable[String](SealPage(Index(0)))
+      val waypoints = EmptyWaypoints
 
-    beRemovable[String](SealPage(Index(0)))
+      "to Add Seal" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to AddSealController" in {
-
-        SealPage(Index(0)).navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AddSealController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        SealPage(Index(0)).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddSealController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Add Seal" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(AddSealPage.waypoint(NormalMode)))
 
-        SealPage(Index(0)).navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Add Seal with the current waypoint removed" in {
+
+        SealPage(Index(0)).navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AddSealController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

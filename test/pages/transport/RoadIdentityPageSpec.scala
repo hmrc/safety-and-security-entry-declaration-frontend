@@ -17,37 +17,33 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
-import models.TransportIdentity.RoadIdentity
+import controllers.transport.routes
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RoadIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "RoadIdentityPage" - {
 
-    beRetrievable[RoadIdentity](RoadIdentityPage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[RoadIdentity](RoadIdentityPage)
+      val waypoints = EmptyWaypoints
 
-    beRemovable[RoadIdentity](RoadIdentityPage)
+      "to Any Overall Documents" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to AnyOverallDocuments" in {
-
-        RoadIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(transportRoutes.AnyOverallDocumentsController.onPageLoad(NormalMode, emptyUserAnswers.lrn))
+        RoadIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyOverallDocumentsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Transport" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
 
-        RoadIdentityPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Transport with the current waypoint removed" in {
+
+        RoadIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

@@ -16,12 +16,20 @@
 
 package pages.transport
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import controllers.transport.routes
+import models.{Index, LocalReferenceNumber, UserAnswers}
+import pages.{Page, Waypoints}
+import play.api.mvc.Call
+import queries.transport.DeriveNumberOfOverallDocuments
 
-case object RemoveOverallDocumentPage extends QuestionPage[Boolean] {
+case class RemoveOverallDocumentPage(index: Index) extends Page {
 
-  override def path: JsPath = JsPath \ toString
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.RemoveOverallDocumentController.onPageLoad(waypoints, lrn, index)
 
-  override def toString: String = "removeOverallDocument"
+  override def nextPage(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(DeriveNumberOfOverallDocuments).map {
+      case n if n > 0 => AddOverallDocumentPage
+      case _ => AnyOverallDocumentsPage
+    }.getOrElse(AnyOverallDocumentsPage)
 }

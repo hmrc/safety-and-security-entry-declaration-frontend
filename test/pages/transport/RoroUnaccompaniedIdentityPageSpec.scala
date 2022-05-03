@@ -17,42 +17,33 @@
 package pages.transport
 
 import base.SpecBase
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{CheckMode, NormalMode}
-import models.TransportIdentity.RoroUnaccompaniedIdentity
+import controllers.transport.routes
 import pages.behaviours.PageBehaviours
+import pages.{EmptyWaypoints, Waypoints}
 
 class RoroUnaccompaniedIdentityPageSpec extends SpecBase with PageBehaviours {
 
   "RoroUnaccompaniedIdentityPage" - {
 
-    beRetrievable[RoroUnaccompaniedIdentity](RoroUnaccompaniedIdentityPage)
+    "must navigate when there are no waypoints" - {
 
-    beSettable[RoroUnaccompaniedIdentity](RoroUnaccompaniedIdentityPage)
+      val waypoints = EmptyWaypoints
 
-    beRemovable[RoroUnaccompaniedIdentity](RoroUnaccompaniedIdentityPage)
+      "to Any Overall Documents" in {
 
-    "must navigate in Normal Mode" - {
-
-      "to AnyOverallDocuments" in {
-
-        RoroUnaccompaniedIdentityPage.navigate(NormalMode, emptyUserAnswers)
-          .mustEqual(
-            transportRoutes.AnyOverallDocumentsController.onPageLoad(
-              NormalMode,
-              emptyUserAnswers.lrn
-            )
-          )
+        RoroUnaccompaniedIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.AnyOverallDocumentsController.onPageLoad(waypoints, emptyUserAnswers.lrn))
       }
     }
 
-    "must navigate in Check Mode" - {
+    "must navigate when the current waypoint is Check Transport" - {
 
-      "to Check Your Answers" in {
+      val waypoints = Waypoints(List(CheckTransportPage.waypoint))
 
-        RoroUnaccompaniedIdentityPage.navigate(CheckMode, emptyUserAnswers)
-          .mustEqual(routes.CheckYourAnswersController.onPageLoad(emptyUserAnswers.lrn))
+      "to Check Transport with the current waypoint removed" in {
+
+        RoroUnaccompaniedIdentityPage.navigate(waypoints, emptyUserAnswers)
+          .mustEqual(routes.CheckTransportController.onPageLoad(EmptyWaypoints, emptyUserAnswers.lrn))
       }
     }
   }

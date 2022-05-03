@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transport
 
-import controllers.transport.{routes => transportRoutes}
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.transport.RoroUnaccompaniedIdentityPage
+import pages.{CheckAnswersPage, Waypoints}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +28,8 @@ import viewmodels.implicits._
 
 object RoroUnaccompaniedIdentitySummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers, waypoints: Waypoints, sourcePage: CheckAnswersPage)
+         (implicit messages: Messages): Option[SummaryListRow] =
     answers.get(RoroUnaccompaniedIdentityPage).map {
       answer =>
 
@@ -41,8 +42,10 @@ object RoroUnaccompaniedIdentitySummary {
           key     = "roroUnaccompaniedIdentity.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", transportRoutes.RoroUnaccompaniedIdentityController.onPageLoad(CheckMode, answers.lrn).url)
-              .withVisuallyHiddenText(messages("roroUnaccompaniedIdentity.change.hidden"))
+            ActionItemViewModel(
+              "site.change",
+              RoroUnaccompaniedIdentityPage.changeLink(waypoints, answers.lrn, sourcePage).url
+            ).withVisuallyHiddenText(messages("roroUnaccompaniedIdentity.change.hidden"))
           )
         )
     }

@@ -19,11 +19,11 @@ package controllers.transport
 import base.SpecBase
 import controllers.{routes => baseRoutes}
 import forms.transport.AirIdentityFormProvider
-import models.NormalMode
 import models.TransportIdentity.AirIdentity
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import pages.EmptyWaypoints
 import pages.transport.AirIdentityPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,10 +35,11 @@ import scala.concurrent.Future
 
 class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
 
+  private val waypoints = EmptyWaypoints
   private val formProvider = new AirIdentityFormProvider()
   private val form = formProvider()
 
-  private lazy val airIdentityRoute = routes.AirIdentityController.onPageLoad(NormalMode, lrn).url
+  private lazy val airIdentityRoute = routes.AirIdentityController.onPageLoad(waypoints, lrn).url
 
   private val id: AirIdentity = AirIdentity("AAA0000A")
 
@@ -58,7 +59,7 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -74,7 +75,7 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(id), NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(id), waypoints, lrn)(request, messages(application)).toString
       }
     }
 
@@ -98,7 +99,7 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
         val expectedAnswers = emptyUserAnswers.set(AirIdentityPage, id).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AirIdentityPage.navigate(NormalMode, expectedAnswers).url
+        redirectLocation(result).value mustEqual AirIdentityPage.navigate(waypoints, expectedAnswers).url
         verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
@@ -119,7 +120,7 @@ class AirIdentityControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, lrn)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, waypoints, lrn)(request, messages(application)).toString
       }
     }
 

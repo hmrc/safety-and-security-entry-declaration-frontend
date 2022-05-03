@@ -16,11 +16,10 @@
 
 package pages.transport
 
-import controllers.transport.{routes => transportRoutes}
-import controllers.routes
-import models.{Country, NormalMode, UserAnswers}
+import controllers.transport.routes
 import models.TransportMode._
-import pages.QuestionPage
+import models.{Country, LocalReferenceNumber, UserAnswers}
+import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,22 +29,37 @@ case object NationalityOfTransportPage extends QuestionPage[Country] {
 
   override def toString: String = "nationalityOfTransport"
 
-  override protected def navigateInNormalMode(answers: UserAnswers): Call = {
-    answers.get(TransportModePage) map {
-      case Air =>
-        transportRoutes.AirIdentityController.onPageLoad(NormalMode, answers.lrn)
-      case Maritime =>
-        transportRoutes.MaritimeIdentityController.onPageLoad(NormalMode, answers.lrn)
-      case Rail =>
-        transportRoutes.RailIdentityController.onPageLoad(NormalMode, answers.lrn)
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.NationalityOfTransportController.onPageLoad(waypoints, lrn)
+
+  override protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
+    answers.get(TransportModePage).map {
+      case Air => AirIdentityPage
+      case Maritime => MaritimeIdentityPage
+      case Rail => RailIdentityPage
+      case Road => RoadIdentityPage
+      case RoroAccompanied => RoroAccompaniedIdentityPage
+      case RoroUnaccompanied => RoroUnaccompaniedIdentityPage
+    }.orRecover
+
+  override protected def nextPageCheckMode(waypoints: NonEmptyWaypoints, answers: UserAnswers): Page =
+    answers.get(TransportModePage).map {
       case Road =>
-        transportRoutes.RoadIdentityController.onPageLoad(NormalMode, answers.lrn)
+        answers.get(RoadIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RoadIdentityPage)
+
       case RoroAccompanied =>
-        transportRoutes.RoroAccompaniedIdentityController.onPageLoad(NormalMode, answers.lrn)
+        answers.get(RoroAccompaniedIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RoroAccompaniedIdentityPage)
+
       case RoroUnaccompanied =>
-        transportRoutes.RoroUnaccompaniedIdentityController.onPageLoad(NormalMode, answers.lrn)
-    } getOrElse {
-      routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+        answers.get(RoroUnaccompaniedIdentityPage)
+          .map(_ => waypoints.next.page)
+          .getOrElse(RoroUnaccompaniedIdentityPage)
+
+      case Air | Maritime | Rail =>
+        waypoints.next.page
+    }.orRecover
 }
