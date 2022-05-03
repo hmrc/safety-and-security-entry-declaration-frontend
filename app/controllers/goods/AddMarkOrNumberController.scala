@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.AddMarkOrNumberFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -46,7 +47,7 @@ class AddMarkOrNumberController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
       val preparedForm =
         request.userAnswers.get(AddMarkOrNumberPage(itemIndex, packageIndex)) match {
@@ -63,7 +64,7 @@ class AddMarkOrNumberController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()

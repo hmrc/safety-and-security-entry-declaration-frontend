@@ -17,6 +17,7 @@
 package controllers.goods
 
 import com.google.inject.Inject
+import config.IndexLimits.maxGoods
 import controllers.actions.CommonControllerComponents
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
@@ -42,7 +43,7 @@ class CheckPackageItemController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
       val thisPage = CheckPackageItemPage(itemIndex, packageIndex)
 
@@ -60,7 +61,7 @@ class CheckPackageItemController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) {
       implicit request =>
         Redirect(CheckPackageItemPage(itemIndex, packageIndex).navigate(waypoints, request.userAnswers))
     }

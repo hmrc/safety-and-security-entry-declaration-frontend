@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.ItemContainerNumberFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -41,7 +42,7 @@ class ItemContainerNumberController @Inject() (
   protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
       val preparedForm = request.userAnswers.get(ItemContainerNumberPage(itemIndex, containerIndex)) match {
         case None => form
@@ -52,7 +53,7 @@ class ItemContainerNumberController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, containerIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()

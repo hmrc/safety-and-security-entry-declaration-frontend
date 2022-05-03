@@ -17,6 +17,8 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.maxGoods
+import controllers.{routes => baseRoutes}
 import models.{GbEori, Index, PlaceOfLoading, PlaceOfUnloading, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
@@ -268,6 +270,21 @@ class InitialiseGoodsItemControllerSpec extends SpecBase with MockitoSugar with 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value
           .mustEqual(InitialiseGoodsItemPage(index).navigate(EmptyWaypoints, emptyUserAnswers).url)
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.InitialiseGoodsItemController.initialise(EmptyWaypoints, lrn, Index(maxGoods)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

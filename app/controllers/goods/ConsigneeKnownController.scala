@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.ConsigneeKnownFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -39,7 +40,7 @@ class ConsigneeKnownController @Inject()(
   protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) {
       implicit request =>
 
         val preparedForm = request.userAnswers.get(ConsigneeKnownPage(itemIndex)) match {
@@ -51,7 +52,7 @@ class ConsigneeKnownController @Inject()(
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async {
       implicit request =>
 
         form.bindFromRequest().fold(

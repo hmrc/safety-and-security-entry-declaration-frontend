@@ -17,6 +17,7 @@
 package controllers.goods
 
 import com.google.inject.Inject
+import config.IndexLimits.maxGoods
 import controllers.actions.CommonControllerComponents
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
@@ -41,39 +42,40 @@ class CheckGoodItemController @Inject() (
     lrn: LocalReferenceNumber,
     itemIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
-
-      val thisPage = CheckGoodsItemPage(itemIndex)
-
-      val list = SummaryListViewModel(
-        rows = Seq(
-          CommodityCodeKnownSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
-          CommodityCodeSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
-          GoodsDescriptionSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
-          ConsignorSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          ConsigneeKnownSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
-          ConsigneeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          NotifiedPartySummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          LoadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          UnloadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          AnyShippingContainersSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          ItemContainerNumberSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
-          GoodsItemGrossWeightSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          PackageSummary.checkAnswersRow(request.userAnswers, itemIndex, waypoints, thisPage),
-          AddAnyDocumentsSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          DocumentSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
-          DangerousGoodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          DangerousGoodCodeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
-          PaymentMethodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage)
-        ).flatten
-      )
-
-      Ok(view(waypoints, list, lrn, itemIndex))
-    }
-
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) {
       implicit request =>
-        Redirect(CheckGoodsItemPage(index).navigate(waypoints, request.userAnswers))
+
+        val thisPage = CheckGoodsItemPage(itemIndex)
+
+        val list = SummaryListViewModel(
+          rows = Seq(
+            CommodityCodeKnownSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+            CommodityCodeSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+            GoodsDescriptionSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+            ConsignorSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            ConsigneeKnownSummary.row(request.userAnswers, itemIndex, waypoints, thisPage),
+            ConsigneeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            NotifiedPartySummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            LoadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            UnloadingPlaceSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            AnyShippingContainersSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            ItemContainerNumberSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
+            GoodsItemGrossWeightSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            PackageSummary.checkAnswersRow(request.userAnswers, itemIndex, waypoints, thisPage),
+            AddAnyDocumentsSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            DocumentSummary.checkAnswersRow(request.userAnswers,itemIndex, waypoints, thisPage),
+            DangerousGoodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            DangerousGoodCodeSummary.row(request.userAnswers,itemIndex, waypoints, thisPage),
+            PaymentMethodSummary.row(request.userAnswers,itemIndex, waypoints, thisPage)
+          ).flatten
+        )
+
+        Ok(view(waypoints, list, lrn, itemIndex))
+      }
+
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) {
+      implicit request =>
+        Redirect(CheckGoodsItemPage(itemIndex).navigate(waypoints, request.userAnswers))
     }
 }

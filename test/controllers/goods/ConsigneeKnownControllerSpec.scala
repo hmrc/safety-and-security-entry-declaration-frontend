@@ -17,8 +17,10 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.maxGoods
 import controllers.{routes => baseRoutes}
 import forms.goods.ConsigneeKnownFormProvider
+import models.Index
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -143,6 +145,36 @@ class ConsigneeKnownControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, consigneeKnownRoute)
             .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.ConsigneeKnownController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.ConsigneeKnownController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
 
         val result = route(application, request).value
 

@@ -17,7 +17,9 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.maxGoods
 import controllers.{routes => baseRoutes}
+import models.Index
 import pages.goods.CheckGoodsItemPage
 import pages.{EmptyWaypoints, Waypoints}
 import play.api.test.FakeRequest
@@ -54,15 +56,13 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(
-          GET,
-          routes.CheckGoodItemController.onPageLoad(waypoints, lrn, index).url
-        )
+        val request =
+          FakeRequest(GET, routes.CheckGoodItemController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
 
         val result = route(application, request).value
 
@@ -71,18 +71,18 @@ class CheckGoodItemControllerSpec extends SpecBase with SummaryListFluency {
       }
     }
 
-    "must redirect to the next page for a POST" in {
+    "must redirect to Journey Recovery for a POST if the item index is equal to or higher than that maximum" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.CheckGoodItemController.onSubmit(waypoints, lrn, index).url)
+        val request =
+          FakeRequest(POST, routes.CheckGoodItemController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value
-          .mustEqual(CheckGoodsItemPage(index).navigate(waypoints, emptyUserAnswers).url)
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.AddDocumentFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -41,30 +42,30 @@ class AddDocumentController @Inject() (
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
-      val documents = DocumentSummary.rows(request.userAnswers, index, waypoints, AddDocumentPage(index))
+      val documents = DocumentSummary.rows(request.userAnswers, itemIndex, waypoints, AddDocumentPage(itemIndex))
 
-      Ok(view(form, waypoints, lrn, index, documents))
+      Ok(view(form, waypoints, lrn, itemIndex, documents))
     }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val documents = DocumentSummary.rows(request.userAnswers, index, waypoints, AddDocumentPage(index))
+            val documents = DocumentSummary.rows(request.userAnswers, itemIndex, waypoints, AddDocumentPage(itemIndex))
 
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index, documents)))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documents)))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentPage(itemIndex), value))
               _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddDocumentPage(index).navigate(waypoints, updatedAnswers))
+            } yield Redirect(AddDocumentPage(itemIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

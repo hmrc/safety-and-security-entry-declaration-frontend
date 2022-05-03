@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.AddItemContainerNumberFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -41,30 +42,30 @@ class AddItemContainerNumberController @Inject()(
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
-      val containers = ItemContainerNumberSummary.rows(request.userAnswers, index, waypoints, AddItemContainerNumberPage(index))
+      val containers = ItemContainerNumberSummary.rows(request.userAnswers, itemIndex, waypoints, AddItemContainerNumberPage(itemIndex))
 
-      Ok(view(form, waypoints, lrn, index, containers))
+      Ok(view(form, waypoints, lrn, itemIndex, containers))
     }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val containers = ItemContainerNumberSummary.rows(request.userAnswers, index, waypoints, AddItemContainerNumberPage(index))
+            val containers = ItemContainerNumberSummary.rows(request.userAnswers, itemIndex, waypoints, AddItemContainerNumberPage(itemIndex))
 
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index, containers)))
+            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, containers)))
           },
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddItemContainerNumberPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddItemContainerNumberPage(itemIndex), value))
               _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddItemContainerNumberPage(index).navigate(waypoints, updatedAnswers))
+            } yield Redirect(AddItemContainerNumberPage(itemIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

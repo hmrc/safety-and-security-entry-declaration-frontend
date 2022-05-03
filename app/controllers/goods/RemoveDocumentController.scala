@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.RemoveDocumentFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -47,7 +48,7 @@ class RemoveDocumentController @Inject() (
     itemIndex: Index,
     documentIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
       val preparedForm =
         request.userAnswers.get(RemoveDocumentPage(itemIndex, documentIndex)) match {
@@ -64,7 +65,7 @@ class RemoveDocumentController @Inject() (
     itemIndex: Index,
     documentIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()
