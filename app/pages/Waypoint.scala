@@ -20,6 +20,7 @@ import models.{CheckMode, Mode, NormalMode}
 import pages.consignees._
 import pages.consignors.{AddConsignorPage, CheckConsignorPage}
 import pages.goods._
+import pages.predec.CheckPredecPage
 import pages.routedetails.{AddCountryEnRoutePage, AddPlaceOfLoadingPage, AddPlaceOfUnloadingPage, CheckRouteDetailsPage}
 import pages.transport.{AddOverallDocumentPage, AddSealPage, CheckTransportPage}
 
@@ -48,13 +49,14 @@ object Waypoint {
       AddPlaceOfUnloadingPage.checkModeUrlFragment -> AddPlaceOfUnloadingPage.waypoint(CheckMode),
       AddGoodsPage.normalModeUrlFragment -> AddGoodsPage.waypoint(NormalMode),
       AddGoodsPage.checkModeUrlFragment -> AddGoodsPage.waypoint(CheckMode),
-      CheckRouteDetailsPage.urlFragment -> CheckRouteDetailsPage.waypoint,
-      CheckConsigneesAndNotifiedPartiesPage.urlFragment -> CheckConsigneesAndNotifiedPartiesPage.waypoint,
-      CheckTransportPage.urlFragment -> CheckTransportPage.waypoint,
       AddSealPage.normalModeUrlFragment -> AddSealPage.waypoint(NormalMode),
       AddSealPage.checkModeUrlFragment -> AddSealPage.waypoint(CheckMode),
       AddOverallDocumentPage.normalModeUrlFragment -> AddOverallDocumentPage.waypoint(NormalMode),
-      AddOverallDocumentPage.checkModeUrlFragment -> AddOverallDocumentPage.waypoint(CheckMode)
+      AddOverallDocumentPage.checkModeUrlFragment -> AddOverallDocumentPage.waypoint(CheckMode),
+      CheckPredecPage.urlFragment -> CheckPredecPage.waypoint,
+      CheckRouteDetailsPage.urlFragment -> CheckRouteDetailsPage.waypoint,
+      CheckConsigneesAndNotifiedPartiesPage.urlFragment -> CheckConsigneesAndNotifiedPartiesPage.waypoint,
+      CheckTransportPage.urlFragment -> CheckTransportPage.waypoint,
     )
 
   def fromString(s: String): Option[Waypoint] =
