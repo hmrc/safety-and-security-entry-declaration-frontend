@@ -210,104 +210,384 @@ class GoodsItemExtractorSpec extends SpecBase {
 
         actual must be(expectedResult)
       }
-      "should fail if 0 notified parties and not provided" in {
+      "should fail if 0 notified parties and not consignee not provided" in {
+        val answers = {
+          validAnswers
+            .remove(ConsigneeKnownPage(itemNumber)).success.value
+            .remove(ConsigneePage(itemNumber)).success.value
+        }
+        val suppliedParties = Parties(parties.consignors, parties.consignees, Map.empty)
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
+        val expected = List(MissingField(ConsigneePage(itemNumber)))
+
+        actual must contain theSameElementsAs(expected)
       }
       "should fail if consignee selected in consignee known page and not provided" in {
+        val answers = {
+          validAnswers
+            .set(ConsigneeKnownPage(itemNumber), true).success.value
+            .remove(ConsigneePage(itemNumber)).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val expected = List(MissingField(ConsigneePage(itemNumber)))
+
+        actual must contain theSameElementsAs(expected)
       }
       "should select the correct consignee from the parties section" in {
+        val answers = {
+          validAnswers
+            .set(ConsigneeKnownPage(itemNumber), true).success.value
+            .set(ConsigneePage(itemNumber), 0).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(consignee = Some(parties.consignees.get(0).get))
+
+        actual must be(expected)
       }
     }
 
     "notified party" - {
       "should extract correctly if 0 consignees" in {
+        val answers = {
+          validAnswers
+            .remove(ConsigneeKnownPage(itemNumber)).success.value
+            .remove(ConsigneePage(itemNumber)).success.value
+            .set(NotifiedPartyPage(itemNumber), notifiedPartyIndex).success.value
+        }
+        val suppliedParties = Parties(parties.consignors, Map.empty, parties.notifiedParties)
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(consignee = None, notifiedParty = Some(notifiedParty))
+
+        actual must be(expected)
       }
       "should extract correctly if notified party selected in consignee known page" in {
+        val answers = {
+          validAnswers
+            .set(ConsigneeKnownPage(itemNumber), false).success.value
+            .set(NotifiedPartyPage(itemNumber), notifiedPartyIndex).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(consignee = None, notifiedParty = Some(notifiedParty))
+
+        actual must be(expected)
       }
-      "should fail if 0 consignees and not provided" in {
+      "should fail if 0 consignees and notified party not provided" in {
+        val answers = {
+          validAnswers
+            .remove(ConsigneeKnownPage(itemNumber)).success.value
+            .remove(NotifiedPartyPage(itemNumber)).success.value
+        }
+        val suppliedParties = Parties(parties.consignors, Map.empty, parties.notifiedParties)
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
+        val expected = List(MissingField(NotifiedPartyPage(itemNumber)))
+
+        actual must contain theSameElementsAs(expected)
       }
       "should fail if notified party selected in consignee known page and not provided" in {
+        val answers = {
+          validAnswers
+            .set(ConsigneeKnownPage(itemNumber), false).success.value
+            .remove(NotifiedPartyPage(itemNumber)).success.value
+        }
+        val suppliedParties = Parties(parties.consignors, Map.empty, parties.notifiedParties)
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
+        val expected = List(MissingField(NotifiedPartyPage(itemNumber)))
+
+        actual must contain theSameElementsAs(expected)
       }
       "should select the correct notified party from the parties section" in {
+        val answers = {
+          validAnswers
+            .set(ConsigneeKnownPage(itemNumber), false).success.value
+            .set(NotifiedPartyPage(itemNumber), 0).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(consignee = None, notifiedParty = Some(parties.notifiedParties.get(0).get))
+
+        actual must be(expected)
       }
     }
 
     "loading place" - {
-      "should extract automaticall if the user has only one loading place" in {
-      }
       "should fail if not provided" in {
+        val answers = {
+          validAnswers
+            .remove(LoadingPlacePage(itemNumber)).success.value
+        }
+
+        val expected = List(MissingField(LoadingPlacePage(itemNumber)))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
     }
 
     "unloading place" - {
-      "should extract automaticall if the user has only one loading place" in {
-      }
       "should fail if not provided" in {
-      }
-    }
+        val answers = {
+          validAnswers
+            .remove(UnloadingPlacePage(itemNumber)).success.value
+        }
 
-    "parties and places section" - {
-      "should extract correctly if the user has pre-provided only 1 consigner, consignee, notified party, loading place and unloading place" in {
+        val expected = List(MissingField(UnloadingPlacePage(itemNumber)))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
     }
 
     "container number" - {
       "should fail if goods are in a container but container number not provided" in {
+        val answers = {
+          validAnswers
+            .set(AnyShippingContainersPage(itemNumber), true).success.value
+            .remove(AllContainersQuery(itemNumber)).success.value
+        }
+
+        val expected = List(MissingField(ItemContainerNumberPage(index, Index(0))))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
     }
 
     "item weight" - {
-      "should extract correctly if overall weight not provided in predec" - {
+      "should extract correctly if overall weight not provided in predec" in {
+        val answers = {
+          validAnswers
+            .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
+            .set(GoodsItemGrossWeightPage(itemNumber), BigDecimal.exact(grossMass)).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(grossMass = Some(grossMass))
+
+        actual must be(expected)
       }
-      "should fail if overall weight not provided in predec and item weight not provided" - {
+      "should fail if overall weight not provided in predec and item weight not provided" in {
+        val answers = {
+          validAnswers
+            .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
+            .remove(GoodsItemGrossWeightPage(itemNumber)).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val expected = List(MissingField(GoodsItemGrossWeightPage(itemNumber)))
+
+        actual must be(expected)
       }
     }
 
     "packaging" - {
       "should fail if no packaging type provided" in {
+        val answers = {
+          validAnswers
+            .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
+        }
+
+        val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
 
       "packed" - {
-        "should correctly extract number of pieces and item mark if packed type selected" in {
+        "should correctly extract number of packages and item mark if packed type selected" in {
+          val answers = {
+            validAnswers
+              .set(KindOfPackagePage(itemNumber, Index(0)), standardPackage).success.value
+              .set(NumberOfPackagesPage(itemNumber, Index(0)), numPackages).success.value
+              .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
+          }
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val expected = expectedResult.copy(packages = List(Package(kindPackage = standardPackage, numPackages = Some(numPackages), numPieces = None, mark = Some(mark))))
+
+          actual must be(expected)
         }
-        "should fail if packed type selected and number of pieces not provided" in {
+        "should fail if packed type selected and number of packages not provided" in {
+          val answers = {
+            validAnswers
+              .set(KindOfPackagePage(itemNumber, Index(0)), standardPackage).success.value
+              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
+              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
+
+          }
+
+          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+          actual must contain theSameElementsAs(expected)
+        }
+        "should fail if packed type selected and mark not provided" in {
+          val answers = {
+            validAnswers
+              .set(KindOfPackagePage(itemNumber, Index(0)), standardPackage).success.value
+              .set(NumberOfPackagesPage(itemNumber, Index(0)), numPackages).success.value
+              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
+          }
+
+          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+          actual must contain theSameElementsAs(expected)
         }
       }
 
       "unpacked" - {
-        "should correctly extract number of packages if unpacked type selected" in {
+        "should correctly extract number of pieces if unpacked type selected" in {
+          val answers = {
+            validAnswers
+              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
+              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
+              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
+              .set(KindOfPackagePage(itemNumber, Index(0)), unpackedPackage).success.value
+              .set(NumberOfPiecesPage(itemNumber, Index(0)), numPieces).success.value
+              .set(AddMarkOrNumberPage(itemNumber, Index(0)), false).success.value
+          }
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val expected = expectedResult.copy(packages = List(Package(kindPackage = unpackedPackage, numPackages = None, numPieces = Some(numPieces), mark = None)))
+
+          actual must be(expected)
         }
-        "Should fail if unpacked type selected and number of packages not provided" in {
+        "Should fail if unpacked type selected and number of pieces not provided" in {
+          val answers = {
+            validAnswers
+              .set(KindOfPackagePage(itemNumber, Index(0)), unpackedPackage).success.value
+              .remove(NumberOfPiecesPage(itemNumber, Index(0))).success.value
+          }
+
+          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+          actual must contain theSameElementsAs(expected)
         }
         "should correctly extract item mark if answered yes to add item mark page" in {
+          val answers = {
+            validAnswers
+              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
+              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
+              .set(KindOfPackagePage(itemNumber, Index(0)), unpackedPackage).success.value
+              .set(NumberOfPiecesPage(itemNumber, Index(0)), numPieces).success.value
+              .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
+              .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
+          }
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val expected = expectedResult.copy(packages = List(Package(kindPackage = unpackedPackage, numPackages = None, numPieces = Some(numPieces), mark = Some(mark))))
+
+          actual must be(expected)
         }
         "should fail if answered yes to add item mark page but no item mark provided" in {
+          val answers = {
+            validAnswers
+              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
+              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
+              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
+              .set(KindOfPackagePage(itemNumber, Index(0)), unpackedPackage).success.value
+              .set(NumberOfPiecesPage(itemNumber, Index(0)), numPieces).success.value
+              .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
+          }
+
+          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+          actual must contain theSameElementsAs(expected)
         }
       }
 
       "bulk" - {
         "should correctly extract item mark if answered yes to add item mark page" in {
+          val answers = {
+            validAnswers
+              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
+              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
+              .set(KindOfPackagePage(itemNumber, Index(0)), bulkPackage).success.value
+              .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
+              .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
+          }
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val expected = expectedResult.copy(packages = List(Package(kindPackage = bulkPackage, numPackages = None, numPieces = None, mark = Some(mark))))
+
+          actual must be(expected)
         }
         "should fail if answered yes to add item mark page but no item mark provided" in {
+          val answers = {
+            validAnswers
+              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
+              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
+              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
+              .set(KindOfPackagePage(itemNumber, Index(0)), bulkPackage).success.value
+              .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
+          }
+
+          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
+          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+          actual must contain theSameElementsAs(expected)
         }
       }
     }
 
     "documents" - {
       "should correctly extract documents if answered is yes to add any documents page" in {
+        val answers = {
+          validAnswers
+            .set(AddAnyDocumentsPage(index), true).success.value
+            .set(AllDocumentsQuery(index), documents).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(documents = documents)
+
+        actual must be(expected)
       }
       "should fail if answered yes to add any documents page but documents not provided" in {
+        val answers = {
+          validAnswers
+            .set(AddAnyDocumentsPage(index), true).success.value
+            .remove(AllDocumentsQuery(index)).success.value
+        }
+
+        val expected = List(MissingField(DocumentPage(index, Index(0))))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
     }
 
     "dangerous code" - {
       "should correctly extract documents if answered yes to is dangerous good page" in {
+        val answers = {
+          validAnswers
+            .set(DangerousGoodPage(index), true).success.value
+            .set(DangerousGoodCodePage(index), dangerousGoods).success.value
+        }
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val expected = expectedResult.copy(dangerousGoodsCode = Some(DangerousGoodsCode(dangerousGoods.code)))
+
+        actual must be(expected)
       }
       "should fail if answered yes to dangerous good page but dangerous good code not provided" in {
+        val answers = {
+          validAnswers
+            .set(DangerousGoodPage(index), true).success.value
+            .remove(DangerousGoodCodePage(index)).success.value
+        }
+
+        val expected = List(MissingField(DangerousGoodCodePage(index)))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
     }
 
     "payment method" - {
       "should fail if payment method not provided" in {
+        val answers = {
+          validAnswers
+            .remove(PaymentMethodPage(index)).success.value
+        }
+
+        val expected = List(MissingField(PaymentMethodPage(index)))
+        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+
+        actual must contain theSameElementsAs(expected)
       }
     }
   }

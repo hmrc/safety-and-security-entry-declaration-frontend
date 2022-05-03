@@ -138,7 +138,7 @@ class GoodsItemExtractor(
   override def extract(): ValidationResult[GoodsItem] = {
     val extractedPackages: ValidationResult[List[Package]] = requireList(
       AllPackageItemsQuery(index),
-      NumberOfPackagesPage(index, index)
+      KindOfPackagePage(index, Index(0))
     ).map { _.map(convertPackage) }
 
     val extractedContainers = getList(
