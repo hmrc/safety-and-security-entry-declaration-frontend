@@ -31,6 +31,7 @@
  */
 
 package extractors
+
 import cats.implicits._
 import models.completion.answers.{GoodsItem, Parties}
 import models._
@@ -119,20 +120,17 @@ class GoodsItemExtractor(
 
   private lazy val extractedDangerousGoodsCode: ValidationResult[Option[DangerousGoodsCode]] = {
     getAnswer(DangerousGoodPage(index),
-      DangerousGoodCodePage(index)).map {
-      optDangerousGood => optDangerousGood.map {
-        dangerousCode => DangerousGoodsCode(dangerousCode.code)
-      }
-    }
+      DangerousGoodCodePage(index)).map {_.map { c => DangerousGoodsCode(c.code) } }
   }
 
   private lazy val extractedIdentity: ValidationResult[GoodsItemIdentity] = {
-    answers.get(CommodityCodeKnownPage(index)).map {
+    val page = CommodityCodeKnownPage(index)
+    answers.get(page).map {
       case true =>
         requireAnswer(CommodityCodePage(index)).map(GoodsItemIdentity.ByCommodityCode)
       case false =>
         requireAnswer(GoodsDescriptionPage(index)).map(GoodsItemIdentity.WithDescription)
-    } getOrElse ValidationError.MissingField(CommodityCodeKnownPage(index)).invalidNec
+    } getOrElse ValidationError.MissingField(page).invalidNec
   }
 
   override def extract(): ValidationResult[GoodsItem] = {

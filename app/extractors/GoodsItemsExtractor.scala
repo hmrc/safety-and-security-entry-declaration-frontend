@@ -28,15 +28,13 @@ class GoodsItemsExtractor(
 )(override protected implicit val answers: UserAnswers) extends Extractor[Seq[GoodsItem]] {
 
   override def extract(): ValidationResult[List[GoodsItem]] = {
-    // FIXME: Return a failed ValidationResult in case of no items, not an exception
-    val indexes = answers.get(DeriveNumberOfGoods) map {
+    answers.get(DeriveNumberOfGoods) map {
       count => (0 to (count - 1)).toList.map {
         index => extractOne(Index(index))
       }.sequence
     } getOrElse {
       ValidationError.MissingQueryResult.invalidNec
     }
-    indexes
   }
 
   protected def extractOne(index: Index): ValidationResult[GoodsItem] = {
