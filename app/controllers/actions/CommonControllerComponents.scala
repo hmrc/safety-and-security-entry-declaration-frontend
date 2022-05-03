@@ -32,6 +32,7 @@ trait CommonControllerComponents extends MessagesControllerComponents {
   def identify: IdentifierAction
   def getData: DataRetrievalActionProvider
   def requireData: DataRequiredAction
+  def limitIndex: LimitIndexActionProvider
 
   def authAndGetData(lrn: LocalReferenceNumber): ActionBuilder[DataRequest, AnyContent] =
     identify andThen getData(lrn) andThen requireData
@@ -51,5 +52,6 @@ case class DefaultCommonControllerComponents @Inject()(
   identify: IdentifierAction,
   getData: DataRetrievalActionProvider,
   requireData: DataRequiredAction,
+  limitIndex: LimitIndexActionProvider,
   sessionRepository: SessionRepository
 ) extends CommonControllerComponents
