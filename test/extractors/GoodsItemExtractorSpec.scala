@@ -474,22 +474,6 @@ class GoodsItemExtractorSpec extends SpecBase {
 
           actual must be(expected)
         }
-        "should fail if answered yes to add item mark page but no item mark provided" in {
-          val answers = {
-            validAnswers
-              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
-              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
-              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
-              .set(KindOfPackagePage(itemNumber, Index(0)), unpackedPackage).success.value
-              .set(NumberOfPiecesPage(itemNumber, Index(0)), numPieces).success.value
-              .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
-          }
-
-          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
-
-          actual must contain theSameElementsAs(expected)
-        }
       }
 
       "bulk" - {
@@ -506,21 +490,6 @@ class GoodsItemExtractorSpec extends SpecBase {
           val expected = expectedResult.copy(packages = List(Package(kindPackage = bulkPackage, numPackages = None, numPieces = None, mark = Some(mark))))
 
           actual must be(expected)
-        }
-        "should fail if answered yes to add item mark page but no item mark provided" in {
-          val answers = {
-            validAnswers
-              .remove(KindOfPackagePage(itemNumber, Index(0))).success.value
-              .remove(NumberOfPackagesPage(itemNumber, Index(0))).success.value
-              .remove(MarkOrNumberPage(itemNumber, Index(0))).success.value
-              .set(KindOfPackagePage(itemNumber, Index(0)), bulkPackage).success.value
-              .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
-          }
-
-          val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
-
-          actual must contain theSameElementsAs(expected)
         }
       }
     }

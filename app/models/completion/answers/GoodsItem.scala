@@ -39,7 +39,3 @@ case class GoodsItem(
   dangerousGoodsCode: Option[DangerousGoodsCode],
   paymentMethod: PaymentMethod
 )
-
-case class GoodsItems(
-  items: Seq[GoodsItem]
-)
