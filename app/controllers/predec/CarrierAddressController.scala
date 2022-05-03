@@ -21,9 +21,8 @@ import forms.predec.CarrierAddressFormProvider
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.predec.CarrierAddressPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.predec.CarrierAddressView
 
@@ -31,22 +30,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CarrierAddressController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: CarrierAddressFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: CarrierAddressView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val preparedForm = request.userAnswers.get(CarrierAddressPage) match {
         case None => form
@@ -57,7 +52,7 @@ class CarrierAddressController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    cc.authAndGetData(lrn).async { implicit request =>
 
       form
         .bindFromRequest()
@@ -68,7 +63,7 @@ class CarrierAddressController @Inject() (
               updatedAnswers <- Future.fromTry(
                 request.userAnswers.set(CarrierAddressPage, value)
               )
-              _ <- sessionRepository.set(updatedAnswers)
+              _ <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(CarrierAddressPage.navigate(waypoints, updatedAnswers))
         )
     }

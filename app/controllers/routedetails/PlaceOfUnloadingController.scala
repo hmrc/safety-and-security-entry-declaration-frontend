@@ -19,36 +19,31 @@ package controllers.routedetails
 import controllers.ByKeyExtractor
 import controllers.actions._
 import forms.routedetails.PlaceOfUnloadingFormProvider
-
-import javax.inject.Inject
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.routedetails.PlaceOfUnloadingPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.routedetails.AllPlacesOfUnloadingQuery
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.routedetails.PlaceOfUnloadingView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PlaceOfUnloadingController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: PlaceOfUnloadingFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: PlaceOfUnloadingView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport
   with ByKeyExtractor {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         getItemKey(index, AllPlacesOfUnloadingQuery) {
           placeOfUnloadingKey =>
@@ -65,7 +60,7 @@ class PlaceOfUnloadingController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
         getItemKey(index, AllPlacesOfUnloadingQuery) {
           placeOfUnloadingKey =>
@@ -79,7 +74,7 @@ class PlaceOfUnloadingController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(PlaceOfUnloadingPage(index), value))
-                    _ <- sessionRepository.set(updatedAnswers)
+                    _ <- cc.sessionRepository.set(updatedAnswers)
                   } yield Redirect(PlaceOfUnloadingPage(index).navigate(waypoints, updatedAnswers))
               )
         }

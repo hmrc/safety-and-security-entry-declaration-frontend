@@ -22,10 +22,9 @@ import forms.consignees.NotifiedPartyIdentityFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.consignees.NotifiedPartyIdentityPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.consignees.{AllNotifiedPartiesQuery, NotifiedPartyKeyQuery}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.consignees.NotifiedPartyIdentityView
 
@@ -33,23 +32,19 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NotifiedPartyIdentityController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: NotifiedPartyIdentityFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: NotifiedPartyIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport
   with ByKeyExtractor {
 
-  val form = formProvider()
+  private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val preparedForm = request.userAnswers.get(NotifiedPartyIdentityPage(index)) match {
         case None => form
@@ -60,7 +55,7 @@ class NotifiedPartyIdentityController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
         getItemKey(index, AllNotifiedPartiesQuery) {
           notifiedPartyKey =>
@@ -73,7 +68,7 @@ class NotifiedPartyIdentityController @Inject() (
                   for {
                     answers <- Future.fromTry(request.userAnswers.set(NotifiedPartyIdentityPage(index), value))
                     updatedAnswers <- Future.fromTry(answers.set(NotifiedPartyKeyQuery(index), notifiedPartyKey))
-                    _ <- sessionRepository.set(updatedAnswers)
+                    _ <- cc.sessionRepository.set(updatedAnswers)
                   } yield Redirect(NotifiedPartyIdentityPage(index).navigate(waypoints, updatedAnswers))
               )
         }

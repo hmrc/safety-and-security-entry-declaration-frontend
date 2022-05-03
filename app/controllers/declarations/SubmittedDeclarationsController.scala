@@ -17,23 +17,23 @@
 package controllers.declarations
 
 import controllers.actions._
-import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.declarations.SubmittedDeclarationsView
 
+import javax.inject.Inject
+
 class SubmittedDeclarationsController @Inject() (
-  override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: SubmittedDeclarationsView
-)
-  extends FrontendBaseController
-  with I18nSupport {
+) extends FrontendBaseController
+    with I18nSupport {
+
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(): Action[AnyContent] =
-    identify { implicit request =>
+    cc.identify { implicit request =>
       Ok(view())
     }
 }

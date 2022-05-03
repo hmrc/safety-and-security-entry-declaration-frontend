@@ -21,9 +21,8 @@ import forms.transport.AnyOverallDocumentsFormProvider
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.transport.AnyOverallDocumentsPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.AnyOverallDocumentsView
 
@@ -31,19 +30,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyOverallDocumentsController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: AnyOverallDocumentsFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: AnyOverallDocumentsView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData) {
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = cc.authAndGetData(lrn) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AnyOverallDocumentsPage) match {
@@ -54,7 +49,7 @@ class AnyOverallDocumentsController @Inject()(
       Ok(view(preparedForm, waypoints, lrn))
   }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = (identify andThen getData(lrn) andThen requireData).async {
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] = cc.authAndGetData(lrn).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -64,7 +59,7 @@ class AnyOverallDocumentsController @Inject()(
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyOverallDocumentsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- cc.sessionRepository.set(updatedAnswers)
           } yield Redirect(AnyOverallDocumentsPage.navigate(waypoints, updatedAnswers))
       )
   }

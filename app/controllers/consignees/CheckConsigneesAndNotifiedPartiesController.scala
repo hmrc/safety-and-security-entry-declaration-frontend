@@ -17,11 +17,11 @@
 package controllers.consignees
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.CommonControllerComponents
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.consignees.CheckConsigneesAndNotifiedPartiesPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.consignees._
@@ -29,16 +29,14 @@ import viewmodels.govuk.summarylist._
 import views.html.consignees.CheckConsigneesAndNotifiedPartiesView
 
 class CheckConsigneesAndNotifiedPartiesController @Inject() (
-  override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: CheckConsigneesAndNotifiedPartiesView
 ) extends FrontendBaseController with I18nSupport {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
@@ -54,7 +52,7 @@ class CheckConsigneesAndNotifiedPartiesController @Inject() (
 
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         Redirect(CheckConsigneesAndNotifiedPartiesPage.navigate(waypoints, request.userAnswers))
     }

@@ -22,9 +22,8 @@ import forms.transport.OverallDocumentFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.transport.OverallDocumentPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.OverallDocumentView
 
@@ -32,22 +31,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OverallDocumentController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: OverallDocumentFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: OverallDocumentView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       if (index.position >= OverallDocumentController.MaxDocuments) {
         Redirect(baseRoutes.JourneyRecoveryController.onPageLoad())
@@ -62,7 +57,7 @@ class OverallDocumentController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    cc.authAndGetData(lrn).async { implicit request =>
       val page = OverallDocumentPage(index)
 
       if (index.position >= OverallDocumentController.MaxDocuments) {
@@ -75,7 +70,7 @@ class OverallDocumentController @Inject() (
             value =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-                _ <- sessionRepository.set(updatedAnswers)
+                _ <- cc.sessionRepository.set(updatedAnswers)
               } yield Redirect(page.navigate(waypoints, updatedAnswers))
           )
       }

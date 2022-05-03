@@ -16,24 +16,24 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalActionProvider, IdentifierAction}
-import javax.inject.Inject
+import controllers.actions.CommonControllerComponents
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class KeepAliveController @Inject() (
-  val controllerComponents: MessagesControllerComponents,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
+  cc: CommonControllerComponents,
   sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def keepAlive: Action[AnyContent] =
-    identify.async { implicit request =>
+    cc.identify.async { implicit request =>
       sessionRepository
         .keepAlive(request.eori)
         .map(_ => Ok)

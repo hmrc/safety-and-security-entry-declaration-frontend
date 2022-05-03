@@ -16,7 +16,8 @@
 
 package controllers
 
-import play.api.i18n.{I18nSupport, MessagesApi}
+import controllers.actions.CommonControllerComponents
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.OrganisationAccountRequiredView
@@ -24,11 +25,12 @@ import views.html.OrganisationAccountRequiredView
 import javax.inject.Inject
 
 class OrganisationAccountRequiredController @Inject() (
-  override val messagesApi: MessagesApi,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: OrganisationAccountRequiredView
 ) extends FrontendBaseController
   with I18nSupport {
+
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad: Action[AnyContent] =
     Action { implicit request =>

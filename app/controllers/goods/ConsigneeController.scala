@@ -22,10 +22,9 @@ import forms.goods.ConsigneeFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.ConsigneePage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.consignees.AllConsigneesQuery
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOptions
 import views.html.goods.ConsigneeView
@@ -34,21 +33,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConsigneeController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: ConsigneeFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: ConsigneeView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
     with AnswerExtractor {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         getAnswer(AllConsigneesQuery) {
           consignees =>
@@ -66,7 +62,7 @@ class ConsigneeController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
         getAnswerAsync(AllConsigneesQuery) {
           consignees =>
@@ -83,7 +79,7 @@ class ConsigneeController @Inject() (
                 value =>
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(ConsigneePage(itemIndex), value))
-                    _ <- sessionRepository.set(updatedAnswers)
+                    _ <- cc.sessionRepository.set(updatedAnswers)
                   } yield Redirect(ConsigneePage(itemIndex).navigate(waypoints, updatedAnswers))
               )
           }

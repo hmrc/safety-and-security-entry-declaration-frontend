@@ -21,9 +21,8 @@ import forms.routedetails.AddPlaceOfLoadingFormProvider
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.routedetails.AddPlaceOfLoadingPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.routedetails.AddPlaceOfLoadingSummary
 import views.html.routedetails.AddPlaceOfLoadingView
@@ -32,20 +31,16 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddPlaceOfLoadingController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: AddPlaceOfLoadingFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: AddPlaceOfLoadingView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
 
         val places = AddPlaceOfLoadingSummary.rows(request.userAnswers, waypoints, AddPlaceOfLoadingPage)
@@ -54,7 +49,7 @@ class AddPlaceOfLoadingController @Inject()(
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
 
         form.bindFromRequest().fold(
@@ -66,7 +61,7 @@ class AddPlaceOfLoadingController @Inject()(
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPlaceOfLoadingPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
+              _ <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(AddPlaceOfLoadingPage.navigate(waypoints, updatedAnswers))
         )
     }

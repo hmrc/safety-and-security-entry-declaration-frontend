@@ -21,9 +21,8 @@ import forms.transport.RailIdentityFormProvider
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.transport.RailIdentityPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.RailIdentityView
 
@@ -31,22 +30,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RailIdentityController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: RailIdentityFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: RailIdentityView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val preparedForm = request.userAnswers.get(RailIdentityPage) match {
         case None => form
@@ -57,7 +52,7 @@ class RailIdentityController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    cc.authAndGetData(lrn).async { implicit request =>
 
       form
         .bindFromRequest()
@@ -66,7 +61,7 @@ class RailIdentityController @Inject() (
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(RailIdentityPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
+              _ <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(RailIdentityPage.navigate(waypoints, updatedAnswers))
         )
     }

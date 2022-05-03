@@ -17,11 +17,11 @@
 package controllers.predec
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalActionProvider, IdentifierAction}
+import controllers.actions.CommonControllerComponents
 import models.LocalReferenceNumber
 import pages.Waypoints
 import pages.predec.CheckPredecPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.predec._
@@ -29,17 +29,15 @@ import viewmodels.govuk.summarylist._
 import views.html.predec.CheckPredecView
 
 class CheckPredecController @Inject() (
-  override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: CheckPredecView
 ) extends FrontendBaseController
   with I18nSupport {
 
+  protected val controllerComponents: MessagesControllerComponents = cc
+
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val list = SummaryListViewModel(
         rows = Seq(
@@ -59,7 +57,7 @@ class CheckPredecController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
         Redirect(CheckPredecPage.navigate(waypoints, request.userAnswers))
     }

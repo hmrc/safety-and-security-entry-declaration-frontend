@@ -21,9 +21,8 @@ import forms.transport.RemoveOverallDocumentFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.transport.{OverallDocumentPage, RemoveOverallDocumentPage}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transport.RemoveOverallDocumentView
 
@@ -31,27 +30,23 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveOverallDocumentController @Inject()(
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: RemoveOverallDocumentFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: RemoveOverallDocumentView
 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) {
+    cc.authAndGetData(lrn) {
       implicit request =>
 
         Ok(view(form, waypoints, lrn, index))
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async {
+    cc.authAndGetData(lrn).async {
       implicit request =>
 
         form.bindFromRequest().fold(
@@ -62,7 +57,7 @@ class RemoveOverallDocumentController @Inject()(
             if (value) {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(OverallDocumentPage(index)))
-                _ <- sessionRepository.set(updatedAnswers)
+                _ <- cc.sessionRepository.set(updatedAnswers)
               } yield Redirect(RemoveOverallDocumentPage(index).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(Redirect(RemoveOverallDocumentPage(index).navigate(waypoints, request.userAnswers)))

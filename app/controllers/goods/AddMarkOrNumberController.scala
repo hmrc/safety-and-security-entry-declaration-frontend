@@ -21,9 +21,8 @@ import forms.goods.AddMarkOrNumberFormProvider
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
 import pages.goods.AddMarkOrNumberPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.goods.AddMarkOrNumberView
 
@@ -31,19 +30,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddMarkOrNumberController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
-  getData: DataRetrievalActionProvider,
-  requireData: DataRequiredAction,
   formProvider: AddMarkOrNumberFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: AddMarkOrNumberView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(
     waypoints: Waypoints,
@@ -51,7 +46,7 @@ class AddMarkOrNumberController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData) { implicit request =>
+    cc.authAndGetData(lrn) { implicit request =>
 
       val preparedForm =
         request.userAnswers.get(AddMarkOrNumberPage(itemIndex, packageIndex)) match {
@@ -68,7 +63,7 @@ class AddMarkOrNumberController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    (identify andThen getData(lrn) andThen requireData).async { implicit request =>
+    cc.authAndGetData(lrn).async { implicit request =>
 
       form
         .bindFromRequest()
@@ -79,7 +74,7 @@ class AddMarkOrNumberController @Inject() (
               updatedAnswers <- Future.fromTry(
                 request.userAnswers.set(AddMarkOrNumberPage(itemIndex, packageIndex), value)
               )
-              _ <- sessionRepository.set(updatedAnswers)
+              _ <- cc.sessionRepository.set(updatedAnswers)
             } yield Redirect(
               AddMarkOrNumberPage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers)
             )

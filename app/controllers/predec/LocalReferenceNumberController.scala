@@ -21,9 +21,8 @@ import forms.predec.LocalReferenceNumberFormProvider
 import models.UserAnswers
 import pages.EmptyWaypoints
 import pages.predec.LocalReferenceNumberPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.predec.LocalReferenceNumberView
 
@@ -31,25 +30,23 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class LocalReferenceNumberController @Inject() (
-  override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
-  identify: IdentifierAction,
   formProvider: LocalReferenceNumberFormProvider,
-  val controllerComponents: MessagesControllerComponents,
+  cc: CommonControllerComponents,
   view: LocalReferenceNumberView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
   with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
+  protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(): Action[AnyContent] =
-    identify { implicit request =>
+    cc.identify { implicit request =>
       Ok(view(form))
     }
 
   def onSubmit(): Action[AnyContent] =
-    identify.async { implicit request =>
+    cc.identify.async { implicit request =>
 
       form
         .bindFromRequest()
@@ -58,7 +55,7 @@ class LocalReferenceNumberController @Inject() (
           value => {
             val updatedAnswers = UserAnswers(request.eori, value)
 
-            sessionRepository.set(updatedAnswers).map { _ =>
+            cc.sessionRepository.set(updatedAnswers).map { _ =>
               Redirect(LocalReferenceNumberPage.navigate(EmptyWaypoints, updatedAnswers))
             }
           }
