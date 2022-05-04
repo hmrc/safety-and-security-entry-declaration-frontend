@@ -18,7 +18,7 @@ package pages.routedetails
 
 import base.SpecBase
 import controllers.routedetails.routes
-import models.{CheckMode, NormalMode, PlaceOfUnloading}
+import models.{NormalMode, PlaceOfUnloading}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours

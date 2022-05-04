@@ -47,8 +47,8 @@ class NotifiedPartyControllerSpec extends SpecBase with MockitoSugar {
   val eori1 = GbEori("123456789000")
   val eori2 = GbEori("123456789001")
   val notifiedParties = List(
-    TraderWithEori(key1, eori1.value),
-    TraderWithEori(key2, eori2.value)
+    TraderWithEori(key1, GbEori(eori1.value)),
+    TraderWithEori(key2, GbEori(eori2.value))
   )
 
   val baseAnswers =

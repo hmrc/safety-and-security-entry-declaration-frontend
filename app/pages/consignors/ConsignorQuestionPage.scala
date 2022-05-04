@@ -17,7 +17,7 @@
 package pages.consignors
 
 import models.NormalMode
-import pages.{AddToListQuestionPage, AddToListSection, ConsigneeSection, ConsignorSection, QuestionPage, Waypoint}
+import pages.{AddToListQuestionPage, AddToListSection, ConsignorSection, QuestionPage, Waypoint}
 
 trait ConsignorQuestionPage[A] extends QuestionPage[A] with AddToListQuestionPage {
 

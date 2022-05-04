@@ -27,7 +27,7 @@ class TraderSpec extends SpecBase {
 
     "must serialise / deserialise from / to a trader with EORI" in {
 
-      val trader: Trader = TraderWithEori(123, "GB123456789000")
+      val trader: Trader = TraderWithEori(123, GbEori("GB123456789000"))
 
       val json = Json.toJson(trader)
       json.validate[Trader] mustEqual JsSuccess(trader)

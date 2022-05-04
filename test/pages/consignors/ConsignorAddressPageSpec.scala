@@ -18,7 +18,7 @@ package pages.consignors
 
 import base.SpecBase
 import controllers.consignors.routes
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 

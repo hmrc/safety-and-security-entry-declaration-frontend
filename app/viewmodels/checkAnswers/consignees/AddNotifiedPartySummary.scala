@@ -35,7 +35,7 @@ object AddNotifiedPartySummary  {
     answers.get(AllNotifiedPartiesQuery).getOrElse(List.empty).zipWithIndex.map {
       case (notifiedParty, index) =>
         val name = notifiedParty match {
-          case t: TraderWithEori    => HtmlFormat.escape(t.eori).toString
+          case t: TraderWithEori    => HtmlFormat.escape(t.eori.toString).toString
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
@@ -52,7 +52,7 @@ object AddNotifiedPartySummary  {
       notifiedParties =>
 
         val value = notifiedParties.map {
-          case np: TraderWithEori => np.eori
+          case np: TraderWithEori => np.eori.toString
           case np: TraderWithoutEori => np.name
         }.map(HtmlFormat.escape).mkString("<br>")
 
