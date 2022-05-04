@@ -33,7 +33,7 @@ bin
 /*.ipr
 /.classpath
 *.iws
-
+*.log
 ## Custom
 
 .bsp

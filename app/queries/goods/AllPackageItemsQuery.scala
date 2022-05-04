@@ -18,9 +18,11 @@ package queries.goods
 
 import models.{Index, PackageItem}
 import play.api.libs.json.JsPath
-import queries.Gettable
+import queries.{Gettable, Settable}
 
-final case class AllPackageItemsQuery(itemIndex: Index) extends Gettable[List[PackageItem]] {
+final case class AllPackageItemsQuery(itemIndex: Index)
+  extends Gettable[List[PackageItem]]
+  with Settable[List[PackageItem]] {
 
   override def path: JsPath = JsPath \ "goodsItems" \ itemIndex.position \ "packages"
 }
