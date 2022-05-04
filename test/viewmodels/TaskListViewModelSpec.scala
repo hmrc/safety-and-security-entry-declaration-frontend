@@ -21,7 +21,7 @@ import controllers.predec.{routes => predecRoutes}
 import controllers.consignees.{routes => consigneeRoutes}
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
-import models.{Address, GbEori, Index, LodgingPersonType, ProvideGrossWeight, TraderIdentity, UserAnswers}
+import models.{Address, GbEori, Index, LocalReferenceNumber, LodgingPersonType, ProvideGrossWeight, TraderIdentity, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
@@ -31,15 +31,7 @@ import pages.EmptyWaypoints
 import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import pages.consignors.ConsignorEORIPage
 import pages.goods.CommodityCodeKnownPage
-import pages.predec.{
-  CarrierEORIPage,
-  CarrierIdentityPage,
-  DeclarationPlacePage,
-  LocalReferenceNumberPage,
-  LodgingPersonTypePage,
-  ProvideGrossWeightPage,
-  TotalGrossWeightPage
-}
+import pages.predec.{CarrierEORIPage, CarrierIdentityPage, DeclarationPlacePage, LocalReferenceNumberPage, LodgingPersonTypePage, ProvideGrossWeightPage, TotalGrossWeightPage}
 import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 import queries.consignors.ConsignorKeyQuery
 
@@ -102,7 +94,7 @@ class TaskListViewModelSpec
 
         "And the first question is not populated" - {
           "It will show an `not started` status and link to first answer" in {
-            val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
+            val result = TaskListViewModel.fromAnswers(emptyUserAnswers.copy(lrn = LocalReferenceNumber("")))(messages(application))
 
             result.rows(predecIdx).completionStatusTag mustEqual CompletionStatus.tag(
               CompletionStatus.NotStarted
