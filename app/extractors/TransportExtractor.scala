@@ -36,7 +36,6 @@ import cats.implicits._
 import models.completion.answers.Transport
 import models.{Country, Index, TransportIdentity, TransportMode, UserAnswers}
 import pages.transport._
-import queries._
 import queries.transport.{AllOverallDocumentsQuery, AllSealsQuery}
 
 class TransportExtractor(
