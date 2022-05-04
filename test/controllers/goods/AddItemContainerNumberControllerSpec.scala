@@ -17,14 +17,16 @@
 package controllers.goods
 
 import base.SpecBase
-import config.IndexLimits.maxGoods
+import config.IndexLimits.{maxContainers, maxGoods}
 import controllers.{routes => baseRoutes}
 import forms.goods.AddItemContainerNumberFormProvider
-import models.Index
+import models.{Container, Index}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods.AddItemContainerNumberPage
+import pages.goods.{AddItemContainerNumberPage, ItemContainerNumberPage}
 import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -65,12 +67,15 @@ class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "must save the answer and redirect to the next page when valid data is submitted" in {
 
+      val container = arbitrary[Container].sample.value
+      val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, index), container).success.value
+
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -80,7 +85,44 @@ class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AddItemContainerNumberPage(index), true).success.value
+        val expectedAnswers = answers.set(AddItemContainerNumberPage(index), true).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual goods.AddItemContainerNumberPage(index)
+          .navigate(waypoints, expectedAnswers)
+          .url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must save `false` and redirect when the max number of containers has been added, even if the answer is `true`" in {
+
+      val containers = Gen.listOfN(maxContainers, arbitrary[Container]).sample.value
+
+      val answers =
+        containers
+          .zipWithIndex
+          .foldLeft(emptyUserAnswers) {
+            case (accumulatedAnswers, (container, index)) =>
+              accumulatedAnswers.set(ItemContainerNumberPage(Index(0), Index(index)), container).success.value
+          }
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, addContainerRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+        val expectedAnswers = answers.set(AddItemContainerNumberPage(index), false).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.AddItemContainerNumberPage(index)
@@ -92,24 +134,19 @@ class AddItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val container = arbitrary[Container].sample.value
+      val answers = emptyUserAnswers.set(ItemContainerNumberPage(index, index), container).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, addContainerRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[AddItemContainerNumberView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, List.empty)(
-          request,
-          messages(application)
-        ).toString
       }
     }
 
