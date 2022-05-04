@@ -28,4 +28,9 @@ object ValidationError {
   case class MissingField[T](page: QuestionPage[T]) extends ValidationError {
     override val message: String = s"Field $page is missing!"
   }
+
+  case object MissingQueryResult extends ValidationError{
+    override val message: String = "Missing query result"
+  }
+
 }

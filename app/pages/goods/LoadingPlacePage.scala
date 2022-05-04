@@ -16,11 +16,12 @@
 
 package pages.goods
 
-import controllers.goods.routes
-import models.{Index, LocalReferenceNumber, UserAnswers}
-import pages.{Page, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import controllers.goods.routes
+import pages.{Page, Waypoints}
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import queries.routedetails.DeriveNumberOfPlacesOfUnloading
 
 final case class LoadingPlacePage(itemIndex: Index) extends GoodsItemQuestionPage[Int] {
