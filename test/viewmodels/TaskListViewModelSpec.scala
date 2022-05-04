@@ -17,6 +17,7 @@
 package viewmodels
 
 import base.SpecBase
+import controllers.predec.{routes => predecRoutes}
 import controllers.consignees.{routes => consigneeRoutes}
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
@@ -34,6 +35,7 @@ import pages.predec.{
   CarrierEORIPage,
   CarrierIdentityPage,
   DeclarationPlacePage,
+  LocalReferenceNumberPage,
   LodgingPersonTypePage,
   ProvideGrossWeightPage,
   TotalGrossWeightPage
@@ -61,8 +63,8 @@ class TaskListViewModelSpec
     val address = arbitrary[Address].sample.value
 
     "For the predec section" - {
-      "When we have a complete section" - {
-        "It will show a `complete` status" in {
+      "When we have a completed section" - {
+        "It will show a `complete` status and link to CYA" in {
           val validAnswers = {
             arbitrary[UserAnswers].sample.value
               .set(DeclarationPlacePage, location)
@@ -87,9 +89,42 @@ class TaskListViewModelSpec
 
           val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))
 
-          result.rows(predecIdx).completionStatusTag.attributes mustEqual CompletionStatus.tag(
-            CompletionStatus.NotStarted
+          result.rows(predecIdx).completionStatusTag mustEqual CompletionStatus.tag(
+            CompletionStatus.Completed
           )(messages(application))
+
+          result.rows(predecIdx).link mustEqual predecRoutes.CheckPredecController.onPageLoad(
+            EmptyWaypoints,
+            validAnswers.lrn
+          )
+        }
+      }
+
+      "When we don't have a completed section" - {
+        "And the first question is populated" - {
+          "It will show an `in progress` status and link to first answer" in {
+            val validAnswers = emptyUserAnswers.set(LocalReferenceNumberPage, lrn).success.value
+
+            val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))
+
+            result.rows(predecIdx).completionStatusTag mustEqual CompletionStatus.tag(
+              CompletionStatus.InProgress
+            )(messages(application))
+
+            result.rows(predecIdx).link mustEqual predecRoutes.LocalReferenceNumberController.onPageLoad()
+          }
+        }
+
+        "And the first question is not populated" - {
+          "It will show an `not started` status and link to first answer" in {
+            val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
+
+            result.rows(predecIdx).completionStatusTag mustEqual CompletionStatus.tag(
+              CompletionStatus.NotStarted
+            )(messages(application))
+
+            result.rows(predecIdx).link mustEqual predecRoutes.LocalReferenceNumberController.onPageLoad()
+          }
         }
       }
     }

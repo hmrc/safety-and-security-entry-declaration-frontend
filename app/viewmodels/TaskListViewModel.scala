@@ -22,8 +22,10 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.transport.{routes => transportRoutes}
-import models.{Index, UserAnswers}
+import extractors.PredecExtractor
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.EmptyWaypoints
+import pages.predec.LocalReferenceNumberPage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
@@ -47,13 +49,26 @@ object TaskListViewModel {
       )
     )
 
-  private def predecRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+  private def predecRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
+    val extractor = new PredecExtractor()(answers).extract()
+
     TaskListRow(
-      messageKey          = messages("taskList.predec"),
-      link                = predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn),
-      id                  = "predec",
-      completionStatusTag = CompletionStatus.tag(CompletionStatus.Completed)
+      messageKey = messages("taskList.predec"),
+      link =
+        if (extractor.isInvalid) predecRoutes.LocalReferenceNumberController.onPageLoad()
+        else predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn),
+      id = "predec",
+      completionStatusTag = {
+        if (extractor.isInvalid) {
+          answers
+            .get(LocalReferenceNumberPage)
+            .fold(CompletionStatus.tag(CompletionStatus.NotStarted))(_ =>
+              CompletionStatus.tag(CompletionStatus.InProgress)
+            )
+        } else CompletionStatus.tag(CompletionStatus.Completed)
+      }
     )
+  }
 
   private def transportRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
@@ -78,31 +93,34 @@ object TaskListViewModel {
     }
 
     TaskListRow(
-      messageKey          = messages("taskList.consignors"),
-      link                = url,
-      id                  = "consignors",
+      messageKey = messages("taskList.consignors"),
+      link = url,
+      id = "consignors",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
   }
 
   private def consigneesRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfConsignees) match {
-      case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
-      case _ => answers.get(DeriveNumberOfNotifiedParties) match {
-          case Some(size) if size > 0 => consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
+      case Some(size) if size > 0 =>
+        consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
+      case _ =>
+        answers.get(DeriveNumberOfNotifiedParties) match {
+          case Some(size) if size > 0 =>
+            consigneesRoutes.CheckConsigneesAndNotifiedPartiesController.onPageLoad(EmptyWaypoints, answers.lrn)
           case _ => consigneesRoutes.AnyConsigneesKnownController.onPageLoad(EmptyWaypoints, answers.lrn)
         }
     }
 
     TaskListRow(
-      messageKey          = messages("taskList.consignees"),
-      link                = url,
-      id                  = "consignees",
+      messageKey = messages("taskList.consignees"),
+      link = url,
+      id = "consignees",
       completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
     )
   }
 
-  private def goodsRow(answers: UserAnswers)(implicit messages: Messages) : TaskListRow = {
+  private def goodsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfGoods) match {
       case Some(size) if size > 0 => goodsRoutes.AddGoodsController.onPageLoad(EmptyWaypoints, answers.lrn)
       case _ => goodsRoutes.InitialiseGoodsItemController.initialise(EmptyWaypoints, answers.lrn, Index(0))
