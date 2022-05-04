@@ -28,14 +28,13 @@ class GoodsItemsExtractor(
 )(override protected implicit val answers: UserAnswers) extends Extractor[Seq[GoodsItem]] {
 
   override def extract(): ValidationResult[List[GoodsItem]] = {
-    val indexes = answers.get(DeriveNumberOfGoods) map {
+    answers.get(DeriveNumberOfGoods) map {
       count => (0 to (count - 1)).toList.map {
         index => extractOne(Index(index))
       }.sequence
     } getOrElse {
       ValidationError.MissingQueryResult.invalidNec
     }
-    indexes
   }
 
   protected def extractOne(index: Index): ValidationResult[GoodsItem] = {

@@ -16,7 +16,6 @@
 
 package models.completion.answers
 
-import models.completion.Party.ByEori
 import models.{Container, Document, PaymentMethod}
 import models.completion.{LoadingPlace, Party}
 import models.completion.downstream.{DangerousGoodsCode, GoodsItemIdentity, Package}
