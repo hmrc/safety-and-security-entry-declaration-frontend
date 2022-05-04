@@ -62,11 +62,11 @@ object TaskListViewModel {
         if (isPredeclarationComplete) {
           CompletionStatus.tag(CompletionStatus.Completed)
         } else {
-          answers
-            .get(LocalReferenceNumberPage)
-            .fold(CompletionStatus.tag(CompletionStatus.NotStarted))(_ =>
-              CompletionStatus.tag(CompletionStatus.InProgress)
-            )
+          if (answers.lrn.value.isEmpty) {
+            CompletionStatus.tag(CompletionStatus.NotStarted)
+          } else {
+            CompletionStatus.tag(CompletionStatus.InProgress)
+          }
         }
       }
     )
