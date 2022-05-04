@@ -120,8 +120,8 @@ class GoodsItemExtractor(
   private lazy val extractedDangerousGoodsCode: ValidationResult[Option[DangerousGoodsCode]] = {
     getAnswer(DangerousGoodPage(index),
       DangerousGoodCodePage(index)).map {
-      optDangerousGood => optDangerousGood.map {
-        dangerousCode => DangerousGoodsCode(dangerousCode.code)
+        optDangerousGood => optDangerousGood.map {
+          dangerousCode => DangerousGoodsCode(dangerousCode.code)
       }
     }
   }

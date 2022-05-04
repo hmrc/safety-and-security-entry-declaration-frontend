@@ -33,12 +33,9 @@ import pages.consignees.{
   CheckConsigneesAndNotifiedPartiesPage,
   CheckNotifiedPartyPage
 }
-import utils.{PartiesUtils, RouteDetailsUtils}
 
 
-trait ModelGenerators extends StringGenerators
-  with RouteDetailsUtils
-  with PartiesUtils {
+trait ModelGenerators extends StringGenerators {
 
   // Three decimal places, between 0.001 and 99999999.999
   val grossMassGen: Gen[BigDecimal] = Gen.choose(1L, 99999999999L).map { l => BigDecimal(l, 3) }
@@ -480,10 +477,6 @@ trait ModelGenerators extends StringGenerators
     } yield Package(kindPackage, numPackages, numPieces, mark)
   }
 
-  implicit lazy val arbitraryPackageItem: Arbitrary[PackageItem] = Arbitrary {
-    Gen.oneOf(arbitrary[BulkPackageItem], arbitrary[UnpackedPackageItem], arbitrary[StandardPackageItem])
-  }
-
   implicit lazy val arbitraryBulkPackageItem: Arbitrary[BulkPackageItem] = Arbitrary{
     for {
       kindPackage <- arbitrary[KindOfPackage]
@@ -499,8 +492,7 @@ trait ModelGenerators extends StringGenerators
     } yield UnpackedPackageItem(kindPackage, numPieces, mark)
   }
 
-  implicit lazy val arbitraryStandardPackageItem : Arbitrary[StandardPackageItem] = Arbitrary {
-    //TODO check if mark or number is optional or not.
+  implicit lazy val arbitraryStandardPackageItem: Arbitrary[StandardPackageItem] = Arbitrary {
     for {
       kindPackage <- arbitrary[KindOfPackage]
       numPieces <- Gen.choose(0, 99999)
@@ -508,25 +500,26 @@ trait ModelGenerators extends StringGenerators
     } yield StandardPackageItem(kindPackage, numPieces, mark)
   }
 
-  implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] = Arbitrary {
-    implicit val min = 1
-    implicit val max = 10
+  implicit lazy val arbitraryPackageItem: Arbitrary[PackageItem] = Arbitrary {
+    Gen.oneOf(arbitrary[BulkPackageItem], arbitrary[UnpackedPackageItem], arbitrary[StandardPackageItem])
+  }
 
-    val genPlaceOfLoading = for {
-      length <- Gen.choose(min,max)
-      listOfPlaces <- Gen.listOfN(length, arbitrary[LoadingPlace])
-      mapLoadingPlace <- listOfPlaces.zipWithIndex.map{ case(a,b) => (b,a) }.toMap
-    } yield mapLoadingPlace
+  implicit lazy val arbitraryRouteDetails: Arbitrary[RouteDetails] = Arbitrary {
+    val genPlaces: Gen[Map[Int,LoadingPlace]] = for {
+      length <- Gen.choose(1, 3)
+      places <- Gen.listOfN(length, arbitrary[LoadingPlace])
+      placesByIndex <- places.zipWithIndex.map { case (a, b) => (b, a) }.toMap
+    } yield placesByIndex
 
     for {
-      placesOfLoading <- genPlaceOfLoading
-      placesOfUnloading <- genPlaceOfLoading  // TODO update when UnloadingPlace fixed
+      loadingPlaces <- genPlaces
+      unloadingPlaces <- genPlaces
       originCountry <- arbitrary[Country]
-      extraCountries <- Gen.choose(min, max).flatMap { len => Gen.listOfN(len, arbitrary[Country]) }
+      extraCountries <- Gen.choose(1, 3).flatMap { len => Gen.listOfN(len, arbitrary[Country]) }
       customsOffice <- arbitrary[CustomsOfficePayload]
     } yield {
       val itinerary = Itinerary(originCountry +: extraCountries)
-      RouteDetails(placesOfLoading, placesOfUnloading, itinerary, customsOffice)
+      RouteDetails(loadingPlaces, unloadingPlaces, itinerary, customsOffice)
     }
   }
 

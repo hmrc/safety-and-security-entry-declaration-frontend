@@ -48,6 +48,13 @@ class PartiesExtractorSpec extends SpecBase {
       .set(AnyConsigneesKnownPage, true).success.value
   }
 
+  def tradersToParties(traders: List[Trader]): Map[Int, Party] = {
+    traders.map {
+      case TraderWithEori(key, eori) => key -> Party.ByEori(GbEori(eori))
+      case TraderWithoutEori(key, name, addr) => key -> Party.ByAddress(name, addr)
+    }.toMap
+  }
+
   private val expectedResult: Parties = Parties(
     tradersToParties(consignors),
     tradersToParties(consignees),
