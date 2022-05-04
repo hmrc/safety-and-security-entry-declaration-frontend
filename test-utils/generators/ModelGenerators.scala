@@ -235,10 +235,10 @@ trait ModelGenerators extends StringGenerators {
       for {
         lrn <- arbitrary[LocalReferenceNumber]
         location <- stringsWithMaxLength(9)
+        carrier <- Gen.option(arbitrary[Party])
         totalMass <- Gen.option(grossMassGen)
-        carrierEORI <- Gen.option(arbitrary[GbEori])
       } yield {
-        Predec(lrn, location, totalMass, carrierEORI)
+        Predec(lrn, location, carrier, totalMass)
       }
     }
 
