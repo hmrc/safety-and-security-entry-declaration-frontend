@@ -59,32 +59,17 @@ class TaskListViewModelSpec
     val location = "test-declaration-location"
     val totalMass = 1000
     val carrierEORI = arbitrary[GbEori].sample.value
-    val name = "Name"
-    val address = arbitrary[Address].sample.value
 
     "For the predec section" - {
       "When we have a completed section" - {
         "It will show a `complete` status and link to CYA" in {
           val validAnswers = {
-            arbitrary[UserAnswers].sample.value
-              .set(DeclarationPlacePage, location)
-              .success
-              .value
-              .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall)
-              .success
-              .value
-              .set(TotalGrossWeightPage, BigDecimal.exact(totalMass))
-              .success
-              .value
-              .set(LodgingPersonTypePage, LodgingPersonType.Representative)
-              .success
-              .value
-              .set(CarrierIdentityPage, TraderIdentity.GBEORI)
-              .success
-              .value
-              .set(CarrierEORIPage, carrierEORI)
-              .success
-              .value
+            arbitrary[UserAnswers].sample.value.set(DeclarationPlacePage, location).success.value
+              .set(ProvideGrossWeightPage, ProvideGrossWeight.Overall).success.value
+              .set(TotalGrossWeightPage, BigDecimal.exact(totalMass)).success.value
+              .set(LodgingPersonTypePage, LodgingPersonType.Representative).success.value
+              .set(CarrierIdentityPage, TraderIdentity.GBEORI).success.value
+              .set(CarrierEORIPage, carrierEORI).success.value
           }
 
           val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))

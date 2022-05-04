@@ -50,22 +50,24 @@ object TaskListViewModel {
     )
 
   private def predecRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
-    val extractor = new PredecExtractor()(answers).extract()
+    val isPredeclarationComplete = new PredecExtractor()(answers).extract().isValid
 
     TaskListRow(
       messageKey = messages("taskList.predec"),
       link =
-        if (extractor.isInvalid) predecRoutes.LocalReferenceNumberController.onPageLoad()
-        else predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn),
+        if (isPredeclarationComplete) predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn)
+        else predecRoutes.LocalReferenceNumberController.onPageLoad(),
       id = "predec",
       completionStatusTag = {
-        if (extractor.isInvalid) {
+        if (isPredeclarationComplete) {
+          CompletionStatus.tag(CompletionStatus.Completed)
+        } else {
           answers
             .get(LocalReferenceNumberPage)
             .fold(CompletionStatus.tag(CompletionStatus.NotStarted))(_ =>
               CompletionStatus.tag(CompletionStatus.InProgress)
             )
-        } else CompletionStatus.tag(CompletionStatus.Completed)
+        }
       }
     )
   }
