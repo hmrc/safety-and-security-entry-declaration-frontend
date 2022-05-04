@@ -23,13 +23,14 @@ import org.scalacheck.Gen
 import base.SpecBase
 import extractors.ValidationError.MissingField
 import models.completion.downstream.{DangerousGoodsCode, GoodsItemIdentity, Package}
-import models.completion.answers.{GoodsItem, Parties, RouteDetails}
+import models.completion.answers.{GoodsItem, Parties, Predec, RouteDetails}
 import models._
 import pages.goods._
 import pages.predec.ProvideGrossWeightPage
 import queries.goods.{AllContainersQuery, AllDocumentsQuery}
 
 class GoodsItemExtractorSpec extends SpecBase {
+  private val predec = arbitrary[Predec].sample.value
   private val routeDetails = arbitrary[RouteDetails].sample.value
   private val parties = arbitrary[Parties].sample.value
 
@@ -54,6 +55,11 @@ class GoodsItemExtractorSpec extends SpecBase {
   private val selectedPlaceOfUnloading = placesOfUnloading.get(placeOfUnloadingIndex).get
 
   private val grossMass = 1000
+  private val expectedGrossMass = if (predec.totalMass.isDefined) {
+    None
+  } else {
+    Some(BigDecimal.exact(1000))
+  }
   private val paymentMethod = arbitrary[PaymentMethod].sample.value
   private val dangerousGoods = arbitrary[DangerousGood].sample.value
   private val standardPackage = Gen.oneOf(KindOfPackage.standardKindsOfPackages).sample.value
@@ -93,7 +99,7 @@ class GoodsItemExtractorSpec extends SpecBase {
     selectedPlaceOfUnloading,
     containers,
     packages,
-    Some(grossMass),
+    expectedGrossMass,
     documents,
     Some(DangerousGoodsCode(dangerousGoods.code)),
     paymentMethod,
@@ -101,7 +107,6 @@ class GoodsItemExtractorSpec extends SpecBase {
 
   private val validAnswers = {
     emptyUserAnswers
-      .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
       .set(CommodityCodeKnownPage(itemNumber), true).success.value
       .set(CommodityCodePage(itemNumber), commodityCode.code).success.value
       .set(ConsignorPage(itemNumber), consignorIndex).success.value
@@ -124,7 +129,7 @@ class GoodsItemExtractorSpec extends SpecBase {
 
   "The goods item extractor" - {
     "should correctly extract valid goods item" in {
-      val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(validAnswers).extract().value
+      val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(validAnswers).extract().value
       actual must be(expectedResult)
     }
 
@@ -136,7 +141,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(CommodityCodePage(itemNumber), commodityCode.code).success.value
         }
         val expected = expectedResult.copy(id = commodityCode)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
 
         actual must be(expected)
       }
@@ -147,7 +152,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .remove(CommodityCodePage(itemNumber)).success.value
         }
         val expected = List(MissingField(CommodityCodePage(itemNumber)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -158,7 +163,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(GoodsDescriptionPage(itemNumber), desc.desc).success.value
         }
         val expected = expectedResult.copy(id = desc)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
 
         actual must be(expected)
       }
@@ -169,7 +174,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .remove(GoodsDescriptionPage(itemNumber)).success.value
         }
         val expected = List(MissingField(GoodsDescriptionPage(itemNumber)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -182,7 +187,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .remove(ConsignorPage(itemNumber)).success.value
         }
         val expected = List(MissingField(ConsignorPage(itemNumber)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -196,7 +201,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ConsigneePage(itemNumber), consigneeIndex).success.value
         }
         val suppliedParties = Parties(parties.consignors, parties.consignees, Map.empty)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().value
 
         actual must be(expectedResult)
       }
@@ -206,7 +211,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ConsigneeKnownPage(itemNumber), true).success.value
             .set(ConsigneePage(itemNumber), consigneeIndex).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
 
         actual must be(expectedResult)
       }
@@ -217,7 +222,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .remove(ConsigneePage(itemNumber)).success.value
         }
         val suppliedParties = Parties(parties.consignors, parties.consignees, Map.empty)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
         val expected = List(MissingField(ConsigneePage(itemNumber)))
 
         actual must contain theSameElementsAs(expected)
@@ -228,7 +233,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ConsigneeKnownPage(itemNumber), true).success.value
             .remove(ConsigneePage(itemNumber)).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
         val expected = List(MissingField(ConsigneePage(itemNumber)))
 
         actual must contain theSameElementsAs(expected)
@@ -239,7 +244,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ConsigneeKnownPage(itemNumber), true).success.value
             .set(ConsigneePage(itemNumber), 0).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(consignee = Some(parties.consignees.get(0).get))
 
         actual must be(expected)
@@ -255,7 +260,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(NotifiedPartyPage(itemNumber), notifiedPartyIndex).success.value
         }
         val suppliedParties = Parties(parties.consignors, Map.empty, parties.notifiedParties)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(consignee = None, notifiedParty = Some(notifiedParty))
 
         actual must be(expected)
@@ -266,7 +271,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ConsigneeKnownPage(itemNumber), false).success.value
             .set(NotifiedPartyPage(itemNumber), notifiedPartyIndex).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(consignee = None, notifiedParty = Some(notifiedParty))
 
         actual must be(expected)
@@ -278,7 +283,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .remove(NotifiedPartyPage(itemNumber)).success.value
         }
         val suppliedParties = Parties(parties.consignors, Map.empty, parties.notifiedParties)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
         val expected = List(MissingField(NotifiedPartyPage(itemNumber)))
 
         actual must contain theSameElementsAs(expected)
@@ -290,7 +295,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .remove(NotifiedPartyPage(itemNumber)).success.value
         }
         val suppliedParties = Parties(parties.consignors, Map.empty, parties.notifiedParties)
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, suppliedParties, itemNumber)(answers).extract().invalidValue.toList
         val expected = List(MissingField(NotifiedPartyPage(itemNumber)))
 
         actual must contain theSameElementsAs(expected)
@@ -301,7 +306,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ConsigneeKnownPage(itemNumber), false).success.value
             .set(NotifiedPartyPage(itemNumber), 0).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(consignee = None, notifiedParty = Some(parties.notifiedParties.get(0).get))
 
         actual must be(expected)
@@ -316,7 +321,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(LoadingPlacePage(itemNumber)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -330,7 +335,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(UnloadingPlacePage(itemNumber)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -345,7 +350,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(ItemContainerNumberPage(index, Index(0))))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -358,7 +363,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
             .set(GoodsItemGrossWeightPage(itemNumber), BigDecimal.exact(grossMass)).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec.copy(totalMass = None), placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(grossMass = Some(grossMass))
 
         actual must be(expected)
@@ -369,7 +374,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
             .remove(GoodsItemGrossWeightPage(itemNumber)).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec.copy(totalMass = None), placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
         val expected = List(MissingField(GoodsItemGrossWeightPage(itemNumber)))
 
         actual must be(expected)
@@ -384,7 +389,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -397,7 +402,7 @@ class GoodsItemExtractorSpec extends SpecBase {
               .set(NumberOfPackagesPage(itemNumber, Index(0)), numPackages).success.value
               .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
           }
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
           val expected = expectedResult.copy(packages = List(Package(kindPackage = standardPackage, numPackages = Some(numPackages), numPieces = None, mark = Some(mark))))
 
           actual must be(expected)
@@ -412,7 +417,7 @@ class GoodsItemExtractorSpec extends SpecBase {
           }
 
           val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
           actual must contain theSameElementsAs(expected)
         }
@@ -425,7 +430,7 @@ class GoodsItemExtractorSpec extends SpecBase {
           }
 
           val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
           actual must contain theSameElementsAs(expected)
         }
@@ -442,7 +447,7 @@ class GoodsItemExtractorSpec extends SpecBase {
               .set(NumberOfPiecesPage(itemNumber, Index(0)), numPieces).success.value
               .set(AddMarkOrNumberPage(itemNumber, Index(0)), false).success.value
           }
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
           val expected = expectedResult.copy(packages = List(Package(kindPackage = unpackedPackage, numPackages = None, numPieces = Some(numPieces), mark = None)))
 
           actual must be(expected)
@@ -455,7 +460,7 @@ class GoodsItemExtractorSpec extends SpecBase {
           }
 
           val expected = List(MissingField(KindOfPackagePage(itemNumber, Index(0))))
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
           actual must contain theSameElementsAs(expected)
         }
@@ -469,7 +474,7 @@ class GoodsItemExtractorSpec extends SpecBase {
               .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
               .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
           }
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
           val expected = expectedResult.copy(packages = List(Package(kindPackage = unpackedPackage, numPackages = None, numPieces = Some(numPieces), mark = Some(mark))))
 
           actual must be(expected)
@@ -486,7 +491,7 @@ class GoodsItemExtractorSpec extends SpecBase {
               .set(AddMarkOrNumberPage(itemNumber, Index(0)), true).success.value
               .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
           }
-          val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+          val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
           val expected = expectedResult.copy(packages = List(Package(kindPackage = bulkPackage, numPackages = None, numPieces = None, mark = Some(mark))))
 
           actual must be(expected)
@@ -501,7 +506,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(AddAnyDocumentsPage(index), true).success.value
             .set(AllDocumentsQuery(index), documents).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(documents = documents)
 
         actual must be(expected)
@@ -514,7 +519,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(DocumentPage(index, Index(0))))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -527,7 +532,7 @@ class GoodsItemExtractorSpec extends SpecBase {
             .set(DangerousGoodPage(index), true).success.value
             .set(DangerousGoodCodePage(index), dangerousGoods).success.value
         }
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(dangerousGoodsCode = Some(DangerousGoodsCode(dangerousGoods.code)))
 
         actual must be(expected)
@@ -540,7 +545,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(DangerousGoodCodePage(index)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }
@@ -554,7 +559,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         }
 
         val expected = List(MissingField(PaymentMethodPage(index)))
-        val actual = new GoodsItemExtractor(placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
+        val actual = new GoodsItemExtractor(predec, placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().invalidValue.toList
 
         actual must contain theSameElementsAs(expected)
       }

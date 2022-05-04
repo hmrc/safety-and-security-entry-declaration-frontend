@@ -18,11 +18,12 @@ package extractors
 
 import cats.implicits._
 import models.{Index, UserAnswers}
-import models.completion.answers.{GoodsItem, Parties, RouteDetails}
+import models.completion.answers.{GoodsItem, Parties, Predec, RouteDetails}
 import queries.goods._
 
 
 class GoodsItemsExtractor(
+  predec: Predec,
   routeDetails: RouteDetails,
   parties: Parties
 )(override protected implicit val answers: UserAnswers) extends Extractor[Seq[GoodsItem]] {
@@ -38,6 +39,6 @@ class GoodsItemsExtractor(
   }
 
   protected def extractOne(index: Index): ValidationResult[GoodsItem] = {
-    new GoodsItemExtractor(routeDetails.placesOfLoading, routeDetails.placesOfUnloading, parties, index).extract()
+    new GoodsItemExtractor(predec, routeDetails.placesOfLoading, routeDetails.placesOfUnloading, parties, index).extract()
   }
 }

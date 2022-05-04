@@ -17,17 +17,17 @@
 package extractors;
 
 import base.SpecBase
-import cats.data.ValidatedNec
-import models.completion.answers.{GoodsItem, Parties, RouteDetails}
-import models.{DangerousGood, Index, UserAnswers}
+import models.completion.answers.{GoodsItem, Parties, Predec, RouteDetails}
+import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import cats.implicits._
-import pages.goods.{AnyShippingContainersPage, DangerousGoodCodePage}
+import pages.goods.{AnyShippingContainersPage}
 import play.api.libs.json.Json
 
 class GoodsItemsExtractorSpec extends SpecBase {
   import GoodsItemsExtractorSpec._
 
+  private val predec = arbitrary[Predec].sample.value
   private val routeDetails = arbitrary[RouteDetails].sample.value
   private val parties = arbitrary[Parties].sample.value
 
@@ -38,7 +38,7 @@ class GoodsItemsExtractorSpec extends SpecBase {
   "The goods items extractor" - {
     "should correctly extract list of goods items" in {
       val actual = {
-        new StubExtractor(routeDetails, parties)(dummyAnswers).extract().invalidValue.toList
+        new StubExtractor(predec, routeDetails, parties)(dummyAnswers).extract().invalidValue.toList
       }
 
       // We've stubbed the underlying GoodsItemExtractor with a simple failure, and we expect to
@@ -53,7 +53,7 @@ class GoodsItemsExtractorSpec extends SpecBase {
     "should provide an error when attempting to retrieve goods items where none exist" in{
       val dummyAnswers = emptyUserAnswers
       val actual = {
-        new StubExtractor(routeDetails, parties)(dummyAnswers).extract().invalidValue.toList(0)
+        new StubExtractor(predec, routeDetails, parties)(dummyAnswers).extract().invalidValue.toList(0)
       }
       val expected = ValidationError.MissingQueryResult
 
@@ -64,10 +64,11 @@ class GoodsItemsExtractorSpec extends SpecBase {
 
 object GoodsItemsExtractorSpec {
   class StubExtractor(
+    predec: Predec,
     routeDetails: RouteDetails,
     parties: Parties
   )(override protected implicit val answers: UserAnswers)
-    extends GoodsItemsExtractor(routeDetails, parties)(answers) {
+    extends GoodsItemsExtractor(predec, routeDetails, parties)(answers) {
 
     override protected def extractOne(index: Index): ValidationResult[GoodsItem] = {
       ValidationError.MissingField(AnyShippingContainersPage(index)).invalidNec

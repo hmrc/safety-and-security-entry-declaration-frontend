@@ -18,21 +18,15 @@ package generators
 
 import java.time.temporal.ChronoUnit
 import java.time.{Instant, LocalDate, LocalTime, ZoneOffset}
-
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-
 import models._
 import models.TransportIdentity._
-import models.completion.answers.{Parties, RouteDetails}
+import models.completion.answers.{Parties, Predec, RouteDetails}
 import models.completion.{CustomsOffice => CustomsOfficePayload, _}
 import models.completion.downstream._
 import pages.CheckAnswersPage
-import pages.consignees.{
-  CheckConsigneePage,
-  CheckConsigneesAndNotifiedPartiesPage,
-  CheckNotifiedPartyPage
-}
+import pages.consignees.{CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, CheckNotifiedPartyPage}
 
 
 trait ModelGenerators extends StringGenerators {
@@ -244,6 +238,18 @@ trait ModelGenerators extends StringGenerators {
         postCode <- stringsWithMaxLength(9)
         country <- arbitrary[Country]
       } yield Address(streetAndNumber, city, postCode, country)
+    }
+
+  implicit lazy val arbitraryPredec: Arbitrary[Predec] =
+    Arbitrary {
+      for {
+        lrn <- arbitrary[LocalReferenceNumber]
+        location <- stringsWithMaxLength(9)
+        totalMass <- Gen.option(grossMassGen)
+        carrierEORI <- Gen.option(arbitrary[GbEori])
+      } yield {
+        Predec(lrn, location, totalMass, carrierEORI)
+      }
     }
 
   implicit lazy val arbitraryArrivalDateAndTime: Arbitrary[ArrivalDateAndTime] =

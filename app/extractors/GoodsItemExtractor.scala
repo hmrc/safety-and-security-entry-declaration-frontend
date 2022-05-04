@@ -33,15 +33,15 @@
 package extractors
 
 import cats.implicits._
-import models.completion.answers.{GoodsItem, Parties}
+import models.completion.answers.{GoodsItem, Parties, Predec}
 import models._
 import models.completion.downstream.{DangerousGoodsCode, GoodsItemIdentity, Package}
 import models.completion.{LoadingPlace, Party}
 import pages.goods._
-import pages.predec.ProvideGrossWeightPage
 import queries.goods._
 
 class GoodsItemExtractor(
+  predec: Predec,
   loadingPlaces: Map[Int, LoadingPlace],
   unloadingPlaces: Map[Int, LoadingPlace],
   parties: Parties,
@@ -75,12 +75,11 @@ class GoodsItemExtractor(
   }
 
   private lazy val extractedGrossMass: ValidationResult[Option[BigDecimal]] = {
-    answers.get(ProvideGrossWeightPage) map {
-      case ProvideGrossWeight.Overall =>
-        None.validNec
-      case ProvideGrossWeight.PerItem =>
-        requireAnswer(GoodsItemGrossWeightPage(index)).map { Some(_) }
-    } getOrElse ValidationError.MissingField(ProvideGrossWeightPage).invalidNec
+    if (predec.totalMass.isDefined) {
+      None.validNec
+    } else {
+      requireAnswer(GoodsItemGrossWeightPage(index)) map { Some(_) }
+    }
   }
 
   private lazy val extractedConsignor: ValidationResult[Party] = {
