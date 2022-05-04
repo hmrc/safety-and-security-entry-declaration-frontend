@@ -54,11 +54,11 @@ class GoodsItemExtractorSpec extends SpecBase {
   private val placeOfUnloadingIndex = Gen.choose(1, placesOfUnloading.size).sample.value - 1
   private val selectedPlaceOfUnloading = placesOfUnloading.get(placeOfUnloadingIndex).get
 
-  private val grossMass = 1000
+  private val grossMass = BigDecimal.exact(1000)
   private val expectedGrossMass = if (predec.totalMass.isDefined) {
     None
   } else {
-    Some(BigDecimal.exact(1000))
+    Some(grossMass)
   }
   private val paymentMethod = arbitrary[PaymentMethod].sample.value
   private val dangerousGoods = arbitrary[DangerousGood].sample.value
@@ -116,7 +116,7 @@ class GoodsItemExtractorSpec extends SpecBase {
       .set(UnloadingPlacePage(itemNumber), placeOfUnloadingIndex).success.value
       .set(AnyShippingContainersPage(itemNumber), true).success.value
       .set(AllContainersQuery(itemNumber), containers).success.value
-      .set(GoodsItemGrossWeightPage(itemNumber), BigDecimal.exact(grossMass)).success.value
+      .set(GoodsItemGrossWeightPage(itemNumber), grossMass).success.value
       .set(KindOfPackagePage(itemNumber, Index(0)), standardPackage).success.value
       .set(NumberOfPackagesPage(itemNumber, Index(0)), numPackages).success.value
       .set(MarkOrNumberPage(itemNumber, Index(0)), mark).success.value
@@ -361,7 +361,7 @@ class GoodsItemExtractorSpec extends SpecBase {
         val answers = {
           validAnswers
             .set(ProvideGrossWeightPage, ProvideGrossWeight.PerItem).success.value
-            .set(GoodsItemGrossWeightPage(itemNumber), BigDecimal.exact(grossMass)).success.value
+            .set(GoodsItemGrossWeightPage(itemNumber), grossMass).success.value
         }
         val actual = new GoodsItemExtractor(predec.copy(totalMass = None), placesOfLoading, placesOfUnloading, parties, itemNumber)(answers).extract().value
         val expected = expectedResult.copy(grossMass = Some(grossMass))

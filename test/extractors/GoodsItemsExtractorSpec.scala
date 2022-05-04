@@ -21,7 +21,7 @@ import models.completion.answers.{GoodsItem, Parties, Predec, RouteDetails}
 import models.{Index, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import cats.implicits._
-import pages.goods.{AnyShippingContainersPage}
+import pages.goods.AnyShippingContainersPage
 import play.api.libs.json.Json
 
 class GoodsItemsExtractorSpec extends SpecBase {
