@@ -16,7 +16,7 @@
 
 package controllers.goods
 
-import config.IndexLimits.maxGoods
+import config.IndexLimits.{maxGoods, maxPackages}
 import controllers.actions._
 import forms.goods.RemovePackageFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -48,10 +48,11 @@ class RemovePackageController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(packageIndex, maxPackages)) {
+      implicit request =>
 
-      Ok(view(form, waypoints, lrn, itemIndex, packageIndex))
-    }
+        Ok(view(form, waypoints, lrn, itemIndex, packageIndex))
+      }
 
   def onSubmit(
     waypoints: Waypoints,
@@ -59,23 +60,24 @@ class RemovePackageController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(packageIndex, maxPackages)).async {
+      implicit request =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
-          value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(goods.PackageQuery(itemIndex, packageIndex)))
-                _ <- cc.sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers))
-            } else {
-              Future.successful(
-                Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, request.userAnswers))
-              )
-            }
-        )
-    }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(goods.PackageQuery(itemIndex, packageIndex)))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers))
+              } else {
+                Future.successful(
+                  Redirect(RemovePackagePage(itemIndex, packageIndex).navigate(waypoints, request.userAnswers))
+                )
+              }
+          )
+      }
 }

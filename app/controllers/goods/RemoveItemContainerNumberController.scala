@@ -16,7 +16,7 @@
 
 package controllers.goods
 
-import config.IndexLimits.maxGoods
+import config.IndexLimits.{maxContainers, maxGoods}
 import controllers.actions._
 import forms.goods.RemoveItemContainerNumberFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -48,16 +48,17 @@ class RemoveItemContainerNumberController @Inject()(
     itemIndex: Index,
     containerIndex: Index
   ): Action[AnyContent] =
-    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(containerIndex, maxContainers)) {
+      implicit request =>
 
-      val preparedForm =
-        request.userAnswers.get(RemoveItemContainerNumberPage(itemIndex, containerIndex)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+        val preparedForm =
+          request.userAnswers.get(RemoveItemContainerNumberPage(itemIndex, containerIndex)) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, waypoints, lrn, itemIndex, containerIndex))
-    }
+        Ok(view(preparedForm, waypoints, lrn, itemIndex, containerIndex))
+      }
 
   def onSubmit(
     waypoints: Waypoints,
@@ -65,29 +66,30 @@ class RemoveItemContainerNumberController @Inject()(
     itemIndex: Index,
     containerIndex: Index
   ): Action[AnyContent] =
-    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(containerIndex, maxContainers)).async {
+      implicit request =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future
-              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, containerIndex))),
-          value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(
-                  request.userAnswers.remove(ContainerQuery(itemIndex, containerIndex))
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future
+                .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, containerIndex))),
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(
+                    request.userAnswers.remove(ContainerQuery(itemIndex, containerIndex))
+                  )
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(
+                  RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, updatedAnswers)
                 )
-                _ <- cc.sessionRepository.set(updatedAnswers)
-              } yield Redirect(
-                RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, updatedAnswers)
-              )
-            } else {
-              Future.successful(
-                Redirect(RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, request.userAnswers))
-              )
-            }
-        )
-    }
+              } else {
+                Future.successful(
+                  Redirect(RemoveItemContainerNumberPage(itemIndex, containerIndex).navigate(waypoints, request.userAnswers))
+                )
+              }
+          )
+      }
 }

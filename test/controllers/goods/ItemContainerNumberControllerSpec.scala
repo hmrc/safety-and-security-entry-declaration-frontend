@@ -17,7 +17,7 @@
 package controllers.goods
 
 import base.SpecBase
-import config.IndexLimits.maxGoods
+import config.IndexLimits.{maxContainers, maxGoods}
 import controllers.{routes => baseRoutes}
 import forms.goods.ItemContainerNumberFormProvider
 import models.{Container, Index}
@@ -177,6 +177,36 @@ class ItemContainerNumberControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, routes.ItemContainerNumberController.onPageLoad(waypoints, lrn, Index(maxGoods), index).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the container index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.ItemContainerNumberController.onPageLoad(waypoints, lrn, index, Index(maxContainers)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the container index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.ItemContainerNumberController.onPageLoad(waypoints, lrn, index, Index(maxContainers)).url)
 
         val result = route(application, request).value
 
