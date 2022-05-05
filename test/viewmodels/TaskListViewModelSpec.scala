@@ -114,34 +114,20 @@ class TaskListViewModelSpec
     }
 
     "For the transport section" - {
-      val nationality = arbitrary[Country].sample.value
-      val airDetails = arbitrary[AirIdentity].sample.value
-      val roadDetails = arbitrary[RoadIdentity].sample.value
-      val documents = {
-        Gen.choose(1, 10)
-          .flatMap { len => Gen.listOfN(len, arbitrary[Document]) }
-          .sample.value
-      }
-
-      val seals = {
-        Gen.choose(1, 10)
-          .flatMap { len => Gen.listOfN(len, arbitrary[String]) }
-          .sample.value
-      }
       "When we have a completed section" - {
         "It will show a `complete` status and link to CYA" in {
           val validAnswers = {
             emptyUserAnswers
               .set(TransportModePage, Road).success.value
-              .set(NationalityOfTransportPage, nationality).success.value
-              .set(RoadIdentityPage, roadDetails).success.value
+              .set(NationalityOfTransportPage, arbitrary[Country].sample.value).success.value
+              .set(RoadIdentityPage, arbitrary[RoadIdentity].sample.value).success.value
               .set(AnyOverallDocumentsPage, true).success.value
-              .set(AllOverallDocumentsQuery, documents).success.value
+              .set(AllOverallDocumentsQuery, arbitraryDocuments.value).success.value
               .set(AddAnySealsPage, true).success.value
-              .set(AllSealsQuery, seals).success.value
+              .set(AllSealsQuery, arbitrarySeals.value).success.value
               .set(TransportModePage, Air).success.value
               .remove(NationalityOfTransportPage).success.value
-              .set(AirIdentityPage, airDetails).success.value
+              .set(AirIdentityPage, arbitrary[AirIdentity].sample.value).success.value
           }
 
           val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))

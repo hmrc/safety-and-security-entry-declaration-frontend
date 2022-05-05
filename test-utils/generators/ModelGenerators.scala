@@ -456,6 +456,18 @@ trait ModelGenerators extends StringGenerators {
     } yield Party.ByAddress(name, addr)
   }
 
+  implicit lazy val arbitraryDocuments = {
+    Gen.choose(1, 10)
+      .flatMap { len => Gen.listOfN(len, arbitrary[Document]) }
+      .sample
+  }
+
+  implicit lazy val arbitrarySeals = {
+    Gen.choose(1, 10)
+      .flatMap { len => Gen.listOfN(len, arbitrary[String]) }
+      .sample
+  }
+
   implicit lazy val arbitraryParty: Arbitrary[Party] = Arbitrary {
     Gen.oneOf(arbitrary[Party.ByEori], arbitrary[Party.ByAddress])
   }

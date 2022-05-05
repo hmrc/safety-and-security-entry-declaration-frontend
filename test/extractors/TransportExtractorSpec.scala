@@ -40,24 +40,13 @@ class TransportExtractorSpec extends SpecBase {
   private val roroAccompaniedDetails = arbitrary[RoroAccompaniedIdentity].sample.value
   private val roroUnaccompaniedDetails = arbitrary[RoroUnaccompaniedIdentity].sample.value
 
-  private val documents = {
-    Gen.choose(1, 10)
-      .flatMap { len => Gen.listOfN(len, arbitrary[Document]) }
-      .sample.value
-  }
-
-  private val seals = {
-    Gen.choose(1, 10)
-      .flatMap { len => Gen.listOfN(len, arbitrary[String]) }
-      .sample.value
-  }
 
   private val expectedResult = Transport(
     identity = roadDetails,
     mode = Road,
     nationality = Some(nationality),
-    documents = documents,
-    seals = seals
+    documents = arbitraryDocuments.value,
+    seals = arbitrarySeals.value
   )
 
   private val validAnswers = {
@@ -66,9 +55,9 @@ class TransportExtractorSpec extends SpecBase {
       .set(NationalityOfTransportPage, nationality).success.value
       .set(RoadIdentityPage, roadDetails).success.value
       .set(AnyOverallDocumentsPage, true).success.value
-      .set(AllOverallDocumentsQuery, documents).success.value
+      .set(AllOverallDocumentsQuery, arbitraryDocuments.value).success.value
       .set(AddAnySealsPage, true).success.value
-      .set(AllSealsQuery, seals).success.value
+      .set(AllSealsQuery, arbitrarySeals.value).success.value
   }
 
     "the transport extractor" - {
