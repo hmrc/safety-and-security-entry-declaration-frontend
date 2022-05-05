@@ -55,8 +55,10 @@ object TaskListViewModel {
     TaskListRow(
       messageKey = messages("taskList.predec"),
       link =
-        if (isPredeclarationComplete) predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn)
-        else predecRoutes.LocalReferenceNumberController.onPageLoad(),
+        if (isPredeclarationComplete)
+          predecRoutes.CheckPredecController.onPageLoad(EmptyWaypoints, answers.lrn)
+        else
+          predecRoutes.LocalReferenceNumberController.onPageLoad(),
       id = "predec",
       completionStatusTag = {
         if (isPredeclarationComplete) {
