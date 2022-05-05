@@ -20,8 +20,9 @@ package models.completion.downstream
  * A 5-digit "special mention" code needed to indicate specific scenarios in the declaration
  *
  * e.g. when a notified party is provided for a goods item, we use code 10600
- *
- * TODO: When we have a code list this model may change to be more in line with similar enums
- * like Country or PaymentMethod.
  */
 case class SpecialMention(code: String)
+
+object SpecialMention {
+  val HasNegotiableBillOfLading = SpecialMention("10600")
+}
