@@ -27,6 +27,5 @@ case class Header(
   itemCount: Int,
   packageCount: Int,
   grossMass: Option[BigDecimal],
-  conveyanceReferenceNumber: String,
   timePlace: DeclarationTimePlace
 )

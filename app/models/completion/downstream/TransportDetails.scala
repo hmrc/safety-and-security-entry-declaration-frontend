@@ -23,6 +23,7 @@ import models.{Country, TransportMode}
  */
 case class TransportDetails(
   mode: TransportMode,
-  identity: String,
-  nationality: Option[Country]
+  identity: Option[String],
+  nationality: Option[Country],
+  conveyanceReferenceNumber: Option[String]
 )
