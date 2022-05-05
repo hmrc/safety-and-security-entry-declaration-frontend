@@ -25,7 +25,7 @@ import controllers.transport.{routes => transportRoutes}
 import extractors.PredecExtractor
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.EmptyWaypoints
-import pages.predec.LocalReferenceNumberPage
+import pages.predec.{DeclarationPlacePage, LocalReferenceNumberPage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
@@ -64,11 +64,8 @@ object TaskListViewModel {
         if (isPredeclarationComplete) {
           CompletionStatus.tag(CompletionStatus.Completed)
         } else {
-          if (answers.lrn.value.isEmpty) {
-            CompletionStatus.tag(CompletionStatus.NotStarted)
-          } else {
-            CompletionStatus.tag(CompletionStatus.InProgress)
-          }
+          answers.get(DeclarationPlacePage)
+            .fold(CompletionStatus.tag(CompletionStatus.NotStarted))(_=>CompletionStatus.tag(CompletionStatus.InProgress))
         }
       }
     )

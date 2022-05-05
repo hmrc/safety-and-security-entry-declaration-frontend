@@ -80,7 +80,7 @@ class TaskListViewModelSpec
       "When we don't have a completed section" - {
         "And the first question is populated" - {
           "It will show an `in progress` status and link to first answer" in {
-            val validAnswers = emptyUserAnswers.set(LocalReferenceNumberPage, lrn).success.value
+            val validAnswers = emptyUserAnswers.set(DeclarationPlacePage,"Newcastle").success.value
 
             val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))
 
@@ -94,7 +94,7 @@ class TaskListViewModelSpec
 
         "And the first question is not populated" - {
           "It will show an `not started` status and link to first answer" in {
-            val result = TaskListViewModel.fromAnswers(emptyUserAnswers.copy(lrn = LocalReferenceNumber("")))(messages(application))
+            val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
 
             result.rows(predecIdx).completionStatusTag mustEqual CompletionStatus.tag(
               CompletionStatus.NotStarted
