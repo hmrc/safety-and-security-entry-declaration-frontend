@@ -18,7 +18,7 @@ package pages.predec
 
 import base.SpecBase
 import controllers.predec.routes
-import models.{Address, Country, NormalMode}
+import models.{Address, Country}
 import pages.behaviours.PageBehaviours
 import pages.{EmptyWaypoints, Waypoints}
 

@@ -21,9 +21,8 @@ import controllers.{routes => baseRoutes}
 import forms.consignees.RemoveNotifiedPartyFormProvider
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Waypoints, EmptyWaypoints}
+import pages.EmptyWaypoints
 import pages.consignees.{NotifiedPartyNamePage, RemoveNotifiedPartyPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

@@ -54,7 +54,7 @@ class PartiesExtractor(
 
   private def tradersToParties(traders: List[Trader]): Map[Int, Party] = {
     traders.map {
-      case TraderWithEori(key, eori) => key -> Party.ByEori(GbEori(eori))
+      case TraderWithEori(key, eori) => key -> Party.ByEori(eori)
       case TraderWithoutEori(key, name, addr) => key -> Party.ByAddress(name, addr)
     }.toMap
   }

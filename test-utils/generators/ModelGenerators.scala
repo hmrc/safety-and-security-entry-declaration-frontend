@@ -48,7 +48,7 @@ trait ModelGenerators extends StringGenerators {
       for {
         key <- arbitrary[Int]
         eori <- arbitrary[GbEori]
-      } yield TraderWithEori(key, eori.value)
+      } yield TraderWithEori(key, eori)
     }
 
   implicit lazy val arbitraryTraderWithoutEori: Arbitrary[TraderWithoutEori] =

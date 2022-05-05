@@ -17,7 +17,7 @@
 package pages.predec
 
 import controllers.predec.routes
-import models.{Index, LocalReferenceNumber, UserAnswers}
+import models.{LocalReferenceNumber, UserAnswers}
 import pages.{NonEmptyWaypoints, Page, QuestionPage, Waypoints}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

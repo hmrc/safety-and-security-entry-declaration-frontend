@@ -30,8 +30,8 @@ class ConsignorSummarySpec extends SpecBase {
 
   ".row" - {
 
-    val consignor1 = TraderWithEori(1, arbitrary[GbEori].sample.value.toString)
-    val consignor2 = TraderWithEori(2, arbitrary[GbEori].sample.value.toString)
+    val consignor1 = TraderWithEori(1, arbitrary[GbEori].sample.value)
+    val consignor2 = TraderWithEori(2, arbitrary[GbEori].sample.value)
     val waypoints = EmptyWaypoints
     val sourcePage = CheckGoodsItemPage(index)
     implicit val msgs: Messages = stubMessages(stubMessagesApi())
@@ -41,9 +41,9 @@ class ConsignorSummarySpec extends SpecBase {
       val answers =
         emptyUserAnswers
           .set(ConsignorKeyQuery(Index(0)), consignor1.key).success.value
-          .set(ConsignorEORIPage(Index(0)), GbEori(consignor1.eori)).success.value
+          .set(ConsignorEORIPage(Index(0)), consignor1.eori).success.value
           .set(ConsignorKeyQuery(Index(1)), consignor2.key).success.value
-          .set(ConsignorEORIPage(Index(1)), GbEori(consignor2.eori)).success.value
+          .set(ConsignorEORIPage(Index(1)), consignor2.eori).success.value
           .set(ConsignorPage(index), consignor1.key).success.value
 
       val result = ConsignorSummary.row(answers, index, waypoints, sourcePage).value
@@ -56,7 +56,7 @@ class ConsignorSummarySpec extends SpecBase {
       val answers =
         emptyUserAnswers
           .set(ConsignorKeyQuery(Index(0)), consignor1.key).success.value
-          .set(ConsignorEORIPage(Index(0)), GbEori(consignor1.eori)).success.value
+          .set(ConsignorEORIPage(Index(0)), consignor1.eori).success.value
           .set(ConsignorPage(index), consignor1.key).success.value
 
       val result = ConsignorSummary.row(answers, index, waypoints, sourcePage).value

@@ -18,7 +18,6 @@ package pages.routedetails
 
 import base.SpecBase
 import controllers.routedetails.routes
-import models.{CheckMode, CustomsOffice, NormalMode}
 import pages.{EmptyWaypoints, Waypoints}
 import pages.behaviours.PageBehaviours
 

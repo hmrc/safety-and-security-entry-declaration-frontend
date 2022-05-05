@@ -47,8 +47,8 @@ class ConsignorControllerSpec extends SpecBase with MockitoSugar {
   val eori1 = GbEori("123456789000")
   val eori2 = GbEori("123456789001")
   private val consignors = List(
-    TraderWithEori(key1, eori1.value),
-    TraderWithEori(key2, eori2.value)
+    TraderWithEori(key1, eori1),
+    TraderWithEori(key2, eori2)
   )
 
   val baseAnswers =

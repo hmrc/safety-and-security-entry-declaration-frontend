@@ -35,7 +35,7 @@ object AddConsignorSummary  {
     answers.get(AllConsignorsQuery).getOrElse(List.empty).zipWithIndex.map {
       case (consignor, index) =>
         val name = consignor match {
-          case t: TraderWithEori    => HtmlFormat.escape(t.eori).toString
+          case t: TraderWithEori    => HtmlFormat.escape(t.eori.toString).toString
           case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
         }
 
@@ -52,7 +52,7 @@ object AddConsignorSummary  {
       consignors =>
 
         val value = consignors.map {
-          case c: TraderWithEori => c.eori
+          case c: TraderWithEori => c.eori.toString
           case c: TraderWithoutEori => c.name
         }.map(HtmlFormat.escape).mkString("<br>")
 
