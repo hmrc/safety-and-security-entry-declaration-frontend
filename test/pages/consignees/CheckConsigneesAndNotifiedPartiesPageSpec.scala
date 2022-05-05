@@ -18,7 +18,7 @@ package pages.consignees
 
 import base.SpecBase
 import controllers.routes
-import pages.{Waypoints, EmptyWaypoints}
+import pages.EmptyWaypoints
 
 class CheckConsigneesAndNotifiedPartiesPageSpec extends SpecBase {
 

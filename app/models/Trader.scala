@@ -17,7 +17,6 @@
 package models
 
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
-import models.GbEori
 
 trait Trader extends WithKey {
   val displayName: String
@@ -36,7 +35,7 @@ object Trader {
 }
 
 final case class TraderWithEori(key: Int, eori: GbEori) extends Trader {
-  override val displayName: String = eori.toString
+  override val displayName: String = eori.displayName
 }
 
 object TraderWithEori {

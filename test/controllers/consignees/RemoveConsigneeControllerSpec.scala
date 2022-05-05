@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{Waypoints, EmptyWaypoints}
+import pages.EmptyWaypoints
 import pages.consignees.{ConsigneeAddressPage, RemoveConsigneePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

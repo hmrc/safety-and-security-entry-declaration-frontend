@@ -19,7 +19,7 @@ package pages.consignors
 import base.SpecBase
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.routes
-import models.{GbEori, Index, NormalMode}
+import models.{GbEori, Index}
 import pages.EmptyWaypoints
 import pages.behaviours.PageBehaviours
 import queries.consignors.ConsignorKeyQuery

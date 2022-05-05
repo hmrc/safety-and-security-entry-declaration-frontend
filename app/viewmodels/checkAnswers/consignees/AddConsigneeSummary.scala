@@ -34,11 +34,7 @@ object AddConsigneeSummary  {
   def rows(answers: UserAnswers, waypoints: Waypoints, sourcePage: AddItemPage): Seq[ListItem] =
     answers.get(AllConsigneesQuery).getOrElse(List.empty).zipWithIndex.map {
       case (consignee, index) =>
-        val name = consignee match {
-          case t: TraderWithEori    => HtmlFormat.escape(t.eori.toString).toString
-          case t: TraderWithoutEori => HtmlFormat.escape(t.name).toString
-        }
-
+        val name = consignee.displayName
         ListItem(
           name      = name,
           changeUrl = CheckConsigneePage(Index(index)).changeLink(waypoints, answers.lrn, sourcePage).url,
