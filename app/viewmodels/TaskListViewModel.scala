@@ -22,10 +22,11 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.transport.{routes => transportRoutes}
-import extractors.PredecExtractor
+import extractors.{PredecExtractor, TransportExtractor}
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.EmptyWaypoints
 import pages.predec.{DeclarationPlacePage, LocalReferenceNumberPage}
+import pages.transport.TransportModePage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import queries.consignees.{DeriveNumberOfConsignees, DeriveNumberOfNotifiedParties}
@@ -71,13 +72,27 @@ object TaskListViewModel {
     )
   }
 
-  private def transportRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+  private def transportRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
+    val isTransportComplete = new TransportExtractor()(answers).extract().isValid
+
     TaskListRow(
       messageKey = messages("taskList.transport"),
-      link = transportRoutes.TransportModeController.onPageLoad(EmptyWaypoints, answers.lrn),
+      link =
+        if (isTransportComplete)
+          transportRoutes.CheckTransportController.onPageLoad(EmptyWaypoints, answers.lrn)
+        else
+          transportRoutes.TransportModeController.onPageLoad(EmptyWaypoints, answers.lrn),
       id = "transport-details",
-      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+      completionStatusTag = {
+        if (isTransportComplete) {
+          CompletionStatus.tag(CompletionStatus.Completed)
+        } else {
+          answers.get(TransportModePage)
+            .fold(CompletionStatus.tag(CompletionStatus.NotStarted))(_=>CompletionStatus.tag(CompletionStatus.InProgress))
+        }
+      }
     )
+  }
 
   private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
     TaskListRow(
