@@ -30,8 +30,8 @@ class ConsignorSummarySpec extends SpecBase {
 
   ".row" - {
 
-    val consignor1 = TraderWithEori(1, GbEori(arbitrary[GbEori].sample.value.toString))
-    val consignor2 = TraderWithEori(2, GbEori(arbitrary[GbEori].sample.value.toString))
+    val consignor1 = TraderWithEori(1, arbitrary[GbEori].sample.value)
+    val consignor2 = TraderWithEori(2, arbitrary[GbEori].sample.value)
     val waypoints = EmptyWaypoints
     val sourcePage = CheckGoodsItemPage(index)
     implicit val msgs: Messages = stubMessages(stubMessagesApi())
