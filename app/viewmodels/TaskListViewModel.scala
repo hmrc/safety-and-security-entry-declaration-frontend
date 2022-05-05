@@ -22,10 +22,11 @@ import controllers.goods.{routes => goodsRoutes}
 import controllers.predec.{routes => predecRoutes}
 import controllers.routedetails.{routes => routedetailsRoutes}
 import controllers.transport.{routes => transportRoutes}
-import extractors.{PredecExtractor, TransportExtractor}
+import extractors.{PredecExtractor, RouteDetailsExtractor, TransportExtractor}
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import pages.EmptyWaypoints
 import pages.predec.{DeclarationPlacePage, LocalReferenceNumberPage}
+import pages.routedetails.CountryOfDeparturePage
 import pages.transport.TransportModePage
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -94,13 +95,27 @@ object TaskListViewModel {
     )
   }
 
-  private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow =
+  private def routeDetailsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
+    val isRouteComplete = new RouteDetailsExtractor()(answers).extract().isValid
+
     TaskListRow(
       messageKey = messages("taskList.routeDetails"),
-      link = routedetailsRoutes.CountryOfDepartureController.onPageLoad(EmptyWaypoints, answers.lrn),
+      link =
+        if (isRouteComplete)
+          routedetailsRoutes.CheckRouteDetailsController.onPageLoad(EmptyWaypoints,answers.lrn)
+        else
+          routedetailsRoutes.CountryOfDepartureController.onPageLoad(EmptyWaypoints, answers.lrn),
       id = "route-details",
-      completionStatusTag = CompletionStatus.tag(CompletionStatus.NotStarted)
+      completionStatusTag = {
+        if (isRouteComplete) {
+          CompletionStatus.tag(CompletionStatus.Completed)
+        } else {
+          answers.get(CountryOfDeparturePage)
+            .fold(CompletionStatus.tag(CompletionStatus.NotStarted))(_ => CompletionStatus.tag(CompletionStatus.InProgress))
+        }
+      }
     )
+  }
 
   private def consignorsRow(answers: UserAnswers)(implicit messages: Messages): TaskListRow = {
     val url = answers.get(DeriveNumberOfConsignors) match {

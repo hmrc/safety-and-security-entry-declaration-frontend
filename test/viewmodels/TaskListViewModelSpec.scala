@@ -19,12 +19,14 @@ package viewmodels
 import base.SpecBase
 import controllers.predec.{routes => predecRoutes}
 import controllers.transport.{routes => transportRoutes}
+import controllers.routedetails.{routes => routeDetailsRoutes}
 import controllers.consignees.{routes => consigneeRoutes}
 import controllers.consignors.{routes => consignorRoutes}
 import controllers.goods.{routes => goodsRoutes}
 import models.TransportIdentity.{AirIdentity, MaritimeIdentity, RailIdentity, RoadIdentity, RoroAccompaniedIdentity, RoroUnaccompaniedIdentity}
 import models.TransportMode.{Air, Maritime, Road}
-import models.{Address, Country, Document, GbEori, Index, LocalReferenceNumber, LodgingPersonType, ProvideGrossWeight, TraderIdentity, UserAnswers}
+import models.{Address, ArrivalDateAndTime, Country, Document, GbEori, Index, LocalReferenceNumber, LodgingPersonType, PlaceOfLoading, PlaceOfUnloading, ProvideGrossWeight, TraderIdentity, UserAnswers}
+import models.{CustomsOffice => CustomsOfficeAnswer, _}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -36,9 +38,11 @@ import pages.consignees.{ConsigneeEORIPage, NotifiedPartyEORIPage}
 import pages.consignors.ConsignorEORIPage
 import pages.goods.CommodityCodeKnownPage
 import pages.predec.{CarrierEORIPage, CarrierIdentityPage, DeclarationPlacePage, LocalReferenceNumberPage, LodgingPersonTypePage, ProvideGrossWeightPage, TotalGrossWeightPage}
+import pages.routedetails.{ArrivalDateAndTimePage, CountryOfDeparturePage, CustomsOfficeOfFirstEntryPage, GoodsPassThroughOtherCountriesPage}
 import pages.transport.{AddAnySealsPage, AirIdentityPage, AnyOverallDocumentsPage, NationalityOfTransportPage, RoadIdentityPage, TransportModePage}
 import queries.consignees.{ConsigneeKeyQuery, NotifiedPartyKeyQuery}
 import queries.consignors.ConsignorKeyQuery
+import queries.routedetails.{AllCountriesEnRouteQuery, AllPlacesOfLoadingQuery, AllPlacesOfUnloadingQuery}
 import queries.transport.{AllOverallDocumentsQuery, AllSealsQuery}
 
 class TaskListViewModelSpec
@@ -52,6 +56,7 @@ class TaskListViewModelSpec
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
     val predecIdx = 0
     val transportIdx = 1
+    val routeIdx = 2
     val consignorsIdx = 3
     val consigneesIdx = 4
     val goodsIdx = 5
@@ -179,6 +184,84 @@ class TaskListViewModelSpec
             )(messages(application))
 
             result.rows(transportIdx).link mustEqual transportRoutes.TransportModeController.onPageLoad(EmptyWaypoints,emptyUserAnswers.lrn)
+          }
+        }
+      }
+    }
+
+    "For the route section" - {
+      "When we have a completed section" - {
+        "It will show a `complete` status and link to CYA" in {
+          val originCountry = arbitrary[Country].sample.value
+
+          val placesOfLoading = {
+            Gen.choose(1, 10)
+              .flatMap { len => Gen.listOfN(len, arbitrary[PlaceOfLoading]) }
+              .sample.value
+          }
+          val placesOfUnloading = {
+            Gen.choose(1, 10)
+              .flatMap { len => Gen.listOfN(len, arbitrary[PlaceOfUnloading]) }
+              .sample.value
+          }
+
+          val extraCountries = {
+            Gen.choose(1, 10)
+              .flatMap { len => Gen.listOfN(len, arbitrary[Country]) }
+              .sample.value
+          }
+
+          val customsOfficeAnswer = arbitrary[CustomsOfficeAnswer].sample.value
+          val arrivalDatetime = arbitrary[ArrivalDateAndTime].sample.value
+
+          val validAnswers = {
+            emptyUserAnswers
+              .set(CountryOfDeparturePage, originCountry).success.value
+              .set(AllPlacesOfLoadingQuery, placesOfLoading).success.value
+              .set(GoodsPassThroughOtherCountriesPage, true).success.value
+              .set(AllCountriesEnRouteQuery, extraCountries).success.value
+              .set(CustomsOfficeOfFirstEntryPage, customsOfficeAnswer).success.value
+              .set(ArrivalDateAndTimePage, arrivalDatetime).success.value
+              .set(AllPlacesOfUnloadingQuery, placesOfUnloading).success.value
+          }
+
+          val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))
+
+          result.rows(routeIdx).completionStatusTag mustEqual CompletionStatus.tag(
+            CompletionStatus.Completed
+          )(messages(application))
+
+          result.rows(routeIdx).link mustEqual routeDetailsRoutes.CheckRouteDetailsController.onPageLoad(
+            EmptyWaypoints,
+            validAnswers.lrn
+          )
+        }
+      }
+
+      "When we don't have a completed section" - {
+        "And the first question is populated" - {
+          "It will show an `in progress` status and link to first question for transport" in {
+            val validAnswers = emptyUserAnswers.set(CountryOfDeparturePage,Country("UK","United Kingdom")).success.value
+
+            val result = TaskListViewModel.fromAnswers(validAnswers)(messages(application))
+
+            result.rows(routeIdx).completionStatusTag mustEqual CompletionStatus.tag(
+              CompletionStatus.InProgress
+            )(messages(application))
+
+            result.rows(routeIdx).link mustEqual routeDetailsRoutes.CountryOfDepartureController.onPageLoad(EmptyWaypoints,validAnswers.lrn)
+          }
+        }
+
+        "And the first question is not populated" - {
+          "It will show an `not started` status and link to first answer" in {
+            val result = TaskListViewModel.fromAnswers(emptyUserAnswers)(messages(application))
+
+            result.rows(routeIdx).completionStatusTag mustEqual CompletionStatus.tag(
+              CompletionStatus.NotStarted
+            )(messages(application))
+
+            result.rows(routeIdx).link mustEqual routeDetailsRoutes.CountryOfDepartureController.onPageLoad(EmptyWaypoints,emptyUserAnswers.lrn)
           }
         }
       }
