@@ -33,6 +33,7 @@
 package extractors
 
 import cats.implicits._
+
 import models.completion.answers.{GoodsItem, Parties, Predec}
 import models._
 import models.completion.downstream.{DangerousGoodsCode, GoodsItemIdentity, Package}
@@ -154,7 +155,7 @@ class GoodsItemExtractor(
       requireAnswer(LoadingPlacePage(index)) map { loadingPlaces(_) }
     }
     val extractedUnloadingPlace: ValidationResult[LoadingPlace] = {
-      requireAnswer(UnloadingPlacePage(index)) map { unloadingPlaces(_) },
+      requireAnswer(UnloadingPlacePage(index)) map { unloadingPlaces(_) }
     }
 
     (
