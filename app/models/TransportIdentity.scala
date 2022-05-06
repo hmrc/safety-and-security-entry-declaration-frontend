@@ -59,6 +59,8 @@ object TransportIdentity {
     implicit val format = Json.format[RoroAccompaniedIdentity]
   }
 
+  // FIXME: trailerNumber is collected as container number in the containers section, and there
+  // may be multiple, so it shouldn't be collected as part of roro unaccompanied identity
   case class RoroUnaccompaniedIdentity(
     trailerNumber: String,
     imo: String,
