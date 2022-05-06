@@ -17,7 +17,6 @@
 package serialisation.xml
 
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import base.SpecBase
@@ -29,14 +28,6 @@ class TransportFormatsSpec
   with ScalaCheckPropertyChecks
   with TransportFormats
   with XmlImplicits {
-
-  private val transportDetailsGen: Gen[TransportDetails] = {
-    for {
-      mode <- arbitrary[TransportMode]
-      identifier <- Gen.alphaNumStr
-      nationality <- Gen.option(arbitrary[Country])
-    } yield TransportDetails(mode, identifier, nationality)
-  }
 
   "The transport mode format" - {
     "should work symmetrically" in {
@@ -57,7 +48,7 @@ class TransportFormatsSpec
   "The transport details format" - {
     "should work symmetrically" - {
       "for any transport details" in {
-        forAll(transportDetailsGen) { details =>
+        forAll(arbitrary[TransportDetails]) { details =>
           details.toXml.parseXml[TransportDetails] must be(details)
         }
       }
@@ -65,7 +56,7 @@ class TransportFormatsSpec
       "when transport nationality" - {
         "is specified" in {
           val gen = for {
-            details <- transportDetailsGen
+            details <- arbitrary[TransportDetails]
             nationality <- arbitrary[Country]
           } yield details.copy(nationality = Some(nationality))
 
@@ -74,7 +65,47 @@ class TransportFormatsSpec
           }
         }
         "is missing" in {
-          val gen = transportDetailsGen map { _.copy(nationality = None) }
+          val gen = arbitrary[TransportDetails] map { _.copy(nationality = None) }
+
+          forAll(gen) { details =>
+            details.toXml.parseXml[TransportDetails] must be(details)
+          }
+        }
+      }
+
+      "when transport identity" - {
+        "is specified" in {
+          val gen = for {
+            details <- arbitrary[TransportDetails]
+            identifier <- stringsWithMaxLength(27)
+          } yield details.copy(identity = Some(identifier))
+
+          forAll(gen) { details =>
+            details.toXml.parseXml[TransportDetails] must be(details)
+          }
+        }
+        "is missing" in {
+          val gen = arbitrary[TransportDetails] map { _.copy(identity = None) }
+
+          forAll(gen) { details =>
+            details.toXml.parseXml[TransportDetails] must be(details)
+          }
+        }
+      }
+
+      "when conveyance reference number" - {
+        "is specified" in {
+          val gen = for {
+            details <- arbitrary[TransportDetails]
+            conveyanceRef <- stringsWithMaxLength(35)
+          } yield details.copy(conveyanceReferenceNumber = Some(conveyanceRef))
+
+          forAll(gen) { details =>
+            details.toXml.parseXml[TransportDetails] must be(details)
+          }
+        }
+        "is missing" in {
+          val gen = arbitrary[TransportDetails] map { _.copy(conveyanceReferenceNumber = None) }
 
           forAll(gen) { details =>
             details.toXml.parseXml[TransportDetails] must be(details)

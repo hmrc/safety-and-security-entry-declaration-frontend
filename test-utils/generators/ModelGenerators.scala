@@ -321,9 +321,10 @@ trait ModelGenerators extends StringGenerators {
   implicit lazy val arbitraryTransportDetails: Arbitrary[TransportDetails] = Arbitrary {
     for {
       mode <- arbitrary[TransportMode]
-      identifier <- stringsWithMaxLength(27)
+      identifier <- Gen.option(stringsWithMaxLength(27))
       nationality <- Gen.option(arbitrary[Country])
-    } yield TransportDetails(mode, identifier, nationality)
+      conveyanceReferenceNumber <- Gen.option(stringsWithMaxLength(35))
+    } yield TransportDetails(mode, identifier, nationality, conveyanceReferenceNumber)
   }
 
   implicit lazy val arbitrarySubmissionTimePlace: Arbitrary[SubmissionTimePlace] = Arbitrary {
@@ -357,7 +358,6 @@ trait ModelGenerators extends StringGenerators {
       itemCount <- Gen.choose(1, 3)
       packageCount <- Gen.choose(1, 3)
       grossMass <- Gen.option(grossMassGen)
-      conveyanceReferenceNumber <- stringsWithMaxLength(35)
       timePlace <- arbitrary[SubmissionTimePlace]
     } yield {
       Header(
@@ -366,7 +366,6 @@ trait ModelGenerators extends StringGenerators {
         itemCount,
         packageCount,
         grossMass,
-        conveyanceReferenceNumber,
         timePlace
       )
     }

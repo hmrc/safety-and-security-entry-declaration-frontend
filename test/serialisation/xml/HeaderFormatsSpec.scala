@@ -29,39 +29,17 @@ class HeaderFormatsSpec
   with HeaderFormats
   with XmlImplicits {
 
-  private val headerGen: Gen[Header] = {
-    for {
-      lrn <- arbitrary[LocalReferenceNumber]
-      transportDetails <- arbitrary[TransportDetails]
-      itemCount <- Gen.choose(1, 3)
-      packageCount <- Gen.choose(1, 3)
-      grossMass <- Gen.option(Gen.choose(BigDecimal(0.001), BigDecimal(99999999.999)))
-      conveyanceReferenceNumber <- Gen.alphaNumStr
-      timePlace <- arbitrary[SubmissionTimePlace]
-    } yield {
-      Header(
-        lrn,
-        transportDetails,
-        itemCount,
-        packageCount,
-        grossMass,
-        conveyanceReferenceNumber,
-        timePlace
-      )
-    }
-  }
-
   "The header format" - {
     "should work symmetrically" - {
       "for any header with a SubmissionTimePlace" in {
-        forAll(headerGen) { h =>
+        forAll(arbitrary[Header]) { h =>
           h.toXml.parseXml[Header] must be(h)
         }
       }
 
       "for any header with a AmendmentTimePlace" in {
         val header = for {
-          header <- headerGen
+          header <- arbitrary[Header]
           atp <- arbitrary[AmendmentTimePlace]
         } yield header.copy(timePlace = atp)
 
@@ -73,7 +51,7 @@ class HeaderFormatsSpec
       "when gross mass" - {
         "is specified" in {
           val gen = for {
-            header <- headerGen
+            header <- arbitrary[Header]
             mass <- Gen.choose(1, 100000)
           } yield {
             header.copy(grossMass = Some(mass))
@@ -85,7 +63,7 @@ class HeaderFormatsSpec
         }
 
         "is missing" in {
-          val gen = headerGen map { _.copy(grossMass = None) }
+          val gen = arbitrary[Header] map { _.copy(grossMass = None) }
 
           forAll(gen) { h =>
             h.toXml.parseXml[Header] must be(h)

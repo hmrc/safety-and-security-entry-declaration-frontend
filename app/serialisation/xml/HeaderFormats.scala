@@ -34,8 +34,14 @@ trait HeaderFormats extends TransportFormats with TimeFormats {
 
       // Unfortunately we can't simply write using the TransportDetails format because we have to
       // position the individual fields in the right places across the header
+      val transportIdentity: NodeSeq = header.transportDetails.identity.map { id =>
+        <IdeOfMeaOfTraCroHEA85>{id}</IdeOfMeaOfTraCroHEA85>
+      }.toSeq
       val transportNationality: NodeSeq = header.transportDetails.nationality.map { n =>
         <NatOfMeaOfTraCroHEA87>{n.toXmlString}</NatOfMeaOfTraCroHEA87>
+      }.toSeq
+      val conveyanceRef: NodeSeq = header.transportDetails.conveyanceReferenceNumber.map { num =>
+        <ConRefNumHEA>{num}</ConRefNumHEA>
       }.toSeq
 
       val refNum: NodeSeq = header.ref match {
@@ -61,13 +67,13 @@ trait HeaderFormats extends TransportFormats with TimeFormats {
       <HEAHEA>
         {refNum}
         <TraModAtBorHEA76>{header.transportDetails.mode.toXmlString}</TraModAtBorHEA76>
-        <IdeOfMeaOfTraCroHEA85>{header.transportDetails.identity}</IdeOfMeaOfTraCroHEA85>
+        {transportIdentity}
         {transportNationality}
         <TotNumOfIteHEA305>{header.itemCount}</TotNumOfIteHEA305>
         <TotNumOfPacHEA306>{header.packageCount}</TotNumOfPacHEA306>
         {grossMass}
         {place}
-        <ConRefNumHEA>{header.conveyanceReferenceNumber}</ConRefNumHEA>
+        {conveyanceRef}
         {datetime}
       </HEAHEA>
     }
@@ -89,7 +95,6 @@ trait HeaderFormats extends TransportFormats with TimeFormats {
       itemCount = (data \ "TotNumOfIteHEA305").text.toInt,
       packageCount = (data \ "TotNumOfPacHEA306").text.toInt,
       grossMass = (data \ "TotGroMasHEA307").headOption map { _.text.parseXmlString[BigDecimal] },
-      conveyanceReferenceNumber = (data \ "ConRefNumHEA").text,
       timePlace = {
         ((data \ "DecPlaHEA394").headOption, (data \ "DecDatTimHEA114").headOption) match {
           case (Some(place), Some(dt)) =>

@@ -74,26 +74,35 @@ trait TransportFormats extends CommonFormats {
 
   implicit val transportDetailsFmt = new Format[TransportDetails] {
     override def encode(details: TransportDetails): NodeSeq = {
-      val requiredFields: NodeSeq = {
-        <TraModAtBorHEA76>{details.mode.toXmlString}</TraModAtBorHEA76>
-        <IdeOfMeaOfTraCroHEA85>{details.identity}</IdeOfMeaOfTraCroHEA85>
-      }
+      val id: NodeSeq = details.identity.map { trId =>
+        <IdeOfMeaOfTraCroHEA85>{trId}</IdeOfMeaOfTraCroHEA85>,
+      }.toSeq
 
       val nationality: NodeSeq = details.nationality.map { n =>
         <NatOfMeaOfTraCroHEA87>{n.toXmlString}</NatOfMeaOfTraCroHEA87>
       }.toSeq
 
-      requiredFields ++ nationality
+      val conveyanceRef: NodeSeq = details.conveyanceReferenceNumber.map { num =>
+        <ConRefNumHEA>{num}</ConRefNumHEA>
+      }.toSeq
+
+      Seq(
+        <TraModAtBorHEA76>{details.mode.toXmlString}</TraModAtBorHEA76>,
+        id,
+        nationality,
+        conveyanceRef
+      ).flatten
     }
 
     override def decode(data: NodeSeq): TransportDetails = {
       val mode = (data \\ "TraModAtBorHEA76").text.parseXmlString[TransportMode]
-      val identifier = (data \\ "IdeOfMeaOfTraCroHEA85").text
+      val identifier = (data \\ "IdeOfMeaOfTraCroHEA85").headOption.map { _.text }
       val nationality = (data \\ "NatOfMeaOfTraCroHEA87").headOption map {
         _.text.parseXmlString[Country]
       }
+      val conveyanceRef = (data \\ "ConRefNumHEA").headOption map { _.text }
 
-      TransportDetails(mode, identifier, nationality)
+      TransportDetails(mode, identifier, nationality, conveyanceRef)
     }
   }
 
