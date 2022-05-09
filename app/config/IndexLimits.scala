@@ -22,6 +22,6 @@ object IndexLimits {
   val maxDocuments: Int = 99
   val maxGoods: Int = 999
   val maxPackages: Int = 99
-  val maxSeals: Int = 9999
+  val maxSeals: Int = 99
   val maxCountries: Int = 97
 }

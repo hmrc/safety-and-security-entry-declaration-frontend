@@ -16,6 +16,7 @@
 
 package controllers.transport
 
+import config.IndexLimits.maxDocuments
 import controllers.actions._
 import controllers.{routes => baseRoutes}
 import forms.transport.OverallDocumentFormProvider
@@ -42,41 +43,29 @@ class OverallDocumentController @Inject() (
   protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(index, maxDocuments)) { implicit request =>
 
-      if (index.position >= OverallDocumentController.MaxDocuments) {
-        Redirect(baseRoutes.JourneyRecoveryController.onPageLoad())
-      } else {
-        val preparedForm = request.userAnswers.get(OverallDocumentPage(index)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-
-        Ok(view(preparedForm, waypoints, lrn, index))
+      val preparedForm = request.userAnswers.get(OverallDocumentPage(index)) match {
+        case None => form
+        case Some(value) => form.fill(value)
       }
+
+      Ok(view(preparedForm, waypoints, lrn, index))
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(index, maxDocuments)).async { implicit request =>
       val page = OverallDocumentPage(index)
 
-      if (index.position >= OverallDocumentController.MaxDocuments) {
-        Future.successful(Redirect(baseRoutes.JourneyRecoveryController.onPageLoad()))
-      } else {
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
-            value =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
-                _ <- cc.sessionRepository.set(updatedAnswers)
-              } yield Redirect(page.navigate(waypoints, updatedAnswers))
-          )
-      }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(page, value))
+              _ <- cc.sessionRepository.set(updatedAnswers)
+            } yield Redirect(page.navigate(waypoints, updatedAnswers))
+        )
     }
-}
-
-object OverallDocumentController {
-  val MaxDocuments = 99
 }

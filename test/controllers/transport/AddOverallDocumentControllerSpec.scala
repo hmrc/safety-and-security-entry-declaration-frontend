@@ -17,12 +17,14 @@
 package controllers.transport
 
 import base.SpecBase
+import config.IndexLimits.maxDocuments
 import controllers.{routes => baseRoutes}
 import forms.transport.AddOverallDocumentFormProvider
-import models.Document
+import models.{Document, Index}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.transport.{AddOverallDocumentPage, OverallDocumentPage}
@@ -61,7 +63,7 @@ class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save the answer and redirect to the next page with the correct next index if yes is selected" in {
+    "must save the answer and redirect to the next page with the correct next index when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -89,43 +91,57 @@ class AddOverallDocumentControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to the AddAnySeals page if no is selected" in {
-      val doc = arbitrary[Document].sample.value
-      val answers = emptyUserAnswers.set(OverallDocumentPage(index), doc).success.value
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+    "must save `false` and redirect if the max number of documents has been added, even if the answer is `true`" in {
+
+      val documents = Gen.listOfN(maxDocuments, arbitrary[Document]).sample.value
+
+      val answers =
+        documents
+          .zipWithIndex
+          .foldLeft(emptyUserAnswers) {
+            case (accumulatedAnswers, (doc, index)) =>
+              accumulatedAnswers.set(OverallDocumentPage(Index(index)), doc).success.value
+          }
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
 
       running(application) {
         val request = {
-          FakeRequest(POST, addOverallDocumentRoute).withFormUrlEncodedBody(("value", "false"))
+          FakeRequest(POST, addOverallDocumentRoute).withFormUrlEncodedBody(("value", "true"))
         }
 
         val result = route(application, request).value
-        val expectedRedirect = {
-          routes.AddAnySealsController.onPageLoad(waypoints, answers.lrn).url
-        }
+        val expectedAnswers = answers.set(AddOverallDocumentPage, false).success.value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual expectedRedirect
+        redirectLocation(result).value mustEqual AddOverallDocumentPage.navigate(waypoints, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val doc = arbitrary[Document].sample.value
+      val answers = emptyUserAnswers.set(OverallDocumentPage(index), doc).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, addOverallDocumentRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[AddOverallDocumentView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, Nil)(request, messages(application)).toString
       }
     }
 
