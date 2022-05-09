@@ -205,5 +205,42 @@ class DeclarationConnectorSpec
         }
       }
     }
+
+    "when submitting an amended declaration" - {
+      "should extract a correlation ID from a successful response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val dec = arbitrary[Declaration].sample.value
+          val mrn = MovementReferenceNumber("10GB08I01234567891")
+          stubFor(
+            put(urlEqualTo(s"/${mrn.value}"))
+              .willReturn(aResponse().withStatus(200).withBody(submissionResponse.toString))
+          )
+
+          client.amendDeclaration(mrn, dec).futureValue must be(submissionCorrId)
+
+          verify(putRequestedFor(urlEqualTo(s"/${mrn.value}")))
+        }
+      }
+
+      "should report a request failed exception for some unexpected response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val dec = arbitrary[Declaration].sample.value
+          val mrn = MovementReferenceNumber("10GB08I01234567891")
+
+          stubFor(
+            put(urlEqualTo(s"/${mrn.value}"))
+              .willReturn(aResponse().withStatus(500))
+          )
+
+          client.amendDeclaration(mrn, dec).failed.futureValue must be(
+            a[DeclarationConnecting.RequestFailedException]
+          )
+
+          verify(putRequestedFor(urlEqualTo(s"/${mrn.value}")))
+        }
+      }
+    }
   }
 }

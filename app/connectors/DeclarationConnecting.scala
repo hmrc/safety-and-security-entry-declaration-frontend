@@ -16,12 +16,12 @@
 
 package connectors
 
+import models.MovementReferenceNumber
+
 import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
-
 import uk.gov.hmrc.http._
-
 import models.completion.downstream.{CorrelationId, Declaration, Outcome}
 import serialisation.xml.{DeclarationFormats, ResponseFormats}
 import serialisation.xml.XmlImplicits._
@@ -53,6 +53,10 @@ trait DeclarationConnecting extends DeclarationFormats {
 
   def ackOutcome(correlationId: CorrelationId)(implicit hc: HeaderCarrier): Future[Unit] = {
     httpClient.DELETE[Unit](url"$outcomesUrl/${correlationId.id}")
+  }
+
+  def amendDeclaration(mrn:MovementReferenceNumber, declaration: Declaration)(implicit hc: HeaderCarrier): Future[CorrelationId] = {
+    httpClient.PUTString[CorrelationId](url"$storeUrl/${mrn.value}", declaration.toXml.toString)
   }
 }
 
