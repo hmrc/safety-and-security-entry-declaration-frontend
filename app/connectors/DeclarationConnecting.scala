@@ -55,7 +55,7 @@ trait DeclarationConnecting extends DeclarationFormats {
     httpClient.DELETE[Unit](url"$outcomesUrl/${correlationId.id}")
   }
 
-  def amendDeclaration(mrn:MovementReferenceNumber, declaration: Declaration)(implicit hc: HeaderCarrier): Future[CorrelationId] = {
+  def amendDeclaration(mrn: MovementReferenceNumber, declaration: Declaration)(implicit hc: HeaderCarrier): Future[CorrelationId] = {
     httpClient.PUTString[CorrelationId](url"$storeUrl/${mrn.value}", declaration.toXml.toString)
   }
 }
