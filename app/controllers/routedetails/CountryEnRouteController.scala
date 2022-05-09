@@ -16,6 +16,7 @@
 
 package controllers.routedetails
 
+import config.IndexLimits.maxCountries
 import controllers.actions._
 import forms.routedetails.CountryEnRouteFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -41,7 +42,7 @@ class CountryEnRouteController @Inject() (
   protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(index, maxCountries)) { implicit request =>
 
       val preparedForm = request.userAnswers.get(CountryEnRoutePage(index)) match {
         case None => form
@@ -52,7 +53,7 @@ class CountryEnRouteController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(index, maxCountries)).async { implicit request =>
 
       form
         .bindFromRequest()
