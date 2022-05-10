@@ -22,8 +22,8 @@ import scala.xml.XML
 
 import uk.gov.hmrc.http._
 
-import models.completion.downstream.{CorrelationId, Declaration, Outcome}
 import models.MovementReferenceNumber
+import models.completion.downstream.{CorrelationId, Declaration, Outcome}
 import serialisation.xml.{DeclarationFormats, ResponseFormats}
 import serialisation.xml.XmlImplicits._
 
@@ -60,8 +60,10 @@ trait DeclarationConnecting extends DeclarationFormats {
     implicit hc: HeaderCarrier
   ): Future[CorrelationId] = {
     declaration.header.ref match {
-      case mrn: MovementReferenceNumber =>  httpClient.PUTString[CorrelationId](url"$storeUrl/${mrn.value}", declaration.toXml.toString)
-      case _ => Future.failed(new InvalidAmendmentException)
+      case mrn: MovementReferenceNumber =>
+        httpClient.PUTString[CorrelationId](url"$storeUrl/${mrn.value}", declaration.toXml.toString)
+      case _ =>
+        Future.failed(new InvalidAmendmentException)
     }
   }
 }

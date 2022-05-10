@@ -212,13 +212,13 @@ class DeclarationConnectorSpec
           val mrn = dec.header.ref.asInstanceOf[MovementReferenceNumber].value
 
           stubFor(
-            put(urlEqualTo(s"/${mrn}"))
+            put(urlEqualTo(s"/$mrn"))
               .willReturn(aResponse().withStatus(200).withBody(submissionResponse.toString))
           )
 
           client.amendDeclaration(dec).futureValue must be(submissionCorrId)
 
-          verify(putRequestedFor(urlEqualTo(s"/${mrn}")))
+          verify(putRequestedFor(urlEqualTo(s"/$mrn")))
         }
       }
 
@@ -231,6 +231,7 @@ class DeclarationConnectorSpec
             a[DeclarationConnecting.InvalidAmendmentException]
           )
 
+          verify(0, anyRequestedFor(anyUrl()))
         }
       }
 
@@ -241,7 +242,7 @@ class DeclarationConnectorSpec
           val mrn = dec.header.ref.asInstanceOf[MovementReferenceNumber].value
 
           stubFor(
-            put(urlEqualTo(s"/${mrn}"))
+            put(urlEqualTo(s"/$mrn"))
               .willReturn(aResponse().withStatus(500))
           )
 
@@ -249,7 +250,7 @@ class DeclarationConnectorSpec
             a[DeclarationConnecting.RequestFailedException]
           )
 
-          verify(putRequestedFor(urlEqualTo(s"/${mrn}")))
+          verify(putRequestedFor(urlEqualTo(s"/$mrn")))
         }
       }
     }
