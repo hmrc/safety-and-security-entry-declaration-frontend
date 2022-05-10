@@ -1,15 +1,13 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import base.SpecBase
 import models.MovementReferenceNumber
-import models.completion.downstream.{CorrelationId, Declaration, Outcome}
-import models.completion.downstream.Declaration
+import models.completion.downstream.{CorrelationId, Outcome}
 import serialisation.xml.XmlPayloadFixtures
 
 class DeclarationConnectorSpec
@@ -31,7 +29,7 @@ class DeclarationConnectorSpec
       "should extract correlation ID from a successful response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
+          val dec = submissionGen.sample.value
 
           stubFor(
             post(urlEqualTo("/"))
@@ -47,7 +45,7 @@ class DeclarationConnectorSpec
       "should report a specific bad request exception for a 400 response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
+          val dec = submissionGen.sample.value
 
           stubFor(
             post(urlEqualTo("/"))
@@ -65,7 +63,7 @@ class DeclarationConnectorSpec
       "should report a general request failed exception for some other unexpected response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
+          val dec = submissionGen.sample.value
 
           stubFor(
             post(urlEqualTo("/"))
