@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.IndexLimits.maxCountries
 @import controllers.routedetails.routes
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
 @import viewmodels.LegendSize
@@ -41,13 +42,17 @@
 
         @addToList(countries, Long, "addCountryEnRoute.change.hidden", "addCountryEnRoute.remove.hidden")
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages("addCountryEnRoute.addAnother")).withSize(LegendSize.Medium)
+        @if(countries.size < maxCountries) {
+            @govukRadios(
+                RadiosViewModel.yesNo(
+                    field = form("value"),
+                    legend = LegendViewModel(messages("addCountryEnRoute.addAnother")).withSize(LegendSize.Medium)
+                )
             )
-        )
-
+        } else {
+            <p class="govuk-body" id="maxReached">@messages("addCountriesEnRoute.maximumReached")</p>
+            <input type="hidden" name="value" id="value" value="false"/>
+        }
         @govukButton(
             ButtonViewModel(messages("site.continue"))
         )

@@ -17,9 +17,10 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.{maxGoods, maxPackages}
 import controllers.{routes => baseRoutes}
 import forms.goods.AddPackageFormProvider
-import models.KindOfPackage
+import models.{Index, KindOfPackage}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -100,29 +101,57 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
+    "must save `false` and redirect when the max number of packages has been added, even if the answer is `true" in {
+
+      val answers =
+        (0 until maxPackages)
+          .foldLeft(emptyUserAnswers) {
+            (accumulatedAnswers, index) =>
+              accumulatedAnswers
+                .set(KindOfPackagePage(Index(0), Index(index)), KindOfPackage.standardKindsOfPackages.head).success.value
+                .set(NumberOfPackagesPage(Index(0), Index(index)), 1).success.value
+                .set(MarkOrNumberPage(Index(0), Index(index)), "mark").success.value
+          }
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, addPackageRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+        val expectedAnswers = answers.set(AddPackagePage(index), false).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual AddPackagePage(index)
+          .navigate(waypoints, expectedAnswers)
+          .url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, addPackageRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[AddPackageView]
-
         val result = route(application, request).value
 
         implicit val msgs: Messages = messages(application)
         val list = PackageSummary.rows(emptyUserAnswers, index, waypoints, AddPackagePage(index))
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, list)(
-          request,
-          messages(application)
-        ).toString
       }
     }
 
@@ -148,6 +177,36 @@ class AddPackageControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, addPackageRoute)
             .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.AddPackageController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.AddPackageController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
 
         val result = route(application, request).value
 

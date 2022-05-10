@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.IndexLimits.maxGoods
 @import controllers.goods.routes
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
 @import viewmodels.LegendSize
@@ -41,12 +42,17 @@
 
         @addToList(goods, Long, "addGoods.change.hidden", "addGoods.remove.hidden")
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages("addGoods.addAnother")).withSize(LegendSize.Medium)
+        @if(goods.size < maxGoods) {
+            @govukRadios(
+                RadiosViewModel.yesNo(
+                    field = form("value"),
+                    legend = LegendViewModel(messages("addGoods.addAnother")).withSize(LegendSize.Medium)
+                )
             )
-        )
+        } else {
+            <p class="govuk-body" id="maxReached">@messages("addGoods.maximumReached")</p>
+            <input type="hidden" name="value" id="value" value="false"/>
+        }
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))

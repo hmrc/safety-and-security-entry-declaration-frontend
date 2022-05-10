@@ -17,9 +17,10 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.{maxDocuments, maxGoods}
 import controllers.{routes => baseRoutes}
 import forms.goods.DocumentFormProvider
-import models.{Document, DocumentType}
+import models.{Document, DocumentType, Index}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -157,6 +158,66 @@ class DocumentControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, documentRoute)
             .withFormUrlEncodedBody(("documentType", documentType.code), ("reference", "reference"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.DocumentController.onPageLoad(waypoints, lrn, Index(maxGoods), index).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.DocumentController.onPageLoad(waypoints, lrn, Index(maxGoods), index).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the document index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.DocumentController.onPageLoad(waypoints, lrn, index, Index(maxDocuments)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the document index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.DocumentController.onPageLoad(waypoints, lrn, index, Index(maxDocuments)).url)
 
         val result = route(application, request).value
 

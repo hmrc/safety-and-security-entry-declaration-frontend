@@ -16,6 +16,8 @@
 
 package controllers.transport
 
+import config.IndexLimits.maxSeals
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.transport.AddSealFormProvider
 import models.LocalReferenceNumber
@@ -23,6 +25,7 @@ import pages.Waypoints
 import pages.transport.AddSealPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.transport.DeriveNumberOfSeals
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transport.SealSummary
 import views.html.transport.AddSealView
@@ -34,7 +37,7 @@ class AddSealController @Inject()(
   formProvider: AddSealFormProvider,
   cc: CommonControllerComponents,
   view: AddSealView
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with AnswerExtractor {
 
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
@@ -50,17 +53,23 @@ class AddSealController @Inject()(
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     cc.authAndGetData(lrn).async {
       implicit request =>
+        getAnswerAsync(DeriveNumberOfSeals) {
+          numberOfSeals =>
 
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            val documents = SealSummary.rows(request.userAnswers, waypoints, AddSealPage)
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, documents)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSealPage, value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddSealPage.navigate(waypoints, updatedAnswers))
-        )
+            form.bindFromRequest().fold(
+              formWithErrors => {
+                val documents = SealSummary.rows(request.userAnswers, waypoints, AddSealPage)
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, documents)))
+              },
+              value => {
+                val protectedAnswer = if (numberOfSeals >= maxSeals) false else value
+
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddSealPage, protectedAnswer))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(AddSealPage.navigate(waypoints, updatedAnswers))
+              }
+            )
+          }
     }
 }

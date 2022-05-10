@@ -17,9 +17,10 @@
 package controllers.routedetails
 
 import base.SpecBase
+import config.IndexLimits.maxCountries
 import controllers.{routes => baseRoutes}
 import forms.routedetails.CountryEnRouteFormProvider
-import models.Country
+import models.{Country, Index}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -156,6 +157,37 @@ class CountryEnRouteControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, countryEnRouteRoute)
+            .withFormUrlEncodedBody(("value", country.code))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the index is equal to or higher than the maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.CountryEnRouteController.onPageLoad(waypoints, lrn, Index(maxCountries)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the index is equal to or higher than the maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.CountryEnRouteController.onPageLoad(waypoints, lrn, Index(maxCountries)).url)
             .withFormUrlEncodedBody(("value", country.code))
 
         val result = route(application, request).value

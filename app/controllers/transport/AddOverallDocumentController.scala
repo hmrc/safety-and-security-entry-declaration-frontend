@@ -16,6 +16,8 @@
 
 package controllers.transport
 
+import config.IndexLimits.maxDocuments
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.transport.AddOverallDocumentFormProvider
 import models.LocalReferenceNumber
@@ -23,6 +25,7 @@ import pages.Waypoints
 import pages.transport.AddOverallDocumentPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.transport.DeriveNumberOfOverallDocuments
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transport.OverallDocumentSummary
 import views.html.transport.AddOverallDocumentView
@@ -34,7 +37,7 @@ class AddOverallDocumentController @Inject()(
   formProvider: AddOverallDocumentFormProvider,
   cc: CommonControllerComponents,
   view: AddOverallDocumentView
-)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with AnswerExtractor {
 
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
@@ -49,17 +52,23 @@ class AddOverallDocumentController @Inject()(
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     cc.authAndGetData(lrn).async {
       implicit request =>
+        getAnswerAsync(DeriveNumberOfOverallDocuments) {
+          numberOfOverallDocs =>
 
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            val documents = OverallDocumentSummary.rows(request.userAnswers, waypoints, AddOverallDocumentPage)
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, documents)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddOverallDocumentPage, value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddOverallDocumentPage.navigate(waypoints, updatedAnswers))
-        )
+            form.bindFromRequest().fold(
+              formWithErrors => {
+                val documents = OverallDocumentSummary.rows(request.userAnswers, waypoints, AddOverallDocumentPage)
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, documents)))
+              },
+              value => {
+                val protectedAnswer = if (numberOfOverallDocs >= maxDocuments) false else value
+
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddOverallDocumentPage, protectedAnswer))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(AddOverallDocumentPage.navigate(waypoints, updatedAnswers))
+              }
+            )
+          }
     }
 }

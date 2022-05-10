@@ -17,12 +17,16 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.{maxDocuments, maxGoods}
 import controllers.{routes => baseRoutes}
 import forms.goods.AddDocumentFormProvider
+import models.{Document, Index}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.goods.AddDocumentPage
+import pages.goods.{AddDocumentPage, DocumentPage}
 import pages.{EmptyWaypoints, Waypoints, goods}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -67,8 +71,11 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      val document = arbitrary[Document].sample.value
+      val answers =emptyUserAnswers.set(DocumentPage(index, index), document).success.value
+
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -78,7 +85,45 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
-        val expectedAnswers = emptyUserAnswers.set(AddDocumentPage(index), true).success.value
+        val expectedAnswers = answers.set(AddDocumentPage(index), true).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual goods.AddDocumentPage(index)
+          .navigate(waypoints, expectedAnswers)
+          .url
+
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
+    "must save `false` and redirect when the maximum number of documents has been added, even when the answer is `true`" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val documents = Gen.listOfN(maxDocuments, arbitrary[Document]).sample.value
+
+      val answers =
+        documents
+          .zipWithIndex
+          .foldLeft(emptyUserAnswers) {
+            case (accumulatedAnswers, (doc, index)) =>
+              accumulatedAnswers.set(DocumentPage(Index(0), Index(index)), doc).success.value
+          }
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, addDocumentRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+        val expectedAnswers = answers.set(AddDocumentPage(index), false).success.value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual goods.AddDocumentPage(index)
@@ -91,24 +136,19 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val document = arbitrary[Document].sample.value
+      val answers =emptyUserAnswers.set(DocumentPage(index, index), document).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, addDocumentRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[AddDocumentView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, index, List.empty)(
-          request,
-          messages(application)
-        ).toString
       }
     }
 
@@ -134,6 +174,36 @@ class AddDocumentControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, addDocumentRoute)
             .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.AddDocumentController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.AddDocumentController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
 
         val result = route(application, request).value
 

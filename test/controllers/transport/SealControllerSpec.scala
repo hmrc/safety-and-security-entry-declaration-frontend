@@ -17,6 +17,7 @@
 package controllers.transport
 
 import base.SpecBase
+import config.IndexLimits.maxSeals
 import controllers.{routes => baseRoutes}
 import forms.transport.SealFormProvider
 import models.Index
@@ -143,6 +144,36 @@ class SealControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, sealRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the index is above the maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.SealController.onPageLoad(waypoints, lrn, Index(maxSeals)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the index is above the maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.SealController.onPageLoad(waypoints, lrn, Index(maxSeals)).url)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value

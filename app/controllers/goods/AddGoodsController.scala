@@ -16,6 +16,8 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.AddGoodsFormProvider
 import models.LocalReferenceNumber
@@ -23,6 +25,7 @@ import pages.Waypoints
 import pages.goods.AddGoodsPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.goods.DeriveNumberOfGoods
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.GoodsSummary
 import views.html.goods.AddGoodsView
@@ -36,7 +39,8 @@ class AddGoodsController @Inject() (
   view: AddGoodsView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
+    with I18nSupport
+    with AnswerExtractor {
 
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
@@ -51,20 +55,26 @@ class AddGoodsController @Inject() (
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     cc.authAndGetData(lrn).async { implicit request =>
+      getAnswerAsync(DeriveNumberOfGoods) {
+        numberOfGoods =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val goods = GoodsSummary.rows(request.userAnswers, waypoints, AddGoodsPage)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val goods = GoodsSummary.rows(request.userAnswers, waypoints, AddGoodsPage)
 
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, goods)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddGoodsPage, value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddGoodsPage.navigate(waypoints, updatedAnswers))
-        )
-    }
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, goods)))
+              },
+              value => {
+                val protectedAnswer = if (numberOfGoods >= maxGoods) false else value
+
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddGoodsPage, protectedAnswer))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(AddGoodsPage.navigate(waypoints, updatedAnswers))
+              }
+            )
+        }
+      }
 }

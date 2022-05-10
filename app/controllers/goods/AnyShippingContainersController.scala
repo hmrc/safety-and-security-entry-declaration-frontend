@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.AnyShippingContainersFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -38,29 +39,31 @@ class AnyShippingContainersController @Inject()(
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = cc.authAndGetData(lrn) {
-    implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(AnyShippingContainersPage(index)) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+        val preparedForm = request.userAnswers.get(AnyShippingContainersPage(itemIndex)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, waypoints, lrn, index))
-  }
+        Ok(view(preparedForm, waypoints, lrn, itemIndex))
+    }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = cc.authAndGetData(lrn).async {
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
+          Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex))),
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyShippingContainersPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyShippingContainersPage(itemIndex), value))
             _              <- cc.sessionRepository.set(updatedAnswers)
-          } yield Redirect(AnyShippingContainersPage(index).navigate(waypoints, updatedAnswers))
+          } yield Redirect(AnyShippingContainersPage(itemIndex).navigate(waypoints, updatedAnswers))
       )
   }
 }

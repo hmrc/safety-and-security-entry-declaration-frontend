@@ -35,10 +35,15 @@ final case class UserAnswers(
 ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+    Reads.optionNoError(Reads.at(page.path))
+      .reads(data)
+      .getOrElse(None)
 
   def get[A, B](derivable: Derivable[A, B])(implicit rds: Reads[A]): Option[B] =
-    get(derivable: Gettable[A]).map(derivable.derive)
+    Reads.optionNoError(Reads.at(derivable.path))
+      .reads(data)
+      .getOrElse(None)
+      .map(derivable.derive)
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 

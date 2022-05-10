@@ -17,6 +17,7 @@
 package controllers.transport
 
 import base.SpecBase
+import config.IndexLimits.maxDocuments
 import controllers.{routes => baseRoutes}
 import forms.transport.OverallDocumentFormProvider
 import models.Document._
@@ -174,7 +175,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must return OK and the correct view for a GET if index is below max document limit" in {
-      val numDocs = OverallDocumentController.MaxDocuments - 1
+      val numDocs = maxDocuments - 1
       val currentIndex = Index(numDocs)
       val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
@@ -198,7 +199,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a GET if index is above max document limit" in {
-      val numDocs = OverallDocumentController.MaxDocuments
+      val numDocs = maxDocuments
       val currentIndex = Index(numDocs)
       val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
@@ -215,7 +216,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must return OK and navigate to the next page for a POST if index is below max document limit" in {
-      val numDocs = OverallDocumentController.MaxDocuments - 1
+      val numDocs = maxDocuments - 1
       val currentIndex = Index(numDocs)
       val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)
@@ -243,7 +244,7 @@ class OverallDocumentControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a POST if index is above max document limit" in {
-      val numDocs = OverallDocumentController.MaxDocuments
+      val numDocs = maxDocuments
       val currentIndex = Index(numDocs)
       val url = routes.OverallDocumentController.onPageLoad(waypoints, lrn, currentIndex).url
       val answers = userAnswersWithDocs(numDocs)

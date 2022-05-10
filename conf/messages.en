@@ -270,6 +270,7 @@ addPackage.title = Packaging of the item
 addPackage.heading = Packaging of the item
 addPackage.addAnother = Do you need to add another type?
 addPackage.error.required = Select yes if you need to add another type
+addGoods.maximumReached = You have added the maximum number of packages.
 
 kindOfPackage.title = How are the goods packaged?
 kindOfPackage.heading = How are the goods packaged?
@@ -371,11 +372,13 @@ addDocument.title = Documents
 addDocument.heading = Documents
 addDocument.addAnother = Do you need to add another document?
 addDocument.error.required = Select yes if you need to add another document
+addDocument.maximumReached = You have added the maximum number of documents.
 
 addContainer.title = Your container numbers
 addContainer.heading = Your container numbers
 addContainer.addAnother = Do you need to add another container number?
 addContainer.error.required = Select yes if you need to add another container
+addContainer.maximumReached = You have added the maximum number of containers.
 
 document.title = What document do you need to add?
 document.heading = What document do you need to add?
@@ -494,6 +497,7 @@ addGoods.remove.hidden = the good
 addGoods.addAnother = Do you need to add another good?
 addGoods.title = Goods
 addGoods.heading = Goods
+addGoods.maximumReached = You have added the maximum number of goods.
 
 removeGoods.title = Do you need to remove this good item?
 removeGoods.heading = Do you need to remove this good item?
@@ -633,7 +637,7 @@ addSeal.heading2 = Do you need to add another security seal?
 addSeal.checkYourAnswersLabel = addSeal
 addSeal.error.required = Select yes if addSeal
 addSeal.change.hidden = AddSeal
-addSeal.maximumReached = You cannot add more than 99 seals.
+addSeal.maximumReached = You have added the maximum number of seals.
 
 airIdentity.title = airIdentity
 airIdentity.heading = Air

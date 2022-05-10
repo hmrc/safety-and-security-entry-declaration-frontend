@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package config
 
-trait Derivable[A, B] extends Gettable[A] {
-  val derive: A => B
+object IndexLimits {
+
+  val maxContainers: Int = 99
+  val maxDocuments: Int = 99
+  val maxGoods: Int = 999
+  val maxPackages: Int = 99
+  val maxSeals: Int = 99
+  val maxCountries: Int = 97
 }

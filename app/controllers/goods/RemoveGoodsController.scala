@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.RemoveGoodsFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -44,41 +45,41 @@ class RemoveGoodsController @Inject() (
   def onPageLoad(
     waypoints: Waypoints,
     lrn: LocalReferenceNumber,
-    goodItemIndex: Index
+    itemIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
       val preparedForm =
-        request.userAnswers.get(RemoveGoodsPage(goodItemIndex)) match {
+        request.userAnswers.get(RemoveGoodsPage(itemIndex)) match {
           case None => form
           case Some(value) => form.fill(value)
         }
 
-      Ok(view(preparedForm, waypoints, lrn, goodItemIndex))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex))
     }
 
   def onSubmit(
     waypoints: Waypoints,
     lrn: LocalReferenceNumber,
-    goodItemIndex: Index
+    itemIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
           formWithErrors =>
             Future
-              .successful(BadRequest(view(formWithErrors, waypoints, lrn, goodItemIndex))),
+              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex))),
           value =>
             if (value) {
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(GoodItemQuery(goodItemIndex)))
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(GoodItemQuery(itemIndex)))
                 _ <- cc.sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveGoodsPage(goodItemIndex).navigate(waypoints, updatedAnswers))
+              } yield Redirect(RemoveGoodsPage(itemIndex).navigate(waypoints, updatedAnswers))
             } else {
               Future.successful(
-                Redirect(RemoveGoodsPage(goodItemIndex).navigate(waypoints, request.userAnswers))
+                Redirect(RemoveGoodsPage(itemIndex).navigate(waypoints, request.userAnswers))
               )
             }
         )

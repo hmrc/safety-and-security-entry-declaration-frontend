@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions.CommonControllerComponents
 import models.{Index, LocalReferenceNumber, UserAnswers, WithKey}
 import pages.Waypoints
@@ -40,8 +41,8 @@ class InitialiseGoodsItemController @Inject() (
 
   protected val controllerComponents: MessagesControllerComponents = cc
 
-  def initialise(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async {
+  def initialise(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async {
       implicit request =>
 
         val consignors = request.userAnswers.get(AllConsignorsQuery)
@@ -71,13 +72,13 @@ class InitialiseGoodsItemController @Inject() (
         }
 
         for {
-          a <- updateAnswers(request.userAnswers, ConsignorPage(index), consignor)
-          b <- updateAnswers(a, ConsigneePage(index), consignee)
-          c <- updateAnswers(b, NotifiedPartyPage(index), notifiedParty)
-          d <- updateAnswers(c, LoadingPlacePage(index), placeOfLoading)
-          e <- updateAnswers(d, UnloadingPlacePage(index), placeOfUnloading)
+          a <- updateAnswers(request.userAnswers, ConsignorPage(itemIndex), consignor)
+          b <- updateAnswers(a, ConsigneePage(itemIndex), consignee)
+          c <- updateAnswers(b, NotifiedPartyPage(itemIndex), notifiedParty)
+          d <- updateAnswers(c, LoadingPlacePage(itemIndex), placeOfLoading)
+          e <- updateAnswers(d, UnloadingPlacePage(itemIndex), placeOfUnloading)
           _ <- cc.sessionRepository.set(e)
-        } yield Redirect(InitialiseGoodsItemPage(index).navigate(waypoints, e))
+        } yield Redirect(InitialiseGoodsItemPage(itemIndex).navigate(waypoints, e))
     }
 
   private def updateAnswers[A <: WithKey](

@@ -17,6 +17,7 @@
 package controllers.goods
 
 import base.SpecBase
+import config.IndexLimits.maxGoods
 import controllers.{routes => baseRoutes}
 import forms.goods.UnloadingPlaceFormProvider
 import models.{Index, PlaceOfUnloading}
@@ -174,6 +175,36 @@ class UnloadingPlaceControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(GET, routes.UnloadingPlaceController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if the item index is equal to or higher than that maximum" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.UnloadingPlaceController.onPageLoad(waypoints, lrn, Index(maxGoods)).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }

@@ -16,6 +16,8 @@
 
 package controllers.goods
 
+import config.IndexLimits.{maxDocuments, maxGoods}
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.AddDocumentFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -23,6 +25,7 @@ import pages.Waypoints
 import pages.goods.AddDocumentPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.goods.DeriveNumberOfDocuments
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.DocumentSummary
 import views.html.goods.AddDocumentView
@@ -36,35 +39,42 @@ class AddDocumentController @Inject() (
   view: AddDocumentView
 )(implicit ec: ExecutionContext)
   extends FrontendBaseController
-  with I18nSupport {
+    with I18nSupport
+    with AnswerExtractor {
 
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
-      val documents = DocumentSummary.rows(request.userAnswers, index, waypoints, AddDocumentPage(index))
+      val documents = DocumentSummary.rows(request.userAnswers, itemIndex, waypoints, AddDocumentPage(itemIndex))
 
-      Ok(view(form, waypoints, lrn, index, documents))
+      Ok(view(form, waypoints, lrn, itemIndex, documents))
     }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
+      getAnswerAsync(DeriveNumberOfDocuments(itemIndex)) {
+        numberOfDocuments =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val documents = DocumentSummary.rows(request.userAnswers, index, waypoints, AddDocumentPage(index))
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val documents = DocumentSummary.rows(request.userAnswers, itemIndex, waypoints, AddDocumentPage(itemIndex))
 
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index, documents)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentPage(index), value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddDocumentPage(index).navigate(waypoints, updatedAnswers))
-        )
-    }
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documents)))
+              },
+              value => {
+                val protectedAnswer = if (numberOfDocuments >= maxDocuments) false else value
+
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddDocumentPage(itemIndex), protectedAnswer))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(AddDocumentPage(itemIndex).navigate(waypoints, updatedAnswers))
+              }
+            )
+        }
+      }
 }

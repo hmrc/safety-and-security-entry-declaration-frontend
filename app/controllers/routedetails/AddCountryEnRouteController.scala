@@ -16,6 +16,8 @@
 
 package controllers.routedetails
 
+import config.IndexLimits.maxCountries
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.routedetails.AddCountryEnRouteFormProvider
 import models.LocalReferenceNumber
@@ -23,6 +25,7 @@ import pages.Waypoints
 import pages.routedetails.AddCountryEnRoutePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.routedetails.DeriveNumberOfCountriesEnRoute
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.routedetails.AddCountryEnRouteSummary
 import views.html.routedetails.AddCountryEnRouteView
@@ -34,8 +37,10 @@ class AddCountryEnRouteController @Inject() (
   formProvider: AddCountryEnRouteFormProvider,
   cc: CommonControllerComponents,
   view: AddCountryEnRouteView
-)(implicit ec: ExecutionContext) extends FrontendBaseController
-  with I18nSupport {
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with AnswerExtractor {
 
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
@@ -50,20 +55,26 @@ class AddCountryEnRouteController @Inject() (
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber): Action[AnyContent] =
     cc.authAndGetData(lrn).async { implicit request =>
+      getAnswerAsync(DeriveNumberOfCountriesEnRoute) {
+        numberOfCountries =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val countries = AddCountryEnRouteSummary.rows(request.userAnswers, waypoints, AddCountryEnRoutePage)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val countries = AddCountryEnRouteSummary.rows(request.userAnswers, waypoints, AddCountryEnRoutePage)
 
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, countries)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddCountryEnRoutePage, value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddCountryEnRoutePage.navigate(waypoints, updatedAnswers))
-        )
-    }
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, countries)))
+              },
+              value => {
+                val protectedAnswer = if (numberOfCountries >= maxCountries) false else value
+
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddCountryEnRoutePage, protectedAnswer))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(AddCountryEnRoutePage.navigate(waypoints, updatedAnswers))
+              }
+            )
+        }
+      }
 }

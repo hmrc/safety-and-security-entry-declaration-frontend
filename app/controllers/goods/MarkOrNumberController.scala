@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.{maxGoods, maxPackages}
 import controllers.actions._
 import forms.goods.MarkOrNumberFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -46,15 +47,16 @@ class MarkOrNumberController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(packageIndex, maxPackages)) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(MarkOrNumberPage(itemIndex, packageIndex)) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        val preparedForm = request.userAnswers.get(MarkOrNumberPage(itemIndex, packageIndex)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, waypoints, lrn, itemIndex, packageIndex))
       }
-
-      Ok(view(preparedForm, waypoints, lrn, itemIndex, packageIndex))
-    }
 
   def onSubmit(
     waypoints: Waypoints,
@@ -62,20 +64,21 @@ class MarkOrNumberController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(packageIndex, maxPackages)).async {
+      implicit request =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
-          value =>
-            for {
-              updatedAnswers <-
-                Future.fromTry(request.userAnswers.set(MarkOrNumberPage(itemIndex, packageIndex), value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(
-              MarkOrNumberPage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers)
-            )
-        )
-    }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, packageIndex))),
+            value =>
+              for {
+                updatedAnswers <-
+                  Future.fromTry(request.userAnswers.set(MarkOrNumberPage(itemIndex, packageIndex), value))
+                _ <- cc.sessionRepository.set(updatedAnswers)
+              } yield Redirect(
+                MarkOrNumberPage(itemIndex, packageIndex).navigate(waypoints, updatedAnswers)
+              )
+          )
+      }
 }

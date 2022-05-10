@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.{SealController, routes}
+@import config.IndexLimits.maxSeals
+@import controllers.transport.routes
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
 @import viewmodels.LegendSize
 
@@ -42,7 +43,7 @@
 
         @addToList(documents, Long, "addSeal.change.hidden", "addSeal.remove.hidden")
 
-        @if(documents.length < SealController.MaxDocuments) {
+        @if(documents.length < maxSeals) {
             @govukRadios(
                 RadiosViewModel.yesNo(
                     field = form("value"),

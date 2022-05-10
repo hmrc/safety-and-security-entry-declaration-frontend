@@ -17,6 +17,7 @@
 package controllers.goods
 
 import com.google.inject.Inject
+import config.IndexLimits.{maxGoods, maxPackages}
 import controllers.actions.CommonControllerComponents
 import models.{Index, LocalReferenceNumber}
 import pages.Waypoints
@@ -42,25 +43,26 @@ class CheckPackageItemController @Inject() (
     itemIndex: Index,
     packageIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(packageIndex, maxPackages)) {
+      implicit request =>
 
-      val thisPage = CheckPackageItemPage(itemIndex, packageIndex)
+        val thisPage = CheckPackageItemPage(itemIndex, packageIndex)
 
-      val list = SummaryListViewModel(
-        rows = Seq(
-          KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
-          NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
-          NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
-          AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
-          MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage)
-        ).flatten
-      )
+        val list = SummaryListViewModel(
+          rows = Seq(
+            KindOfPackageSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+            NumberOfPackagesSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+            NumberOfPiecesSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+            AddMarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage),
+            MarkOrNumberSummary.row(request.userAnswers, itemIndex, packageIndex, waypoints, thisPage)
+          ).flatten
+        )
 
       Ok(view(waypoints, list, lrn, itemIndex, packageIndex))
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index, packageIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(packageIndex, maxPackages)) {
       implicit request =>
         Redirect(CheckPackageItemPage(itemIndex, packageIndex).navigate(waypoints, request.userAnswers))
     }

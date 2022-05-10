@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.actions._
 import forms.goods.AddAnyDocumentsFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -40,29 +41,29 @@ class AddAnyDocumentsController @Inject() (
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
 
-  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+  def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
-      val preparedForm = request.userAnswers.get(AddAnyDocumentsPage(index)) match {
+      val preparedForm = request.userAnswers.get(AddAnyDocumentsPage(itemIndex)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, waypoints, lrn, index))
+      Ok(view(preparedForm, waypoints, lrn, itemIndex))
     }
 
-  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, index: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+  def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
 
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, index))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyDocumentsPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnyDocumentsPage(itemIndex), value))
               _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddAnyDocumentsPage(index).navigate(waypoints, updatedAnswers))
+            } yield Redirect(AddAnyDocumentsPage(itemIndex).navigate(waypoints, updatedAnswers))
         )
     }
 }

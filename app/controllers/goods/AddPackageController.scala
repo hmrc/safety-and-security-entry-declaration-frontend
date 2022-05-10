@@ -16,6 +16,8 @@
 
 package controllers.goods
 
+import config.IndexLimits.{maxGoods, maxPackages}
+import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.AddPackageFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -23,6 +25,7 @@ import pages.Waypoints
 import pages.goods.AddPackagePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.goods.DeriveNumberOfPackages
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.goods.PackageSummary
 import views.html.goods.AddPackageView
@@ -34,14 +37,16 @@ class AddPackageController @Inject() (
   formProvider: AddPackageFormProvider,
   cc: CommonControllerComponents,
   view: AddPackageView
-)(implicit ec: ExecutionContext) extends FrontendBaseController
-  with I18nSupport {
+)(implicit ec: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with AnswerExtractor {
 
   private val form = formProvider()
   protected val controllerComponents: MessagesControllerComponents = cc
 
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) { implicit request =>
 
       val rows = PackageSummary.rows(request.userAnswers, itemIndex, waypoints, AddPackagePage(itemIndex))
 
@@ -49,21 +54,28 @@ class AddPackageController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async { implicit request =>
+      getAnswerAsync(DeriveNumberOfPackages(itemIndex)) {
+        numberOfPackages =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            val rows = PackageSummary.rows(request.userAnswers, itemIndex, waypoints, AddPackagePage(itemIndex))
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => {
+                val rows = PackageSummary.rows(request.userAnswers, itemIndex, waypoints, AddPackagePage(itemIndex))
 
-            Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, rows)))
-          },
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPackagePage(itemIndex), value))
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(AddPackagePage(itemIndex).navigate(waypoints, updatedAnswers))
-        )
-    }
+                Future.successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, rows)))
+              },
+              value => {
+
+                val protectedAnswer = if (numberOfPackages >= maxPackages) false else value
+
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(AddPackagePage(itemIndex), protectedAnswer))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(AddPackagePage(itemIndex).navigate(waypoints, updatedAnswers))
+              }
+            )
+        }
+      }
 }

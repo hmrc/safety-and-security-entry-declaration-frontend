@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.{maxDocuments, maxGoods}
 import controllers.actions._
 import forms.goods.RemoveDocumentFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -47,16 +48,17 @@ class RemoveDocumentController @Inject() (
     itemIndex: Index,
     documentIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(documentIndex, maxDocuments)) {
+      implicit request =>
 
-      val preparedForm =
-        request.userAnswers.get(RemoveDocumentPage(itemIndex, documentIndex)) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+        val preparedForm =
+          request.userAnswers.get(RemoveDocumentPage(itemIndex, documentIndex)) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, waypoints, lrn, itemIndex, documentIndex))
-    }
+        Ok(view(preparedForm, waypoints, lrn, itemIndex, documentIndex))
+      }
 
   def onSubmit(
     waypoints: Waypoints,
@@ -64,25 +66,26 @@ class RemoveDocumentController @Inject() (
     itemIndex: Index,
     documentIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(documentIndex, maxDocuments)).async {
+      implicit request =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future
-              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documentIndex))),
-          value =>
-            if (value) {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(DocumentQuery(itemIndex, documentIndex)))
-                _ <- cc.sessionRepository.set(updatedAnswers)
-              } yield Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(waypoints, updatedAnswers))
-            } else {
-              Future.successful(
-                Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(waypoints, request.userAnswers))
-              )
-            }
-        )
-    }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future
+                .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documentIndex))),
+            value =>
+              if (value) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(DocumentQuery(itemIndex, documentIndex)))
+                  _ <- cc.sessionRepository.set(updatedAnswers)
+                } yield Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(waypoints, updatedAnswers))
+              } else {
+                Future.successful(
+                  Redirect(RemoveDocumentPage(itemIndex, documentIndex).navigate(waypoints, request.userAnswers))
+                )
+              }
+          )
+      }
 }

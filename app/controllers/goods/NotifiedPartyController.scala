@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.maxGoods
 import controllers.AnswerExtractor
 import controllers.actions._
 import forms.goods.NotifiedPartyFormProvider
@@ -43,7 +44,7 @@ class NotifiedPartyController @Inject() (
 
   protected val controllerComponents: MessagesControllerComponents = cc
   def onPageLoad(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn) {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)) {
       implicit request =>
         getAnswer(AllNotifiedPartiesQuery) {
           notifiedParties =>
@@ -61,7 +62,7 @@ class NotifiedPartyController @Inject() (
     }
 
   def onSubmit(waypoints: Waypoints, lrn: LocalReferenceNumber, itemIndex: Index): Action[AnyContent] =
-    cc.authAndGetData(lrn).async {
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods)).async {
       implicit request =>
         getAnswerAsync(AllNotifiedPartiesQuery) {
           notifiedParties =>

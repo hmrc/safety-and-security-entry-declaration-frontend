@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.transport.{OverallDocumentController, routes}
+@import config.IndexLimits.maxDocuments
+@import controllers.transport.routes
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Long}
 @import viewmodels.LegendSize
 
@@ -42,7 +43,7 @@
 
         @addToList(documents, Long, "addOverallDocument.change.hidden", "addOverallDocument.remove.hidden")
 
-        @if(documents.length < OverallDocumentController.MaxDocuments) {
+        @if(documents.length < maxDocuments) {
           @govukRadios(
               RadiosViewModel.yesNo(
                   field = form("value"),

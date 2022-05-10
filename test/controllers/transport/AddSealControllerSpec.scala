@@ -17,11 +17,14 @@
 package controllers.transport
 
 import base.SpecBase
+import config.IndexLimits.maxDocuments
 import controllers.{routes => baseRoutes}
 import forms.transport.AddSealFormProvider
+import models.Index
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
 import pages.EmptyWaypoints
 import pages.transport.{AddSealPage, SealPage}
@@ -63,7 +66,6 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
       val content = arbitrary[String].sample.value
       val answers = emptyUserAnswers.set(SealPage(index), content).success.value
 
-
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -87,23 +89,56 @@ class AddSealControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
+    "must save `false` and redirect when the max number of seals has been added, even if the answer is `true`" in {
+
+      val seals = Gen.listOfN(maxDocuments, Gen.alphaStr).sample.value
+
+      val answers =
+        seals
+          .zipWithIndex
+          .foldLeft(emptyUserAnswers) {
+            case (accumulatedAnswers, (seal, index)) =>
+              accumulatedAnswers.set(SealPage(Index(index)), seal).success.value
+          }
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request = {
+          FakeRequest(POST, addSealRoute).withFormUrlEncodedBody(("value", "true"))
+        }
+
+        val result = route(application, request).value
+        val expectedAnswers = answers.set(AddSealPage, false).success.value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual AddSealPage.navigate(waypoints, expectedAnswers).url
+        verify(mockSessionRepository, times(1)).set(eqTo(expectedAnswers))
+      }
+    }
+
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val content = arbitrary[String].sample.value
+      val answers = emptyUserAnswers.set(SealPage(index), content).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       running(application) {
         val request =
           FakeRequest(POST, addSealRoute)
             .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[AddSealView]
-
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, waypoints, lrn, Nil)(request, messages(application)).toString
       }
     }
 

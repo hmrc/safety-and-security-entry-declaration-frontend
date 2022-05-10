@@ -16,6 +16,7 @@
 
 package controllers.goods
 
+import config.IndexLimits.{maxDocuments, maxGoods}
 import controllers.actions._
 import forms.goods.DocumentFormProvider
 import models.{Index, LocalReferenceNumber}
@@ -46,15 +47,16 @@ class DocumentController @Inject() (
     itemIndex: Index,
     documentIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn) { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(documentIndex, maxDocuments)) {
+      implicit request =>
 
-      val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        val preparedForm = request.userAnswers.get(DocumentPage(itemIndex, documentIndex)) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, waypoints, lrn, itemIndex, documentIndex))
       }
-
-      Ok(view(preparedForm, waypoints, lrn, itemIndex, documentIndex))
-    }
 
   def onSubmit(
     waypoints: Waypoints,
@@ -62,21 +64,22 @@ class DocumentController @Inject() (
     itemIndex: Index,
     documentIndex: Index
   ): Action[AnyContent] =
-    cc.authAndGetData(lrn).async { implicit request =>
+    (cc.authAndGetData(lrn) andThen cc.limitIndex(itemIndex, maxGoods) andThen cc.limitIndex(documentIndex, maxDocuments)).async {
+      implicit request =>
 
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future
-              .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documentIndex))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(
-                request.userAnswers.set(DocumentPage(itemIndex, documentIndex), value)
-              )
-              _ <- cc.sessionRepository.set(updatedAnswers)
-            } yield Redirect(DocumentPage(itemIndex, documentIndex).navigate(waypoints, updatedAnswers))
-        )
-    }
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future
+                .successful(BadRequest(view(formWithErrors, waypoints, lrn, itemIndex, documentIndex))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(
+                  request.userAnswers.set(DocumentPage(itemIndex, documentIndex), value)
+                )
+                _ <- cc.sessionRepository.set(updatedAnswers)
+              } yield Redirect(DocumentPage(itemIndex, documentIndex).navigate(waypoints, updatedAnswers))
+          )
+      }
 }
