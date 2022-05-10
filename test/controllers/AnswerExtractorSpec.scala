@@ -17,12 +17,12 @@
 package controllers
 
 import base.SpecBase
-import models.UserAnswers
 import models.requests.DataRequest
-import pages.QuestionPage
+import models.{LocalReferenceNumber, UserAnswers}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.{JsPath, Json}
 import play.api.mvc.Results.{Ok, Redirect}
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
 import queries.Gettable
 
@@ -33,6 +33,8 @@ class AnswerExtractorSpec extends SpecBase {
 
   private object TestPage extends QuestionPage[Int] {
     override def path: JsPath = JsPath \ "test"
+
+    override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
   }
 
   private def buildRequest(answers: UserAnswers): DataRequest[AnyContent] =

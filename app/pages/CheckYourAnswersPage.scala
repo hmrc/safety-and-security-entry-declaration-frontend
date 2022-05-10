@@ -16,7 +16,14 @@
 
 package pages
 
+import controllers.routes
+import models.{LocalReferenceNumber, UserAnswers}
+import play.api.mvc.Call
+
 object CheckYourAnswersPage extends CheckAnswersPage {
 
   override val urlFragment: String = "check-answers"
+
+  override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
+    routes.CheckYourAnswersController.onPageLoad(lrn)
 }

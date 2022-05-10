@@ -16,23 +16,10 @@
 
 package pages
 
-import controllers.routes
-import models.{CheckMode, LocalReferenceNumber, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, LocalReferenceNumber, NormalMode, UserAnswers}
 import play.api.mvc.Call
 
 trait Page {
-
-  def navigate(mode: Mode, answers: UserAnswers): Call =
-    mode match {
-      case NormalMode => navigateInNormalMode(answers)
-      case CheckMode => navigateInCheckMode(answers)
-    }
-
-  protected def navigateInNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad
-
-  protected def navigateInCheckMode(answers: UserAnswers): Call =
-    routes.CheckYourAnswersController.onPageLoad(answers.lrn)
 
   def navigate(waypoints: Waypoints, answers: UserAnswers): Call = {
     val targetPage = nextPage(waypoints, answers)
@@ -58,8 +45,7 @@ trait Page {
   protected def nextPageNormalMode(waypoints: Waypoints, answers: UserAnswers): Page =
     throw new NotImplementedError("nextPageNormalMode is not implemented")
 
-  def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call =
-    throw new NotImplementedError("route is not implemented")
+  def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call
 
   def changeLink(waypoints: Waypoints, lrn: LocalReferenceNumber, sourcePage: CheckAnswersPage): Call =
     route(waypoints.setNextWaypoint(sourcePage.waypoint), lrn)
