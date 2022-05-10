@@ -210,35 +210,48 @@ class DeclarationConnectorSpec
       "should extract a correlation ID from a successful response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
-          val mrn = MovementReferenceNumber("10GB08I01234567891")
+          val dec = amendmentGen.sample.value
+          val mrn = dec.header.ref.asInstanceOf[MovementReferenceNumber].value
+
           stubFor(
-            put(urlEqualTo(s"/${mrn.value}"))
+            put(urlEqualTo(s"/${mrn}"))
               .willReturn(aResponse().withStatus(200).withBody(submissionResponse.toString))
           )
 
-          client.amendDeclaration(mrn, dec).futureValue must be(submissionCorrId)
+          client.amendDeclaration(dec).futureValue must be(submissionCorrId)
 
-          verify(putRequestedFor(urlEqualTo(s"/${mrn.value}")))
+          verify(putRequestedFor(urlEqualTo(s"/${mrn}")))
+        }
+      }
+
+      "should report an error when movement reference number is not provided" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val dec = submissionGen.sample.value
+
+          client.amendDeclaration(dec).failed.futureValue must be(
+            a[DeclarationConnecting.InvalidAmendmentException]
+          )
+
         }
       }
 
       "should report a request failed exception for some unexpected response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
-          val mrn = MovementReferenceNumber("10GB08I01234567891")
+          val dec = amendmentGen.sample.value
+          val mrn = dec.header.ref.asInstanceOf[MovementReferenceNumber].value
 
           stubFor(
-            put(urlEqualTo(s"/${mrn.value}"))
+            put(urlEqualTo(s"/${mrn}"))
               .willReturn(aResponse().withStatus(500))
           )
 
-          client.amendDeclaration(mrn, dec).failed.futureValue must be(
+          client.amendDeclaration(dec).failed.futureValue must be(
             a[DeclarationConnecting.RequestFailedException]
           )
 
-          verify(putRequestedFor(urlEqualTo(s"/${mrn.value}")))
+          verify(putRequestedFor(urlEqualTo(s"/${mrn}")))
         }
       }
     }
