@@ -18,10 +18,10 @@ package controllers
 
 import base.SpecBase
 import models.requests.DataRequest
-import models.{Index, UserAnswers, WithKey}
-import pages.QuestionPage
+import models.{Index, LocalReferenceNumber, UserAnswers, WithKey}
+import pages.{QuestionPage, Waypoints}
 import play.api.libs.json.{JsPath, Json, OFormat}
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import queries.Gettable
 
@@ -35,6 +35,8 @@ class ByKeyExtractorSpec extends SpecBase {
 
   private case class ItemPage(index: Index) extends QuestionPage[Item] {
     override def path: JsPath = JsPath \ "items" \ index.position
+
+    override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
   }
 
   private case object AllItems extends Gettable[List[Item]] {

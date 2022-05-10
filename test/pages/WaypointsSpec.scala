@@ -17,11 +17,11 @@
 package pages
 
 import base.SpecBase
-import models.Index
+import models.{Index, LocalReferenceNumber}
 import org.scalatest.EitherValues
 import pages.consignees.{CheckConsigneePage, CheckConsigneesAndNotifiedPartiesPage, ConsigneeQuestionPage, NotifiedPartyQuestionPage}
 import play.api.libs.json.JsPath
-import play.api.mvc.QueryStringBindable
+import play.api.mvc.{Call, QueryStringBindable}
 
 class WaypointsSpec extends SpecBase with EitherValues {
 
@@ -206,41 +206,62 @@ class WaypointsSpec extends SpecBase with EitherValues {
 
   private class Fixture {
 
-    object RegularPage1 extends Page
-    object RegularPage2 extends Page
+    object RegularPage1 extends Page {
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
+    }
+
+    object RegularPage2 extends Page {
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
+    }
 
     object AddItemPage1 extends AddItemPage {
       override val normalModeUrlFragment: String = "add-page-1"
       override val checkModeUrlFragment: String = "change-page-1"
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object AddItemPage2 extends AddItemPage {
       override val normalModeUrlFragment: String = "add-page-2"
       override val checkModeUrlFragment: String = "change-page-2"
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object AddToListSection1Page1 extends ConsigneeQuestionPage[Nothing] {
       override def path: JsPath = JsPath
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object AddToListSection1Page2 extends ConsigneeQuestionPage[Nothing] {
       override def path: JsPath = JsPath
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object AddToListSection2Page1 extends NotifiedPartyQuestionPage[Nothing] {
       override def path: JsPath = JsPath
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object AddToListSection2Page2 extends NotifiedPartyQuestionPage[Nothing] {
       override def path: JsPath = JsPath
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object CheckAnswersPage1 extends CheckAnswersPage {
       override val urlFragment: String = "check-1"
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     object CheckAnswersPage2 extends CheckAnswersPage {
       override val urlFragment: String = "check-2"
+
+      override def route(waypoints: Waypoints, lrn: LocalReferenceNumber): Call = Call("", "")
     }
 
     val testWaypoint1: Waypoint = CheckAnswersPage1.waypoint
