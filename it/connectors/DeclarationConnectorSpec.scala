@@ -1,15 +1,13 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalacheck.Arbitrary.arbitrary
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.test.WireMockSupport
 
 import base.SpecBase
 import models.MovementReferenceNumber
-import models.completion.downstream.{CorrelationId, Declaration, Outcome}
-import models.completion.downstream.Declaration
+import models.completion.downstream.{CorrelationId, Outcome}
 import serialisation.xml.XmlPayloadFixtures
 
 class DeclarationConnectorSpec
@@ -31,7 +29,7 @@ class DeclarationConnectorSpec
       "should extract correlation ID from a successful response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
+          val dec = submissionGen.sample.value
 
           stubFor(
             post(urlEqualTo("/"))
@@ -47,7 +45,7 @@ class DeclarationConnectorSpec
       "should report a specific bad request exception for a 400 response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
+          val dec = submissionGen.sample.value
 
           stubFor(
             post(urlEqualTo("/"))
@@ -65,7 +63,7 @@ class DeclarationConnectorSpec
       "should report a general request failed exception for some other unexpected response" in {
         running(app) {
           val client = app.injector.instanceOf[DeclarationConnector]
-          val dec = arbitrary[Declaration].sample.value
+          val dec = submissionGen.sample.value
 
           stubFor(
             post(urlEqualTo("/"))
@@ -202,6 +200,57 @@ class DeclarationConnectorSpec
           )
 
           verify(deleteRequestedFor(urlEqualTo(s"/${corrId.id}")))
+        }
+      }
+    }
+
+    "when submitting an amended declaration" - {
+      "should extract a correlation ID from a successful response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val dec = amendmentGen.sample.value
+          val mrn = dec.header.ref.asInstanceOf[MovementReferenceNumber].value
+
+          stubFor(
+            put(urlEqualTo(s"/$mrn"))
+              .willReturn(aResponse().withStatus(200).withBody(submissionResponse.toString))
+          )
+
+          client.amendDeclaration(dec).futureValue must be(submissionCorrId)
+
+          verify(putRequestedFor(urlEqualTo(s"/$mrn")))
+        }
+      }
+
+      "should report an error when movement reference number is not provided" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val dec = submissionGen.sample.value
+
+          client.amendDeclaration(dec).failed.futureValue must be(
+            a[DeclarationConnecting.InvalidAmendmentException]
+          )
+
+          verify(0, anyRequestedFor(anyUrl()))
+        }
+      }
+
+      "should report a request failed exception for some unexpected response" in {
+        running(app) {
+          val client = app.injector.instanceOf[DeclarationConnector]
+          val dec = amendmentGen.sample.value
+          val mrn = dec.header.ref.asInstanceOf[MovementReferenceNumber].value
+
+          stubFor(
+            put(urlEqualTo(s"/$mrn"))
+              .willReturn(aResponse().withStatus(500))
+          )
+
+          client.amendDeclaration(dec).failed.futureValue must be(
+            a[DeclarationConnecting.RequestFailedException]
+          )
+
+          verify(putRequestedFor(urlEqualTo(s"/$mrn")))
         }
       }
     }

@@ -22,6 +22,7 @@ import scala.xml.XML
 
 import uk.gov.hmrc.http._
 
+import models.MovementReferenceNumber
 import models.completion.downstream.{CorrelationId, Declaration, Outcome}
 import serialisation.xml.{DeclarationFormats, ResponseFormats}
 import serialisation.xml.XmlImplicits._
@@ -54,9 +55,25 @@ trait DeclarationConnecting extends DeclarationFormats {
   def ackOutcome(correlationId: CorrelationId)(implicit hc: HeaderCarrier): Future[Unit] = {
     httpClient.DELETE[Unit](url"$outcomesUrl/${correlationId.id}")
   }
+
+  def amendDeclaration(declaration: Declaration)(
+    implicit hc: HeaderCarrier
+  ): Future[CorrelationId] = {
+    declaration.header.ref match {
+      case mrn: MovementReferenceNumber =>
+        httpClient.PUTString[CorrelationId](url"$storeUrl/${mrn.value}", declaration.toXml.toString)
+      case _ =>
+        Future.failed(new InvalidAmendmentException)
+    }
+  }
 }
 
 object DeclarationConnecting extends ResponseFormats {
+
+  class InvalidAmendmentException extends RuntimeException(
+    "Provided declaration was a submission instead of an amendment"
+  )
+
   class RequestFailedException(status: Int, body: String) extends RuntimeException(
     s"API responded with unexpected status: $status; full response body: $body"
   )
